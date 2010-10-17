@@ -169,10 +169,9 @@ a
 
 .popup  
   min-width: 450px
-  position: relative
-  position: fixed
-  top: 120px
-  bottom: 120px
+  max-height: 600px
+  position: absolute
+  top: 60px
   left: 540px
   +box-shadow(rgba(0,0,0,0.3), 0px, 0px, 5px, 5px)
   overflow: auto
@@ -235,7 +234,12 @@ a
     width: 400px
     height: 140px
     overflow: auto
-    
+#tools
+  button
+    display: block
+    margin: 5px auto
+    min-width: 135px
+
 #console
   color: #ccc
   .log

@@ -1,6 +1,7 @@
 - content_for :head do
+  =javascript_include_tag "/items.js"
   =render "templates"
-%a{:href => "javascript: $.jStorage.flush(); window.location.reload();", :style => "float: right"} Reset local storage
+
 %h1#head
   .name
     #{@character.name}
@@ -40,8 +41,9 @@
         #tools.floater
           %h3 Tools
           .inner
-            %button{:onclick => "javascript:RogueApp.reforgeAll()"} Auto-Reforge All
-            %button{:onclick => "javascript:RogueApp.optimizeGems()"} Optimize Gems
+            %button{:onclick => "RogueApp.reforgeAll()"} Auto-Reforge All
+            %button{:onclick => "RogueApp.optimizeGems()"} Optimize Gems
+            %button{:onclick => "RogueApp.ResetLocalStorage()"} Reset Changes
       -#
         .addItem.floater
           %h3 Add An Item

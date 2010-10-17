@@ -276,7 +276,7 @@ Handlebars.Compiler.prototype = {
   peek: function(n) {
     n = n || 1;
     var start = this.pointer + 1;
-    return this.string.slice(start, start + n);
+    return n == 1 ? this.string[start] : this.string.slice(start, start + n);
   },
 
   compile: function(endCondition) {

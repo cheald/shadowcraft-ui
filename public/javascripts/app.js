@@ -87,6 +87,18 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     return regex.test(jQuery(elem)[attr.method](attr.property));
   };
   
+  $.delegate = function(rules) {
+    return function(e) {
+      var target = $(e.target);
+      for (var selector in rules) {  
+        var bubbledTarget = target.closest(selector);
+        if (bubbledTarget.length > 0) {
+          return rules[selector].apply(bubbledTarget, $.makeArray(arguments));
+        }
+      }
+    }
+  }  
+  
   RogueApp.setupLabel = function() {
     if ($('.label_check input').length) {
       $('.label_check').each(function(){ 
@@ -106,14 +118,15 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     }
   };
   
-  $('.label_check, .label_radio').click(function(){
+  $(function() {
     RogueApp.setupLabel();
   });
   
-  RogueApp.setupLabel();
+  $('.label_check, .label_radio').live("click", RogueApp.setupLabel);
+  
   $( "button, input:submit, .button").button();
   $("select").selectmenu({ style: 'dropdown' });
-  $(document).mousemove(function(e){
+  $("#talents").mousemove(function(e){
     $.data(document, "mouse-x", e.pageX);
     $.data(document, "mouse-y", e.pageY);
   });
@@ -149,6 +162,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   
   function _T(str) {
     var idx = _.indexOf(serverData.TALENT_INDEX, str);
+    if(!data.activeTalents) { return 0; }
     return parseInt(data.activeTalents[idx], 10);
   }
   
@@ -188,6 +202,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         total += stats[stat] * weight;
       }
     }
+    delete stats;
     return Math.round(total * 10) / 10;
   }
   
@@ -251,13 +266,17 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     return (data.weights[stat] || 0) * num;
   }
   
+  var presortedLists = {};
   function __aepSort(a, b) { return b.__aep - a.__aep; }
   function aepSort(list, skipSort) {
-    for(var i = 0; i < list.length; i++) {
-      if(list[i]) {
-        list[i].__aep = aep(list[i]);
+    if(!presortedLists[list]) {
+      for(var i = 0; i < list.length; i++) {
+        if(list[i]) {
+          list[i].__aep = aep(list[i]);
+        }
       }
     }
+    presortedLists[list] = true;
     if(!skipSort) {
       list.sort(__aepSort);
     }
@@ -358,14 +377,16 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     $stats.append(statsTemplate({stats: a_stats}));
   }    
   
+  var $log = $("#log .inner");
   function log(msg) {
-    $("#log .inner").prepend("<div>" + msg + "</div");
+    $log.prepend("<div>" + msg + "</div");
   }
   
   function warn(item, msg, submsg, klass) {
     consoleMessage(item, msg, submsg, "warning", klass);
   }
   
+  var $console = $("#console .inner");
   function consoleMessage(item, msg, submsg, severity, klass) {
     var fullMsg = logTemplate({
       name: item.name,
@@ -377,13 +398,13 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     });
     
     if(klass && false) {
-      var exist = $("#console .inner #" + klass);
+      var exist = $console.find("#" + klass);
       if(exist.length > 0) {
         exist.replaceWith(fullMsg);
         return;
       }
     }    
-    $("#console .inner").append(fullMsg);
+    $console.append(fullMsg);
   }  
   
   function statsToDesc(obj) {
@@ -434,11 +455,19 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     if(flashHide) { window.clearTimeout(flashHide); }
     flashHide = window.setTimeout(hideFlash, 4000);
   }
-  window.flash = flash;
+  RogueApp.flash = flash;
+  
+  RogueApp.ResetLocalStorage = function() {
+    if(confirm("This will wipe out any changes you've made. Proceed?")) {
+      $.jStorage.flush(); window.location.reload();
+    }
+  }
   
   /**************************
   ***  UI Init Functions  ***
   **************************/
+  var talentTree = [];
+  
   if(window.FLASH.length > 0) {
     setTimeout(function() {
       flash("<p>" + window.FLASH.join("</p><p>") + "</p>");
@@ -476,7 +505,15 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   }  
 
   $(".popup").hide();
-  $("#tabs").tabs();
+  $("#tabs").tabs({
+    show: function(event, ui) {
+      if(ui.tab.hash == "#talents") {
+        initTalentsPane();
+      } else if(ui.tab.hash == "#impex") {
+        $("#export").text("[" + uuid + "]" + json_encode(data));
+      }
+    }
+  });
   
   initChecks("#professions", "professions", {
     blacksmithing: "Blacksmithing",
@@ -559,7 +596,6 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     }, pos.left + 130, pos.top - 20);
   };
   
-  var talentTree = [];
   function applyTalent(tree, row, col, dir) {
     var button = talentTree[tree * 25 + (row * 4) + col];
     return applyTalentToButton(button, dir);
@@ -568,17 +604,22 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   function resetTalents() {
     $("#talentframe .talent").each(function() {
       var points = $.data(this, "points");
-      applyTalentToButton(this, -points.cur, true);
+      applyTalentToButton(this, -points.cur, true, true);
     });      
+    data.activeTalents = getTalents();
+    updateTalentAvailability();
   }
   
   function setTalents(str) {
-    resetTalents();
+    if(!str) { return; }
     var ct = 0;
     $("#talentframe .talent").each(function() {
-      applyTalentToButton(this, parseInt(str[ct], 10), true);
+      var points = $.data(this, "points");
+      applyTalentToButton(this, parseInt(str[ct], 10) - points.cur, true, true);
       ct++;
     });
+    data.activeTalents = getTalents();
+    updateTalentAvailability();
   }
   
   function getTalents() {
@@ -591,7 +632,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   RogueApp.setTalents = setTalents;
   RogueApp.getTalents = getTalents;  
   
-  function applyTalentToButton(button, dir, force) {
+  function applyTalentToButton(button, dir, force, skipUpdate) {
     var points = $.data(button, "points");
     var position = $.data(button, "position");
     var tree = $.data(position.tree, "info");
@@ -623,88 +664,94 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       if(points.cur == points.max) { $points.addClass("full"); }
       else if(points.cur > 0) { $points.addClass("partial"); }
       $points.text(points.cur + "/" + points.max);
-      updateTalentAvailability($(button).parent());
-      data.activeTalents = getTalents();
+      if(!skipUpdate) {
+        updateTalentAvailability($(button).parent());
+        data.activeTalents = getTalents();
+      }
     }
     return success;
   }
   
-  for(var treeIndex in TALENTS) {
-    if(TALENTS.hasOwnProperty(treeIndex)) {
-      var tree = TALENTS[treeIndex];
-      $("#talentframe").append(talentTreeTemplate({
-        background: tree.bgImage,
-        talents: tree.talent
-      }));
+  function initTalentsPane() {
+    if($.data(document.body, "talentsInitialized")) { return; }
+    $.data(document.body, "talentsInitialized", true);
+    for(var treeIndex in TALENTS) {
+      if(TALENTS.hasOwnProperty(treeIndex)) {
+        var tree = TALENTS[treeIndex];
+        $("#talentframe").append(talentTreeTemplate({
+          background: tree.bgImage,
+          talents: tree.talent
+        }));
+      }
     }
-  }
-  $(".tree, .tree .talent, .tree .talent .points").disableTextSelection();
-  
-  $("#talentframe .talent").each(function() {
-    var row = parseInt(this.className.match(/row-(\d)/)[1], 10);
-    var col = parseInt(this.className.match(/col-(\d)/)[1], 10);
-    var $this = $(this);
-    var myTree = $this.closest(".tree").get(0);
-    var tree = $("#talentframe .tree").index(myTree);
-    var talent = TALENT_LOOKUP[tree + ":" + row + ":" + col];
-    $.data(this, "position", {tree: myTree, treeIndex: tree, row: row, col: col});
-    $.data(myTree, "info", {points: 0, rowPoints: [0, 0, 0, 0, 0, 0, 0]});
-    $.data(this, "talent", talent);
-    $.data(this, "points", {cur: 0, max: talent.maxRank});
-    $.data(this, "pointsButton", $(this).find(".points"));
-    $.data(this, "spentButton", $(this).closest(".tree").find(".spent"));
-    $.data(this, "icons", {grey: $this.css("backgroundImage"), normal: $this.css("backgroundImage").replace(/\/grey\//, "/")});
-    talentTree[tree * 25 + (row * 4) + col] = this;      
-  }).mousedown(function(e) {      
-    if(!$(this).hasClass("active")) { return; }
+    $(".tree, .tree .talent, .tree .talent .points").disableTextSelection();
     
-    switch(e.which) {
-    case 1:
-      applyTalentToButton(this, 1);
-      break;
-    case 3:
-      applyTalentToButton(this, -1);
-      break;
-    }      
-    $(this).trigger("mouseenter");      
-  }).bind("contextmenu", function() { return false; })
-  .mouseenter(hoverTalent)
-  .mouseleave(function() { $("#tooltip").hide();});
-  updateTalentAvailability();
-  
-  for(var talentName in data.talents) {
-    if(data.talents.hasOwnProperty(talentName)) {
-      $("#talentsets").append(
-        talentSetTemplate({
-          talent_string: data.talents[talentName],
-          name: talentName
-        })
-      );
-    }
-  }
-  
-  if(data.activeTalents) {
-    setTalents(data.activeTalents);
-  } else {
-    for(var k in data.talents) {
-      if(data.talents.hasOwnProperty(k)) {
-        setTalents(data.talents[k]);
+    var talentTrees = $("#talentframe .tree");
+    $("#talentframe .talent").each(function() {
+      var row = parseInt(this.className.match(/row-(\d)/)[1], 10);
+      var col = parseInt(this.className.match(/col-(\d)/)[1], 10);
+      var $this = $(this);
+      var trees = $this.closest(".tree");
+      var myTree = trees.get(0);
+      var tree = talentTrees.index(myTree);
+      var talent = TALENT_LOOKUP[tree + ":" + row + ":" + col];
+      $.data(this, "position", {tree: myTree, treeIndex: tree, row: row, col: col});
+      $.data(myTree, "info", {points: 0, rowPoints: [0, 0, 0, 0, 0, 0, 0]});
+      $.data(this, "talent", talent);
+      $.data(this, "points", {cur: 0, max: talent.maxRank});
+      $.data(this, "pointsButton", $this.find(".points"));
+      $.data(this, "spentButton", trees.find(".spent"));
+      $.data(this, "icons", {grey: $this.css("backgroundImage"), normal: $this.css("backgroundImage").replace(/\/grey\//, "/")});
+      talentTree[tree * 25 + (row * 4) + col] = this;      
+    }).mousedown(function(e) {      
+      if(!$(this).hasClass("active")) { return; }
+      
+      switch(e.which) {
+      case 1:
+        applyTalentToButton(this, 1);
         break;
+      case 3:
+        applyTalentToButton(this, -1);
+        break;
+      }      
+      $(this).trigger("mouseenter");      
+    }).bind("contextmenu", function() { return false; })
+    .mouseenter(hoverTalent)
+    .mouseleave(function() { $("#tooltip").hide();});  
+    
+    for(var talentName in data.talents) {
+      if(data.talents.hasOwnProperty(talentName)) {
+        $("#talentsets").append(
+          talentSetTemplate({
+            talent_string: data.talents[talentName],
+            name: talentName
+          })
+        );
+      }
+    }
+    
+    if(data.activeTalents) {
+      setTalents(data.activeTalents);
+    } else {
+      for(var k in data.talents) {
+        if(data.talents.hasOwnProperty(k)) {
+          setTalents(data.talents[k]);
+          break;
+        }
       }
     }
   }
   
-  $("#talentsets button.talent_set").live("click", function() {
-    setTalents($(this).attr("data-talents"));
-  });
+  $("#talentsets").click($.delegate({
+    ".talent_set": function() { setTalents($(this).attr("data-talents")); }
+  }));
   
   RogueApp.updateDisplayedGear = function() {
-    saveData();
-    $("#export").text("[" + uuid + "]" + json_encode(data));
+    saveData();    
     $("#console .inner").empty();
 
     updateStatsWindow();
-    $(".slots").empty();
+    $slots.empty();
     var bestOptionalReforge;
     for(var si = 0; si < slotOrder.length; si++) {
       var i = slotOrder[si];
@@ -714,7 +761,6 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       if(item) {
         addTradeskillBonuses(item);
         enchantable = ENCHANT_SLOTS[item.equip_location] !== undefined;
-        // %img{:src => "http://www.wowarmory.com/shared/global/tooltip/images/icons/Socket_{{.}}.png"}
         var allSlotsMatch = item.sockets && item.sockets.length > 0;
         for(var socket = 0; socket < item.sockets.length; socket++) {
           var gem = GEMS[gear["gem" + gems.length]];
@@ -753,10 +799,9 @@ RogueApp.initApp = function($, uuid, data, serverData) {
               }
             }
           }
-        }
+        }        
         
-        
-        if(!enchant && enchantable) { //item.equip_location != 2 && item.equip_location != 6 && item.equip_location != 12) {
+        if(!enchant && enchantable) {
           warn(item, "needs to an enchantment");
         }
       }
@@ -788,29 +833,30 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   }
 
   // Select an item from a popup
-  $(".alternatives .slot").live("click", function() {
-    var slot = $.data(document.body, "selecting-slot");
-    var update = $.data(document.body, "selecting-prop");
-    var $this = $(this);
-    if(update == "item_id" || update == "enchant") {
-      var val = parseInt($this.attr("id"), 10);
-      data.gear[slot][update] = val > 0 ? val : null;
-      if(update == "item_id") {
-        data.gear[slot].reforge = null;
+  $altslots.click($.delegate({
+    ".slot": function(e) {
+      var slot = $.data(document.body, "selecting-slot");
+      var update = $.data(document.body, "selecting-prop");
+      var $this = $(this);
+      if(update == "item_id" || update == "enchant") {
+        var val = parseInt($this.attr("id"), 10);
+        data.gear[slot][update] = val > 0 ? val : null;
+        if(update == "item_id") {
+          data.gear[slot].reforge = null;
+        }
+      } else if (update == "gem") {
+        var item_id = parseInt($this.attr("id"), 10);
+        var gem_id = $.data(document.body, "gem-slot");
+        data.gear[slot]["gem" + gem_id] = item_id;
       }
-    } else if (update == "gem") {
-      var item_id = parseInt($this.attr("id"), 10);
-      var gem_id = $.data(document.body, "gem-slot");
-      data.gear[slot]["gem" + gem_id] = item_id;
+      RogueApp.updateDisplayedGear();
     }
-    RogueApp.updateDisplayedGear();
-  });  
-
+  }));
   
   // Standard setup for the popup
   function clickSlot(slot, prop) {
     var $slot = $(slot).closest(".slot");
-    $(".slots .slot").removeClass("active");
+    $slots.find(".slot").removeClass("active");
     $slot.addClass("active");
     var slotIndex = parseInt($slot.attr("data-slot"), 10);
     $.data(document.body, "selecting-slot", slotIndex);
@@ -818,105 +864,199 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     return [$slot, slotIndex];
   }
   
-  function showPopup() {
-    $popup.show(); //animate({opacity: 'show'}, 100, function() {
-      $(".popup #filter input").focus();
-      var ot = $popup.find(".active").get(0);
-      if(ot) {
-        var ht = ot.offsetTop - ($popup.height() / 3);
-        var speed = ht / 1.3;
-        if(speed > 500) { speed = 500; }
-        $popup.animate({scrollTop: ht}, speed, 'swing');
-      }
-    //});
+  function showPopup(popup) {
+    $(".popup").hide(); popup.show();
+    $(".popup #filter input").focus();
+    var ot = popup.find(".active").get(0);
+    if(ot) {
+      var ht = ot.offsetTop - (popup.height() / 3);
+      var speed = ht / 1.3;
+      if(speed > 500) { speed = 500; }
+      popup.animate({scrollTop: ht}, speed, 'swing');
+    }
   }
   
-  // Change out an item
-  $(".slots .slot .name").live("click", function() {
+  // Click a name in a slot, for binding to event delegation
+  function clickSlotName() {
     var i, buf = clickSlot(this, "item_id"); var $slot = buf[0]; var slot = buf[1];
     var selected_id = + $slot.attr("id");
     var equip_location = SLOT_INVTYPES[slot];    
     
-    $popup.animate({opacity: 'hide'}, 'fast', function() {
-      $altslots.empty();
-      var loc = SLOT_CHOICES[equip_location];
-      aepSort(GEM_LIST); // Needed for gemming recommendations
-      for(i = 0; i < loc.length; i++) {        
-        loc[i].__gemRec = getGemmingRecommendation(loc[i], true);
-        loc[i].__gemAEP = Math.round(loc[i].__gemRec.aep * 10) / 10;
-        
-        var rec = recommendReforge(loc[i].stats);
-        if(rec) {
-          var reforgedStats = {};
-          reforgedStats[rec.source.key] = -rec.qty;
-          reforgedStats[rec.dest.key] = rec.qty;
-          var deltaAep = aep({stats: reforgedStats});
-          if(deltaAep > 0) {
-            loc[i].__reforgeAep = deltaAep;
-          } else {
-            loc[i].__reforgeAep = 0;
-          }
+    $altslots.empty();
+    var loc = SLOT_CHOICES[equip_location];
+    aepSort(GEM_LIST); // Needed for gemming recommendations
+    for(i = 0; i < loc.length; i++) {        
+      loc[i].__gemRec = getGemmingRecommendation(loc[i], true);
+      loc[i].__gemAEP = Math.round(loc[i].__gemRec.aep * 10) / 10;
+      
+      var rec = recommendReforge(loc[i].stats);
+      if(rec) {
+        var reforgedStats = {};
+        reforgedStats[rec.source.key] = -rec.qty;
+        reforgedStats[rec.dest.key] = rec.qty;
+        var deltaAep = aep({stats: reforgedStats});
+        if(deltaAep > 0) {
+          loc[i].__reforgeAep = deltaAep;
         } else {
           loc[i].__reforgeAep = 0;
         }
-        
-        loc[i].__aep = aep(loc[i]) + loc[i].__gemRec.aep + loc[i].__reforgeAep;
+      } else {
+        loc[i].__reforgeAep = 0;
       }
-      loc.sort(__aepSort);
-      var max = loc[0].__aep;
-      for(i = 0; i < loc.length; i++) {
-        var iAep = Math.round(loc[i].__aep * 10) / 10;
-        $altslots.append(template({
-          item: loc[i],
-          gear: {},
-          gems: [],
-          desc: aep(loc[i]) + " base / " + loc[i].__reforgeAep + " reforge / " + loc[i].__gemAEP + " gem " + (loc[i].__gemRec.takeBonus ? "(Match gems)" : ""),
-          search: loc[i].name,
-          percent: iAep / max * 100,
-          aep: iAep
-        }));
-      }
+      
+      loc[i].__aep = aep(loc[i]) + loc[i].__gemRec.aep + loc[i].__reforgeAep;
+    }
+    loc.sort(__aepSort);
+    var max = loc[0].__aep;
+    for(i = 0; i < loc.length; i++) {
+      var iAep = Math.round(loc[i].__aep * 10) / 10;
       $altslots.append(template({
-        item: {name: "[No item]"},
-        desc: "Clear this slot",
-        percent: 0,
-        aep: 0
+        item: loc[i],
+        gear: {},
+        gems: [],
+        desc: aep(loc[i]) + " base / " + loc[i].__reforgeAep + " reforge / " + loc[i].__gemAEP + " gem " + (loc[i].__gemRec.takeBonus ? "(Match gems)" : ""),
+        search: loc[i].name,
+        percent: iAep / max * 100,
+        aep: iAep
       }));
-      $(".alternatives .slot[id='" + selected_id + "']").addClass("active");
-      showPopup();
-    });
-  });
+    }
+    $altslots.append(template({
+      item: {name: "[No item]"},
+      desc: "Clear this slot",
+      percent: 0,
+      aep: 0
+    }));
+    $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
+    showPopup($popup);
+    return false;
+  }
   
-  // Change out an enchant
-  $(".slots .slot .enchant").live("click", function() {
+  // Change out an enchant, for binding to event delegation
+  function clickSlotEnchant() {
     var buf = clickSlot(this, "enchant"), slot = buf[1];
     var equip_location = SLOT_INVTYPES[slot];    
     
-    $popup.animate({opacity: 'hide'}, 'fast', function() {
-      $altslots.empty();
-      var enchants = ENCHANT_SLOTS[equip_location];
-      aepSort(enchants);
-      var selected_id = data.gear[slot].enchant;
-      var max = aep(enchants[0]);
-      
-      for(var i = 0; i<enchants.length; i++) {
-        var enchant = enchants[i];
-        if(enchant && !enchant.desc) {
-          enchant.desc = statsToDesc(enchant);
-        }
-        var eAep = aep(enchant);
-        $altslots.append(template({
-          item: enchant,
-          percent: eAep / max * 100,
-          aep: eAep,
-          search: enchant.name + " " + enchant.desc,
-          desc: enchant.desc
-        }));
+    $altslots.empty();
+    var enchants = ENCHANT_SLOTS[equip_location];
+    aepSort(enchants);
+    var selected_id = data.gear[slot].enchant;
+    var max = aep(enchants[0]);
+    
+    for(var i = 0; i<enchants.length; i++) {
+      var enchant = enchants[i];
+      if(enchant && !enchant.desc) {
+        enchant.desc = statsToDesc(enchant);
       }
-      $(".alternatives .slot[id='" + selected_id + "']").addClass("active");
-      showPopup();
-    });
-  });
+      var eAep = aep(enchant);
+      $altslots.append(template({
+        item: enchant,
+        percent: eAep / max * 100,
+        aep: eAep,
+        search: enchant.name + " " + enchant.desc,
+        desc: enchant.desc
+      }));
+    }
+    $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
+    showPopup($popup);
+    return false;
+  }
+  
+  // Change out a gem
+  function clickSlotGem() {
+    var buf = clickSlot(this, "gem"); var $slot = buf[0]; var slot = buf[1];
+    
+    var item = ITEM_LOOKUP[parseInt($slot.attr("id"), 10)];
+    var socketAEPBonus = Math.floor((item.socketbonus ? aep(item, "socketbonus") : 0) / item.sockets.length * 10) / 10;
+    
+    var gemSlot = $slot.find(".gem").index(this);
+    $.data(document.body, "gem-slot", gemSlot);
+    var gemType = item.sockets[gemSlot];
+    var selected_id = data.gear[slot]["gem" + gemSlot];
+    
+    for(var i=0; i<GEM_LIST.length; i++) {
+      GEM_LIST[i].__aep = aep(GEM_LIST[i]) + (GEM_LIST[i][item.sockets[gemSlot]] ? socketAEPBonus : 0);
+    }
+    GEM_LIST.sort(__aepSort);
+    
+    $altslots.empty();
+    
+    var i, gemCt = 0, gem, max, usedNames = {};
+    for(i = 0; i < GEM_LIST.length; i++) {        
+      gem = GEM_LIST[i];
+      if(gem.requires && gem.requires.profession && !data.options.professions[gem.requires.profession]) { continue; }      
+      if(gemType == "Meta" && gem.slot != "Meta") { continue; }
+      if(gemType != "Meta" && gem.slot == "Meta") { continue; }
+      if(!max) { max = gem.__aep; }
+      if(usedNames[gem.name]) {
+        if(gem.id == selected_id) {
+          selected_id = usedNames[gem.name];
+        }
+        continue;
+      }
+      gemCt += 1;
+      if(gemCt > 50) { break; }
+      usedNames[gem.name] = gem.id;
+      var gAep = Math.round(gem.__aep * 10) / 10;
+      var desc = statsToDesc(gem);
+      if(gem[item.sockets[gemSlot]]) {
+        desc += " (+" + (Math.round(socketAEPBonus * 10) / 10) + " bonus)";
+      }
+      $altslots.append(template({
+        item: gem,
+        aep: gAep,
+        gear: {},
+        search: gem.name + " " + statsToDesc(gem) + " " + gem.slot,
+        percent: gAep / max * 100,
+        desc: desc
+      }));
+    }
+    $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
+    showPopup($popup);
+    return false;
+  }
+  
+  $("#reforge").click($.delegate({
+    ".label_radio": RogueApp.setupLabel,
+    "input[type='button']": doReforge
+  }));
+  
+  function clickSlotReforge() {
+    $(".slot").removeClass("active");
+    $(this).addClass("active");
+    
+    var $slot = $(this).closest(".slot");
+    var slot = parseInt($slot.attr("data-slot"), 10);
+    $.data(document.body, "selecting-slot", slot);
+    
+    var id = parseInt($slot.attr("id"), 10);
+    var item = ITEM_LOOKUP[id];
+    var existingReforge = data.gear[slot].reforge ? data.gear[slot].reforge.stats : null;
+  
+    $.data(document.body, "reforge-amount", null);
+    $("#reforge").hide();
+    var rec = recommendReforge(item.stats, existingReforge);
+    var source = sourceStats(item.stats);      
+    var targetStats = _.select(REFORGE_STATS, function(s) { return item.stats[s.key] === undefined; });
+    $.data(document.body, "reforge-recommendation", rec);
+    $.data(document.body, "reforge-item", item);
+    $("#reforge").html(reforgeTemplate({
+      stats: source,
+      newstats: targetStats,
+      recommended: rec
+    }));
+    $("#reforge .pct").hide();
+    showPopup($("#reforge.popup"));
+    return false;
+  }  
+  
+  // Change out an item
+  $slots.click($.delegate({
+    ".name": clickSlotName,
+    ".enchant": clickSlotEnchant,
+    ".gem": clickSlotGem,
+    ".reforge": clickSlotReforge
+  }));
+  
   
   var AEP_PRE_REGEM;
   function optimizeGems(depth) {
@@ -949,62 +1089,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     }
   }
   RogueApp.optimizeGems = optimizeGems;
-  
-  // Change out a gem
-  $(".slots .slot .gem").live("click", function() {
-    var buf = clickSlot(this, "gem"); var $slot = buf[0]; var slot = buf[1];
-    
-    var item = ITEM_LOOKUP[parseInt($slot.attr("id"), 10)];
-    var socketAEPBonus = Math.floor((item.socketbonus ? aep(item, "socketbonus") : 0) / item.sockets.length * 10) / 10;
-    
-    var gemSlot = $slot.find(".gem").index(this);
-    $.data(document.body, "gem-slot", gemSlot);
-    var gemType = item.sockets[gemSlot];
-    var selected_id = data.gear[slot]["gem" + gemSlot];
-    
-    for(var i=0; i<GEM_LIST.length; i++) {
-      GEM_LIST[i].__aep = aep(GEM_LIST[i]) + (GEM_LIST[i][item.sockets[gemSlot]] ? socketAEPBonus : 0);
-    }
-    GEM_LIST.sort(__aepSort);
-    
-    $popup.animate({opacity: 'hide'}, 'fast', function() {
-      $altslots.empty();
-      
-      var i, gemCt = 0, gem, max, usedNames = {};
-      for(i = 0; i < GEM_LIST.length; i++) {        
-        gem = GEM_LIST[i];
-        if(gem.requires && gem.requires.profession && !data.options.professions[gem.requires.profession]) { continue; }
-        if(gemType == "Meta" && gem.slot != "Meta") { continue; }
-        if(gemType != "Meta" && gem.slot == "Meta") { continue; }
-        if(!max) { max = gem.__aep; }
-        if(usedNames[gem.name]) {
-          if(gem.id == selected_id) {
-            selected_id = usedNames[gem.name];
-          }
-          continue;
-        }
-        gemCt += 1;
-        if(gemCt > 50) { break; }
-        usedNames[gem.name] = gem.id;
-        var gAep = Math.round(gem.__aep * 10) / 10;
-        var desc = statsToDesc(gem);
-        if(gem[item.sockets[gemSlot]]) {
-          desc += " (+" + (Math.round(socketAEPBonus * 10) / 10) + " bonus)";
-        }
-        $altslots.append(template({
-          item: gem,
-          aep: gAep,
-          gear: {},
-          search: gem.name + " " + statsToDesc(gem) + " " + gem.slot,
-          percent: gAep / max * 100,
-          desc: desc
-        }));
-      }
-      $(".alternatives .slot[id='" + selected_id + "']").addClass("active");
-      showPopup();
-    });
-    return false;
-  });
+ 
   
   /****************
   ** Reforging
@@ -1131,72 +1216,43 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     RogueApp.updateDisplayedGear();
   }
   
-  $(".slots .slot .reforge").live("click", function() {
-    $(".slot").removeClass("active");
-    $(this).addClass("active");
-    
-    var $slot = $(this).closest(".slot");
-    var slot = parseInt($slot.attr("data-slot"), 10);
-    $.data(document.body, "selecting-slot", slot);
-    
-    var id = parseInt($slot.attr("id"), 10);
-    var item = ITEM_LOOKUP[id];
-    var existingReforge = data.gear[slot].reforge ? data.gear[slot].reforge.stats : null;
-  
-    $.data(document.body, "reforge-amount", null);
-    $("#reforge").animate({opacity: 'hide'}, 'fast', function() {
-      var rec = recommendReforge(item.stats, existingReforge);
-      var source = sourceStats(item.stats);      
-      var targetStats = _.select(REFORGE_STATS, function(s) { return item.stats[s.key] === undefined; });
-      $.data(document.body, "reforge-recommendation", rec);
-      $.data(document.body, "reforge-item", item);
-      $("#reforge").html(reforgeTemplate({
-        stats: source,
-        newstats: targetStats,
-        recommended: rec
-      }));
-      $("#reforge .pct").hide();
-      $('#reforge .label_radio').click(RogueApp.setupLabel);
-      $("#reforge input[type='button']").click(doReforge);
-      $("#reforge").animate({opacity: 'show'}, 'fast');
-    });
-    return false;
-  });
-  
-  $(".oldstats input").live("change", function() {
-    var rec = $.data(document.body, "reforge-recommendation");
-    var item = $.data(document.body, "reforge-item");
-    var src = $(this).val();
-    var amt = Math.floor(item.stats[src] * REFORGE_FACTOR);
-    $.data(document.body, "reforge-amount", amt);
-    $("#reforge .pct").each(function() {
-      var $this = $(this);
-      var target = $this.closest(".stat").attr("data-stat");
-      var ep = rec[src + "_to_" + target];
-      var width = Math.abs(ep) / rec.rmax * 50;      
-      var inner = $this.find(".pct-inner");      
-      inner.removeClass("reverse");
-      $this.find(".label").text(Math.floor(ep * 10) / 10);
-      if(ep < 0) {
-        inner.addClass("reverse");
-      }
-      inner.css({width: width + "%"});
-      $this.hide().fadeIn('normal');
-    });
-  });
+  $(".oldstats input").change($.delegate({
+    "input": function() {
+      var rec = $.data(document.body, "reforge-recommendation");
+      var item = $.data(document.body, "reforge-item");
+      var src = $(this).val();
+      var amt = Math.floor(item.stats[src] * REFORGE_FACTOR);
+      $.data(document.body, "reforge-amount", amt);
+      $("#reforge .pct").each(function() {
+        var $this = $(this);
+        var target = $this.closest(".stat").attr("data-stat");
+        var ep = rec[src + "_to_" + target];
+        var width = Math.abs(ep) / rec.rmax * 50;      
+        var inner = $this.find(".pct-inner");      
+        inner.removeClass("reverse");
+        $this.find(".label").text(Math.floor(ep * 10) / 10);
+        if(ep < 0) {
+          inner.addClass("reverse");
+        }
+        inner.css({width: width + "%"});
+        $this.hide().fadeIn('normal');
+      });
+    }
+  }));
   
   /*****************************
   ** Various interface handlers
   *****************************/
 
   
-  $(".slot a").live("click", function() { return false; });
-  $("body").click(function() {
-    $(".popup").hide(); //fadeOut(125);
-    $(".slots .active").removeClass("active");
-  }).keydown(function(e) {
+  // $(".slot a").live("click", function() { return false; });
+  function reset() {
+    $(".popup:visible").hide();
+    $slots.find(".active").removeClass("active");
+  }
+  $("body").click(reset).keydown(function(e) {
     if(e.keyCode == 27) {
-      $(".popup").hide();
+      reset();
     }
   });
   
