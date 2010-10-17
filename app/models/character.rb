@@ -74,7 +74,7 @@ class Character
   
   def as_json(options = {})
     professions = {}
-    properties["characterTab"]["professions"]["skill"].each do |skill|
+    [properties["characterTab"]["professions"]["skill"]].flatten.each do |skill|
       professions[skill["key"]] = true
     end
     {
