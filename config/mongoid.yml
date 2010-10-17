@@ -18,6 +18,7 @@ test:
 # set these environment variables on your prod server
 production:
   <<: *defaults
+  database: roguesim_production
   host: <%= ENV['MONGOID_HOST'] %>
   port: <%= ENV['MONGOID_PORT'] %>
   username: <%= ENV['MONGOID_USERNAME'] %>
