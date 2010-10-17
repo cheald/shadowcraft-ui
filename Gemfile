@@ -12,6 +12,7 @@ gem "mongoid", "2.0.0.beta.18"
 gem "httparty"
 gem "rdiscount"
 gem 'jquery-rails'
+gem "exception_notification", :git => "http://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators

@@ -3,7 +3,7 @@ require File.expand_path('../boot', __FILE__)
 # require 'rails/all'
 # require "active_resource/railtie"
 require "action_controller/railtie"
-# require "action_mailer/railtie"
+require "action_mailer/railtie"
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -43,5 +43,9 @@ module Roguesim
     config.filter_parameters += [:password]
     
     config.autoload_paths << File.join(config.root, "lib")
+    config.middleware.use ::ExceptionNotifier,
+      :email_prefix => "[RogueThing] ",
+      :sender_address => %{"notifier" <notifier@mmo-mumble.com>},
+      :exception_recipients => %w{cheald+roguething@gmail.com}    
   end
 end
