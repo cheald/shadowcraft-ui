@@ -223,7 +223,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
               gem = GEMS[gid];
               if(gem) { sumItem(stats, gem); }
             }
-            if(!gem[item.sockets[socketIndex]]) { matchesAllSockets = false; }
+            if(!gem || !gem[item.sockets[socketIndex]]) { matchesAllSockets = false; }
           }
         }
         if(matchesAllSockets) {
@@ -761,6 +761,11 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       if(item) {
         addTradeskillBonuses(item);
         enchantable = ENCHANT_SLOTS[item.equip_location] !== undefined;
+        if(!data.options.professions.enchanting && item.equip_location == 11) {
+          console.log(item);
+          enchantable = false;
+        }
+        console.log(item.name, enchantable);
         var allSlotsMatch = item.sockets && item.sockets.length > 0;
         for(var socket = 0; socket < item.sockets.length; socket++) {
           var gem = GEMS[gear["gem" + gems.length]];
