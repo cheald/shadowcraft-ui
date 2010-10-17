@@ -1,0 +1,69 @@
+# Head
+3817:
+  slot: 0
+  name: Arcanum of Torment
+  desc : 50 AP / 20 Crit
+  stats:
+    attack_power: 50
+    crit_rating: 20
+    
+# Shoulder
+3808:
+  slot: 1
+  name: Greater Inscription of the Axe
+  desc: +40 Attack Power and +15 Crit Rating
+  stats:
+    attack_power: 40
+    crit_rating: 15
+# Chest
+3832:
+  slot: 2
+  name: Powerful Stats
+  desc: +10 All Stats
+  stats:
+    agility: 10
+    stamina: 10
+
+# Boots
+3826:
+  slot: 3
+  name: Icewalker
+  desc: +12 Hit Rating and +12 Critical Strike Rating
+  stats:
+    hit_rating: 12
+    crit_rating: 12
+
+# Gloves
+1603:
+  slot: 4
+  name: Crusher
+  desc: +44 Attack Power
+  stats:
+    attack_power: 44
+
+# Cloak
+1099:
+  slot: 5
+  name: Major Agility
+  desc: +22 Agility
+  stats:
+    agility: 22
+    
+# Weapon
+3789:
+  slot: 16
+  name: Berserking
+
+# Wrists
+3756:
+  name: Fur Lining - Attack Power
+  desc: +130 Attack Power
+  stats:
+    attack_power: 130
+    
+# Ring
+3839:
+  name: Assault
+  desc: +20 Attack Power
+  stats:
+    attack_power: 20

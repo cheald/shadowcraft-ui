@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/_layout/items/tooltip.xsl"?>
+<page globalSearch="1" lang="en_us" requestUrl="/item-tooltip.xml">
+  <itemTooltips>
+    <itemTooltip>
+      <id>50653</id>
+      <name>Shadowvault Slayer's Cloak</name>
+      <icon>item_icecrowncloak</icon>
+      <heroic>1</heroic>
+
+      <overallQualityId>4</overallQualityId>
+      <bonding>1</bonding>
+      <classId>4</classId>
+      <equipData>
+        <inventoryType>16</inventoryType>
+      </equipData>
+      <damageData/>
+
+      <bonusAgility>102</bonusAgility>
+      <bonusStamina>102</bonusStamina>
+      <armor armorBonus="0">185</armor>
+      <socketData>
+        <socket color="Yellow"/>
+      </socketData>
+      <requiredLevel>80</requiredLevel>
+
+      <itemLevel>277</itemLevel>
+      <bonusAttackPower>120</bonusAttackPower>
+      <bonusCritRating>60</bonusCritRating>
+      <bonusHasteRating>68</bonusHasteRating>
+      <itemSource value="sourceType.gameObjectDrop"/>
+    </itemTooltip>
+  </itemTooltips>
+
+</page>

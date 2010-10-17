@@ -1,0 +1,126 @@
+- mustache "log" do
+  .log{:class => "{{severity}}", :id => "{{messageClass}}"}
+    %span{:class => "quality-{{quality}}"}
+      {{name}}
+    {{message}}
+    {{#submsg}}
+    .sub {{.}}
+    {{/submsg}}
+- mustache "talent_set" do
+  %button.talent_set{:"data-talents" => "{{talent_string}}"} {{name}} 
+- mustache "tree" do
+  .tree{:style => "background-image: url(http://www.wowarmory.com/_images/talents/bg/small/{{background}}.jpg);"}
+    {{#talents}}
+    .talent{:class => "row-{{tier}} col-{{column}}", :style => "background-image: url(http://static.wowhead.com/images/wow/icons/medium/{{icon}}.jpg);"}
+      .grey
+      .points 0/{{maxRank}}
+    {{/talents}}
+    .spent
+- mustache "tooltip" do
+  .title {{title}}
+  .info {{info}}
+  .desc
+    %p {{desc}}
+    {{#nextdesc}}
+    %p {{.}}
+    {{/nextdesc}}
+- mustache "stats" do
+  {{#stats}}
+  .stat
+    %span.key {{name}}
+    %span.val {{val}}
+    %span.aep {{aep}}
+  {{/stats}}
+- mustache "reforge" do
+  %form#reforge
+    .recommended
+      Recommended: Reforge
+      %span.oldstat -{{recommended/qty}} {{recommended/source/name}}
+      into
+      %span.newstat +{{recommended/qty}} {{recommended/dest/name}}
+    %fieldset.oldstats
+      %legend Old Stat
+      {{#stats}}
+      %label.label_radio
+        %input{:type => "radio", :name => "oldstat", :value => "{{key}}"}
+        \-{{use}} {{name}}
+      {{/stats}}
+  
+
+    %fieldset.newstats
+      %Legend New Stat
+      {{#newstats}}
+      .stat{:"data-stat" => "{{key}}"}
+        %label.label_radio
+          %input{:type => "radio", :name => "newstat", :value => "{{key}}"}
+          {{val}}
+        %span.pct<>
+          .label
+          .pct-inner<>
+      {{/newstats}}
+    .results
+      .remove
+      .add
+    %input.ui-button.ui-widget.ui-state-default.ui-corner-all{:type => "Button", :value => "Reforge"}
+    
+- mustache("itemSlot") do
+  .slot{:id => "{{item/id}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}"}<
+    .image<
+      -#%img{:src => "http://www.wowarmory.com/wow-icons/_images/64x64/{{item/icon}}.jpg"}
+      {{#item}}
+      {{#icon}}
+      %img{:src => "http://static.wowhead.com/images/wow/icons/large/{{.}}.jpg"}
+      {{/icon}}
+      {{/item}}
+      
+      %span.ilvl {{item/ilvl}}
+    .name{:class => "quality-{{item/quality}}"}
+      {{item/name}}
+      %em.heroic {{item/heroic}}
+    {{#enchantable}}
+    .enchant
+      {{#enchant}}
+      %span.img<
+        %img{:src => "http://static.wowhead.com/images/wow/icons/medium/{{icon}}.jpg"}
+      {{name}} {{#desc}}({{.}}){{/desc}}        
+      {{/enchant}}
+    {{/enchantable}}      
+    .gems
+      {{#gems}}
+      .gem{:class => "{{slot}}"}
+        %span.socket
+          %img{:src => "/images/icons/Socket_{{socket}}.png"}
+        %span.img<
+          %img{:src => "http://static.wowhead.com/images/wow/icons/small/{{gem/icon}}.jpg"}
+        %span.gem_name {{gem/name}}
+      {{/gems}}
+      {{#socketbonus}}
+      .bonus
+        Socket Bonus: +{{amount}} {{stat}}
+      {{/socketbonus}}
+    {{#reforgable}}
+    .reforge<
+      {{#reforge}}
+      %span.oldstat {{from/value}} {{from/stat}}
+      %span.newstat +{{to/value}} {{to/stat}}
+      {{/reforge}}        
+      {{^reforge}}          
+      Reforge item
+      {{/reforge}}
+    
+    {{/reforgable}}
+    {{#desc}}
+    %span.desc
+      {{.}}
+    {{/desc}}
+    {{#percent}}
+    %span.pct<>
+      .label {{../aep}}
+      .pct-inner{:style => "width: {{.}}%"}<>
+    {{/percent}}
+      
+- mustache("checkbox") do
+  %label.label_check
+    <input type="checkbox" class="optionCheck" name="{{key}}" id="opt-{{key}}" {{checked}} data-ns={{namespace}} />
+    {{label}}
+    

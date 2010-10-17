@@ -1,0 +1,24 @@
+!!! 5
+%html
+  %head
+    %title Roguesim - Rogue DPS Spreadsheet
+    = stylesheet_link_tag 'custom-theme/jquery-ui-1.8.5.custom.css'
+    = stylesheet_link_tag 'compiled/screen.css', :media => 'screen, projection'
+    = stylesheet_link_tag 'compiled/print.css', :media => 'print'
+    /[if IE]
+      = stylesheet_link_tag 'compiled/ie.css', :media => 'screen, projection'
+    = csrf_meta_tag
+    =javascript_include_tag "jquery", "jquery-ui", "ui.selectmenu.js", "underscore", "handlebars.js", "jstorage.js", "/items.js", "rails", "compiled"
+    #{yield :head}
+    :javascript
+      window.FLASH = #{raw flash.values.to_json};
+  %body
+    #container
+      #header
+        .padding
+          Rogueism
+      #content
+        =yield
+      #footer
+        .padding
+          Footer

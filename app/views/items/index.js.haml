@@ -1,0 +1,84 @@
+- cache_to File.join(Rails.root, "public", "items.js") do
+  :plain
+    window.RogueData = {};
+    (function(R) {
+      R.GEMS = #{raw @gems.to_json};
+      R.ITEMS = #{raw @alt_items.to_json};
+      R.ENCHANTS = #{raw @enchants.to_json};
+      R.TALENTS = #{raw @talents.to_json};
+      R.TALENT_INDEX = #{raw Character::TALENTS.to_json};
+    
+      function getRealSlot(slot, mergeRanged) {
+        if(slot == 13 || slot == 21) { // Mainhand-only items
+          return "mainhand";
+        } else if(slot == 22 || slot == 23) {   // Offhand items
+          return "offhand";
+        } else if(mergeRanged && (slot == 15 || slot == 25)) {
+          return "ranged";
+        } else { 
+          return slot;
+        }
+      }
+      var i;
+      
+      R.GEM_LIST = [];
+      for(var i in R.GEMS) {
+        if(R.GEMS.hasOwnProperty(i)) {
+          var g = R.GEMS[i];
+          switch(g.slot) {
+            case "Blue":
+              g.Blue = true; break;              
+            case "Purple":
+              g.Blue = true; g.Red = true; break;              
+            case "Green":
+              g.Blue = true; g.Yellow = true; break;              
+            case "Orange":
+              g.Red = true; g.Yellow = true; break;
+            case "Red":
+              g.Red = true; break;
+            case "Yellow":
+              g.Yellow = true; break;
+            case "Prismatic":
+              g.Red = true; g.Blue = true; g.Yellow = true; break;
+            case "Meta":
+              g.Meta = true; break;
+          }
+          R.GEM_LIST[R.GEM_LIST.length] = R.GEMS[i];
+        };
+      }
+      R.SLOT_CHOICES = {mainhand: [], offhand: [], ranged: []};
+      R.ENCHANT_SLOTS = {mainhand: []}; R.ENCHANT_SLOTS.offhand = R.ENCHANT_SLOTS.mainhand;
+      R.ENCHANT_LOOKUP = {};
+      for(i = 0; i <R.ENCHANTS.length; i++) {
+        var enchant = R.ENCHANTS[i];
+        var s = getRealSlot(enchant.slot, true);
+        if(R.ENCHANT_SLOTS[s] === undefined) { R.ENCHANT_SLOTS[s] = []; }
+        R.ENCHANT_SLOTS[s][R.ENCHANT_SLOTS[s].length] = enchant;
+        R.ENCHANT_LOOKUP[enchant.id] = enchant;
+      }
+      R.ITEM_LOOKUP = {};
+      for(i = 0; i < R.ITEMS.length; i++) {
+        var item = R.ITEMS[i];
+        if(item.equip_location == 6) {    // Add sockets to belts
+          if(item.sockets === undefined) { item.sockets = []; }
+          item.sockets[item.sockets.length] = "Prismatic";
+        }
+        
+        if(item.equip_location == 13) {
+          R.SLOT_CHOICES.offhand[R.SLOT_CHOICES.offhand.length] = item;   // Dual-hand items get added to offhands, too.          
+        }
+        item.equip_location = getRealSlot(item.equip_location, true);
+        
+        if(R.SLOT_CHOICES[item.equip_location] === undefined) { R.SLOT_CHOICES[item.equip_location] = []; }
+        R.SLOT_CHOICES[item.equip_location][R.SLOT_CHOICES[item.equip_location].length] = item;
+        R.ITEM_LOOKUP[item.id] = item;
+      }
+      R.TALENT_LOOKUP = {};
+      for(var tree = 0; tree < R.TALENTS.length; tree++) {
+        for(var talent = 0; talent < R.TALENTS[tree].talent.length; talent++) {
+          var t = R.TALENTS[tree].talent[talent];
+          t.maxRank = t.rank.length || 1;
+          R.TALENT_LOOKUP[tree + ":" + t.tier + ":" + t.column] = t;
+        }
+      }
+    })(window.RogueData);

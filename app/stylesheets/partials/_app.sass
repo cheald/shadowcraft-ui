@@ -1,0 +1,610 @@
+$width: 1400px
+body
+  font-size: 12px
+  font-family: "lucida grande", "verdana"
+  background: #111
+  color: #fff
+
+h1
+  margin: 0.5em 0
+  font-size: 2.5em
+  font-weight: bold
+  color: #777
+  .info
+    font-size: 0.35em
+    font-weight: normal
+    color: #333
+a
+  color: #3aaaf9
+  
+.ui-tabs-panel
+  +clearfix
+  
+input[type='text'] //, input[type='search']
+  background-color: #333
+  border: 0px
+  color: #999
+  padding: 3px 6px
+  +border-radius(3px)
+  +transition(all, 0.25s)
+  &:focus
+    outline: none
+    background-color: #abc
+    color: #111
+.floaters  
+  
+.floater
+  .inner
+    padding: 1em
+  +inline-block
+  clear: none
+  vertical-align: top
+  border: 1px solid rgba(80, 80, 80, 0.3)
+  border-width: 1px
+  margin: 10px
+  +box-shadow(rgba(0, 0, 0, 0.3), 3px, 3px, 3px)
+  font-size: 0.8em 
+  h3
+    cursor: pointer
+    background: rgba(0, 0, 0, 0.2)
+    border-bottom: 1px solid #111
+    padding: 4px 10px
+    font-size: 1.3em
+    font-weight: bold
+    margin: 0 0 0.5em
+
+
+.flash
+  position: fixed
+  top: 20px
+  right: 20px
+  max-width: 600px
+  border: 2px solid rgba(255, 255, 255, 0.2)
+  cursor: pointer
+  // +box-shadow(#111, 0px, 0px, 7px, 4px)
+  +border-radius(10px)
+  background: rgba(0, 20, 40, 0.7)
+  font-size: 1.5em
+  z-index: 1000
+  padding: 10px 20px
+    
+#header
+  padding: 10px 0px 10px 25px
+  text-shadow: #000 -1px -1px 1px
+  border-bottom: 1px solid #111
+  color: #333
+  font-size: 2.25em
+  background: #1a1a1a
+  margin-bottom: 20px
+  display: none
+
+h1#head
+  +border-radius(10px)
+  padding: 20px
+  background: #1a1a1a
+  
+#content
+  margin: 20px
+  position: relative
+  .half
+    +inline-block
+    vertical-align: top
+    
+#footer
+  padding: 20px
+  background: #050505
+  margin-top: 20px
+
+.ui-selectmenu-menu
+  background: rgba(0, 0, 0, 0.9)
+.ui-selectmenu-status
+  white-space: nowrap
+a
+  text-decoration: none
+  
+.label_check, .label_radio
+  padding-left: 30px
+  background: url(../../images/controls.png) top left no-repeat
+  -webkit-user-select: none
+  -moz-user-select: none
+  
+  
+.label_radio
+  background-position: left -115px
+  &:hover
+    background-position: left -181px
+  
+.label_check
+  background-position: left -1px
+  &:hover
+    background-position: left -80px
+  
+.c_on
+  background-position: left -38px !important
+.r_on
+  background-position: left -147px !important
+  
+.c_on, .r_on
+  color: #fff !important
+
+.label_check input, .label_radio input
+  position: absolute
+  left: -9999px
+  
+#errorExplanation
+  h2
+    font-size: 1.5em
+  ul
+    padding: 1em
+    
+.pct
+  +inline-block
+  height: 13px
+  border: 1px solid #333
+  width: 300px
+  position: relative
+  height: 13px
+  .label
+    z-index: 11
+    font-size: 0.7em
+    font-weight: bold
+    position: absolute
+    top: 2px
+    bottom: 0
+    left: 100%
+    vertical-align: middle
+    white-space: nowrap
+    padding-left: 5px
+    text-align: right
+    color: rgba(255, 255, 255, 0.7)
+  .pct-inner
+    position: absolute
+    top: 1px
+    bottom: 1px
+    z-index: 10
+    left: 0px
+    width: 77%
+    // +linear-gradient(color-stops(#222, #666), left)          
+    background: #666
+
+.popup  
+  min-width: 450px
+  position: relative
+  position: fixed
+  top: 120px
+  bottom: 120px
+  left: 540px
+  +box-shadow(rgba(0,0,0,0.3), 0px, 0px, 5px, 5px)
+  overflow: auto
+  // background: rgba(100, 100, 100, 0.1)
+  background: rgba(20, 20, 20, 0.95)
+  
+  .body
+    border-top: 1px solid rgba(1, 1, 1, 0.1)
+    min-width: 250px
+  #filter
+    height: 40px
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3)
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    input
+      outline: none
+      position: absolute
+      padding: 5px
+      left: 5px
+      right: 5px
+      top: 5px
+#reforge
+  padding: 1em
+  fieldset
+    margin: 2em 0
+    border-top: 1px solid #333
+    legend
+      font-weight: bold
+      margin-left: 1em
+      margin-bottom: 0.5em
+  .recommended
+    margin-bottom: 0.5em
+    padding-bottom: 0.5em
+    border-bottom: 1px solid #333
+    .oldstat
+      color: #d00
+      font-weight: bold
+    .newstat
+      color: #0d0
+      font-weight: bold
+  .newstats
+    .stat
+      label
+        +inline-block
+        width: 100px
+  .pct
+    width: 200px
+  .pct-inner
+    left: 100px
+    +linear-gradient(color-stops(#2F2, #080), left)          
+    &.reverse
+      +linear-gradient(color-stops(#800, #F22), left)
+      right: 100px
+      left: auto  
+
+#log, #console
+  .inner
+    width: 400px
+    height: 140px
+    overflow: auto
+    
+#console
+  color: #ccc
+  .log
+    font-size: 1.2em
+    .sub
+      margin: 2px
+      font-size: 0.8em
+      color: #666
+    padding: 8px 0 8px 24px    
+    margin-bottom: 0.5em 0
+    border-top: 1px solid #1c1c1c
+    border-bottom: 1px solid #090909
+    &:first-child
+      border-top: 0
+    &:last-child
+      border-bottom: 0
+    background: url(../../images/log.png) 5px 10px no-repeat
+    &.warning
+      background-image: url(../../images/alert.png)
+    &.error
+      background-image: url(../../images/delete.png)
+    
+#tooltip
+  max-width: 300px
+  background: rgba(0, 0, 0, 0.85)
+  padding: 1em
+  position: absolute
+  +box-shadow(#111, 0px, 0px, 16px, 3px)
+  border: 1px solid #666
+  line-height: 1.6
+  border-top-color: #aaa
+  border-left-color: #aaa
+  +border-radius(5px)
+  font-size: 0.9em
+  .title
+    font-size: 1.1em
+    font-weight: bold
+    color: #fff
+    margin-bottom: 0.3em
+  .desc
+    p 
+      margin: 1em 0
+    color: #ffd200
+    
+#talents
+  padding: 1em
+  #talentsets
+    min-width: 200px
+    padding: 1em    
+    border-left: 0
+    margin-left: -4px
+    background: rgba(0, 0, 0, 0.4)
+    button
+      margin: 5px 0
+      width: 100%
+      display: block
+      
+  #talentframe
+    padding: 1em
+    border: 1px solid #333
+    background: rgba(0, 0, 0, 0.4)
+    +inline-block
+  .tree
+    +inline-block
+    position: relative
+    width: 210px
+    height: 369px
+    background:
+      repeat: no-repeat
+    @for $i from 0 through 6
+      .row-#{$i}
+        top: (50px * $i) + 10px
+    @for $i from 0 through 3
+      .col-#{$i}
+        left: (50px * $i) + 10px
+    .spent
+      position: absolute
+      bottom: 10px
+      right: 10px
+      font-size: 2em
+      color: rgba(255, 255, 255, 0.8)
+      background: rgba(0, 0, 0, 0.6)
+      +border-radius
+      padding: 0.5em
+      width: 25px
+      height: 25px
+      line-height: 25px
+      text-align: center
+      
+    .talent
+      cursor: pointer
+      border: 1px solid #a70
+      background-color: rgba(0,0,0, 0.4)
+      background-position: center center
+      position: relative
+      .grey
+        position: absolute
+        top: 0
+        left: 0
+        bottom: 0
+        right: 0
+        background: rgba(0, 0, 0, 0.8)
+        +border-radius(3px)
+      &.active .grey
+        display: none
+      &:hover
+        border-color: #0f0
+      &.active
+        opacity: 1
+      +border-radius(3px)
+      width: 32px
+      height: 32px
+      position: absolute
+      .points
+        position: absolute
+        height: 1em
+        font-size: 0.7em
+        bottom: -6px
+        right: -11px
+        padding: 2px 4px
+        border: 1px solid #aaa
+        +border-radius(3px)
+        background: rgba(0, 0, 0, 0.8)
+        color: #fff
+        &.partial
+          color: #0f0
+          border-color: #0f0
+        &.full
+          color: #fd0
+          border-color: #fd0
+      
+#tabs
+  border: 0
+  ul
+    font-size: 0.8em
+    padding-left: 10px
+    li
+      width: auto
+      clear: none
+      a
+        outline: none
+  
+  #settings, #buffs, #target
+    padding: 2em
+    
+  .ui-tabs-panel  
+    background: rgba(0, 0, 0, 0.2)
+    border: 1px solid #333
+    border-width: 0 1px 1px
+    label
+      white-space: nowrap
+      vertical-align: middle
+      +inline-block
+      margin: 0.5em
+      padding-top: 4px
+      padding-bottom: 4px
+      cursor: pointer
+      color: #aaa
+      &:hover
+        color: #fff
+  
+#stats
+  .stat
+    padding: 5px 0
+    border-top: 1px solid rgba(80, 80, 80, 0.3)
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3)
+    &:first-child
+      border-top: 0
+
+    span
+      padding-right: 10px
+      +inline-block
+    span.key
+      width: 120px
+      text-align: right
+      color: #aaa
+    span.val
+      font-weight: bold
+      width: 30px
+#weights
+  input
+    margin-bottom: 1em
+  
+.slots
+  float: left
+  border-right: 1px solid #333
+  width: 570px
+  position: relative
+  
+  .gem
+    position: relative
+    .socket
+      position: absolute
+      top: 9px
+      left: 13px
+  
+  .gems .gem, .enchant, .reforge, .name
+    background-color: rgba(0, 0, 0, 0.25) // url(../../images/rarrow.png) right center no-repeat
+    margin-bottom: 4px
+    +border-radius
+    padding: 4px
+    font-size: 0.9em
+    min-height: 16px
+    +transition(background, 0.2s)
+    &:hover, &.active
+      background-color: rgba(0,128,255,0.15)
+    .img
+      background: url(../../images/empty.png)
+      width: 13px
+      height: 13px
+      margin-right: 12px
+      overflow: hidden
+      position: relative
+      border: 1px solid #333
+      +box-shadow(#000)
+      img
+        width: 17px
+        margin-left: -2px
+        margin-top: -2px
+      vertical-align: middle
+      display: inline-block
+  .enchant
+    .img
+      width: 20px
+      height: 20px
+      margin-right: 5px
+      img
+        width: 24px
+        
+  .bonus
+    color: #0f0
+    margin-bottom: 4px
+    font-size: 0.9em
+    padding: 4px 4px 4px 35px
+  .reforge
+    background:
+      image: url(../../images/reforge.png)
+      position: 3px center
+      repeat: no-repeat
+    padding-left: 35px
+    .oldstat
+      color: #e00
+      padding-right: 1em
+    .newstat
+      color: #0e0
+      padding-right: 1em
+        
+  .enchant
+    color: #0f0
+    font-size: 0.9em
+    
+.slot
+  position: relative
+  min-height: 60px
+  padding: 10px 10px 10px 80px
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2)
+  border-top: 1px solid rgba(60, 60, 60, 0.2)
+  +transition(background, 0.2s)
+  background: rgba(0, 0, 0, 0.2)
+  &:hover
+    // background: rgba(0,0,0,0.2)
+    background: rgba(0, 32, 64, 0.07)
+    cursor: pointer
+    
+  &.active, .active
+    background-color: rgba(0,128,255,0.15)
+    // background: rgba(0,0,0,0.1)
+    
+  $full: 75
+  $opac: 0.1
+  .gems
+    /*
+      .Red
+        background: rgba( $full, 0, 0, $opac )
+      .Blue
+        background: rgba( 0, 0, $full, $opac )
+      .Yellow
+        background: rgba( $full, $full, 0, $opac )
+      .Orange
+        background: rgba( $full, $full / 2, 0, $opac )
+      .Purple
+        background: rgba( $full / 2, 0, $full, $opac )
+      .Green
+        background: rgba( 0, $full, 0, $opac )
+  
+  .image
+    background: url(../../images/empty.png)
+    position: absolute
+    top: 13px
+    width: 58px
+    height: 58px
+    overflow: hidden
+    border: 1px solid #333
+    +box-shadow(#000)
+    img
+      width: 61px
+      margin-left: -4px
+      margin-top: -4px
+    left: 10px
+    .ilvl
+      font-size: 0.7em
+      color: #fff
+      position: absolute
+      bottom: 2px
+      right: 2px
+      background: rgba(0, 0, 0, 0.8)
+      padding: 5px
+      +border-radius
+      
+  .name
+    font-weight: bold
+    font-size: 1.2em
+    .aep
+      color: #fff
+      font:
+        weight: normal
+        size: 0.7em
+        style: normal
+    .heroic
+      color: #0f0
+      padding: 0 1em
+      font:
+        style: italic
+        weight: normal
+        size: 0.7em
+  .desc
+    display: block
+    font-size: 0.8em
+    color: #aaa
+    padding: 2px 0
+    
+.alternatives
+  padding-top: 40px
+  .slot
+    padding-left: 60px
+    min-height: 46px
+    .gem
+      +inline-block
+    .reforge
+      display: none
+    .image
+      width: 36px
+      height: 36px
+      img
+        margin-left: -2px
+        margin-top: -2px
+        width: 40px
+      .ilvl
+        display: none
+        
+.quality-2
+  color: lighten(#00A900, 10%)
+.quality-3
+  color: lighten(#0062C3, 10%)
+.quality-4
+  color: #A335EE
+    
+#impex
+  padding: 1em
+  h3
+    font-size: 1.3em
+    font-weight: bold
+    margin: 0.7em 0
+  textarea
+    font-family: 'liberation mono', 'courier new', monospace
+    font-size: 0.8em
+    padding: 1em
+    border: 1px solid #333
+    background: #111
+    color: #aaa
+    width: 80%
+    height: 100px
