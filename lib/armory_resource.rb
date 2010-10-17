@@ -63,7 +63,7 @@ class ArmoryResource
     def self.fetch(search, ilevel = 0)
       Nokogiri::XML(open(search, "User-Agent" => ArmoryResource::AGENT)).css('item').select do |item|
         item.css("filter[name='itemLevel']").first["value"].to_i >= ilevel
-      end.map {|i| [i["id"].to_i, i["name"]] }.compact.uniq
+      end.map {|i| i["id"].to_i }.compact.uniq
     end
   end
 end
