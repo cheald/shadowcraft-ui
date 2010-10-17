@@ -870,7 +870,8 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   }
   
   function showPopup(popup) {
-    $(".popup").hide(); popup.show();
+    $(".popup").hide();
+    popup.css({top: document.body.scrollTop + "px"}).show();
     $(".popup #filter input").focus();
     var ot = popup.find(".active").get(0);
     if(ot) {
