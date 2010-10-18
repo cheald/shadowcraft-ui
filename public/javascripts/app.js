@@ -792,13 +792,13 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         }
         
         if(canReforge(item)) {
-          if(!gear.reforge) {
-            warn(item, "needs to be reforged");
-          } else {
-            var rec = recommendReforge(item.stats, gear.reforge.stats);
-            if(rec && (gear.reforge.from.stat != rec.source.name || gear.reforge.to.stat != rec.dest.name)) {
-              var delta = Math.round(rec[rec.source.key + "_to_" + rec.dest.key] * 100) / 100;
-              if(delta > 0) {
+          var rec = recommendReforge(item.stats, gear.reforge ? gear.reforge.stats : null);
+          var delta = rec ? Math.round(rec[rec.source.key + "_to_" + rec.dest.key] * 100) / 100 : 0;
+          if(delta > 0) {
+            if(!gear.reforge) {
+              warn(item, "needs to be reforged");
+            } else {            
+              if(rec && (gear.reforge.from.stat != rec.source.name || gear.reforge.to.stat != rec.dest.name)) {
                 if(!bestOptionalReforge || bestOptionalReforge < delta) {
                   bestOptionalReforge = delta;
                   warn(item,
