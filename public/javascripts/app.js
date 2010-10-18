@@ -762,10 +762,8 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         addTradeskillBonuses(item);
         enchantable = ENCHANT_SLOTS[item.equip_location] !== undefined;
         if(!data.options.professions.enchanting && item.equip_location == 11) {
-          console.log(item);
           enchantable = false;
         }
-        console.log(item.name, enchantable);
         var allSlotsMatch = item.sockets && item.sockets.length > 0;
         for(var socket = 0; socket < item.sockets.length; socket++) {
           var gem = GEMS[gear["gem" + gems.length]];
@@ -859,8 +857,10 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   }));
   
   // Standard setup for the popup
+  var popupTop;
   function clickSlot(slot, prop) {
     var $slot = $(slot).closest(".slot");
+    popupTop = $slot.position().top;
     $slots.find(".slot").removeClass("active");
     $slot.addClass("active");
     var slotIndex = parseInt($slot.attr("data-slot"), 10);
@@ -871,7 +871,16 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   
   function showPopup(popup) {
     $(".popup").hide();
-    popup.css({top: document.body.scrollTop + "px"}).show();
+    popup.show();
+    if(popupTop) {
+      var top = popupTop;
+      var max = document.body.scrollTop + $(window).height();
+      if(popupTop + popup.height() + 200 > max) {
+        top = max - popup.height() - 200;
+      }    
+      popup.css({top: top + "px"});
+    }
+    
     $(".popup #filter input").focus();
     var ot = popup.find(".active").get(0);
     if(ot) {
