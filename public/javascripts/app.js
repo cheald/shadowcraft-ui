@@ -1069,7 +1069,6 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     var existingReforge = data.gear[slot].reforge ? data.gear[slot].reforge.stats : null;
   
     $.data(document.body, "reforge-amount", null);
-    $("#reforge").hide();
     var rec = recommendReforge(item.stats, existingReforge);
     var source = sourceStats(item.stats);      
     var targetStats = _.select(REFORGE_STATS, function(s) { return item.stats[s.key] === undefined; });
