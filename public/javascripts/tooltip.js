@@ -36,27 +36,27 @@ var ttlib = {
   showData: function(data) {
     if( !ttlib.jstooltip ) { return; }
 
-    data.tooltip = "<div class='border'>" + data.tooltip + "</div>"
-    ttlib.cache[ttlib.currentRequest] = data
+    data.tooltip = "<div class='border'>" + data.tooltip + "</div>";
+    ttlib.cache[ttlib.currentRequest] = data;
 
     if( ttlib.currentMouseover == ttlib.currentRequest ) {
-      ttlib.showCachedData(data)
+      ttlib.showCachedData(data);
     }
 
-    ttlib.currentRequest = null
-    ttlib.processQueue()
+    ttlib.currentRequest = null;
+    ttlib.processQueue();
   },
   showError: function() {
     if( !ttlib.jstooltip ) { return; }
 
-    ttlib.currentRequest = null
-    ttlib.showText("Error loading tooltip.")
+    ttlib.currentRequest = null;
+    ttlib.showText("Error loading tooltip.");
   },
   hide: function() {
     if( !ttlib.jstooltip ) { return; }
 
-    ttlib.jstooltip.style.visibility = "hidden"
-    ttlib.currentMouseover = null
+    ttlib.jstooltip.style.visibility = "hidden";
+    ttlib.currentMouseover = null;
   },
   
   // Tooltip positioning
@@ -68,25 +68,26 @@ var ttlib = {
     ttlib.jstooltip.style.left = "0px";
     ttlib.jstooltip.style.top = "0px";
     if( ( ttlib.jstooltip.style.width && ttlib.jstooltip.style.width > ttlib.jstooltip.maxWidth ) || ( ttlib.jstooltip.offsetWidth && ttlib.jstooltip.offsetWidth > ttlib.jstooltip.maxWidth ) ) {
-      ttlib.jstooltip.style.width = ttlib.jstooltip.maxWidth + "px"
+      ttlib.jstooltip.style.width = ttlib.jstooltip.maxWidth + "px";
     }
     
     // Bottom clamp
     if (y + ttlib.jstooltip.offsetHeight > de.clientHeight + body.scrollTop + de.scrollTop) {
-      y += (de.clientHeight + body.scrollTop + de.scrollTop) - (y + ttlib.jstooltip.offsetHeight)
+      y += (de.clientHeight + body.scrollTop + de.scrollTop) - (y + ttlib.jstooltip.offsetHeight);
     }
     // Top clamp
     if( y < 0 ) { y = 0; }
 
     // Right clamp
+    var diff;
     if( x + ttlib.jstooltip.offsetWidth > de.clientWidth ) {
-      var diff = (x + ttlib.jstooltip.offsetWidth) - de.clientWidth
-      x -= diff + (de.clientWidth - x) + 40
+      diff = (x + ttlib.jstooltip.offsetWidth) - de.clientWidth;
+      x -= diff + (de.clientWidth - x) + 40;
     // Simpler form, only for things that aren't actually off screen but are close enough to clipping that they go
     // over the horizontal scroll bar
     } else if( x + ttlib.jstooltip.offsetWidth + 30 > de.clientWidth ) {
-      var diff = (x + ttlib.jstooltip.offsetWidth) - de.clientWidth
-      x -= (de.clientWidth - x) + 30
+      diff = (x + ttlib.jstooltip.offsetWidth) - de.clientWidth;
+      x -= (de.clientWidth - x) + 30;
     }
     ttlib.jstooltip.style.left = x+"px";
     ttlib.jstooltip.style.top = y+"px";
@@ -101,41 +102,41 @@ var ttlib = {
     var t = $this.data("tooltip-type") || "item";
     var url = "http://www.wowhead.com/" + t + "=" + id + "&power";
     
-    ttlib.currentMouseover = url
-    ttlib.jstooltip.style.width = null
+    ttlib.currentMouseover = url;
+    ttlib.jstooltip.style.width = null;
     ttlib.jstooltip.owner = $this;
 
     if( ttlib.cache[url] ) {
-      ttlib.showCachedData(ttlib.cache[url])
+      ttlib.showCachedData(ttlib.cache[url]);
     } else {
-      ttlib.queueRequest(url)
-      ttlib.showText("Loading tooltip...")
+      ttlib.queueRequest(url);
+      ttlib.showText("Loading tooltip...");
     }
   },
   queueRequest: function(url) {
     if( ttlib.currentRequest != url ) {
-      ttlib.queue.push(url)
-      ttlib.processQueue()
+      ttlib.queue.push(url);
+      ttlib.processQueue();
     }
   },
   processQueue: function() {
-    if( ttlib.queue.length == 0 || ttlib.currentRequest ) return
+    if( ttlib.queue.length === 0 || ttlib.currentRequest ) { return; }
     
-    ttlib.currentRequest = ttlib.queue.pop()
+    ttlib.currentRequest = ttlib.queue.pop();
     
     $.ajax({
       url: ttlib.currentRequest,
       dataType: "script",
       error: ttlib.showError
-    })
+    });
   },
   
   // Wowhead fun!
   wowheadTooltip: function(id, showIcon, data) {
-    data.tooltip = data.tooltip_enus
-    ttlib.showData(data)
+    data.tooltip = data.tooltip_enus;
+    ttlib.showData(data);
   }
-}
+};
 
 // Wowhead compatibility function
 var $WowheadPower = {
@@ -146,6 +147,6 @@ var $WowheadPower = {
   registerNpc: ttlib.wowheadTooltip,
   registerObject: ttlib.wowheadTooltip,
   registerQuest: ttlib.wowheadTooltip
-}
+};
 
-$(document).ready(ttlib.init)
+$(document).ready(ttlib.init);
