@@ -1243,7 +1243,6 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   }
   
   $(".oldstats input").live("change", function() {
-      console.log("Oldstats changing");
       var rec = $.data(document.body, "reforge-recommendation");
       var item = $.data(document.body, "reforge-item");
       var src = $(this).val();
