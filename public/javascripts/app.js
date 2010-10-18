@@ -809,7 +809,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         }        
         
         if(!enchant && enchantable) {
-          warn(item, "needs to an enchantment");
+          warn(item, "needs an enchantment");
         }
       }
       $slots.append(template({
