@@ -818,7 +818,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       }
       buffer += template({
         item: item,
-        ttid: item.id,
+        ttid: item ? item.id : null,
         aep: item ? aep(item) : 0,
         slot: i + '',
         gems: gems,
