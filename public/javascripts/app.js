@@ -778,7 +778,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
           bonuses = [];
           for(var stat in item.socketbonus) {
             if(item.socketbonus.hasOwnProperty(stat)) {
-              bonuses[bonuses.length] = {stat: stat, amount: item.socketbonus[stat]};
+              bonuses[bonuses.length] = {stat: titleize(stat), amount: item.socketbonus[stat]};
             }
           }
         }        
