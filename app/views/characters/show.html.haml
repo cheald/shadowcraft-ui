@@ -104,4 +104,5 @@
   var uuid = "#{@character.name}.#{@character.realm}-#{@character.region}";
   var serverData = #{@character.to_json };
   var localData = $.jStorage.get(uuid, serverData);
+  RogueApp.commonInit(jQuery);
   RogueApp.initApp(jQuery, uuid, localData, window.RogueData);

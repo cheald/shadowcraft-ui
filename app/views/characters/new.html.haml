@@ -9,6 +9,13 @@
   - f.inputs do
     =f.input :name
     =f.input :realm
-    =f.input :region
+    %label.label_radio
+      =f.radio_button :region, "US"
+      US
+    %label.label_radio
+      =f.radio_button :region, "EU"
+      EU
   - f.buttons do
     =f.submit
+:javascript
+  RogueApp.commonInit(jQuery)

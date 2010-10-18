@@ -24,15 +24,17 @@ class Character
   TREE_TWO_TALENTS = 19  
   
   RACES = ["Human", "Gnome", "Dwarf", "Night Elf", "Worgen", "Troll", "Orc", "Goblin", "Undead"]
-  REGIONS = ["us", "eu", "kr", "tw", "cn"]
+  REGIONS = ["US", "EU", "KR", "TW", "CN"]
   CLASSES = ["Rogue"]
   
   # validates_inclusion_of :race, :in => RACES
   # validates_inclusion_of :player_class, :in => CLASSES
-  # validates_inclusion_of :region, :in => REGIONS
+  validates_inclusion_of :region, :in => REGIONS
+  validates_presence_of :name
+  validates_presence_of :realm
   validates_length_of :name, :maximum => 30
   validates_length_of :realm, :maximum => 30
-  validates_numericality_of :level, :less_than_or_equal_to => 85, :greater_than => 0
+  validates_numericality_of :level, :less_than_or_equal_to => 85, :greater_than => 0, :if => :name?
   
   embeds_many :loadouts
   

@@ -8,7 +8,7 @@ class CharactersController < ApplicationController
   def create
     begin
       @character = Character.new(params[:character])    
-      @character.update_from_armory!
+      @character.update_from_armory! if @character.valid?
     rescue Character::NotFoundException
       @character.errors.add :base, "Character not found, or the Armory is offline"
       return new
