@@ -250,20 +250,22 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   function getStatWeight(stat, num, ignore, ignoreAll) {
     if(!statSum) { sumStats(); }
     var exist = ignoreAll ? 0 : ((statSum[stat] || 0) - (ignore ? (ignore[stat] || 0) : 0));
+    var neg = num < 0 ? -1 : 1;
+    num = Math.abs(num);
     var modNum = num;
     switch(stat) {    
     case "expertise_rating":
       var expertiseCap = _R("expertise_rating") * 6.1; 
       var usable = expertiseCap - exist; usable = usable < 0 ? 0 : usable; usable = usable > num ? num : usable;
-      return data.weights.expertise_rating * usable;
+      return data.weights.expertise_rating * usable * neg;
     case "hit_rating":
       var whiteHitCap = _R("hit_rating") * (27 - 2 * _T("precision"));
-      var spellHitCap = _R("spell_hit")  * (17 - 2 * _T("precision"));
+      var spellHitCap = _R("spell_hit")  * (17 - 2 * _T("precision"));      
       var spellHit = spellHitCap - exist; spellHit = spellHit < 0 ? 0 : spellHit; spellHit = spellHit > num ? num : spellHit;
       var whiteHit = whiteHitCap - exist; whiteHit = whiteHit < 0 ? 0 : whiteHit; whiteHit = (num - spellHit) > whiteHit ? whiteHit : (num - spellHit);
-      return data.weights.spell_hit * spellHit + data.weights.hit_rating * whiteHit;
+      return ((data.weights.spell_hit * spellHit) + (data.weights.hit_rating * whiteHit)) * neg;
     }    
-    return (data.weights[stat] || 0) * num;
+    return (data.weights[stat] || 0) * num * neg;
   }
   
   var presortedLists = {};
@@ -792,13 +794,15 @@ RogueApp.initApp = function($, uuid, data, serverData) {
             var rec = recommendReforge(item.stats, gear.reforge.stats);
             if(rec && (gear.reforge.from.stat != rec.source.name || gear.reforge.to.stat != rec.dest.name)) {
               var delta = Math.round(rec[rec.source.key + "_to_" + rec.dest.key] * 100) / 100;
-              if(!bestOptionalReforge || bestOptionalReforge < delta) {
-                bestOptionalReforge = delta;
-                warn(item,
-                  "is not using an optimal reforge",
-                  "Using " + gear.reforge.from.stat + " &Rightarrow; " + gear.reforge.to.stat + ", recommend " + rec.source.name + " &Rightarrow; " + rec.dest.name + " (+" + delta + ")",
-                  "reforgeWarning"
-                );
+              if(delta > 0) {
+                if(!bestOptionalReforge || bestOptionalReforge < delta) {
+                  bestOptionalReforge = delta;
+                  warn(item,
+                    "is not using an optimal reforge",
+                    "Using " + gear.reforge.from.stat + " &Rightarrow; " + gear.reforge.to.stat + ", recommend " + rec.source.name + " &Rightarrow; " + rec.dest.name + " (+" + delta + ")",
+                    "reforgeWarning"
+                  );
+                }
               }
             }
           }
@@ -1142,7 +1146,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       if(_.include(reforgableStats, stat)) {
         reforgable = true;
         var ramt = Math.floor(source[stat] * REFORGE_FACTOR);
-        var ep = getStatWeight(stat, -ramt); //, ignore);
+        var ep = getStatWeight(stat, -ramt, ignore);
         for(var idx = 0; idx < REFORGE_STATS.length; idx++) {
           if(source[REFORGE_STATS[idx].key]) { continue; }
           var dstat = REFORGE_STATS[idx].key; 
