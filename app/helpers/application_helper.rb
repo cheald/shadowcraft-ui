@@ -1,7 +1,7 @@
 module ApplicationHelper
   def mustache(name, &block)
     inner = capture(&block).gsub(/\s*\n\s*/, " ")
-    concat raw "<script id='template-#{name}' type='text/html' type='text/x-mustache'>#{inner}</script>\n"
+    concat raw "<script id='template-#{name}' type='text/x-mustache'>#{inner}</script>\n"
     nil
   end
   

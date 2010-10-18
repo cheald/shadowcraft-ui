@@ -3,9 +3,9 @@
   =render "templates"
 
 %h1#head
-  .name
+  %span.name
     #{@character.name}
-  .info
+  %span.info
     #{@character.realm}-#{@character.region}
 #tabs
   %ul
@@ -32,9 +32,9 @@
           %h3 Log
           .inner
       %section
-        %dl#weights.floater
+        #weights.floater
           %h3 Stat Weights
-          .inner
+          %dl.inner
         #stats.floater
           %h3 Stat Totals
           .inner

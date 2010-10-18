@@ -2,6 +2,7 @@
 %html
   %head
     %title= @page_title.nil? ? "Roguething - Rogue DPS Spreadsheet" : "#{@page_title} - Roguething"
+    %meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
     = stylesheet_link_tag 'custom-theme/jquery-ui-1.8.5.custom.css', 'compiled/screen.css', :media => "screen, projection", :cache => "cache/bundle"
     = stylesheet_link_tag 'compiled/print.css', :media => 'print'
     /[if IE]
