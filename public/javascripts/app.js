@@ -765,7 +765,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       if(item) {
         addTradeskillBonuses(item);
         enchantable = ENCHANT_SLOTS[item.equip_location] !== undefined;
-        if((!data.options.professions.enchanting && item.equip_location == 11) || item.equip_location == 25) {
+        if((!data.options.professions.enchanting && item.equip_location == 11) || item.equip_location == "ranged") {
           enchantable = false;
         }
         var allSlotsMatch = item.sockets && item.sockets.length > 0;
