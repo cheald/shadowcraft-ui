@@ -8,7 +8,7 @@
     /[if IE]
       = stylesheet_link_tag 'compiled/ie.css', :media => 'screen, projection'
     = csrf_meta_tag
-    =javascript_include_tag "jquery-1.4.3", "jquery-ui-1.8.5.custom", "jquery.mousewheel.js", "tooltip", "ui.selectmenu.js", "underscore", "handlebars.js", "jstorage.js", "rails", "app", :cache => "cache/bundle"
+    =javascript_include_tag "jquery-1.4.3", "jquery-ui-1.8.5.custom", "tooltip", "ui.selectmenu.js", "underscore", "handlebars.js", "jstorage.js", "rails", "app", :cache => "cache/bundle"
     #{yield :head}
     :javascript
       window.FLASH = #{raw flash.values.to_json};
