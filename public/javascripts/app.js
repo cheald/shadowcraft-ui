@@ -359,7 +359,6 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   function updateStatsWindow() {
     sumStats();
     var $stats = $("#stats .inner");
-    $stats.empty();
     var a_stats = [];
     var keys = _.keys(statSum).sort();
     var total = 0;
@@ -378,7 +377,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       aep: Math.floor(total)
     };
     AEP_TOTAL = total;
-    $stats.append(statsTemplate({stats: a_stats}));
+    $stats.get(0).innerHTML = statsTemplate({stats: a_stats});
   }    
   
   var $log = $("#log .inner");
@@ -679,15 +678,17 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   function initTalentsPane() {
     if($.data(document.body, "talentsInitialized")) { return; }
     $.data(document.body, "talentsInitialized", true);
+    var buffer = "";
     for(var treeIndex in TALENTS) {
       if(TALENTS.hasOwnProperty(treeIndex)) {
         var tree = TALENTS[treeIndex];
-        $("#talentframe").append(talentTreeTemplate({
+        buffer += talentTreeTemplate({
           background: tree.bgImage,
           talents: tree.talent
-        }));
+        });
       }
     }
+    $("#talentframe").get(0).innerHTML = buffer;
     $(".tree, .tree .talent, .tree .talent .points").disableTextSelection();
     
     var talentTrees = $("#talentframe .tree");
@@ -723,16 +724,16 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     .mouseenter(hoverTalent)
     .mouseleave(function() { $("#tooltip").hide();});  
     
+    buffer = "";
     for(var talentName in data.talents) {
       if(data.talents.hasOwnProperty(talentName)) {
-        $("#talentsets").append(
-          talentSetTemplate({
-            talent_string: data.talents[talentName],
-            name: talentName
-          })
-        );
+        buffer += talentSetTemplate({
+          talent_string: data.talents[talentName],
+          name: talentName
+        });
       }
     }
+    $("#talentsets").get(0).innerHTML = buffer;
     
     if(data.activeTalents) {
       setTalents(data.activeTalents);
@@ -755,7 +756,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     $("#console .inner").empty();
 
     updateStatsWindow();
-    $slots.empty();
+    var buffer = "";
     var bestOptionalReforge;
     for(var si = 0; si < slotOrder.length; si++) {
       var i = slotOrder[si];
@@ -814,7 +815,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
           warn(item, "needs an enchantment");
         }
       }
-      $slots.append(template({
+      buffer += template({
         item: item,
         aep: item ? aep(item) : 0,
         slot: i + '',
@@ -825,8 +826,9 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         sockets: item ? item.sockets : null,
         enchantable: enchantable,
         enchant: enchant
-      }));
-    }    
+      });
+    }   
+    $slots.get(0).innerHTML = buffer;
   };
   
   RogueApp.updateDisplayedGear();
@@ -906,7 +908,6 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     var selected_id = + $slot.attr("id");
     var equip_location = SLOT_INVTYPES[slot];    
     
-    $altslots.empty();
     var loc = SLOT_CHOICES[equip_location];
     aepSort(GEM_LIST); // Needed for gemming recommendations
     for(i = 0; i < loc.length; i++) {        
@@ -932,9 +933,10 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     }
     loc.sort(__aepSort);
     var max = loc[0].__aep;
+    var buffer = "";
     for(i = 0; i < loc.length; i++) {
       var iAep = Math.round(loc[i].__aep * 10) / 10;
-      $altslots.append(template({
+      buffer += template({
         item: loc[i],
         gear: {},
         gems: [],
@@ -942,14 +944,15 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         search: loc[i].name,
         percent: iAep / max * 100,
         aep: iAep
-      }));
+      });
     }
-    $altslots.append(template({
+    buffer += template({
       item: {name: "[No item]"},
       desc: "Clear this slot",
       percent: 0,
       aep: 0
-    }));
+    });
+    $altslots.get(0).innerHTML = buffer;
     $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
     showPopup($popup);
     return false;
@@ -960,11 +963,11 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     var buf = clickSlot(this, "enchant"), slot = buf[1];
     var equip_location = SLOT_INVTYPES[slot];    
     
-    $altslots.empty();
     var enchants = ENCHANT_SLOTS[equip_location];
     aepSort(enchants);
     var selected_id = data.gear[slot].enchant;
     var max = aep(enchants[0]);
+    var buffer = "";
     
     for(var i = 0; i<enchants.length; i++) {
       var enchant = enchants[i];
@@ -972,14 +975,15 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         enchant.desc = statsToDesc(enchant);
       }
       var eAep = aep(enchant);
-      $altslots.append(template({
+      buffer += template({
         item: enchant,
         percent: eAep / max * 100,
         aep: eAep,
         search: enchant.name + " " + enchant.desc,
         desc: enchant.desc
-      }));
+      });
     }
+    $altslots.get(0).innerHTML = buffer;
     $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
     showPopup($popup);
     return false;
@@ -1002,8 +1006,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     }
     GEM_LIST.sort(__aepSort);
     
-    $altslots.empty();
-    
+    var buffer = "";
     var i, gemCt = 0, gem, max, usedNames = {};
     for(i = 0; i < GEM_LIST.length; i++) {        
       gem = GEM_LIST[i];
@@ -1025,15 +1028,16 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       if(gem[item.sockets[gemSlot]]) {
         desc += " (+" + (Math.round(socketAEPBonus * 10) / 10) + " bonus)";
       }
-      $altslots.append(template({
+      buffer += template({
         item: gem,
         aep: gAep,
         gear: {},
         search: gem.name + " " + statsToDesc(gem) + " " + gem.slot,
         percent: gAep / max * 100,
         desc: desc
-      }));
+      });
     }
+    $altslots.get(0).innerHTML = buffer;
     $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
     showPopup($popup);
     return false;

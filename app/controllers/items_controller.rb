@@ -1,9 +1,10 @@
 class ItemsController < ApplicationController
   respond_to :json, :only => [:create]
+  VALID_SLOTS = (1..28).to_a - [18, 19, 20, 24, 26, 27]
   
   def index
     @alt_items = []
-    ((1..17).to_a + [21, 22, 23, 25, 28]).each do |i|
+    VALID_SLOTS.each do |i|
       @alt_items += Item.where(:equip_location => i, :item_level.gte => 200).desc(:item_level).all
     end
     gems = Item.where(:has_stats => true, "properties.classId" => "3", :item_level.gt => 70).all
