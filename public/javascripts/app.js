@@ -1040,6 +1040,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   }));
   
   function clickSlotReforge() {
+    clickSlot(this, "reforge");
     $(".slot").removeClass("active");
     $(this).addClass("active");
     
@@ -1235,8 +1236,8 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     RogueApp.updateDisplayedGear();
   }
   
-  $(".oldstats input").change($.delegate({
-    "input": function() {
+  $(".oldstats input").live("change", function() {
+      console.log("Oldstats changing");
       var rec = $.data(document.body, "reforge-recommendation");
       var item = $.data(document.body, "reforge-item");
       var src = $(this).val();
@@ -1256,8 +1257,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         inner.css({width: width + "%"});
         $this.hide().fadeIn('normal');
       });
-    }
-  }));
+    });
   
   /*****************************
   ** Various interface handlers
