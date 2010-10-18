@@ -6,8 +6,13 @@ class CharactersController < ApplicationController
   end
   
   def create
-    @character = Character.new(params[:character])    
-    @character.update_from_armory!
+    begin
+      @character = Character.new(params[:character])    
+      @character.update_from_armory!
+    rescue Character::NotFoundException
+      @character.errors.add :base, "Character not found, or the Armory is offline"
+      return new
+    end
     if @character.save
       flash[:message] = "Character imported!"
       redirect_to rebuild_items_path(:c => @character._id)

@@ -1,4 +1,5 @@
 class Character
+  class NotFoundException < Exception; end
   include Mongoid::Document
   field :name
   field :realm
@@ -46,7 +47,9 @@ class Character
       self.properties = ArmoryResource::Character.fetch(name, realm, region)
       self.talents = ArmoryResource::Talents.fetch(name, realm, region)
     end
-    
+    if properties.nil? or properties["character"].nil?
+      raise NotFoundException
+    end
     self.player_class = properties["character"]["class"]
     self.race = properties["character"]["race"]
     self.level = properties["character"]["level"].to_i
