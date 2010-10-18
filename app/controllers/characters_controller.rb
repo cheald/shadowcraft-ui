@@ -23,6 +23,7 @@ class CharactersController < ApplicationController
   
   def show
     @character = Character.criteria.id(params[:id]).first
+    @page_title = @character.fullname
     @loadout = @character.loadouts.first || Loadout.new(:character => @character)
   end  
 end

@@ -95,4 +95,8 @@ class Character
       }
     }
   end
+  
+  def fullname
+    "%s @ %s-%s" % [name.titleize, realm.titleize, region.upcase]
+  end
 end

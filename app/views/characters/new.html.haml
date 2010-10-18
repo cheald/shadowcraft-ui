@@ -1,7 +1,7 @@
 %h1 Characters
 - @characters.each do |character|
   .character
-    =link_to "%s %s-%s" % [character.name, character.realm, character.region], character
+    =link_to character.fullname, character
 
 =error_messages_for :character
 %h1 Import Character
