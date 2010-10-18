@@ -26,7 +26,7 @@ class ItemsController < ApplicationController
   end
   
   def rebuild
-    Enchant.update!
+    # Enchant.update!
     index
     render_to_string :action => "index.js"
     redirect_to Character.criteria.id(params[:c]).first

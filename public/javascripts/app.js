@@ -273,14 +273,14 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   var presortedLists = {};
   function __aepSort(a, b) { return b.__aep - a.__aep; }
   function aepSort(list, skipSort) {
-    if(!presortedLists[list]) {
+    // if(!presortedLists[list]) {
       for(var i = 0; i < list.length; i++) {
         if(list[i]) {
           list[i].__aep = aep(list[i]);
         }
       }
-    }
-    presortedLists[list] = true;
+    // }
+    // presortedLists[list] = true;
     if(!skipSort) {
       list.sort(__aepSort);
     }
@@ -507,7 +507,6 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     });
   }  
 
-  $(".popup").hide();
   $("#tabs").tabs({
     show: function(event, ui) {
       if(ui.tab.hash == "#talents") {
@@ -817,6 +816,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       }
       buffer += template({
         item: item,
+        ttid: item.id,
         aep: item ? aep(item) : 0,
         slot: i + '',
         gems: gems,
@@ -881,24 +881,27 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   }
   
   function showPopup(popup) {
-    $(".popup").hide();
-    popup.show();
-    if(popupTop) {
-      var top = popupTop;
+    // $(".popup").hide();
+    $(".popup").removeClass("visible");
+    // popup.show();
+    if(popupTop !== undefined) {
       var max = document.body.scrollTop + $(window).height();
+      var top = popupTop;
       if(popupTop + popup.height() + 200 > max) {
         top = max - popup.height() - 200;
       }    
       popup.css({top: top + "px"});
     }
-    
+    popup.addClass("visible");
+    ttlib.hide();
+    var body = popup.find(".body");
     $(".popup #filter input").focus();
     var ot = popup.find(".active").get(0);
     if(ot) {
       var ht = ot.offsetTop - (popup.height() / 3);
       var speed = ht / 1.3;
       if(speed > 500) { speed = 500; }
-      popup.animate({scrollTop: ht}, speed, 'swing');
+      body.animate({scrollTop: ht}, speed, 'swing');
     }
   }
   
@@ -940,6 +943,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         item: loc[i],
         gear: {},
         gems: [],
+        ttid: loc[i].id,
         desc: aep(loc[i]) + " base / " + loc[i].__reforgeAep + " reforge / " + loc[i].__gemAEP + " gem " + (loc[i].__gemRec.takeBonus ? "(Match gems)" : ""),
         search: loc[i].name,
         percent: iAep / max * 100,
@@ -1032,6 +1036,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         item: gem,
         aep: gAep,
         gear: {},
+        ttid: gem.id,
         search: gem.name + " " + statsToDesc(gem) + " " + gem.slot,
         percent: gAep / max * 100,
         desc: desc
@@ -1085,7 +1090,12 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     ".gem": clickSlotGem,
     ".reforge": clickSlotReforge
   }));
-  
+
+  $(".slots, .popup").mouseover($.delegate({
+    ".tt": ttlib.requestTooltip
+  })).mouseout($.delegate({
+    ".tt": ttlib.hide
+  }));
   
   var AEP_PRE_REGEM;
   function optimizeGems(depth) {
@@ -1277,7 +1287,8 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   
   // $(".slot a").live("click", function() { return false; });
   function reset() {
-    $(".popup:visible").hide();
+    $(".popup:visible").removeClass("visible");
+    ttlib.hide();
     $slots.find(".active").removeClass("active");
   }
   $("body").click(reset).keydown(function(e) {
@@ -1326,11 +1337,12 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       next.addClass("active");
       var ot = next.get(0).offsetTop;
       var height = $popup.height();
+      var body = $popup.find(".body");
       
-      if(ot > $popup.scrollTop() + height - 30) {
-        $popup.animate({scrollTop: next.get(0).offsetTop - height + next.height() + 30}, 150);
-      } else if (ot < $popup.scrollTop()) {
-        $popup.animate({scrollTop: next.get(0).offsetTop - 30}, 150);      
+      if(ot > body.scrollTop() + height - 30) {
+        body.animate({scrollTop: next.get(0).offsetTop - height + next.height() + 30}, 150);
+      } else if (ot < body.scrollTop()) {
+        body.animate({scrollTop: next.get(0).offsetTop - 30}, 150);      
       }
     }
   }).keyup(function(e) {

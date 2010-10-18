@@ -74,7 +74,7 @@
       {{/item}}
       
       %span.ilvl {{item/ilvl}}
-    .name{:class => "quality-{{item/quality}}"}
+    .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}"}
       {{item/name}}
       %em.heroic {{item/heroic}}
     {{#enchantable}}
@@ -87,7 +87,7 @@
     {{/enchantable}}      
     .gems
       {{#gems}}
-      .gem{:class => "{{slot}}"}
+      .gem.tt{:class => "{{slot}}", :"data-tooltip-id" => "{{gem/id}}"}
         %span.socket
           %img{:src => "/images/icons/Socket_{{socket}}.png"}
         %span.img<

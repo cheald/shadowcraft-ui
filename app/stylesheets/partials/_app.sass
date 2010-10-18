@@ -178,19 +178,24 @@ a
     background: #666
 
 .popup  
-  min-width: 450px
-  max-height: 600px
+  min-width: 450px  
   position: absolute
   top: 60px
   left: 540px
   +box-shadow(rgba(0,0,0,0.3), 0px, 0px, 5px, 5px)
-  overflow: auto
   // background: rgba(100, 100, 100, 0.1)
   background: rgba(20, 20, 20, 0.95)
+  visibility: hidden
+  z-index: 1000
+  &.visible
+    visibility: visible
   
   .body
+    overflow: auto
+    max-height: 600px
     border-top: 1px solid rgba(1, 1, 1, 0.1)
     min-width: 250px
+    
   #filter
     height: 40px
     border-bottom: 1px solid rgba(0, 0, 0, 0.3)

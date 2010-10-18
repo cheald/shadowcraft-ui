@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <script type="text/javascript" src="enchants.js"></script>
+  </head>
+  <body>
+    <!--
+    
+    Paste the contents of http://www.wowhead.com/data=enchants into app/xml/enchant.js
+    Open this file in your browser, copy the resulting output to converted_enchants.json
+    Then run Enchants#update_from_json!
+    
+    //-->
+    <script type="text/javascript">
+      var json_encode = window.JSON && (JSON.encode || JSON.stringify);
+      document.write(json_encode(g_enchants));
+    </script>
+  </body>
+</html>

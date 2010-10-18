@@ -24,6 +24,7 @@ You'll want items in your database. Fortunately, that's easy.
 
     rails console production
     > Item.populate
+    > Enchant.update_from_json!
 
 Congrats. You now have ~2000 items and gems locally cached.
 

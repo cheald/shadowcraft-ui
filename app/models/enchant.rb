@@ -25,7 +25,6 @@ class Enchant
       :id => spell_id,
       :stats => stats,
       :icon => icon,
-      :item_id => item_id,
       :slot => equip_location,
       :name => item_name.gsub(/Scroll.*- /, "")
     }
@@ -89,5 +88,59 @@ class Enchant
         })
       end
     end
+  end
+  
+  JSON_TO_INTERNAL = {
+    "agi" => "agility",
+    "atkpwr" => "attack_power",
+    "critstrkrtng" => "crit_rating",
+    "exprtng" => "expertise_rating",
+    "hastertng" => "haste_rating",
+    "hitrtng" => "hit_rating",
+    "str" => "strength",
+    "mastrtng" => "mastery_rating"
+  }
+  SLOT_MAP = [
+    0x1, 0x2, 0x4, 0x8,
+    0x10, 0x20, 0x40, 0x80,
+    0x100, 0x200, 0x400, 0x800,
+    0x1000, 0x2000, 0x4000, 0x8000,
+    0x10000, 0x20000, 0x40000, 0x80000,
+    0x100000, 0x200000, 0x400000, 0x800000    
+  ]
+  
+  ACCEPTED_ENCHANTS = ["Black Magic", "Berserking", "Mongoose"]
+  
+  def self.get_slots(k)
+    SLOT_MAP.each_with_index do |e, i|
+      return i + 1 if e & k == e
+    end
+    nil
+  end
+  
+  def self.update_from_json!
+    self.destroy_all
+    keys = JSON_TO_INTERNAL.keys
+    j = JSON::load open(File.join(Rails.root, "app/xml/converted_enchants.json")).read
+    j.each do |k, i|
+      slots = [i["slots"]].flatten
+      [i["name"]].flatten.each_with_index do |name, index|
+        name_match = ACCEPTED_ENCHANTS.reduce(false) {|v, n| v or name.match(n) }
+        if name_match or (x = i["jsonequip"].keys & keys and x.length > 0)
+          x ||= {}
+          puts "Adding #{name}..."
+          slot = get_slots(slots[index].to_i)
+          Enchant.create({
+            :spell_id => k.to_i,
+            :stats => Hash[*x.map {|rk| [JSON_TO_INTERNAL[rk], i["jsonequip"][rk].to_i] }.flatten],
+            :icon => [i["icon"]].flatten.first.downcase,
+            :item_name => name,
+            :equip_location => slot
+          })
+          break
+        end        
+      end
+    end
+    nil
   end
 end
