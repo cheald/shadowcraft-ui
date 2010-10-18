@@ -58,6 +58,7 @@ Roguesim::Application.routes.draw do
 
   resources :characters do
     resources :loadouts
+    put 'refresh', :on => :member
   end
   resources :items do
     get 'rebuild', :on => :collection

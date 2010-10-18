@@ -92,7 +92,7 @@ class Item
     end
     self.item_level = properties["itemLevel"].to_i
     self.has_stats = !(self.stats.keys - EXCLUDE_KEYS).empty?
-    puts "%s - %s - %s" % [self.properties["name"], self.stats.inspect, self.has_stats.to_s]
+    # puts "%s - %s - %s" % [self.properties["name"], self.stats.inspect, self.has_stats.to_s]
   end
   
   def as_json(options={})    
@@ -108,7 +108,6 @@ class Item
       json[:sockets] = [sockets["socket"]].flatten.map {|s| s["color"] }
     end
     if equip_location != 0
-      # json[:gems] = sockets
       json[:equip_location] = equip_location
       json[:ilvl] = properties["itemLevel"]
     end
@@ -143,7 +142,6 @@ class Item
   
   def self.populate_from_search(url, item_level = 0)
     ArmoryResource::Search.fetch(url, item_level).each do |id|
-      puts "Got item ID #{id}"
       item = Item.find_or_create_by :remote_id => id
       puts item.properties["name"] if item.created_at && item.created_at < 5.seconds.ago
     end

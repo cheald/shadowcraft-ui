@@ -1,6 +1,8 @@
 class Character
   class NotFoundException < Exception; end
   include Mongoid::Document
+  include Mongoid::Timestamps
+  
   field :name
   field :realm
   field :region
@@ -9,8 +11,6 @@ class Character
   field :race
   field :properties, :type => Hash
   field :talents, :type => Hash
-  
-  # x.css("tree").sort {|a, b| a["order"].to_i <=> b["order"].to_i }.map {|tree| tree.css("talent").map {|t| t["name"].gsub(/ /, "").snake_case.to_sym } }.flatten
 
   TALENTS = [:deadly_momentum, :coup_de_grace, :lethality, :ruthlessness, :quickening, :puncturing_wounds, :blackjack, :deadly_brew, :cold_blood, 
   :vile_poisons, :deadened_nerves, :seal_fate, :murderous_intent, :overkill, :master_poisoner, :improved_expose_armor, :cut_to_the_chase, 
@@ -27,8 +27,8 @@ class Character
   REGIONS = ["us", "eu", "kr", "tw", "cn"]
   CLASSES = ["Rogue"]
   
-   #validates_inclusion_of :race, :in => RACES
-  #validates_inclusion_of :player_class, :in => CLASSES
+  # validates_inclusion_of :race, :in => RACES
+  # validates_inclusion_of :player_class, :in => CLASSES
   # validates_inclusion_of :region, :in => REGIONS
   validates_length_of :name, :maximum => 30
   validates_length_of :realm, :maximum => 30
@@ -61,10 +61,6 @@ class Character
       [item["slot"].to_s, {:item => i, :slot => item["slot"], :item_id => i.remote_id, :gem0 => item["gem0Id"], :gem1 => item["gem1Id"], :gem2 => item["gem2Id"], :enchant => item["permanentenchant"].to_i} ]
     end.flatten]
     items = gear.map {|k, g| g.delete(:item) }.compact
-    puts items.inspect
-    puts gear.inspect
-    # gear.keys.each {|k| gear[k] = gear[k][:item].remote_id }
-    # gear = properties["characterTab"]["items"]["item"]
     
     glyphs = []
     if group = first_talent_group
@@ -77,9 +73,12 @@ class Character
   
   def as_json(options = {})
     professions = {}
-    [properties["characterTab"]["professions"]["skill"]].flatten.each do |skill|
-      professions[skill["key"]] = true
+    if a = properties["characterTab"] and b = a["professions"] and c = b["skill"]
+      [c].flatten.each do |skill|
+        professions[skill["key"]] = true
+      end
     end
+    
     {
       :gear   => loadouts.first.gear,
       :talents => Hash[*[self.talents["talentGroup"]].flatten.map {|g| ["Imported #{g["prim"]}", g["talentSpec"]["value"]] }.flatten],

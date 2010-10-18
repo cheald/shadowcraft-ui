@@ -26,4 +26,10 @@ class CharactersController < ApplicationController
     @page_title = @character.fullname
     @loadout = @character.loadouts.first || Loadout.new(:character => @character)
   end  
+  
+  def refresh
+    @character = Character.criteria.id(params[:id]).first
+    @character.update_from_armory!(true)
+    redirect_to rebuild_items_path(:c => @character._id)
+  end
 end
