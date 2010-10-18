@@ -226,8 +226,10 @@ RogueApp.initApp = function($, uuid, data, serverData) {
             if(!gem || !gem[item.sockets[socketIndex]]) { matchesAllSockets = false; }
           }
         }
+        
+        var a1 = stats.agility;
         if(matchesAllSockets) {
-          sumItem(stats, item.socketbonus);
+          sumItem(stats, item, "socketbonus");
         }
         
         if(gear.reforge && gear.reforge) {
@@ -763,7 +765,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       if(item) {
         addTradeskillBonuses(item);
         enchantable = ENCHANT_SLOTS[item.equip_location] !== undefined;
-        if(!data.options.professions.enchanting && item.equip_location == 11) {
+        if((!data.options.professions.enchanting && item.equip_location == 11) || item.equip_location == 25) {
           enchantable = false;
         }
         var allSlotsMatch = item.sockets && item.sockets.length > 0;
@@ -850,10 +852,13 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         data.gear[slot][update] = val > 0 ? val : null;
         if(update == "item_id") {
           data.gear[slot].reforge = null;
+        } else {
+          log("Changing " + ITEM_LOOKUP[data.gear[slot].item_id].name + " enchant to " + ENCHANT_LOOKUP[val].name);
         }
       } else if (update == "gem") {
         var item_id = parseInt($this.attr("id"), 10);
         var gem_id = $.data(document.body, "gem-slot");
+        log("Regemming " + ITEM_LOOKUP[data.gear[slot].item_id].name + " socket " + (gem_id + 1) + " to " + GEMS[item_id].name);
         data.gear[slot]["gem" + gem_id] = item_id;
       }
       RogueApp.updateDisplayedGear();
@@ -1163,7 +1168,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         }
       }
     }
-    if(!reforgable) { return; }
+    if(!reforgable || max_ep < 0) { return; }
     
     rec = _.extend(rec, {
       max: max_ep,
@@ -1232,6 +1237,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       gear.reforge.from = {stat: titleize(from), value: -amt};
       gear.reforge.to = {stat: titleize(to), value: amt};
     }
+    log("Reforging " + ITEM_LOOKUP[gear.item_id].name + " to " + gear.reforge.from.value + " " + gear.reforge.from.stat + "/+" + gear.reforge.to.value + " " + gear.reforge.to.stat);
     $("#reforge").fadeOut(150);
     RogueApp.updateDisplayedGear();
   }
