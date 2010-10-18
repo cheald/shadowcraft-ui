@@ -1098,9 +1098,11 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       if(item) {      
         var rec = getGemmingRecommendation(item, true);
         for(var i = 0; i < rec.gems.length; i++) {
-          if(gear["gem" + i] != rec.gems[i]) {
-            gear["gem" + i] = rec.gems[i];
-            log("Regemming " + item.name + " socket " + (i+1) + " to " + GEMS[rec.gems[i]].name);
+          var from_gem = GEMS[gear["gem" + i]];
+          var to_gem = GEMS[rec.gems[i]];
+          if(gear["gem" + i] != rec.gems[i] && from_gem.name != to_gem.name) {
+            log("Regemming " + item.name + " socket " + (i+1) + " from " + from_gem.name + " to " + to_gem.name);
+            gear["gem" + i] = rec.gems[i];            
             madeChanges = true;            
           }
         }
@@ -1168,7 +1170,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         }
       }
     }
-    if(!reforgable || max_ep < 0) { return; }
+    if(!reforgable) { return; }
     
     rec = _.extend(rec, {
       max: max_ep,
@@ -1198,7 +1200,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       if(item) {
         if(canReforge(item)) {
           var rec = recommendReforge(item.stats, gear.reforge ? gear.reforge.stats: null);
-          if(rec && (!gear.reforge || (gear.reforge.from.stat != rec.source.name || gear.reforge.to.stat != rec.dest.name))) {
+          if(rec && rec.max > 0 && (!gear.reforge || (gear.reforge.from.stat != rec.source.name || gear.reforge.to.stat != rec.dest.name))) {
             log("Reforging " + item.name + " to -" + rec.qty + " " + rec.source.name + "/+" + rec.qty + " " + rec.dest.name);
             madeChanges = true;
             gear.reforge = {stats: {}};
