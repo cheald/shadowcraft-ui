@@ -763,6 +763,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     for(var si = 0; si < slotOrder.length; si++) {
       var i = slotOrder[si];
       var gear = data.gear[i];
+      if(!gear) { continue; }
       var item = ITEM_LOOKUP[gear.item_id];
       var gems = [], bonuses = null, enchant = ENCHANT_LOOKUP[gear.enchant], enchantable;
       if(item) {
