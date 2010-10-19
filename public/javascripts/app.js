@@ -883,9 +883,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   }
   
   function showPopup(popup) {
-    // $(".popup").hide();
     $(".popup").removeClass("visible");
-    // popup.show();
     if(popupTop !== undefined) {
       var max = document.body.scrollTop + $(window).height();
       var top = popupTop;

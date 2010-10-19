@@ -8,7 +8,9 @@ class CharactersController < ApplicationController
   def create
     begin
       @character = Character.new(params[:character])    
-      @character.update_from_armory!
+      unless @character.name.blank? or @character.realm.blank? or @character.region.blank?
+        @character.update_from_armory!
+      end
     rescue Character::NotFoundException
       @character.errors.add :base, "Character not found, or the Armory is offline"
       return new
@@ -22,13 +24,14 @@ class CharactersController < ApplicationController
   end
   
   def show
-    @character = Character.criteria.id(params[:id]).first
+    @character = Character.find(params[:id])
+    raise Mongoid::Errors::DocumentNotFound if @character.nil?
     @page_title = @character.fullname
     @loadout = @character.loadouts.first || Loadout.new(:character => @character)
   end  
   
   def refresh
-    @character = Character.criteria.id(params[:id]).first
+    @character = Character.find(params[:id])
     @character.update_from_armory!(true)
     redirect_to rebuild_items_path(:c => @character._id)
   end

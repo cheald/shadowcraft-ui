@@ -55,6 +55,8 @@ class Character
     self.player_class = properties["character"]["class"]
     self.race = properties["character"]["race"]
     self.level = properties["character"]["level"].to_i
+    raise NotFoundException if properties["characterTab"].nil? or properties["characterTab"]["items"].nil?
+    
     gear = Hash[*properties["characterTab"]["items"]["item"].map do |item|
       i = Item.find_or_create_by(:remote_id => item["id"].to_i)
       Item.find_or_create_by(:remote_id => item["gem0Id"]) unless item["gem0Id"].to_i == 0
