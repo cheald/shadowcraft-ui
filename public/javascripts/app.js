@@ -1120,7 +1120,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
           var to_gem = GEMS[rec.gems[i]];
           if(gear["gem" + i] != rec.gems[i]) {
             if(from_gem && to_gem) {
-              if(from_gem.name != to_gem.name) { continue; }
+              if(from_gem.name == to_gem.name) { continue; }
               log("Regemming " + item.name + " socket " + (i+1) + " from " + from_gem.name + " to " + to_gem.name);
             } else {
               log("Regemming " + item.name + " socket " + (i+1) + " to " + to_gem.name);
