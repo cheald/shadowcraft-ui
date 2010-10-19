@@ -1108,6 +1108,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     
     for(var si = 0; si < slotOrder.length; si++) {
       var gear = data.gear[slotOrder[si]];
+      if(!gear) { continue; }
       var item = ITEM_LOOKUP[gear.item_id];
       
       if(item) {      
@@ -1211,6 +1212,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     for(var si = 0; si < slotOrder.length; si++) {
       var i = slotOrder[si];
       var gear = data.gear[i];
+      if(!gear) { continue; }
       var item = ITEM_LOOKUP[gear.item_id];
       if(item) {
         if(canReforge(item)) {
@@ -1243,6 +1245,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     var from = $("#reforge input[name='oldstat']:checked").val();
     var to = $("#reforge input[name='newstat']:checked").val();
     var gear = data.gear[slot];
+    if(!gear) { return; }
     
     gear.reforge = {};
     if(slot !== undefined && amt !== undefined && from !== undefined && to !== undefined) {
