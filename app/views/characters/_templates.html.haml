@@ -29,7 +29,7 @@
   .stat
     %span.key {{name}}
     %span.val {{val}}
-    %span.aep {{aep}}
+    %span.aep {{ep}}
   {{/stats}}
 - mustache "reforge" do
   %form#reforge
@@ -115,7 +115,7 @@
     {{/desc}}
     {{#percent}}
     %span.pct<>
-      .label {{../aep}}
+      .label {{../ep}}
       .pct-inner{:style => "width: {{.}}%"}<>
     {{/percent}}
       

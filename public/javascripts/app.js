@@ -190,7 +190,8 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     s[rec.dest.key] += rec.qty;
   }
   
-  function aep(item, key) {
+  // This is actually EP, but the function name remains for my sanity.
+  function ep(item, key) {
     var stats = {};
     if(item.source && item.dest) {
       sumRecommendation(stats, item);
@@ -274,32 +275,33 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   }
   
   var presortedLists = {};
-  function __aepSort(a, b) { return b.__aep - a.__aep; }
-  function aepSort(list, skipSort) {
+  
+  function __epSort(a, b) { return b.__ep - a.__ep; }
+  function epSort(list, skipSort) {
     // if(!presortedLists[list]) {
       for(var i = 0; i < list.length; i++) {
         if(list[i]) {
-          list[i].__aep = aep(list[i]);
+          list[i].__ep = ep(list[i]);
         }
       }
     // }
     // presortedLists[list] = true;
     if(!skipSort) {
-      list.sort(__aepSort);
+      list.sort(__epSort);
     }
   }  
   
-  // Assumes that you've AEP-sorted your gem list beforehand!
+  // Assumes that you've EP-sorted your gem list beforehand!
   function getGemmingRecommendation(item, returnFull) {
     if(!item.sockets || item.sockets.length === 0) {
       if(returnFull) {
-        return {aep: 0, gems: []};
+        return {ep: 0, gems: []};
       } else {
         return 0;
       }
     }
     
-    var straightGemAEP = 0, matchedGemAEP = aep(item, "socketbonus"), s, i, gemType, gem, sGems, mGems, gems;
+    var straightGemEP = 0, matchedGemEP = ep(item, "socketbonus"), s, i, gemType, gem, sGems, mGems, gems;
     if(returnFull) {
       sGems = []; mGems = [];
     }
@@ -311,7 +313,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         if(gem.requires && gem.requires.profession && !data.options.professions[gem.requires.profession]) { continue; }
         if(gemType == "Meta" && gem.slot != "Meta") { continue; }
         if(gemType != "Meta" && gem.slot == "Meta") { continue; }                
-        straightGemAEP += aep(gem);
+        straightGemEP += ep(gem);
         if(returnFull) { sGems[sGems.length] = gem.id; }
         break;
       }
@@ -325,26 +327,26 @@ RogueApp.initApp = function($, uuid, data, serverData) {
         if(gemType == "Meta" && gem.slot != "Meta") { continue; }
         if(gemType != "Meta" && gem.slot == "Meta") { continue; }                
         if(gem[gemType]) {
-          matchedGemAEP += aep(gem);
+          matchedGemEP += ep(gem);
           if(returnFull) { mGems[mGems.length] = gem.id; }
           break;
         }
       }
     }
     
-    var aepValue, gemList, bonus = false;
-    if(matchedGemAEP > straightGemAEP) {
-      aepValue = matchedGemAEP;
+    var epValue, gemList, bonus = false;
+    if(matchedGemEP > straightGemEP) {
+      epValue = matchedGemEP;
       gems = mGems;
       bonus = true;
     } else {
-      aepValue = straightGemAEP;
+      epValue = straightGemEP;
       gems = sGems;
     }
     if(returnFull) {
-      return {aep: aepValue, takeBonus: bonus, gems: gems};
+      return {ep: epValue, takeBonus: bonus, gems: gems};
     } else {
-      return aepValue;
+      return epValue;
     }
   }  
   
@@ -358,7 +360,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     return word.join(' ');
   }  
   
-  var AEP_TOTAL;
+  var EP_TOTAL;
   function updateStatsWindow() {
     sumStats();
     var $stats = $("#stats .inner");
@@ -372,14 +374,14 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       a_stats[a_stats.length] = {
         name: titleize(stat),
         val: statSum[stat],
-        aep: Math.floor(weight)
+        ep: Math.floor(weight)
       };
     }
     a_stats[a_stats.length] = {
-      name: "Total AEP",
-      aep: Math.floor(total)
+      name: "Total EP",
+      ep: Math.floor(total)
     };
-    AEP_TOTAL = total;
+    EP_TOTAL = total;
     $stats.get(0).innerHTML = statsTemplate({stats: a_stats});
   }    
   
@@ -821,7 +823,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       buffer += template({
         item: item,
         ttid: item ? item.id : null,
-        aep: item ? aep(item) : 0,
+        ep: item ? ep(item) : 0,
         slot: i + '',
         gems: gems,
         socketbonus: bonuses,
@@ -914,49 +916,49 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     var equip_location = SLOT_INVTYPES[slot];    
     
     var loc = SLOT_CHOICES[equip_location];
-    aepSort(GEM_LIST); // Needed for gemming recommendations
+    epSort(GEM_LIST); // Needed for gemming recommendations
     for(i = 0; i < loc.length; i++) {        
       loc[i].__gemRec = getGemmingRecommendation(loc[i], true);
-      loc[i].__gemAEP = Math.round(loc[i].__gemRec.aep * 10) / 10;
+      loc[i].__gemEP = Math.round(loc[i].__gemRec.ep * 10) / 10;
       
       var rec = recommendReforge(loc[i].stats);
       if(rec) {
         var reforgedStats = {};
         reforgedStats[rec.source.key] = -rec.qty;
         reforgedStats[rec.dest.key] = rec.qty;
-        var deltaAep = aep({stats: reforgedStats});
-        if(deltaAep > 0) {
-          loc[i].__reforgeAep = deltaAep;
+        var deltaEp = ep({stats: reforgedStats});
+        if(deltaEp > 0) {
+          loc[i].__reforgeEP = deltaEp;
         } else {
-          loc[i].__reforgeAep = 0;
+          loc[i].__reforgeEP = 0;
         }
       } else {
-        loc[i].__reforgeAep = 0;
+        loc[i].__reforgeEP = 0;
       }
       
-      loc[i].__aep = aep(loc[i]) + loc[i].__gemRec.aep + loc[i].__reforgeAep;
+      loc[i].__ep = ep(loc[i]) + loc[i].__gemRec.ep + loc[i].__reforgeEP;
     }
-    loc.sort(__aepSort);
-    var max = loc[0].__aep;
+    loc.sort(__epSort);
+    var max = loc[0].__ep;
     var buffer = "";
     for(i = 0; i < loc.length; i++) {
-      var iAep = Math.round(loc[i].__aep * 10) / 10;
+      var iEP = Math.round(loc[i].__ep * 10) / 10;
       buffer += template({
         item: loc[i],
         gear: {},
         gems: [],
         ttid: loc[i].id,
-        desc: aep(loc[i]) + " base / " + loc[i].__reforgeAep + " reforge / " + loc[i].__gemAEP + " gem " + (loc[i].__gemRec.takeBonus ? "(Match gems)" : ""),
+        desc: ep(loc[i]) + " base / " + loc[i].__reforgeEP + " reforge / " + loc[i].__gemEP + " gem " + (loc[i].__gemRec.takeBonus ? "(Match gems)" : ""),
         search: loc[i].name,
-        percent: iAep / max * 100,
-        aep: iAep
+        percent: iEP / max * 100,
+        ep: iEP
       });
     }
     buffer += template({
       item: {name: "[No item]"},
       desc: "Clear this slot",
       percent: 0,
-      aep: 0
+      ep: 0
     });
     $altslots.get(0).innerHTML = buffer;
     $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
@@ -970,9 +972,9 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     var equip_location = SLOT_INVTYPES[slot];    
     
     var enchants = ENCHANT_SLOTS[equip_location];
-    aepSort(enchants);
+    epSort(enchants);
     var selected_id = data.gear[slot].enchant;
-    var max = aep(enchants[0]);
+    var max = ep(enchants[0]);
     var buffer = "";
     
     for(var i = 0; i<enchants.length; i++) {
@@ -980,11 +982,11 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       if(enchant && !enchant.desc) {
         enchant.desc = statsToDesc(enchant);
       }
-      var eAep = aep(enchant);
+      var eEP = ep(enchant);
       buffer += template({
         item: enchant,
-        percent: eAep / max * 100,
-        aep: eAep,
+        percent: eEP / max * 100,
+        ep: eEP,
         search: enchant.name + " " + enchant.desc,
         desc: enchant.desc
       });
@@ -1000,7 +1002,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     var buf = clickSlot(this, "gem"); var $slot = buf[0]; var slot = buf[1];
     
     var item = ITEM_LOOKUP[parseInt($slot.attr("id"), 10)];
-    var socketAEPBonus = Math.floor((item.socketbonus ? aep(item, "socketbonus") : 0) / item.sockets.length * 10) / 10;
+    var socketEPBonus = Math.floor((item.socketbonus ? ep(item, "socketbonus") : 0) / item.sockets.length * 10) / 10;
     
     var gemSlot = $slot.find(".gem").index(this);
     $.data(document.body, "gem-slot", gemSlot);
@@ -1008,9 +1010,9 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     var selected_id = data.gear[slot]["gem" + gemSlot];
     
     for(var i=0; i<GEM_LIST.length; i++) {
-      GEM_LIST[i].__aep = aep(GEM_LIST[i]) + (GEM_LIST[i][item.sockets[gemSlot]] ? socketAEPBonus : 0);
+      GEM_LIST[i].__ep = ep(GEM_LIST[i]) + (GEM_LIST[i][item.sockets[gemSlot]] ? socketEPBonus : 0);
     }
-    GEM_LIST.sort(__aepSort);
+    GEM_LIST.sort(__epSort);
     
     var buffer = "";
     var i, gemCt = 0, gem, max, usedNames = {};
@@ -1019,7 +1021,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       if(gem.requires && gem.requires.profession && !data.options.professions[gem.requires.profession]) { continue; }      
       if(gemType == "Meta" && gem.slot != "Meta") { continue; }
       if(gemType != "Meta" && gem.slot == "Meta") { continue; }
-      if(!max) { max = gem.__aep; }
+      if(!max) { max = gem.__ep; }
       if(usedNames[gem.name]) {
         if(gem.id == selected_id) {
           selected_id = usedNames[gem.name];
@@ -1029,18 +1031,18 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       gemCt += 1;
       if(gemCt > 50) { break; }
       usedNames[gem.name] = gem.id;
-      var gAep = Math.round(gem.__aep * 10) / 10;
+      var gEP = Math.round(gem.__ep * 10) / 10;
       var desc = statsToDesc(gem);
       if(gem[item.sockets[gemSlot]]) {
-        desc += " (+" + (Math.round(socketAEPBonus * 10) / 10) + " bonus)";
+        desc += " (+" + (Math.round(socketEPBonus * 10) / 10) + " bonus)";
       }
       buffer += template({
         item: gem,
-        aep: gAep,
+        ep: gEP,
         gear: {},
         ttid: gem.id,
         search: gem.name + " " + statsToDesc(gem) + " " + gem.slot,
-        percent: gAep / max * 100,
+        percent: gEP / max * 100,
         desc: desc
       });
     }
@@ -1098,13 +1100,13 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     ".tt": ttlib.hide
   }));
   
-  var AEP_PRE_REGEM;
+  var EP_PRE_REGEM;
   function optimizeGems(depth) {
     if(!depth) { depth = 0; }
-    if(depth === 0) { AEP_PRE_REGEM = AEP_TOTAL; }
+    if(depth === 0) { EP_PRE_REGEM = EP_TOTAL; }
     var madeChanges = false;
     
-    aepSort(GEM_LIST); // Needed for gemming recommendations
+    epSort(GEM_LIST); // Needed for gemming recommendations
     
     for(var si = 0; si < slotOrder.length; si++) {
       var gear = data.gear[slotOrder[si]];
@@ -1131,7 +1133,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     }
     if(!madeChanges || depth >= 10) {
       RogueApp.updateDisplayedGear();
-      log("Finished automatic regemming: &Delta; " + Math.floor(AEP_TOTAL - AEP_PRE_REGEM) + " AEP");
+      log("Finished automatic regemming: &Delta; " + Math.floor(EP_TOTAL - EP_PRE_REGEM) + " EP");
     } else {
       optimizeGems(depth + 1);
     }
@@ -1209,10 +1211,10 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     return rec;
   }
   
-  var AEP_PRE_REFORGE;
+  var EP_PRE_REFORGE;
   function reforgeAll(depth) {
     if(!depth) { depth = 0; }
-    if(depth === 0) { AEP_PRE_REFORGE = AEP_TOTAL; }
+    if(depth === 0) { EP_PRE_REFORGE = EP_TOTAL; }
     var madeChanges = false;
     for(var si = 0; si < slotOrder.length; si++) {
       var i = slotOrder[si];
@@ -1237,7 +1239,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     }
     if(!madeChanges || depth >= 10) {
       RogueApp.updateDisplayedGear();
-      log("Finished automatic reforging: &Delta; " + Math.floor(AEP_TOTAL - AEP_PRE_REFORGE) + " AEP");
+      log("Finished automatic reforging: &Delta; " + Math.floor(EP_TOTAL - EP_PRE_REFORGE) + " EP");
     } else {
       reforgeAll(depth + 1);
     }
