@@ -1265,7 +1265,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       gear.reforge.to = {stat: titleize(to), value: amt};
     }
     log("Reforging " + ITEM_LOOKUP[gear.item_id].name + " to " + gear.reforge.from.value + " " + gear.reforge.from.stat + "/+" + gear.reforge.to.value + " " + gear.reforge.to.stat);
-    $("#reforge").fadeOut(150);
+    $("#reforge").removeClass("visible");
     RogueApp.updateDisplayedGear();
   }
   
