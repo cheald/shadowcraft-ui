@@ -11,7 +11,7 @@
     =javascript_include_tag "jquery-1.4.3", "jquery-ui-1.8.5.custom", "tooltip", "ui.selectmenu.js", "underscore", "handlebars.js", "jstorage.js", "rails", "app", :cache => "cache/bundle"
     #{yield :head}
     :javascript
-      window.FLASH = #{raw flash.values.to_json};
+      window.FLASH = #{raw flash.reject {|k, v| k.match(/^_/) }.values.to_json};
   %body
     #container
       #header

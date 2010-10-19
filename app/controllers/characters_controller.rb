@@ -1,13 +1,14 @@
 class CharactersController < ApplicationController 
   def new
-    @characters = Character.all
+    @characters = Character.asc(:name).asc(:realm).paginate :page => params[:page], :per_page => 30
     @character ||= Character.new
     render :action => "new"
   end
   
   def create
     begin
-      @character = Character.new(params[:character])    
+      @character = Character.where(params[:character]).first
+      @character ||= Character.new(params[:character])    
       unless @character.name.blank? or @character.realm.blank? or @character.region.blank?
         @character.update_from_armory!
       end

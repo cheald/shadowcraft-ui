@@ -103,6 +103,7 @@
   };
   var uuid = "#{@character.name}.#{@character.realm}-#{@character.region}";
   var serverData = #{@character.to_json };
+  #{flash[:_reset] ? "$.jStorage.flush();" : nil}
   var localData = $.jStorage.get(uuid, serverData);
   RogueApp.commonInit(jQuery);
   RogueApp.initApp(jQuery, uuid, localData, window.RogueData);

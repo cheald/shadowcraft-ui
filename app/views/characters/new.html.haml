@@ -2,11 +2,13 @@
 - @characters.each do |character|
   .character
     =link_to character.fullname, character
+    
+=will_paginate @characters
 
 =error_messages_for :character
 %h1 Import Character
-- semantic_form_for @character do |f|
-  - f.inputs do
+=semantic_form_for @character do |f|
+  =f.inputs do
     =f.input :name
     =f.input :realm
     %label.label_radio
@@ -15,7 +17,7 @@
     %label.label_radio
       =f.radio_button :region, "EU"
       EU
-  - f.buttons do
+  =f.buttons do
     =f.submit
 :javascript
   RogueApp.commonInit(jQuery)

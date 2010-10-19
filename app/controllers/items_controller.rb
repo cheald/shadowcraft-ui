@@ -29,6 +29,7 @@ class ItemsController < ApplicationController
     # Enchant.update!
     index
     render_to_string :action => "index.js"
-    redirect_to Character.criteria.id(params[:c]).first
+    flash[:_reset] = true
+    redirect_to params[:c].blank? ? :back : character_path(Character.criteria.id(params[:c]).first)
   end
 end
