@@ -213,6 +213,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     for(var si = 0; si < slotOrder.length; si++) {
       var i = slotOrder[si];
       var gear = data.gear[i];
+      if(!gear.item_id) { continue; }
       var item = ITEM_LOOKUP[gear.item_id];
       if(item) {
         sumItem(stats, item);      
