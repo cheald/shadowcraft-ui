@@ -165,7 +165,9 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   function _T(str) {
     var idx = _.indexOf(serverData.TALENT_INDEX, str);
     if(!data.activeTalents) { return 0; }
-    return parseInt(data.activeTalents[idx], 10);
+    var t = data.activeTalents[idx];
+    if(!t) return 0;
+    return parseInt(t, 10);
   }
   
   function _R(str) {
@@ -618,7 +620,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   }
   
   function setTalents(str) {
-    if(!str) { return; }
+    if(!str) { updateTalentAvailability(); return; }
     var ct = 0;
     $("#talentframe .talent").each(function() {
       var points = $.data(this, "points");
