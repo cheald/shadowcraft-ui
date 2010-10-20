@@ -1368,4 +1368,13 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     show.removeClass("hidden");
     hide.addClass("hidden");
   });
+  
+  $(document).keyup(function(e) {
+    if(e.altKey) {
+      if(e.keyCode >= 49 && e.keyCode <= 58) {
+        $("#tabs").tabs("select", e.keyCode - 49);
+        return false;
+      }
+    }
+  });
 };
