@@ -2,3 +2,7 @@
 db/*.sqlite3
 log/*.log
 tmp/**/*
+Gemfile.lock
+public/items.js
+public/stylesheets/compiled
+stats.yml

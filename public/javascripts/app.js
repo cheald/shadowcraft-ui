@@ -70,6 +70,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   
   var REFORGE_FACTOR = 0.4;
   var MAX_TALENT_POINTS = 36;
+  var DEFAULT_BOSS_DODGE = 6.1;
   
   /**************************************************************************************************************/
   
@@ -261,7 +262,8 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     var modNum = num;
     switch(stat) {    
     case "expertise_rating":
-      var expertiseCap = _R("expertise_rating") * 6.1; 
+      var boss_dodge = $("#boss_dodge").val() || DEFAULT_BOSS_DODGE;
+      var expertiseCap = _R("expertise_rating") * boss_dodge; 
       var usable = expertiseCap - exist; usable = usable < 0 ? 0 : usable; usable = usable > num ? num : usable;
       return data.weights.expertise_rating * usable * neg;
     case "hit_rating":
@@ -558,13 +560,15 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     data.options[ns][$this.attr("name")] = $this.is(":checked");
     saveData();
   });
+
+  $("#boss_dodge").val(DEFAULT_BOSS_DODGE);
   
   for(var key in data.weights) {
     if(data.weights.hasOwnProperty(key)) {
-      $("#weights .inner").append("<dt>" + titleize(key) + "</dt><dd><input type='text' id='weight-" + key + "' data-stat='" + key + "' value='" + data.weights[key] + "'/>");
+      $("#weights dl.inner").append("<dt>" + titleize(key) + "</dt><dd><input type='text' id='weight-" + key + "' data-stat='" + key + "' value='" + data.weights[key] + "'/>");
     }
   }
-  $("#weights .inner input").change(function() {
+  $("#weights dl.inner input").change(function() {
     var attr = $.trim($(this).attr("data-stat"));
     data.weights[attr] = parseFloat($(this).val());
     RogueApp.updateDisplayedGear();
