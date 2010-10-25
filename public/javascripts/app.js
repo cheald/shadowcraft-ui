@@ -70,6 +70,9 @@ RogueApp.initApp = function($, uuid, data, serverData) {
   
   var REFORGE_FACTOR = 0.4;
   var MAX_TALENT_POINTS = 36;
+  var DEFAULT_BOSS_DODGE = 6.1;
+  var MAX_PROFESSIONAL_GEMS = 3;
+  var JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"];
   
   /**************************************************************************************************************/
   
@@ -263,7 +266,8 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     var modNum = num;
     switch(stat) {    
     case "expertise_rating":
-      var expertiseCap = _R("expertise_rating") * 6.1; 
+      var boss_dodge = $("#boss_dodge").val() || DEFAULT_BOSS_DODGE;
+      var expertiseCap = _R("expertise_rating") * boss_dodge; 
       var usable = expertiseCap - exist; usable = usable < 0 ? 0 : usable; usable = usable > num ? num : usable;
       return data.weights.expertise_rating * usable * neg;
     case "hit_rating":
@@ -293,8 +297,10 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     }
   }  
   
-  // Assumes that you've EP-sorted your gem list beforehand!
-  function getGemmingRecommendation(item, returnFull) {
+  // Assumes gem_list is already sorted preferred order.  Also, normalizes
+  // JC-only gem EP to their non-JC-only values to prevent the algorithm from
+  // picking up those gems over the socket bonus.
+  function getGemmingRecommendation(gem_list, item, returnFull) {
     if(!item.sockets || item.sockets.length === 0) {
       if(returnFull) {
         return {ep: 0, gems: []};
@@ -307,15 +313,18 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     if(returnFull) {
       sGems = []; mGems = [];
     }
+
+    var jc_gem_count = getProfessionalGemCount();
     
     for(s = 0; s < item.sockets.length; s++) {
       gemType = item.sockets[s];
-      for(i = 0; i < GEM_LIST.length; i++) {
-        gem = GEM_LIST[i];
-        if(gem.requires && gem.requires.profession && !data.options.professions[gem.requires.profession]) { continue; }
+      for(i = 0; i < gem_list.length; i++) {
+        gem = gem_list[i];
+        if((isProfessionalGem(gem) && !data.options.professions[gem.requires.profession])
+           || jc_gem_count >= MAX_PROFESSIONAL_GEMS) { continue; }
         if(gemType == "Meta" && gem.slot != "Meta") { continue; }
         if(gemType != "Meta" && gem.slot == "Meta") { continue; }                
-        straightGemEP += ep(gem);
+        straightGemEP += getRegularGemEpValue(gem);
         if(returnFull) { sGems[sGems.length] = gem.id; }
         break;
       }
@@ -323,13 +332,14 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     
     for(s = 0; s < item.sockets.length; s++) {
       gemType = item.sockets[s];
-      for(i = 0; i < GEM_LIST.length; i++) {
-        gem = GEM_LIST[i];
-        if(gem.requires && gem.requires.profession && !data.options.professions[gem.requires.profession]) { continue; }
+      for(i = 0; i < gem_list.length; i++) {
+        gem = gem_list[i];
+        if((isProfessionalGem(gem) && !data.options.professions[gem.requires.profession])
+           || jc_gem_count >= MAX_PROFESSIONAL_GEMS) { continue; }
         if(gemType == "Meta" && gem.slot != "Meta") { continue; }
         if(gemType != "Meta" && gem.slot == "Meta") { continue; }                
         if(gem[gemType]) {
-          matchedGemEP += ep(gem);
+          matchedGemEP += getRegularGemEpValue(gem);
           if(returnFull) { mGems[mGems.length] = gem.id; }
           break;
         }
@@ -560,13 +570,15 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     data.options[ns][$this.attr("name")] = $this.is(":checked");
     saveData();
   });
+
+  $("#boss_dodge").val(DEFAULT_BOSS_DODGE);
   
   for(var key in data.weights) {
     if(data.weights.hasOwnProperty(key)) {
-      $("#weights .inner").append("<dt>" + titleize(key) + "</dt><dd><input type='text' id='weight-" + key + "' data-stat='" + key + "' value='" + data.weights[key] + "'/>");
+      $("#weights dl.inner").append("<dt>" + titleize(key) + "</dt><dd><input type='text' id='weight-" + key + "' data-stat='" + key + "' value='" + data.weights[key] + "'/>");
     }
   }
-  $("#weights .inner input").change(function() {
+  $("#weights dl.inner input").change(function() {
     var attr = $.trim($(this).attr("data-stat"));
     data.weights[attr] = parseFloat($(this).val());
     RogueApp.updateDisplayedGear();
@@ -920,7 +932,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     var loc = SLOT_CHOICES[equip_location];
     epSort(GEM_LIST); // Needed for gemming recommendations
     for(i = 0; i < loc.length; i++) {        
-      loc[i].__gemRec = getGemmingRecommendation(loc[i], true);
+      loc[i].__gemRec = getGemmingRecommendation(GEM_LIST, loc[i], true);
       loc[i].__gemEP = Math.round(loc[i].__gemRec.ep * 10) / 10;
       
       var rec = recommendReforge(loc[i].stats);
@@ -1107,8 +1119,8 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     if(!depth) { depth = 0; }
     if(depth === 0) { EP_PRE_REGEM = EP_TOTAL; }
     var madeChanges = false;
-    
-    epSort(GEM_LIST); // Needed for gemming recommendations
+
+    var gem_list = getGemRecommendationList();
     
     for(var si = 0; si < slotOrder.length; si++) {
       var gear = data.gear[slotOrder[si]];
@@ -1116,7 +1128,7 @@ RogueApp.initApp = function($, uuid, data, serverData) {
       var item = ITEM_LOOKUP[gear.item_id];
       
       if(item) {      
-        var rec = getGemmingRecommendation(item, true);
+        var rec = getGemmingRecommendation(gem_list, item, true);
         for(var i = 0; i < rec.gems.length; i++) {
           var from_gem = GEMS[gear["gem" + i]];
           var to_gem = GEMS[rec.gems[i]];
@@ -1141,7 +1153,62 @@ RogueApp.initApp = function($, uuid, data, serverData) {
     }
   }
   RogueApp.optimizeGems = optimizeGems;
- 
+
+  function isProfessionalGem(gem) {
+    return gem && gem.requires && gem.requires.profession;
+  }
+
+  function getProfessionalGemCount() {
+    var count = 0;
+    $.each(slotOrder, function(i, slot) {
+      var gear = data.gear[slot];
+      for (var k in gear) {
+        if (k.indexOf("gem") == 0 && isProfessionalGem(GEMS[gear[k]])) {
+          count++;
+        }
+      }
+    });
+    return count;
+  }
+
+  // Returns the EP value of a gem.  If it happens to require JC, it'll return
+  // the regular EP value for the same quality gem, if found.
+  function getRegularGemEpValue(gem) {
+    var equiv_ep = gem.__ep || ep(gem);
+    if (!isProfessionalGem(gem)) return equiv_ep;
+    if (gem.__reg_ep) return gem.__reg_ep;
+
+    $.each(JC_ONLY_GEMS, function(i, name) {
+      if (gem.name.indexOf(name) >= 0) {
+        var prefix = gem.name.replace(name, "");
+        $.each(GEM_LIST, function(j, reg) {
+          if (!isProfessionalGem(reg)
+              && reg.name.indexOf(prefix) == 0
+              && reg.quality == gem.quality)
+          {
+            equiv_ep = reg.__ep || ep(reg);
+            equiv_ep += 1;
+            gem.__reg_ep = equiv_ep;
+            return false;
+          }
+        });
+        return false;
+      }
+    });
+    return equiv_ep;
+  }
+
+  // Returns an EP-sorted list of gems with the twist that the
+  // JC-only gems are sorted at the same EP-value as regular gems.
+  // This prevents the automatic picking algorithm from choosing
+  // JC-only gems over the slot bonus.
+  function getGemRecommendationList() {
+    var list = $.extend(true, [], GEM_LIST);
+    list.sort(function(a, b) {
+      return getRegularGemEpValue(b) - getRegularGemEpValue(a);
+    });
+    return list;
+  }
   
   /****************
   ** Reforging
