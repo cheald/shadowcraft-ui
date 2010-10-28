@@ -1,7 +1,7 @@
 !!! 5
 %html
   %head
-    %title= @page_title.nil? ? "Roguething - Rogue DPS Spreadsheet" : "#{@page_title} - Roguething"
+    %title= @page_title.nil? ? "ShadowCraft - Rogue DPS Spreadsheet" : "#{@page_title} - ShadowCraft"
     %meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
     = stylesheet_link_tag 'custom-theme/jquery-ui-1.8.5.custom.css', 'compiled/screen.css', :media => "screen, projection", :cache => "cache/bundle"
     = stylesheet_link_tag 'compiled/print.css', :media => 'print'
@@ -17,12 +17,14 @@
     #container
       #header
         .padding
-          Roguething
+          ShadowCraft
       #content
         =yield
       #footer
         .padding
-          Questions to cheald @ gmail &mdash; discussion at <a href="http://elitistjerks.com/f78/t105787-spreadsheets_next_generation/p7/">EJ</a>
+          Questions to cheald @ gmail
+          &mdash; discussion at <a href="http://elitistjerks.com/f78/t105787-spreadsheets_next_generation/p7/">EJ</a>
+          &mdash; UI source at <a href="http://github.com/cheald/shadowcraft-ui">GitHub</a>          
     - if Rails.env.production?
       :javascript
         var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12517505-2']); _gaq.push(['_trackPageview']);
