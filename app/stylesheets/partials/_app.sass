@@ -13,7 +13,7 @@ body
   top: 0px
   right: 0px
   z-index: 500
-  
+
 h1
   margin: 0.5em 0
   font-size: 2.5em
@@ -25,7 +25,7 @@ h1
     color: #333
 a
   color: #3aaaf9
-  
+
 .ui-tabs-panel
   +clearfix
 .pagination
@@ -49,8 +49,8 @@ input[type='text'] //, input[type='search']
     outline: none
     background-color: #abc
     color: #111
-.floaters  
-  
+.floaters
+
 .floater
   .inner
     padding: 1em
@@ -61,7 +61,7 @@ input[type='text'] //, input[type='search']
   border-width: 1px
   margin: 10px
   +box-shadow(rgba(0, 0, 0, 0.3), 3px, 3px, 3px)
-  font-size: 0.8em 
+  font-size: 0.8em
   h3
     cursor: pointer
     background: rgba(0, 0, 0, 0.2)
@@ -85,7 +85,7 @@ input[type='text'] //, input[type='search']
   font-size: 1.5em
   z-index: 1000
   padding: 10px 20px
-    
+
 #header
   padding: 10px 0px 10px 25px
   text-shadow: #000 -1px -1px 1px
@@ -102,14 +102,14 @@ h1#head
   background: #1a1a1a
   span
     display: block
-  
+
 #content
   margin: 20px
   position: relative
   .half
     +inline-block
     vertical-align: top
-    
+
 #footer
   padding: 20px
   background: #050505
@@ -125,8 +125,8 @@ h1#head
   white-space: nowrap
 a
   text-decoration: none
-  
-.label_check, .label_radio 
+
+.label_check, .label_radio
   +inline-block
   line-height: 2em
   padding-left: 30px
@@ -134,30 +134,30 @@ a
   background: url(../../images/controls.png) top left no-repeat
   -webkit-user-select: none
   -moz-user-select: none
-  
-  
+
+
 .label_radio
   background-position: left -115px
   &:hover
     background-position: left -181px
-  
+
 .label_check
   background-position: left -1px
   &:hover
     background-position: left -80px
-  
+
 .c_on
   background-position: left -38px !important
 .r_on
   background-position: left -147px !important
-  
+
 .c_on, .r_on
   color: #fff !important
 
 .label_check input, .label_radio input
   position: absolute
   left: -9999px
-  
+
 #errorExplanation
   border: 1px solid #333
   background: rgba(0, 0, 0, 0.3)
@@ -167,7 +167,7 @@ a
     font-size: 1.5em
   ul
     padding: 1em
-    
+
 .pct
   +inline-block
   height: 13px
@@ -195,11 +195,11 @@ a
     z-index: 10
     left: 0px
     width: 77%
-    // +linear-gradient(color-stops(#222, #666), left)          
+    // +linear-gradient(color-stops(#222, #666), left)
     background: #666
 
-.popup  
-  min-width: 450px  
+.popup
+  min-width: 450px
   position: absolute
   top: 60px
   left: 540px
@@ -210,13 +210,13 @@ a
   z-index: 1000
   &.visible
     visibility: visible
-  
+
   .body
     overflow: auto
     max-height: 600px
     border-top: 1px solid rgba(1, 1, 1, 0.1)
     min-width: 250px
-    
+
   #filter
     height: 40px
     border-bottom: 1px solid rgba(0, 0, 0, 0.3)
@@ -259,11 +259,11 @@ a
     width: 200px
   .pct-inner
     left: 100px
-    +linear-gradient(color-stops(#2F2, #080), left)          
+    +linear-gradient(color-stops(#2F2, #080), left)
     &.reverse
       +linear-gradient(color-stops(#800, #F22), left)
       right: 100px
-      left: auto  
+      left: auto
 
 #log, #console
   .inner
@@ -284,7 +284,7 @@ a
       margin: 2px
       font-size: 0.8em
       color: #666
-    padding: 8px 0 8px 24px    
+    padding: 8px 0 8px 24px
     margin-bottom: 0.5em 0
     border-top: 1px solid #1c1c1c
     border-bottom: 1px solid #090909
@@ -297,7 +297,7 @@ a
       background-image: url(../../images/alert.png)
     &.error
       background-image: url(../../images/delete.png)
-    
+
 #tooltip
   max-width: 300px
   background: rgba(0, 0, 0, 0.85)
@@ -316,15 +316,15 @@ a
     color: #fff
     margin-bottom: 0.3em
   .desc
-    p 
+    p
       margin: 1em 0
     color: #ffd200
-    
+
 #talents
   padding: 1em
   #talentsets
     min-width: 200px
-    padding: 1em    
+    padding: 1em
     border-left: 0
     margin-left: -4px
     background: rgba(0, 0, 0, 0.4)
@@ -332,7 +332,7 @@ a
       margin: 5px 0
       width: 100%
       display: block
-      
+
   #talentframe
     padding: 1em
     border: 1px solid #333
@@ -364,7 +364,7 @@ a
       height: 25px
       line-height: 25px
       text-align: center
-      
+
     .talent
       cursor: pointer
       border: 1px solid #a70
@@ -406,7 +406,7 @@ a
         &.full
           color: #fd0
           border-color: #fd0
-      
+
 #tabs
   border: 0
   ul
@@ -417,11 +417,11 @@ a
       clear: none
       a
         outline: none
-  
+
   #settings, #buffs, #target
     padding: 2em
-    
-  .ui-tabs-panel  
+
+  .ui-tabs-panel
     background: rgba(0, 0, 0, 0.2)
     border: 1px solid #333
     border-width: 0 1px 1px
@@ -436,7 +436,7 @@ a
       color: #aaa
       &:hover
         color: #fff
-  
+
 #stats
   .stat
     padding: 5px 0
@@ -458,20 +458,20 @@ a
 #weights
   input
     margin-bottom: 1em
-  
+
 .slots
   float: left
   border-right: 1px solid #333
   width: 570px
   position: relative
-  
+
   .gem
     position: relative
     .socket
       position: absolute
       top: 9px
       left: 13px
-  
+
   .gems .gem, .enchant, .reforge, .name
     background-color: rgba(0, 0, 0, 0.25) // url(../../images/rarrow.png) right center no-repeat
     margin-bottom: 4px
@@ -504,7 +504,7 @@ a
       margin-right: 5px
       img
         width: 24px
-        
+
   .bonus
     color: #0f0
     margin-bottom: 4px
@@ -522,11 +522,11 @@ a
     .newstat
       color: #0e0
       padding-right: 1em
-        
+
   .enchant
     color: #0f0
     font-size: 0.9em
-    
+
 .slot
   position: relative
   min-height: 60px
@@ -539,11 +539,11 @@ a
     // background: rgba(0,0,0,0.2)
     background: rgba(0, 32, 64, 0.07)
     cursor: pointer
-    
+
   &.active, .active
     background-color: rgba(0,128,255,0.15)
     // background: rgba(0,0,0,0.1)
-    
+
   $full: 75
   $opac: 0.1
   .gems
@@ -560,7 +560,7 @@ a
         background: rgba( $full / 2, 0, $full, $opac )
       .Green
         background: rgba( 0, $full, 0, $opac )
-  
+
   .image
     background: url(../../images/empty.png)
     position: absolute
@@ -584,7 +584,7 @@ a
       background: rgba(0, 0, 0, 0.8)
       padding: 5px
       +border-radius
-      
+
   .name
     font-weight: bold
     font-size: 1.2em
@@ -606,7 +606,7 @@ a
     font-size: 0.8em
     color: #aaa
     padding: 2px 0
-    
+
 .alternatives
   padding-top: 40px
   .slot
@@ -625,14 +625,14 @@ a
         width: 40px
       .ilvl
         display: none
-        
+
 .quality-2
   color: lighten(#00A900, 10%)
 .quality-3
   color: lighten(#0062C3, 10%)
 .quality-4
   color: #A335EE
-    
+
 #impex
   padding: 1em
   h3

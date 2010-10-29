@@ -1,10 +1,10 @@
-# Roguething
+# ShadowCraft
 
 ## About
 
-Roguething is a framework for rogue gear, talent, gem, reforge, enchant, glyph, and rotation optimization. The goal is to have a tool that can run as close to entirely clientside as possible.
+ShadowCraft is a framework for rogue gear, talent, gem, reforge, enchant, glyph, and rotation optimization. The goal is to have a tool that can run as close to entirely clientside as possible.
 
-Currently, Roguething uses server-side Ruby for Armory/Wowhead data import and distilling into JS files for consumption by the client.
+Currently, ShadowCraft uses server-side Ruby for Armory/Wowhead data import and distilling into JS files for consumption by the client.
 
 ## Requirements
 
@@ -12,8 +12,8 @@ Requires Ruby 1.9.2 and MongoDB 1.6+, as well as a browser made this decade.
 
 ## Installing it
 
-    git clone git://github.com/cheald/roguething.git    
-    cd roguething/
+    git clone git://github.com/cheald/shadowcraft-ui.git    
+    cd shadowcraft-ui/
     bundle install
 
 Start it up (passenger, unicorn, thin, whatever your poison) and you're rolling. Sweet.
@@ -27,6 +27,10 @@ You'll want items in your database. Fortunately, that's easy.
     > Enchant.update_from_json!
 
 Congrats. You now have ~2000 items and gems locally cached.
+
+## To do
+
+* Aldriana is working on shadowcraft-engine, a Python library for computation of DPS and other metrics given various inputs. While not ready yet, the plan is to integrate by wrapping it in a Twisted app and communicating with the UI via websockets.
 
 ## Contributing
 

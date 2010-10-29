@@ -10,7 +10,7 @@ class CharactersController < ApplicationController
       @character = Character.where(params[:character]).first
       @character ||= Character.new(params[:character])    
       unless @character.name.blank? or @character.realm.blank? or @character.region.blank?
-        @character.update_from_armory!
+        @character.update_from_armory!(true)
       end
     rescue Character::NotFoundException
       @character.errors.add :base, "Character not found, or the Armory is offline"
