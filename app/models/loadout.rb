@@ -1,6 +1,7 @@
 class Loadout
-  include Mongoid::Document  
-  embedded_in :character, :inverse_of => :loadout
+  include Mongoid::Document
+
+  referenced_in :character
   INV_MAIN_HAND = "16"
   INV_OFF_HAND = "17"
   EXPERTISE_RATINGS = [

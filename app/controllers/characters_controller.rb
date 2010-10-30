@@ -7,8 +7,7 @@ class CharactersController < ApplicationController
   
   def create
     begin
-      @character = Character.where(params[:character]).first
-      @character ||= Character.new(params[:character])    
+      @character = Character.find_or_initialize_by(params[:character])
       unless @character.name.blank? or @character.realm.blank? or @character.region.blank?
         @character.update_from_armory!(true)
       end

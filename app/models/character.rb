@@ -12,12 +12,15 @@ class Character
   field :properties, :type => Hash
   field :talents, :type => Hash
 
-  TALENTS = [:deadly_momentum, :coup_de_grace, :lethality, :ruthlessness, :quickening, :puncturing_wounds, :blackjack, :deadly_brew, :cold_blood, 
-  :vile_poisons, :deadened_nerves, :seal_fate, :murderous_intent, :overkill, :master_poisoner, :improved_expose_armor, :cut_to_the_chase, 
-  :venomous_wounds, :vendetta, :improved_recuperate, :improved_sinister_strike, :precision, :improved_slice_and_dice, :improved_sprint, :aggression, 
-  :improved_kick, :lightning_reflexes, :revealing_strike, :reinforced_leather, :improved_gouge, :combat_potency, :blade_twisting, :throwing_specialization, 
-  :adrenaline_rush, :savage_combat, :bandits_guile, :restless_blades, :killing_spree, :nightstalker, :improved_ambush, :relentless_strikes, :elusiveness, 
-  :waylay, :opportunity, :initiative, :energetic_recovery, :find_weakness, :hemorrhage, :honor_among_thieves, :premeditation, :enveloping_shadows, :cheat_death, 
+  references_many :loadouts, :stored_as => :array, :inverse_of => :character
+  references_one :current_loadout, :class_name => 'Loadout'
+
+  TALENTS = [:deadly_momentum, :coup_de_grace, :lethality, :ruthlessness, :quickening, :puncturing_wounds, :blackjack, :deadly_brew, :cold_blood,
+  :vile_poisons, :deadened_nerves, :seal_fate, :murderous_intent, :overkill, :master_poisoner, :improved_expose_armor, :cut_to_the_chase,
+  :venomous_wounds, :vendetta, :improved_recuperate, :improved_sinister_strike, :precision, :improved_slice_and_dice, :improved_sprint, :aggression,
+  :improved_kick, :lightning_reflexes, :revealing_strike, :reinforced_leather, :improved_gouge, :combat_potency, :blade_twisting, :throwing_specialization,
+  :adrenaline_rush, :savage_combat, :bandits_guile, :restless_blades, :killing_spree, :nightstalker, :improved_ambush, :relentless_strikes, :elusiveness,
+  :waylay, :opportunity, :initiative, :energetic_recovery, :find_weakness, :hemorrhage, :honor_among_thieves, :premeditation, :enveloping_shadows, :cheat_death,
   :preparation, :sanguinary_vein, :slaughter_from_the_shadows, :serrated_blades, :shadow_dance]
 
   TREE_ONE_TALENTS = 19
@@ -35,9 +38,20 @@ class Character
   validates_length_of :name, :maximum => 30
   validates_length_of :realm, :maximum => 30
   validates_numericality_of :level, :less_than_or_equal_to => 85, :greater_than => 0, :if => :name?
-  
-  embeds_many :loadouts
-  
+
+  # embeds_many :loadouts
+
+  before_save :normalize_character_info
+
+  def self.find_or_initialize_by(params)
+    params = {
+      :name => params[:name].titleize,
+      :realm => params[:realm].titleize,
+      :region => params[:region].upcase
+    }
+    super
+  end
+
   def first_talent_group
     if talentGroup = self.talents["talentGroup"]    
       talentGroup.is_a?(Array) ? talentGroup.first : talentGroup
@@ -72,7 +86,13 @@ class Character
       raw_talents = group["talentSpec"]["value"]
       talents = Hash[*(0..raw_talents.length-1).map {|l| [TALENTS[l], raw_talents[l].to_i] }.flatten]
     end
-    self.loadouts.create(:gear => gear, :items => items, :glyphs => glyphs, :talents => talents)
+    loadout_params = { :gear => gear, :items => items, :glyphs => glyphs, :talents => talents }
+    if current_loadout
+      self.current_loadout.update_attributes(loadout_params)
+    else
+      self.loadouts.create(loadout_params)
+      self.current_loadout = loadouts.first
+    end
   end
   
   def as_json(options = {})
@@ -101,5 +121,11 @@ class Character
   
   def fullname
     "%s @ %s-%s" % [name.titleize, realm.titleize, region.upcase]
+  end
+
+  def normalize_character_info
+    self.name = name.titleize
+    self.realm = realm.titleize
+    self.region = region.upcase
   end
 end
