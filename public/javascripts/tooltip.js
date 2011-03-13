@@ -1,5 +1,6 @@
 var ttlib = {
   init: function() {
+    if(window.Touch) { return; }
     var tooltip = document.createElement("div");
     tooltip.className = "ea-tooltip";
     ttlib.jstooltip = tooltip;
@@ -9,7 +10,7 @@ var ttlib = {
     ttlib.cache = {};
     ttlib.currentRequest = null;
     ttlib.jstooltip.maxWidth = 370;
-    
+
     document.getElementsByTagName("body")[0].appendChild(tooltip);
   },
 
@@ -58,7 +59,7 @@ var ttlib = {
     ttlib.jstooltip.style.visibility = "hidden";
     ttlib.currentMouseover = null;
   },
-  
+
   // Tooltip positioning
   mouseMove: function(x, y) {
     var de = document.documentElement;
@@ -70,7 +71,7 @@ var ttlib = {
     if( ( ttlib.jstooltip.style.width && ttlib.jstooltip.style.width > ttlib.jstooltip.maxWidth ) || ( ttlib.jstooltip.offsetWidth && ttlib.jstooltip.offsetWidth > ttlib.jstooltip.maxWidth ) ) {
       ttlib.jstooltip.style.width = ttlib.jstooltip.maxWidth + "px";
     }
-    
+
     // Bottom clamp
     if (y + ttlib.jstooltip.offsetHeight > de.clientHeight + body.scrollTop + de.scrollTop) {
       y += (de.clientHeight + body.scrollTop + de.scrollTop) - (y + ttlib.jstooltip.offsetHeight);
@@ -92,16 +93,17 @@ var ttlib = {
     ttlib.jstooltip.style.left = x+"px";
     ttlib.jstooltip.style.top = y+"px";
   },
-    
+
   // Queue management
   requestTooltip: function() {
+    if(!ttlib.jstooltip) { return; }
     var $this = $(this);
     var id = $this.data("tooltip-id");
     if(!id) { return; }
-    
+
     var t = $this.data("tooltip-type") || "item";
     var url = "http://www.wowhead.com/" + t + "=" + id + "&power";
-    
+
     ttlib.currentMouseover = url;
     ttlib.jstooltip.style.width = null;
     ttlib.jstooltip.owner = $this;
@@ -121,16 +123,16 @@ var ttlib = {
   },
   processQueue: function() {
     if( ttlib.queue.length === 0 || ttlib.currentRequest ) { return; }
-    
+
     ttlib.currentRequest = ttlib.queue.pop();
-    
+
     $.ajax({
       url: ttlib.currentRequest,
       dataType: "script",
       error: ttlib.showError
     });
   },
-  
+
   // Wowhead fun!
   wowheadTooltip: function(id, showIcon, data) {
     data.tooltip = data.tooltip_enus;

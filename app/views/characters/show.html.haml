@@ -2,88 +2,112 @@
   =javascript_include_tag "/items.js"
   =render "templates"
 
-%h1#head
-  %span.name
-    #{@character.name}
-  %span.info
-    #{@character.realm}-#{@character.region}
+%ul.dropdownMenu#settingsDropdownMenu
+  %li
+    =link_to "Refresh from armory", refresh_character_path(char_options @character), :method => :put, :class => "showWait"
+  %li
+    =link_to "Save", "#"
+  %li
+    =link_to "Load", "#"
+  %li
+    =link_to "Reload", "#", :id => "reloadAllData"
+
 #tabs
-  %ul
-    %li
-      %a{:href => "#gear"} Gear
-    %li
-      %a{:href => "#talents"} Talents &amp; Glyphs
-    %li
-      %a{:href => "#buffs"} Buffs
-    %li
-      %a{:href => "#target"} Target
-    %li
-      %a{:href => "#settings"} Settings
-    %li
-      %a{:href => "#impex"} Import/Export
-  #gear
-    .slots.half<>
-    .floaters
+  #top-pane
+    %ul
+      %li
+        %a{:href => "#gear"} Gear
+      %li
+        %a{:href => "#talents"} Talents &amp; Glyphs
+      %li
+        %a{:href => "#settings"} Settings
+      %li
+        %a{:href => "#impex"} Import/Export
+    %a.dropdown#settingsDropdown{:href => "#", :"data-menu" => "settingsDropdownMenu"}<
+      =image_tag "cog.png"
+
+  #gear.with-tools
+    .panel-tools
+      %section#stats
+        %h3 Stats
+        .inner
+      %section#weights
+        %h3 Stat Weights
+        .inner
+
       %section
-        #console.floater
-          %h3 Notices
-          .inner
-        #log.floater
-          %h3 Log
-          .inner
+        %h3 Toolbox
+        .inner
+          %button#reforgeAll Auto-Reforge All
+          %button#optimizeGems Optimize Gems
+    .panel-content
+      #slots-left.slots.half<>
+      #slots-right.slots.half<>
+
+      #reforge.popup.half
+        Reforge this item
+      .alternatives.popup.half<
+        #filter
+          %input{:type => "search", :class => "search", :placeholder => "Filter..."}
+        .body
+
+  #talents.with-tools
+    .panel-tools
       %section
-        #weights.floater
-          %h3 Stat Weights
-          %dl.inner
-          %h3 Boss dodge (%)
+        %h3 Talent Sets
+        #talentsets.inner
+      %section#talentrankings
+        %h3 Talent Rankings
+        .inner
+          .Primary
+          .Secondary
+    .panel-content
+      #talentframe
+      %button#reset_talents Reset Talents
+
+      #glyphs
+        #prime-glyphs.glyphset
+          %h2 Prime Glyphs
           .inner
-            %input{:type => "text", :id => "boss_dodge"}
-        #stats.floater
-          %h3 Stat Totals
+        #major-glyphs.glyphset
+          %h2 Major Glyphs
           .inner
-        #tools.floater
-          %h3 Tools
-          .inner
-            %button{:onclick => "RogueApp.reforgeAll()"} Auto-Reforge All
-            %button{:onclick => "RogueApp.optimizeGems()"} Optimize Gems
-            %button{:onclick => "RogueApp.ResetLocalStorage()"} Reset Changes
-      -#
-        .addItem.floater
-          %h3 Add An Item
-          .inner
-            - form_for(Item.new, :remote => true, :html => {"data-type" => "json"}) do |f|
-              Item ID
-              =f.text_field :remote_id, :size => 6
-              =f.submit "Add Item"
-      
-    #reforge.popup.half
-      Reforge this item
-    .alternatives.popup.half<
-      #filter
-        %input{:type => "search", :class => "search", :placeholder => "Filter..."}
-      .body
-      
-  #talents
-    #talentframe
-    #talentsets.floater
-  #buffs
-  #target
-    #debuffs
   #settings
-    %h3 General Settings
-    %label
-      Level
-      =text_field_tag :level
-    %label
-      Race
-      =select_tag :race, options_for_select(["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead"].sort, @character.race)
-    #general
-      
-    %h3 Professions
-    #professions
-      
-    %h3 Rotation Settings
-    #rotation
+    %section.cluster.combat
+      .option-list
+        %h3 Rotation Settings
+        .settings
+    %section.cluster.mutilate
+      .option-list
+        %h3 Rotation Settings
+        .settings
+    %section.cluster.subtlety
+      .option-list
+        %h3 Rotation Settings
+        .settings
+
+    %section.cluster
+      .option-list
+        %h3 Raid Buffs
+        #playerBuffs
+
+      .option-list
+        %h3 Raid Debuffs
+        #targetDebuffs
+
+      .option-list
+        %h3 Other
+        #raidOther
+
+    %section.cluster
+      .option-list
+        %h3 General Settings
+        #general
+
+      .option-list
+        %h3 Professions
+        #professions
+
   #impex
     %h3 Import
     %div
@@ -91,22 +115,28 @@
     %input{:type => "button", :id => "doImport", :value => "Import", :class => "button"}
     %h3 Export
     %textarea#export
+  #console-footer
+    %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :class => @character.properties['race'].downcase.gsub(/ /, "_")}
+      .img
+        %img{:src => @character.portrait}
+      %span.info
+        %span.name
+          #{@character.name.capitalize}
+        %span.realm
+          #{@character.realm.titleize}-#{@character.region.upcase}
+    #dps
+      .inner
+    #dpsgraph
+    %section
+      #console.window
+        %h3 Notices
+        .inner
+    %section
+      #log.window
+        %h3 Log
+        .inner
 
 :javascript
-  RogueData.WEIGHTS = {
-    attack_power: 1,
-    agility: 2.88,
-    crit_rating: 1.62,
-    spell_hit: 2.38,
-    hit_rating: 1.69,
-    expertise_rating: 2.2,
-    haste_rating: 2.25,
-    mastery_rating: 0.6,
-    strength: 1
-  };
-  var uuid = "#{@character.name}.#{@character.realm}-#{@character.region}";
-  var serverData = #{@character.to_json };
+  var uuid = "#{@character.uid}";
   #{flash[:_reset] ? "$.jStorage.flush();" : nil}
-  var localData = $.jStorage.get(uuid, serverData);
-  RogueApp.commonInit(jQuery);
-  RogueApp.initApp(jQuery, uuid, localData, window.RogueData);
+  Shadowcraft.boot(uuid, #{@character.to_json }, ShadowcraftData);

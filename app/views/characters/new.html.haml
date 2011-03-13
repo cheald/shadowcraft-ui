@@ -1,23 +1,26 @@
-%h1 Characters
-- @characters.each do |character|
-  .character
-    =link_to character.fullname, character
-    
-=will_paginate @characters
-
 =error_messages_for :character
-%h1 Import Character
-=semantic_form_for @character do |f|
-  =f.inputs do
-    =f.input :name
-    =f.input :realm
-    %label.label_radio
-      =f.radio_button :region, "US"
-      US
-    %label.label_radio
-      =f.radio_button :region, "EU"
-      EU
-  =f.buttons do
-    =f.submit
-:javascript
-  RogueApp.commonInit(jQuery)
+#create_character
+  .form
+    =form_for @character do |f|
+      %span
+        %label{:for => "character_name"} Character Name
+        =f.text_field :name
+      %span
+        %label{:for => "character_realm"} Realm
+        =f.text_field :realm
+      %span
+        %label{:for => "character_region"} Region
+        %label.label_radio
+          #{f.radio_button :region, "US"}  US
+        %label.label_radio
+          #{f.radio_button :region, "EU"} EU
+      .submit
+        =f.submit "Begin"
+  :javascript
+    Shadowcraft.commonInit()
+    $(".submit").hide()
+    $(".form input").change(function() {
+      if($("#character_name").val() && $("#character_realm").val()) {
+        $(".submit:hidden").animate({opacity: 'show', height: 'show'}, 300)
+      }
+    })

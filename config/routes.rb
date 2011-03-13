@@ -56,9 +56,13 @@ Roguesim::Application.routes.draw do
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id(.:format)))'
 
+  match "/:region/:realm/:name", :to => "characters#show", :as => :character, :region => /us|eu/
+  match "/:region/:realm/:name/refresh", :to => "characters#refresh", :as => :refresh_character, :region => /us|eu/
+  match "/error", :to => "application#error"
+
   resources :characters do
-    resources :loadouts
     put 'refresh', :on => :member
+    get 'refresh', :on => :member
   end
   resources :items do
     get 'rebuild', :on => :collection

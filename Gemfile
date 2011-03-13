@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.0'
+gem 'rails', '3.0.5'
 gem "smurf"
 gem 'nokogiri'
 gem "compass", ">= 0.10.5"
@@ -14,6 +14,9 @@ gem "rdiscount"
 gem 'jquery-rails'
 gem "exception_notification", :git => "http://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem "will_paginate"
+gem "json"
+gem "jammit"
+gem "fastercsv"
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators

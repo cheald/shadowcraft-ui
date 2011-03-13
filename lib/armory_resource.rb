@@ -3,7 +3,7 @@ require 'open-uri'
 
 class ArmoryResource
   unloadable
-  
+
   include HTTParty
   format :xml
   base_uri "http://www.wowarmory.com"
@@ -17,18 +17,22 @@ class ArmoryResource
     else
       "http://www.wowarmory.com"
     end
-  end  
-  
+  end
+
   class Item < ArmoryResource
     def self.fetch(id, region = "us")
+      doc = Nokogiri::HTML open("http://us.battle.net/wow/en/item/%d/tooltip" % id)
+      {
+        :name => doc.css("")
+      }
       if a = self.get("#{host region}/item-tooltip.xml", :query => {:i => id}) and
         b = a["page"] and c = b["itemTooltips"] and d = c["itemTooltip"]
         return d
       end
       {}
     end
-  end  
-  
+  end
+
   class ItemInfo < ArmoryResource
     def self.fetch(id, region = "us")
       if a = self.get("#{host region}/item-info.xml", :query => {:i => id}) and
@@ -38,27 +42,27 @@ class ArmoryResource
       {}
     end
   end
-  
+
   class Character < ArmoryResource
     def self.fetch(name, realm, region = "us")
-      if a = self.get("#{host region}/character-sheet.xml", :query => {:n => name, :r => realm}) and 
+      if a = self.get("#{host region}/character-sheet.xml", :query => {:n => name, :r => realm}) and
         b = a["page"] and c = b["characterInfo"]
-        return c        
+        return c
       end
       {}
     end
   end
-  
+
   class Talents < ArmoryResource
     def self.fetch(name, realm, region = "us")
-      if a = self.get("#{host region}/character-talents.xml", :query => {:n => name, :r => realm}) and 
+      if a = self.get("#{host region}/character-talents.xml", :query => {:n => name, :r => realm}) and
         b = a["page"] and c = b["characterInfo"] and d = c["talents"]
         return d
       end
       {}
     end
   end
-  
+
   class Search
     def self.fetch(search, ilevel = 0)
       Nokogiri::XML(open(search, "User-Agent" => ArmoryResource::AGENT)).css('item').select do |item|

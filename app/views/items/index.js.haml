@@ -1,13 +1,14 @@
 - cache_to File.join(Rails.root, "public", "items.js") do
   :plain
-    window.RogueData = {};
+    window.ShadowcraftData = {};
     (function(R) {
       R.GEMS = #{raw @gems.to_json};
       R.ITEMS = #{raw @alt_items.to_json};
       R.ENCHANTS = #{raw @enchants.to_json};
       R.TALENTS = #{raw @talents.to_json};
       R.TALENT_INDEX = #{raw Character::TALENTS.to_json};
-    
+      R.GLYPHS = #{raw @glyphs.to_json}
+
       function getRealSlot(slot, mergeRanged) {
         if(slot == 13 || slot == 21) { // Mainhand-only items
           return "mainhand";
@@ -15,12 +16,12 @@
           return "offhand";
         } else if(mergeRanged && (slot == 15 || slot == 25)) {
           return "ranged";
-        } else { 
+        } else {
           return slot;
         }
       }
       var i;
-      
+
       R.GEM_LIST = [];
       for(var i in R.GEMS) {
         if(R.GEMS.hasOwnProperty(i)) {
@@ -28,11 +29,11 @@
           g.Prismatic = true;
           switch(g.slot) {
             case "Blue":
-              g.Blue = true; break;              
+              g.Blue = true; break;
             case "Purple":
-              g.Blue = true; g.Red = true; break;              
+              g.Blue = true; g.Red = true; break;
             case "Green":
-              g.Blue = true; g.Yellow = true; break;              
+              g.Blue = true; g.Yellow = true; break;
             case "Orange":
               g.Red = true; g.Yellow = true; break;
             case "Red":
@@ -40,6 +41,8 @@
             case "Yellow":
               g.Yellow = true; break;
             case "Prismatic":
+              g.Red = true; g.Blue = true; g.Yellow = true; break;
+            case "Cogwheel":
               g.Red = true; g.Blue = true; g.Yellow = true; break;
             case "Meta":
               g.Meta = true; break;
@@ -60,16 +63,17 @@
       R.ITEM_LOOKUP = {};
       for(i = 0; i < R.ITEMS.length; i++) {
         var item = R.ITEMS[i];
+        item.item_id = item.i;
         if(item.equip_location == 6) {    // Add sockets to belts
           if(item.sockets === undefined) { item.sockets = []; }
           item.sockets[item.sockets.length] = "Prismatic";
         }
-        
-        if(item.equip_location == 13) {
-          R.SLOT_CHOICES.offhand[R.SLOT_CHOICES.offhand.length] = item;   // Dual-hand items get added to offhands, too.          
+
+        if(item.equip_location == 21) {
+          R.SLOT_CHOICES.offhand[R.SLOT_CHOICES.offhand.length] = item;   // Dual-hand items get added to offhands, too.
         }
         item.equip_location = getRealSlot(item.equip_location, true);
-        
+
         if(R.SLOT_CHOICES[item.equip_location] === undefined) { R.SLOT_CHOICES[item.equip_location] = []; }
         R.SLOT_CHOICES[item.equip_location][R.SLOT_CHOICES[item.equip_location].length] = item;
         R.ITEM_LOOKUP[item.id] = item;
@@ -82,4 +86,9 @@
           R.TALENT_LOOKUP[tree + ":" + t.tier + ":" + t.column] = t;
         }
       }
-    })(window.RogueData);
+      R.GLYPH_LOOKUP = {}, R.GLYPHNAME_LOOKUP = {};;
+      for(var i = 0; i < R.GLYPHS.length; i++) {
+        R.GLYPH_LOOKUP[R.GLYPHS[i].id] = R.GLYPHS[i];
+        R.GLYPHNAME_LOOKUP[R.GLYPHS[i].ename] = R.GLYPHS[i];
+      }
+    })(window.ShadowcraftData);

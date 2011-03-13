@@ -2,104 +2,84 @@ class Character
   class NotFoundException < Exception; end
   include Mongoid::Document
   include Mongoid::Timestamps
-  
+  include WowArmory::Document
+  extend WowArmory::Document
+
   field :name
   field :realm
   field :region
-  field :player_class
-  field :level
-  field :race
   field :properties, :type => Hash
-  field :talents, :type => Hash
+  field :portrait
+  field :uid, :index => true
 
-  TALENTS = [:deadly_momentum, :coup_de_grace, :lethality, :ruthlessness, :quickening, :puncturing_wounds, :blackjack, :deadly_brew, :cold_blood, 
-  :vile_poisons, :deadened_nerves, :seal_fate, :murderous_intent, :overkill, :master_poisoner, :improved_expose_armor, :cut_to_the_chase, 
-  :venomous_wounds, :vendetta, :improved_recuperate, :improved_sinister_strike, :precision, :improved_slice_and_dice, :improved_sprint, :aggression, 
-  :improved_kick, :lightning_reflexes, :revealing_strike, :reinforced_leather, :improved_gouge, :combat_potency, :blade_twisting, :throwing_specialization, 
-  :adrenaline_rush, :savage_combat, :bandits_guile, :restless_blades, :killing_spree, :nightstalker, :improved_ambush, :relentless_strikes, :elusiveness, 
-  :waylay, :opportunity, :initiative, :energetic_recovery, :find_weakness, :hemorrhage, :honor_among_thieves, :premeditation, :enveloping_shadows, :cheat_death, 
-  :preparation, :sanguinary_vein, :slaughter_from_the_shadows, :serrated_blades, :shadow_dance]
-
-  TREE_ONE_TALENTS = 19
-  TREE_TWO_TALENTS = 19  
-  
   RACES = ["Human", "Gnome", "Dwarf", "Night Elf", "Worgen", "Troll", "Orc", "Goblin", "Undead"]
   REGIONS = ["US", "EU", "KR", "TW", "CN"]
   CLASSES = ["Rogue"]
-  
-  # validates_inclusion_of :race, :in => RACES
-  # validates_inclusion_of :player_class, :in => CLASSES
+
+  TALENTS = [:deadly_momentum, :coup_de_grace, :lethality, :ruthlessness, :quickening, :puncturing_wounds, :blackjack, :deadly_brew, :cold_blood,
+    :vile_poisons, :deadened_nerves, :seal_fate, :murderous_intent, :overkill, :master_poisoner, :improved_expose_armor, :cut_to_the_chase,
+    :venomous_wounds, :vendetta, :improved_recuperate, :improved_sinister_strike, :precision, :improved_slice_and_dice, :improved_sprint, :aggression,
+    :improved_kick, :lightning_reflexes, :revealing_strike, :reinforced_leather, :improved_gouge, :combat_potency, :blade_twisting, :throwing_specialization,
+    :adrenaline_rush, :savage_combat, :bandits_guile, :restless_blades, :killing_spree, :nightstalker, :improved_ambush, :relentless_strikes, :elusiveness,
+    :waylay, :opportunity, :initiative, :energetic_recovery, :find_weakness, :hemorrhage, :honor_among_thieves, :premeditation, :enveloping_shadows, :cheat_death,
+    :preparation, :sanguinary_vein, :slaughter_from_the_shadows, :serrated_blades, :shadow_dance]
+
   validates_inclusion_of :region, :in => REGIONS
   validates_presence_of :name
   validates_presence_of :realm
   validates_length_of :name, :maximum => 30
   validates_length_of :realm, :maximum => 30
-  validates_numericality_of :level, :less_than_or_equal_to => 85, :greater_than => 0, :if => :name?
-  
-  embeds_many :loadouts
-  
-  def first_talent_group
-    if talentGroup = self.talents["talentGroup"]    
-      talentGroup.is_a?(Array) ? talentGroup.first : talentGroup
-    end
+  validates_uniqueness_of :uid
+
+  before_validation :write_uid
+
+  def to_param
+    "%s-%s" % [normalize_realm]
   end
-  
+
   def update_from_armory!(force = false)
+    self.realm = self.realm.gsub(/-/, " ")
+    self.region = self.region.upcase
     if self.properties.nil? or force
-      self.properties = ArmoryResource::Character.fetch(name, realm, region)
-      self.talents = ArmoryResource::Talents.fetch(name, realm, region)
+      char = WowArmory::Character.new(name, realm, region)
+      self.properties = char.as_json
+      self.properties.stringify_keys!
+      self.portrait = char.portrait
     end
-    if properties.nil? or properties["character"].nil?
-      raise NotFoundException
+    raise NotFoundException if properties.nil?
+
+    properties["gear"].each do |slot, item|
+      Item.find_or_create_by(:remote_id => item["i"].to_i)
     end
-    self.player_class = properties["character"]["class"]
-    self.race = properties["character"]["race"]
-    self.level = properties["character"]["level"].to_i
-    raise NotFoundException if properties["characterTab"].nil? or properties["characterTab"]["items"].nil?
-    
-    gear = Hash[*properties["characterTab"]["items"]["item"].map do |item|
-      i = Item.find_or_create_by(:remote_id => item["id"].to_i)
-      Item.find_or_create_by(:remote_id => item["gem0Id"]) unless item["gem0Id"].to_i == 0
-      Item.find_or_create_by(:remote_id => item["gem1Id"]) unless item["gem0Id"].to_i == 0
-      Item.find_or_create_by(:remote_id => item["gem2Id"]) unless item["gem0Id"].to_i == 0
-      [item["slot"].to_s, {:item => i, :slot => item["slot"], :item_id => i.remote_id, :gem0 => item["gem0Id"], :gem1 => item["gem1Id"], :gem2 => item["gem2Id"], :enchant => item["permanentenchant"].to_i} ]
-    end.flatten]
-    items = gear.map {|k, g| g.delete(:item) }.compact
-    
-    glyphs = []
-    if group = first_talent_group
-      glyphs = group["glyphs"]
-      raw_talents = group["talentSpec"]["value"]
-      talents = Hash[*(0..raw_talents.length-1).map {|l| [TALENTS[l], raw_talents[l].to_i] }.flatten]
-    end
-    self.loadouts.create(:gear => gear, :items => items, :glyphs => glyphs, :talents => talents)
   end
-  
+
   def as_json(options = {})
-    professions = {}
-    if a = properties["characterTab"] and b = a["professions"] and c = b["skill"]
-      [c].flatten.each do |skill|
-        professions[skill["key"]] = true
-      end
-    end
-    
     {
-      :gear   => loadouts.first.gear,
-      :talents => Hash[*[self.talents["talentGroup"]].flatten.map {|g| ["Imported #{g["prim"]}", g["talentSpec"]["value"]] }.flatten],
+      :gear   => properties["gear"],
+      :talents => properties["talents"],
+      :active => properties["active_talents"],
       :name   => name,
-      :race   => race,
-      :realm  => realm,      
+      :realm  => realm,
       :region => region,
       :options => {
         :general => {
-          :level => level
+          :level => properties["level"],
+          :race => properties["race"]
         },
-        :professions => professions
+        :professions => properties["professions"]
       }
     }
   end
-  
+
   def fullname
     "%s @ %s-%s" % [name.titleize, realm.titleize, region.upcase]
+  end
+
+  def write_uid
+    self.uid = "%s-%s-%s" % [region.downcase, realm.downcase.gsub(/ /, "-"), normalize_character(name)]
+  end
+
+  def self.get!(region, realm, character)
+    self.where(:uid => "%s-%s-%s" % [region.downcase, realm.downcase.gsub(/ /, "-"), normalize_character(character)]).first
   end
 end

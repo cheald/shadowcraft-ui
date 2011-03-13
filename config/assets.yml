@@ -1,0 +1,24 @@
+embed_assets: datauri
+package_path: packages
+
+javascripts:
+  app:
+    - public/javascripts/jquery-ui-1.8.5.custom.js
+    - public/javascripts/tooltip.js
+    - public/javascripts/ui.selectmenu.js
+    - public/javascripts/underscore.js
+    - public/javascripts/backbone.js
+    - public/javascripts/handlebars.js
+    - public/javascripts/jstorage.js
+    - public/javascripts/jquery.json-2.2.js
+    - public/javascripts/flot/jquery.flot.js
+    - public/javascripts/flot/jquery.flot.crosshair.js
+    - public/javascripts/jquery.websocket-0.0.1.js
+    - public/javascripts/concatenation.js
+    # - public/javascripts/compiled.js
+stylesheets:
+  app:
+    - public/stylesheets/custom-theme/jquery-ui-1.8.5.custom.css
+    - public/stylesheets/compiled/screen.css
+  print:
+    - public/stylesheets/compiled/print.css

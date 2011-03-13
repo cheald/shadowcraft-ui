@@ -1,5 +1,5 @@
 class Loadout
-  include Mongoid::Document  
+  include Mongoid::Document
   embedded_in :character, :inverse_of => :loadout
   INV_MAIN_HAND = "16"
   INV_OFF_HAND = "17"
@@ -22,58 +22,58 @@ class Loadout
     5.736929893493652, 6.172669887542725, 6.641499996185303,  7.145939826965332,  7.688690185546875,
    10.095899581909180, 13.257599830627441, 17.416299819946289, 22.868499755859375, 30.027200698852539
   ]
-  
+
   # field :gear, :type => Hash
   field :talents, :type => Hash
   field :glyphs, :type => Hash
   field :gear, :type => Hash
   field :stats, :type => Hash
-  
+
   references_many :items
-  
+
   field :agi, :type => Integer
   field :attack_power, :type => Integer
-  
+
   # Ratings
   field :crit_rating, :type => Integer
   field :hit_rating, :type => Integer
   field :expertise_rating, :type => Integer
   field :haste_rating, :type => Integer
   field :mastery_rating_rating, :type => Integer
-  
-  before_save :sum_stats
-  
+
+  # before_save :sum_stats
+
   private
-  
+
   def stat(key, val)
     stats[key] = (stats[key] || 0) + val.to_i
   end
-  
+
   def sum_stats
     # Sum stats from gear (without gems)
-    self.stats = {}
-    items.each do |item|
-      item.properties.keys.grep(/bonus/).each do |bonus|
-        key = bonus.gsub(/^bonus/, "").snake_case
-        stat key, item.properties[bonus]
-      end
-    end
-    
+#    self.stats = {}
+#    items.each do |item|
+#      item.properties.keys.grep(/bonus/).each do |bonus|
+#        key = bonus.gsub(/^bonus/, "").snake_case
+#        stat key, item.properties[bonus]
+#      end
+#    end
+
     # Sum stats from gems
-    
+
     # Sum stats from talents
-    
+
     # TODO: Add race weapon specializations
-    
+
     stat "mainhand_expertise", stats["expertise"] || 0
     stat "offhand_expertise", stats["expertise"] || 0
-    
+
     mh_type = oh_type = nil
     if weapon = items.select {|i| i.remote_id == gear[INV_MAIN_HAND] }.first
       mh_type = weapon.properties["equipData"]["subclassName"]
     end
     if weapon = items.select {|i| i.remote_id == gear[INV_OFF_HAND] }.first
       oh_type = weapon.properties["equipData"]["subclassName"]
-    end    
+    end
   end
 end

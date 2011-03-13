@@ -1,0 +1,1 @@
+window.Shadowcraft = new ShadowcraftApp

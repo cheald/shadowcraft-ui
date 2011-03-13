@@ -1,5 +1,5 @@
 - mustache "log" do
-  .log{:class => "{{severity}}", :id => "{{messageClass}}"}
+  .log{:class => "{{severity}} {{section}}", :id => "{{messageClass}}"}
     %span{:class => "quality-{{quality}}"}
       {{name}}
     {{message}}
@@ -7,7 +7,7 @@
     .sub {{.}}
     {{/submsg}}
 - mustache "talent_set" do
-  %button.talent_set{:"data-talents" => "{{talent_string}}"} {{name}} 
+  %button.talent_set{:"data-talents" => "{{talent_string}}", :"data-glyphs" => "{{glyphs}}"} {{name}}
 - mustache "tree" do
   .tree{:style => "background-image: url(http://www.wowarmory.com/_images/talents/bg/small/{{background}}.jpg);"}
     {{#talents}}
@@ -29,15 +29,17 @@
   .stat
     %span.key {{name}}
     %span.val {{val}}
-    %span.aep {{ep}}
   {{/stats}}
 - mustache "reforge" do
+  %h1 Reforge Item
   %form#reforge
+    {{#recommended}}
     .recommended
       Recommended: Reforge
-      %span.oldstat -{{recommended/qty}} {{recommended/source/name}}
+      %span.oldstat -{{amount}} {{from}}
       into
-      %span.newstat +{{recommended/qty}} {{recommended/dest/name}}
+      %span.newstat +{{amount}} {{to}}
+    {{/recommended}}
     %fieldset.oldstats
       %legend Old Stat
       {{#stats}}
@@ -45,7 +47,7 @@
         %input{:type => "radio", :name => "oldstat", :value => "{{key}}"}
         \-{{use}} {{name}}
       {{/stats}}
-  
+
 
     %fieldset.newstats
       %Legend New Stat
@@ -61,30 +63,45 @@
     .results
       .remove
       .add
-    %input.ui-button.ui-widget.ui-state-default.ui-corner-all{:type => "Button", :value => "Reforge"}
-    
+    %input.ui-button.ui-widget.ui-state-default.ui-corner-all.doReforge{:type => "Button", :value => "Reforge"}
+    %input.ui-button.ui-widget.ui-state-default.ui-corner-all.clearReforge{:type => "Button", :value => "Undo Reforging"}
+
 - mustache("itemSlot") do
   .slot{:id => "{{item/id}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}"}<
     .image<
       -#%img{:src => "http://www.wowarmory.com/wow-icons/_images/64x64/{{item/icon}}.jpg"}
       {{#item}}
       {{#icon}}
-      %img{:src => "http://static.wowhead.com/images/wow/icons/large/{{.}}.jpg"}
+      %img{:src => "http://us.battle.net/wow-assets/static/images/icons/56/{{.}}.jpg"}
       {{/icon}}
       {{/item}}
-      
+
       %span.ilvl {{item/ilvl}}
     .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}"}
       {{item/name}}
       %em.heroic {{item/heroic}}
+
+    {{#reforgable}}
+    .reforge<
+      =image_tag "reforge.png"
+      {{#reforge}}
+      %span.oldstat -{{value}} {{from}}
+      %span.newstat +{{value}} {{to}}
+      {{/reforge}}
+      {{^reforge}}
+      Reforge item
+      {{/reforge}}
+    {{/reforgable}}
+
     {{#enchantable}}
     .enchant
       {{#enchant}}
       %span.img<
         %img{:src => "http://static.wowhead.com/images/wow/icons/medium/{{icon}}.jpg"}
-      {{name}} {{#desc}}({{.}}){{/desc}}        
+      {{desc}}
       {{/enchant}}
-    {{/enchantable}}      
+    {{/enchantable}}
+
     .gems
       {{#gems}}
       .gem.tt{:class => "{{slot}}", :"data-tooltip-id" => "{{gem/id}}"}
@@ -98,17 +115,6 @@
       .bonus
         Socket Bonus: +{{amount}} {{stat}}
       {{/socketbonus}}
-    {{#reforgable}}
-    .reforge<
-      {{#reforge}}
-      %span.oldstat {{from/value}} {{from/stat}}
-      %span.newstat +{{to/value}} {{to/stat}}
-      {{/reforge}}        
-      {{^reforge}}          
-      Reforge item
-      {{/reforge}}
-    
-    {{/reforgable}}
     {{#desc}}
     %span.desc
       {{.}}
@@ -118,9 +124,42 @@
       .label {{../ep}}
       .pct-inner{:style => "width: {{.}}%"}<>
     {{/percent}}
-      
+
 - mustache("checkbox") do
   %label.label_check
-    <input type="checkbox" class="optionCheck" name="{{key}}" id="opt-{{key}}" {{checked}} data-ns={{namespace}} />
-    {{label}}
-    
+    <input type="checkbox" class="optionCheck" name="{{key}}" id="opt-{{namespace}}-{{key}}" data-ns="{{namespace}}" />
+    {{label}}<span>{{desc}}</span>
+
+- mustache("input") do
+  %label.input
+    %span.label {{label}}
+    %input.optionInput(type="text" name="{{key}}" id="opt-{{namespace}}-{{key}}" data-ns="{{namespace}}")
+    %span.desc {{desc}}
+
+- mustache("select") do
+  %label.select
+    %span.label {{label}}
+    .select-container
+      <select class="optionSelect" name="{{key}}" id="opt-{{namespace}}-{{key}}" data-ns="{{namespace}}">
+      {{#options}}
+      <option value="{{value}}">{{name}}</option>
+      {{/options}}
+      </select>
+    %span.desc {{desc}}
+
+- mustache("glyph_slot") do
+  %div.glyph_slot{:"data-id" => "{{id}}"}
+    %span.img<
+      %img{:src => "http://static.wowhead.com/images/wow/icons/medium/{{icon}}.jpg"}
+    {{name}}
+    .pct
+      .label
+      .pct-inner
+
+- mustache("talent_contribution") do
+  .talent_contribution{:"data-val" => "{{width}}", :id => "talent-weight-{{raw_name}}"}
+    .name {{name}}
+    .pct
+      .label {{val}}
+      .pct-inner{:style => "width: {{width}}%"}
+

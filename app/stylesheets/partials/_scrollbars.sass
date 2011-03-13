@@ -1,0 +1,48 @@
+::-webkit-scrollbar
+  width: 12px
+  height: 15px
+::-webkit-scrollbar-corner
+  background-image: url(../../images/scrollbar/corner.png)
+  background-repeat: no-repeat
+::-webkit-resizer
+  background-image: url(../../images/scrollbar/resizer.png)
+  background-repeat: no-repeat
+  background-position: bottom right
+::-webkit-scrollbar-button
+  &:start
+    display: none
+  &:end
+    display: block
+
+::-webkit-scrollbar:vertical
+  -webkit-border-image: url(../../images/scrollbar/vertical-button.png) 2 0 2 0
+  border-color: transparent
+  border-width: 2px 0
+  background-image: url(../../images/scrollbar/vertical-button-background.png)
+  background-repeat: repeat-y
+  &:corner-present
+    border-bottom-width: 0
+::-webkit-scrollbar-thumb:vertical
+  -webkit-border-image: url(../../images/scrollbar/vertical-thumb.png) 15 0 15 0
+  border-color: transparent
+  border-width: 15px 0
+  min-height: 20px
+::-webkit-scrollbar-track-piece:vertical
+  &:start
+    margin-top: 0px
+  &:end
+    margin-bottom: 0px
+  &:decrement
+    -webkit-border-image: url(../../images/scrollbar/vertical-track.png) 15 0 15 0
+    border-color: transparent
+    border-width: 15px 0 0 0
+  &:increment
+    -webkit-border-image: url(../../images/scrollbar/vertical-track.png) 15 0 15 0
+    border-color: transparent
+    border-width: 0 0 15px 0
+::-webkit-scrollbar-button:vertical
+  display: none
+::-webkit-scrollbar:disabled
+  background: red
+  -webkit-border-image: none
+  display: none

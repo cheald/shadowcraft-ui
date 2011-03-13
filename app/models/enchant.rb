@@ -8,7 +8,7 @@ class Enchant
   field :item_id, :type => Integer
   field :item_name
   field :equip_location, :type => Integer
-  
+
   ALL_STATS = {
     "2931" => 4,    # Ring
     "1891" => 4,    # Bracer, Chest
@@ -17,9 +17,15 @@ class Enchant
     "847"  => 1,    # Chest
     "928"  => 3,    # Chest
     "3252" => 8,    # Chest
-    "3832" => 10,   # Chest    
+    "3832" => 10,   # Chest
+    "4063" => 15,   # Chest
+    "4102" => 20,   # Chest
   }
-  
+
+  def encode_json(options = {})
+    as_json(options).to_json
+  end
+
   def as_json(options = {})
     {
       :id => spell_id,
@@ -29,13 +35,13 @@ class Enchant
       :name => item_name.gsub(/Scroll.*- /, "")
     }
   end
-  
+
   def self.update!
     self.destroy_all
     stat_lookup = Hash[*File.open(File.join(Rails.root, "app", "xml", "stats.txt")).map {|l| x = l.strip.split(/[\s]+/, 2) }.flatten]
     permEnchants = {}
     CSV.foreach(File.join(Rails.root, "app", "xml", "SpellItemEnchantment.dbc.csv")) do |row|
-      enchantId = row[0].to_i      
+      enchantId = row[0].to_i
       b = {}
       if row[2].to_i == 5 or row[3].to_i == 5
         3.times do |i|
@@ -52,15 +58,15 @@ class Enchant
         b[:stamina] = q
         b[:strength] = q
       end
-      
+
       permEnchants[enchantId] = b unless b.empty?
     end
-    
+
     Character.all.map {|c| c.properties["characterTab"]["items"]["item"] }.flatten.map do |i|
       h = Hash[*i.keys.grep(/enchant/i).map {|k| [k.to_sym, i[k]] }.flatten]
       i_obj = Item.find_or_create_by(:remote_id => i["id"].to_i)
       h[:slot] = i_obj.equip_location
-      
+
       if i["permanentEnchantItemId"] and i["permanentEnchantItemId"] != "0"
         e_obj = Item.find_or_create_by(:remote_id => i["permanentEnchantItemId"])
         h[:item_name] = e_obj.properties["name"]
@@ -76,7 +82,7 @@ class Enchant
     end.compact.uniq.each do |enchant|
       if Enchant.count(:conditions => {:spell_id => enchant[:permanentenchant].to_i}) == 0
         puts enchant[:item_name]
-        puts enchant[:permanentenchant].to_i        
+        puts enchant[:permanentenchant].to_i
         puts permEnchants[enchant[:permanentenchant].to_i].inspect
         Enchant.create({
           :spell_id => enchant[:permanentenchant].to_i,
@@ -89,7 +95,7 @@ class Enchant
       end
     end
   end
-  
+
   JSON_TO_INTERNAL = {
     "agi" => "agility",
     "atkpwr" => "attack_power",
@@ -98,6 +104,7 @@ class Enchant
     "hastertng" => "haste_rating",
     "hitrtng" => "hit_rating",
     "str" => "strength",
+    "sta" => "stamina",
     "mastrtng" => "mastery_rating"
   }
   SLOT_MAP = [
@@ -106,27 +113,29 @@ class Enchant
     0x100, 0x200, 0x400, 0x800,
     0x1000, 0x2000, 0x4000, 0x8000,
     0x10000, 0x20000, 0x40000, 0x80000,
-    0x100000, 0x200000, 0x400000, 0x800000    
+    0x100000, 0x200000, 0x400000, 0x800000
   ]
-  
-  ACCEPTED_ENCHANTS = ["Black Magic", "Berserking", "Mongoose"]
-  
+
+  ACCEPTED_ENCHANTS = ["Black Magic", "Berserking", "Mongoose", "Hurricane", "Avalanche", "Landslide"]
+
   def self.get_slots(k)
     SLOT_MAP.each_with_index do |e, i|
       return i + 1 if e & k == e
     end
     nil
   end
-  
+
   def self.update_from_json!
     self.destroy_all
     keys = JSON_TO_INTERNAL.keys
     j = JSON::load open(File.join(Rails.root, "app/xml/converted_enchants.json")).read
     j.each do |k, i|
       slots = [i["slots"]].flatten
+      used_names = []
       [i["name"]].flatten.each_with_index do |name, index|
-        name_match = ACCEPTED_ENCHANTS.reduce(false) {|v, n| v or name.match(n) }
+        name_match = ACCEPTED_ENCHANTS.detect {|n| name.match(n) }
         if name_match or (x = i["jsonequip"].keys & keys and x.length > 0)
+          next if used_names.include? name
           x ||= {}
           puts "Adding #{name}..."
           slot = get_slots(slots[index].to_i)
@@ -137,8 +146,10 @@ class Enchant
             :item_name => name,
             :equip_location => slot
           })
-          break
-        end        
+          used_names.push name
+        else
+          puts "Not adding #{name}"
+        end
       end
     end
     nil
