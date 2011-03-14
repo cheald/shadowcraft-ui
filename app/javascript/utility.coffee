@@ -64,8 +64,8 @@ deepCopy = (obj) ->
 
   if typeof obj == 'object'
     out = {}
-    for i in obj
-      out[i] = arguments.callee(obj[i])
+    for i, k of obj
+      out[i] = arguments.callee(k)
     return out
   return obj
 
@@ -86,3 +86,8 @@ $.fn.sortElements = (->
     while elems.length > 0
       parent.appendChild shift.call(elems)
 )()
+
+modal = (dialog) ->
+  $(dialog).detach()
+  $("#wait").hide()
+  $("#modal").append(dialog).fadeIn()

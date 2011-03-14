@@ -1,9 +1,8 @@
 (function() {
-  var $, NOOP, ShadowcraftApp, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, Templates, checkForWarnings, deepCopy, flash, hideFlash, json_encode, loadingSnapshot, showPopup, titleize, tooltip;
+  var $, NOOP, ShadowcraftApp, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, Templates, checkForWarnings, deepCopy, flash, hideFlash, json_encode, loadingSnapshot, modal, showPopup, titleize, tooltip;
   $ = window.jQuery;
   ShadowcraftApp = (function() {
-    var RATING_CONVERSIONS;
-    function ShadowcraftApp() {}
+    var RATING_CONVERSIONS, _update;
     RATING_CONVERSIONS = {
       80: {
         hit_rating: 30.7548,
@@ -53,28 +52,37 @@
       $("button, input:submit, .button").button();
       return this.setupLabels();
     };
-    ShadowcraftApp.prototype.boot = function(uuid, Data, ServerData) {
-      var _base, _base2;
+    _update = function() {
+      return Shadowcraft.trigger("update");
+    };
+    ShadowcraftApp.prototype.update = function() {
+      if (this.updateThrottle) {
+        this.updateThrottle = clearTimeout(this.updateThrottle);
+      }
+      return this.updateThrottle = setTimeout(_update, 50);
+    };
+    ShadowcraftApp.prototype.loadData = function() {
+      return Shadowcraft.trigger("loadData");
+    };
+    function ShadowcraftApp() {
+      _.extend(this, Backbone.Events);
+    }
+    ShadowcraftApp.prototype.boot = function(uuid, data, ServerData) {
+      var _base;
       this.uuid = uuid;
-      this.Data = Data;
       this.ServerData = ServerData;
-      this.Data = $.jStorage.get(uuid, this.Data);
+      this.History = new ShadowcraftHistory(this).boot();
+      if (!this.History.loadFromFragment()) {
+        try {
+          this.Data = this.History.load(data);
+        } catch (TypeError) {
+          this.Data = data;
+        }
+      }
+      this.Data || (this.Data = data);
       (_base = this.Data).options || (_base.options = {});
-      (_base2 = this.Data).weights || (_base2.weights = {
-        attack_power: 1,
-        agility: 2.66,
-        crit_rating: 0.87,
-        spell_hit: 1.3,
-        hit_rating: 1.02,
-        expertise_rating: 1.51,
-        haste_rating: 1.44,
-        mastery_rating: 1.15,
-        yellow_hit: 1.79,
-        strength: 1.05
-      });
       ShadowcraftApp.trigger("boot");
       this.Console = new ShadowcraftConsole(this);
-      this.History = new ShadowcraftHistory(this).boot();
       this.Backend = new ShadowcraftBackend(this).boot();
       this.Talents = new ShadowcraftTalents(this);
       this.Options = new ShadowcraftOptions(this).boot();
@@ -116,8 +124,9 @@
         }
         return false;
       });
-      $("body").append("<div id='wait' style='display: none'></div>");
+      $("body").append("<div id='wait' style='display: none'></div><div id='modal' style='display: none'></div>");
       $(".showWait").click(function() {
+        $("#modal").hide();
         return $("#wait").fadeIn();
       });
       $("#reloadAllData").click(function() {
@@ -213,7 +222,7 @@
     }).call(this);
   };
   deepCopy = function(obj) {
-    var i, len, out, _i, _len;
+    var i, k, len, out;
     if (obj instanceof Array) {
       out = [];
       i = 0;
@@ -225,9 +234,9 @@
     }
     if (typeof obj === 'object') {
       out = {};
-      for (_i = 0, _len = obj.length; _i < _len; _i++) {
-        i = obj[_i];
-        out[i] = arguments.callee(obj[i]);
+      for (i in obj) {
+        k = obj[i];
+        out[i] = arguments.callee(k);
       }
       return out;
     }
@@ -257,6 +266,11 @@
       return _results;
     };
   })();
+  modal = function(dialog) {
+    $(dialog).detach();
+    $("#wait").hide();
+    return $("#modal").append(dialog).fadeIn();
+  };
   Templates = null;
   ShadowcraftApp.bind("boot", function() {
     return Templates = {
@@ -289,6 +303,9 @@
     ShadowcraftBackend.prototype.boot = function() {
       var self;
       self = this;
+      Shadowcraft.bind("update", function() {
+        return self.recompute();
+      });
       this.ws = $.websocket(WS_ENGINE, {
         error: function(e) {
           return console.log(e);
@@ -317,7 +334,9 @@
       _ref = data.glyphs;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         glyph = _ref[_i];
-        glyph_list.push(GlyphLookup[glyph].ename);
+        if (GlyphLookup[glyph] != null) {
+          glyph_list.push(GlyphLookup[glyph].ename);
+        }
       }
       buffList = [];
       _ref2 = data.options.buffs;
@@ -346,13 +365,19 @@
           duration: data.options.general.duration
         },
         t: [data.activeTalents.substr(0, Talents[0].talent.length), data.activeTalents.substr(Talents[0].talent.length, Talents[1].talent.length), data.activeTalents.substr(Talents[0].talent.length + Talents[1].talent.length, Talents[2].talent.length)],
-        mh: [mh.speed, mh.dps * mh.speed, data.gear[15].enchant, mh.subclass],
-        oh: [oh.speed, oh.dps * oh.speed, data.gear[16].enchant, oh.subclass],
-        th: [th.speed, th.dps * th.speed, data.gear[17].enchant, th.subclass],
         sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit_rating || 0, statSummary.hit_rating || 0, statSummary.expertise_rating || 0, statSummary.haste_rating || 0, statSummary.mastery_rating || 0],
         gly: glyph_list,
         pro: data.options.professions
       };
+      if (mh != null) {
+        payload.mh = [mh.speed, mh.dps * mh.speed, data.gear[15].enchant, mh.subclass];
+      }
+      if (oh != null) {
+        payload.oh = [oh.speed, oh.dps * oh.speed, data.gear[16].enchant, oh.subclass];
+      }
+      if (th != null) {
+        payload.th = [th.speed, th.dps * th.speed, data.gear[17].enchant, th.subclass];
+      }
       gear_ids = [];
       _ref3 = data.gear;
       for (k in _ref3) {
@@ -462,12 +487,31 @@
   })();
   loadingSnapshot = false;
   ShadowcraftHistory = (function() {
-    var DATA_VERSION, base36Decode, base36Encode, compress, compress_handlers, decompress, decompress_handlers, recompute;
+    var DATA_VERSION, base10, base36Decode, base36Encode, base77, compress, compress_handlers, decompress, decompress_handlers, map, poisonMap, professionMap, raceMap, rotationOptionsMap, rotationValueMap, unmap;
     DATA_VERSION = 1;
     function ShadowcraftHistory(app) {
       this.app = app;
       this.app.History = this;
       Shadowcraft.Reset = this.reset;
+    }
+    ShadowcraftHistory.prototype.boot = function() {
+      var app;
+      app = this;
+      $("#tabs").tabs({
+        show: function(event, ui) {
+          if (ui.tab.hash === "#impex") {
+            return app.buildExport();
+          }
+        }
+      });
+      Shadowcraft.bind("update", function() {
+        return app.save();
+      });
+      $("#doImport").click(function() {
+        var json;
+        json = $.parseJSON($("textarea#import").val());
+        return app.loadSnapshot(json);
+      });
       $("#dpsgraph").bind("plotclick", function(event, pos, item) {
         if (item) {
           dpsPlot.unhighlight();
@@ -480,32 +524,51 @@
             return false;
         }
       });
-    }
-    ShadowcraftHistory.prototype.boot = function() {
-      var app;
-      app = this;
-      $("#tabs").tabs({
-        show: function(event, ui) {
-          if (ui.tab.hash === "#impex") {
-            return app.buildExport();
-          }
-        }
-      });
       return this;
     };
-    recompute = function() {
-      return Shadowcraft.Backend.recompute();
-    };
-    ShadowcraftHistory.prototype.saveData = function() {
-      var cancelRecompute;
+    ShadowcraftHistory.prototype.save = function() {
+      var data;
       if (this.app.Data != null) {
-        $.jStorage.set(this.app.uuid, this.app.Data);
+        data = compress(this.app.Data);
+        this.persist(data);
+        return $.jStorage.set(this.app.uuid, data);
       }
-      if (this.recomputeTimeout) {
-        this.recomputeTimeout = clearTimeout(this.recomputeTimeout);
+    };
+    ShadowcraftHistory.prototype.load = function(defaults) {
+      var data;
+      data = $.jStorage.get(this.app.uuid, defaults);
+      if (data instanceof Array && data.length !== 0) {
+        data = decompress(data);
+      } else {
+        data = defaults;
       }
-      cancelRecompute = true;
-      return this.recomputeTimeout = setTimeout(recompute, 50);
+      return data;
+    };
+    ShadowcraftHistory.prototype.loadFromFragment = function() {
+      var frag, hash, inflated, snapshot;
+      hash = window.location.hash;
+      if (hash && hash.match(/^#!/)) {
+        frag = hash.substring(3);
+        inflated = RawDeflate.inflate($.base64Decode(frag));
+        snapshot = null;
+        try {
+          snapshot = $.parseJSON(inflated);
+        } catch (TypeError) {
+          snapshot = null;
+        }
+        if (snapshot != null) {
+          this.loadSnapshot(snapshot);
+          return true;
+        }
+      }
+      return false;
+    };
+    ShadowcraftHistory.prototype.persist = function(data) {
+      var frag, jd;
+      this.lookups || (this.lookups = {});
+      jd = json_encode(data);
+      frag = $.base64Encode(RawDeflate.deflate(jd));
+      return window.history.replaceState("loadout", "Latest settings", window.location.pathname.replace(/\/+$/, "") + "/#!/" + frag);
     };
     ShadowcraftHistory.prototype.reset = function() {
       if (confirm("This will wipe out any changes you've made. Proceed?")) {
@@ -514,38 +577,47 @@
       }
     };
     ShadowcraftHistory.prototype.takeSnapshot = function() {
-      return deepCopy(this.app.Data);
+      return compress(deepCopy(this.app.Data));
     };
     ShadowcraftHistory.prototype.loadSnapshot = function(snapshot) {
-      this.app.Data = deepCopy(snapshot);
+      this.app.Data = decompress(snapshot);
+      console.log(this.app.Data);
       loadingSnapshot = true;
-      return Shadowcraft.updateView();
+      return Shadowcraft.loadData();
     };
     ShadowcraftHistory.prototype.buildExport = function() {
-      return $("#export").text(json_encode(compress(Shadowcraft.Data)));
+      var data, encoded_data;
+      data = json_encode(compress(this.app.Data));
+      encoded_data = $.base64Encode(lzw_encode(data));
+      return $("#export").text(data);
     };
-    base36Encode = function(r) {
-      var i, v, _len;
-      for (i = 0, _len = r.length; i < _len; i++) {
-        v = r[i];
-        if (v === 0) {
-          r[i] = "";
+    base10 = "0123456789";
+    base77 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    base36Encode = function(a) {
+      var i, r, v, _len;
+      r = [];
+      for (i = 0, _len = a.length; i < _len; i++) {
+        v = a[i];
+        if (v === void 0 || v === null) {
+          continue;
+        } else if (v === 0) {
+          r.push("");
         } else {
-          r[i] = v.toString(36);
+          r.push(convertBase(v.toString(), base10, base77));
         }
       }
-      return r.join(":");
+      return r.join(";");
     };
     base36Decode = function(s) {
       var r, v, _i, _len, _ref;
       r = [];
-      _ref = s.split(":");
+      _ref = s.split(";");
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         v = _ref[_i];
         if (v === "") {
           r.push(0);
         } else {
-          r.push(parseInt(v, 36));
+          r.push(parseInt(convertBase(v, base77, base10), 10));
         }
       }
       return r;
@@ -561,9 +633,20 @@
       }
       return decompress_handlers[version](data);
     };
+    professionMap = ["enchanting", "engineering", "blacksmithing", "inscription", "jewelcrafting", "leatherworking", "tailoring"];
+    poisonMap = ["ip", "dp", "wp"];
+    raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf"];
+    rotationOptionsMap = ["min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab", "use_rupture", "ksp_immediately", "use_revealing_strike", "clip_recuperate"];
+    rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, true, false, 'true', 'false', 'never', 'always', 'sometimes'];
+    map = function(value, m) {
+      return m.indexOf(value);
+    };
+    unmap = function(value, m) {
+      return m[value];
+    };
     compress_handlers = {
       "1": function(data) {
-        var buff, buffs, gear, gearSet, general, index, options, ret, set, slot, talentSet, talents, v, _i, _len, _len2, _ref, _ref2;
+        var buff, buffs, gear, gearSet, general, index, k, options, profession, professions, ret, rotationOptions, slot, v, val, _len, _ref, _ref2, _ref3;
         ret = [DATA_VERSION];
         gearSet = [];
         for (slot = 0; slot <= 17; slot++) {
@@ -577,55 +660,51 @@
         }
         ret.push(base36Encode(gearSet));
         ret.push(ShadowcraftTalents.encodeTalents(data.activeTalents));
-        ret.push(data.glyphs);
+        ret.push(base36Encode(data.glyphs));
         options = [];
-        options.push(data.options.professions);
-        general = [data.options.general.level, data.options.general.race, data.options.general.duration, data.options.general.mh_poison, data.options.general.oh_poison, data.options.general.potion_of_the_tolvir];
-        options.push(general);
+        professions = [];
+        _ref = data.options.professions;
+        for (profession in _ref) {
+          val = _ref[profession];
+          if (val) {
+            professions.push(map(profession, professionMap));
+          }
+        }
+        options.push(professions);
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, poisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0];
+        options.push(base36Encode(general));
         buffs = [];
-        _ref = ShadowcraftOptions.buffMap;
-        for (index = 0, _len = _ref.length; index < _len; index++) {
-          buff = _ref[index];
+        _ref2 = ShadowcraftOptions.buffMap;
+        for (index = 0, _len = _ref2.length; index < _len; index++) {
+          buff = _ref2[index];
           v = data.options.buffs[buff];
           buffs.push(v ? 1 : 0);
         }
         options.push(buffs);
-        if (data.tree0 >= 31) {
-          options.push(data.options["rotation-mutilate"]);
-        } else if (data.tree1 >= 31) {
-          options.push(data.options["rotation-combat"]);
-        } else if (data.tree2 >= 31) {
-          options.push(data.options["rotation-subtlety"]);
+        rotationOptions = [];
+        _ref3 = data.options["rotation"];
+        for (k in _ref3) {
+          v = _ref3[k];
+          rotationOptions.push(map(k, rotationOptionsMap));
+          rotationOptions.push(map(v, rotationValueMap));
         }
+        options.push(base36Encode(rotationOptions));
         ret.push(options);
-        talents = [];
-        _ref2 = data.talents;
-        for (_i = 0, _len2 = _ref2.length; _i < _len2; _i++) {
-          set = _ref2[_i];
-          talentSet = base36Encode(_.clone(set.glyphs || []));
-          talents.push(talentSet);
-          talents.push(ShadowcraftTalents.encodeTalents(set.talents));
-        }
-        ret.push(talents);
-        ret.push(data.active);
-        console.log(ret);
-        console.log(decompress(ret));
         return ret;
       }
     };
     decompress_handlers = {
       "1": function(data) {
-        var d, gear, general, i, id, index, k, options, set, slot, talents, v, _len, _len2, _len3, _ref, _ref2;
+        var d, gear, general, i, id, index, k, options, rotation, slot, v, _len, _len2, _len3, _len4, _ref, _ref2, _ref3;
         d = {
           gear: {},
           activeTalents: ShadowcraftTalents.decodeTalents(data[2]),
-          glyphs: data[3],
+          glyphs: base36Decode(data[3]),
           options: {},
           talents: [],
           active: data[6]
         };
         gear = base36Decode(data[1]);
-        console.log(gear);
         for (index = 0, _len = gear.length; index < _len; index += 6) {
           id = gear[index];
           slot = (index / 6).toString();
@@ -646,29 +725,32 @@
           }
         }
         options = data[4];
-        d.options.professions = options[0];
-        general = options[1];
-        d.options.general = {
-          level: general[0],
-          race: general[1],
-          duration: general[2],
-          mh_poison: general[3],
-          oh_poison: general[4],
-          potion_of_the_volvir: general[5]
-        };
-        d.options.buffs = {};
-        _ref2 = options[2];
+        d.options.professions = {};
+        _ref2 = options[0];
         for (i = 0, _len2 = _ref2.length; i < _len2; i++) {
           v = _ref2[i];
+          d.options.professions[unmap(v, professionMap)] = true;
+        }
+        general = base36Decode(options[1]);
+        d.options.general = {
+          level: general[0],
+          race: unmap(general[1], raceMap),
+          duration: general[2],
+          mh_poison: unmap(general[3], poisonMap),
+          oh_poison: unmap(general[4], poisonMap),
+          potion_of_the_volvir: general[5] === 1
+        };
+        d.options.buffs = {};
+        _ref3 = options[2];
+        for (i = 0, _len3 = _ref3.length; i < _len3; i++) {
+          v = _ref3[i];
           d.options.buffs[ShadowcraftOptions.buffMap[i]] = v === 1;
         }
-        talents = data[5];
-        for (index = 0, _len3 = talents.length; index < _len3; index += 2) {
-          set = talents[index];
-          d.talents.push({
-            glyphs: base36Decode(set),
-            talents: ShadowcraftTalents.decodeTalents(talents[index + 1])
-          });
+        rotation = base36Decode(options[3]);
+        d.options.rotation = {};
+        for (i = 0, _len4 = rotation.length; i < _len4; i += 2) {
+          v = rotation[i];
+          d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i + 1], rotationValueMap);
         }
         return d;
       }
@@ -1030,7 +1112,7 @@
           'default': true
         }
       });
-      this.setup("#settings section.mutilate .settings", "rotation-mutilate", {
+      this.setup("#settings section.mutilate .settings", "rotation", {
         min_envenom_size_mutilate: {
           type: "select",
           name: "Min CP/Envenom > 35%",
@@ -1058,7 +1140,7 @@
           "default": true
         }
       });
-      this.setup("#settings section.combat .settings", "rotation-combat", {
+      this.setup("#settings section.combat .settings", "rotation", {
         use_rupture: {
           name: "Use Rupture?",
           right: true,
@@ -1084,7 +1166,7 @@
           'default': "sometimes"
         }
       });
-      return this.setup("#settings section.subtlety .settings", "rotation-subtlety", {
+      return this.setup("#settings section.subtlety .settings", "rotation", {
         clip_recuperate: "Clip Recuperate?"
       });
     };
@@ -1099,7 +1181,7 @@
         val = $this.val();
       }
       data.options[ns][name] = val;
-      return Shadowcraft.History.saveData();
+      return Shadowcraft.update();
     };
     changeCheck = function() {
       var $this;
@@ -1114,12 +1196,17 @@
       return changeOption(this);
     };
     ShadowcraftOptions.prototype.boot = function() {
+      var app;
+      app = this;
       this.initOptions();
       if (!window.Touch) {
         $("#settings select").selectmenu({
           style: 'dropdown'
         });
       }
+      Shadowcraft.bind("loadData", function() {
+        return app.initOptions();
+      });
       Shadowcraft.Talents.bind("changed", function() {
         $("#settings section.mutilate, #settings section.combat, #settings section.subtlety").hide();
         if (Shadowcraft.Data.tree0 >= 31) {
@@ -1159,7 +1246,6 @@
     ShadowcraftTalents.encodeTalents = function(s) {
       var c, i, index, l, offset, size, str, sub, _len, _len2;
       str = "";
-      console.log("parsing string", s);
       offset = 0;
       for (index = 0, _len = TREE_SIZE.length; index < _len; index++) {
         size = TREE_SIZE[index];
@@ -1174,7 +1260,6 @@
           str += "Z";
         }
       }
-      console.log(s, str, ShadowcraftTalents.decodeTalents(str));
       return str;
     };
     ShadowcraftTalents.decodeTalents = function(s) {
@@ -1241,7 +1326,7 @@
         }
       });
       Shadowcraft.Talents.trigger("changed");
-      return Shadowcraft.History.saveData();
+      return Shadowcraft.update();
     };
     hoverTalent = function() {
       var nextRank, points, pos, rank, talent;
@@ -1403,12 +1488,12 @@
         switch (e.button) {
           case 0:
             if (applyTalentToButton(this, 1)) {
-              Shadowcraft.History.saveData();
+              Shadowcraft.update();
             }
             break;
           case 2:
             if (applyTalentToButton(this, -1)) {
-              Shadowcraft.History.saveData();
+              Shadowcraft.update();
             }
         }
         return $(this).trigger("mouseenter");
@@ -1424,7 +1509,7 @@
         $.data(this, "listening", false);
         if (!($.data(this, "removed") || !$(this).hasClass("active"))) {
           if (applyTalentToButton(this, 1)) {
-            return Shadowcraft.History.saveData();
+            return Shadowcraft.update();
           }
         }
       });
@@ -1433,7 +1518,7 @@
         listening = $.data(tframe, "listening");
         if (e.originalEvent.touches.length > 1 && listening && $.data(listening, "listening")) {
           if (applyTalentToButton.call(listening, listening, -1)) {
-            Shadowcraft.History.saveData();
+            Shadowcraft.update();
           }
           return $.data(listening, "removed", true);
         }
@@ -1443,7 +1528,7 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         talent = _ref[_i];
         buffer += Templates.talentSet({
-          talent_string: talent.talents,
+          talent_string: ShadowcraftTalents.encodeTalents(talent.talents),
           glyphs: talent.glyphs.join(","),
           name: "Imported " + getSpecFromString(talent.talents)
         });
@@ -1451,13 +1536,17 @@
       for (talentName in DEFAULT_SPECS) {
         talent = DEFAULT_SPECS[talentName];
         buffer += Templates.talentSet({
-          talent_string: talent,
+          talent_string: ShadowcraftTalents.encodeTalents(talent),
           name: talentName
         });
       }
       $("#talentsets").get(0).innerHTML = buffer;
       this.updateActiveTalents();
       return initTalentsPane = function() {};
+    };
+    ShadowcraftTalents.prototype.setGlyphs = function(glyphs) {
+      Shadowcraft.Data.glyphs = glyphs;
+      return this.initGlyphs();
     };
     ShadowcraftTalents.prototype.initGlyphs = function() {
       var Glyphs, buffer, data, g, glyph, i, idx, _len, _len2, _ref, _results;
@@ -1544,8 +1633,10 @@
       _ref = data.glyphs;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         glyph = _ref[_i];
-        if (GlyphLookup[glyph].rank === 3) {
-          count++;
+        if (GlyphLookup[glyph] != null) {
+          if (GlyphLookup[glyph].rank === 3) {
+            count++;
+          }
         }
       }
       return count;
@@ -1576,7 +1667,7 @@
         }
       }
       checkForWarnings('glyphs');
-      return Shadowcraft.History.saveData();
+      return Shadowcraft.update();
     };
     updateTalentContribution = function(LC) {
       var buffer, exist, k, max, name, pct, rankings, s, setKey, setVal, sets, target, val;
@@ -1632,8 +1723,10 @@
       });
     };
     ShadowcraftTalents.prototype.boot = function() {
+      var app;
       this.initTalentsPane();
       this.initGlyphs();
+      app = this;
       Shadowcraft.Backend.bind("recompute", updateTalentContribution);
       Shadowcraft.Backend.bind("recompute", updateGlyphWeights);
       $("#glyphs").click($.delegate({
@@ -1643,10 +1736,24 @@
       }));
       $("#talentsets").click($.delegate({
         ".talent_set": function() {
-          return setTalents($(this).attr("data-talents"));
+          var glyph, glyphs, i, talents, _len;
+          talents = ShadowcraftTalents.decodeTalents($(this).data("talents"));
+          glyphs = ($(this).data("glyphs") || "").split(",");
+          for (i = 0, _len = glyphs.length; i < _len; i++) {
+            glyph = glyphs[i];
+            glyphs[i] = parseInt(glyph, 10);
+          }
+          glyphs = _.compact(glyphs);
+          console.log('setting talents to', talents, glyphs);
+          setTalents(talents);
+          return app.setGlyphs(glyphs);
         }
       }));
       $("#reset_talents").click(resetTalents);
+      Shadowcraft.bind("loadData", function() {
+        app.updateActiveTalents();
+        return app.initGlyphs();
+      });
       $("#talents #talentframe").mousemove(function(e) {
         $.data(document, "mouse-x", e.pageX);
         return $.data(document, "mouse-y", e.pageY);
@@ -1664,7 +1771,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, JC_ONLY_GEMS, MAX_PROFESSIONAL_GEMS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, compactReforge, epSort, getGemRecommendationList, getGemmingRecommendation, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, isProfessionalGem, needsDagger, racialExpertiseBonus, racialHitBonus, recommendReforge, reforgeAmount, reforgeEp, sourceStats, statsToDesc, sumItem, sumRecommendation, sumReforge, updateStatWeights, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, JC_ONLY_GEMS, MAX_PROFESSIONAL_GEMS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getGemRecommendationList, getGemmingRecommendation, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, sourceStats, statsToDesc, sumItem, sumRecommendation, sumReforge, updateStatWeights, whiteWhite, __epSort;
     MAX_PROFESSIONAL_GEMS = 3;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"];
     REFORGE_FACTOR = 0.4;
@@ -1692,6 +1799,18 @@
     SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16", "17"];
     SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13", "17"]];
     ShadowcraftGear.CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779];
+    Weights = {
+      attack_power: 1,
+      agility: 2.66,
+      crit_rating: 0.87,
+      spell_hit: 1.3,
+      hit_rating: 1.02,
+      expertise_rating: 1.51,
+      haste_rating: 1.44,
+      mastery_rating: 1.15,
+      yellow_hit: 1.79,
+      strength: 1.05
+    };
     SLOT_INVTYPES = {
       0: 1,
       1: 2,
@@ -1764,7 +1883,7 @@
     get_ep = function(item, key, slot) {
       var c, data, stat, stats, total, value, weight, weights;
       data = Shadowcraft.Data;
-      weights = data.weights;
+      weights = Weights;
       stats = {};
       if (item.source && item.dest) {
         sumRecommendation(stats, item);
@@ -1774,7 +1893,7 @@
       total = 0;
       for (stat in stats) {
         value = stats[stat];
-        weight = data.weights[stat] || 0;
+        weight = Weights[stat] || 0;
         total += value * weight;
       }
       delete stats;
@@ -1783,10 +1902,10 @@
         if (item.dps) {
           if (slot === 15) {
             total += (item.dps * c.mh_ep.mh_dps) + (item.speed * c.mh_speed_ep["mh_" + item.speed]);
-            total += racialExpertiseBonus(item) * weights.expertise_rating;
+            total += racialExpertiseBonus(item) * Weights.expertise_rating;
           } else if (slot === 16) {
             total += (item.dps * c.oh_ep.oh_dps) + (item.speed * c.oh_speed_ep["oh_" + item.speed]);
-            total += racialExpertiseBonus(item) * weights.expertise_rating;
+            total += racialExpertiseBonus(item) * Weights.expertise_rating;
           }
         } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
           total += c.meta.chaotic_metagem;
@@ -1857,6 +1976,9 @@
     };
     racialExpertiseBonus = function(item) {
       var mh_type, race;
+      if (item == null) {
+        return 0;
+      }
       mh_type = item.subclass;
       race = Shadowcraft.Data.race;
       if (race === "Human" && (mh_type === 7 || mh_type === 4)) {
@@ -1883,6 +2005,45 @@
         this.sumStats();
       }
       return this.statSum[stat] || 0;
+    };
+    ShadowcraftGear.prototype.getDodge = function(hand) {
+      var ItemLookup, boss_dodge, data, expertise;
+      data = Shadowcraft.Data;
+      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
+      expertise = this.statSum.expertise_rating;
+      boss_dodge = DEFAULT_BOSS_DODGE;
+      if ((!(hand != null) || hand === "main") && data.gear[15] && data.gear[15].item_id) {
+        expertise += racialExpertiseBonus(ItemLookup[data.gear[15].item_id]);
+      } else if ((hand === "off") && data.gear[16] && data.gear[16].item_id) {
+        expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id]);
+      }
+      return DEFAULT_BOSS_DODGE - (expertise / Shadowcraft._R("expertise_rating") * 0.25);
+    };
+    ShadowcraftGear.prototype.getMiss = function(cap) {
+      var data, hasHit, hitCap, r;
+      data = Shadowcraft.Data;
+      switch (cap) {
+        case "yellow":
+          r = Shadowcraft._R("hit_rating");
+          hitCap = r * (8 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating");
+          break;
+        case "spell":
+          r = Shadowcraft._R("spell_hit");
+          hitCap = r * (17 - 2 * Shadowcraft._T("precision")) - racialHitBonus("spell_hit");
+          break;
+        case "white":
+          r = Shadowcraft._R("hit_rating");
+          hitCap = r * (27 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating");
+      }
+      if ((r != null) && (hitCap != null)) {
+        hasHit = this.statSum.hit_rating || 0;
+        if (hasHit < hitCap || cap === "white") {
+          return (hitCap - hasHit) / r;
+        } else {
+          return 0;
+        }
+      }
+      return -99;
     };
     getStatWeight = function(stat, num, ignore, ignoreAll) {
       var ItemLookup, boss_dodge, data, delta, exist, expertiseCap, neg, remaining, spellHitCap, total, usable, whiteHitCap, yellowHitCap;
@@ -1911,7 +2072,7 @@
           if (usable > num) {
             usable = num;
           }
-          return data.weights.expertise_rating * usable * neg;
+          return Weights.expertise_rating * usable * neg;
         case "hit_rating":
           yellowHitCap = Shadowcraft._R("hit_rating") * (8 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating");
           spellHitCap = Shadowcraft._R("spell_hit") * (17 - 2 * Shadowcraft._T("precision")) - racialHitBonus("spell_hit");
@@ -1920,25 +2081,25 @@
           remaining = num;
           if (remaining > 0 && exist < yellowHitCap) {
             delta = (yellowHitCap - exist) > remaining ? remaining : yellowHitCap - exist;
-            total += delta * data.weights.yellow_hit;
+            total += delta * Weights.yellow_hit;
             remaining -= delta;
             exist += delta;
           }
           if (remaining > 0 && exist < spellHitCap) {
             delta = (spellHitCap - exist) > remaining ? remaining : spellHitCap - exist;
-            total += delta * data.weights.spell_hit;
+            total += delta * Weights.spell_hit;
             remaining -= delta;
             exist += delta;
           }
           if (remaining > 0 && exist < whiteHitCap) {
             delta = (whiteHitCap - exist) > remaining ? remaining : whiteHitCap - exist;
-            total += delta * data.weights.hit_rating;
+            total += delta * Weights.hit_rating;
             remaining -= delta;
             exist += delta;
           }
           return total * neg;
       }
-      return (data.weights[stat] || 0) * num * neg;
+      return (Weights[stat] || 0) * num * neg;
     };
     __epSort = function(a, b) {
       return b.__ep - a.__ep;
@@ -2151,6 +2312,7 @@
         }
       }
       if (!madeChanges || depth >= 10) {
+        this.app.update();
         this.updateDisplay();
         return Shadowcraft.Console.log("Finished automatic regemming: &Delta; " + (Math.floor(EP_TOTAL - EP_PRE_REGEM)) + " EP", "gold");
       } else {
@@ -2266,6 +2428,7 @@
         }
       }
       if (!madeChanges || depth >= 10) {
+        this.app.update();
         this.updateDisplay();
         return Shadowcraft.Console.log("Finished automatic reforging: &Delta; " + Math.floor(EP_TOTAL - EP_PRE_REFORGE) + " EP", "gold");
       } else {
@@ -2285,6 +2448,7 @@
         delete gear.reforge;
       }
       Shadowcraft.Console.log("Removing reforge on " + ItemLookup[gear.item_id].name);
+      Shadowcraft.update();
       Shadowcraft.Gear.updateDisplay();
       return $("#reforge").removeClass("visible");
     };
@@ -2306,16 +2470,14 @@
         Shadowcraft.Console.log("Reforging " + item.name + " to <span class='neg'>-" + amt + " " + (titleize(from)) + "</span> / <span class='pos'>+" + amt + " " + (titleize(to)) + "</span>");
       }
       $("#reforge").removeClass("visible");
+      Shadowcraft.update();
       return Shadowcraft.Gear.updateDisplay();
     };
     /*
     # View helpers
     */
-    ShadowcraftGear.prototype.updateDisplay = function(skipSave) {
+    ShadowcraftGear.prototype.updateDisplay = function(skipUpdate) {
       var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, data, enchant, enchantable, from, gear, gem, gems, i, item, opt, reforgable, reforge, slotIndex, slotSet, socket, ssi, stat, to, _i, _len, _len2, _len3, _ref, _ref2;
-      if (!skipSave) {
-        this.app.History.saveData();
-      }
       this.updateStatsWindow();
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
@@ -2403,6 +2565,35 @@
       }
       return checkForWarnings('gear');
     };
+    whiteWhite = function(v, s) {
+      return s;
+    };
+    redWhite = function(v, s) {
+      var c;
+      s || (s = v);
+      c = v < 0 ? "neg" : "";
+      return colorSpan(s, c);
+    };
+    greenWhite = function(v, s) {
+      var c;
+      s || (s = v);
+      c = v < 0 ? "" : "pos";
+      return colorSpan(s, c);
+    };
+    redGreen = function(v, s) {
+      var c;
+      s || (s = v);
+      c = v < 0 ? "neg" : "pos";
+      return colorSpan(s, c);
+    };
+    colorSpan = function(s, c) {
+      return "<span class='" + c + "'>" + s + "</span>";
+    };
+    pctColor = function(v, func, reverse) {
+      func || (func = redGreen);
+      reverse || (reverse = 1);
+      return func(v * reverse, v.toFixed(2) + "%");
+    };
     ShadowcraftGear.prototype.updateStatsWindow = function() {
       var $stats, a_stats, idx, keys, stat, total, weight;
       this.sumStats();
@@ -2416,19 +2607,33 @@
         total += weight;
         a_stats.push({
           name: titleize(stat),
-          val: this.statSum[stat],
-          ep: Math.floor(weight)
+          val: this.statSum[stat]
         });
       }
+      a_stats.push({
+        name: "Dodge",
+        val: pctColor(this.getDodge("main"), redWhite) + " " + pctColor(this.getDodge("off"), redWhite)
+      });
+      a_stats.push({
+        name: "Yellow Miss",
+        val: pctColor(this.getMiss("yellow"), redWhite, -1)
+      });
+      a_stats.push({
+        name: "Spell Miss",
+        val: pctColor(this.getMiss("spell"), redWhite)
+      });
+      a_stats.push({
+        name: "White Miss",
+        val: pctColor(this.getMiss("white"), redWhite)
+      });
       EP_TOTAL = total;
       return $stats.get(0).innerHTML = Templates.stats({
         stats: a_stats
       });
     };
     updateStatWeights = function(source) {
-      var $weights, Weights, data, e, exist, key, weight;
+      var $weights, data, e, exist, key, weight;
       data = Shadowcraft.Data;
-      Weights = Shadowcraft.Data.weights;
       Weights.agility = source.ep.agi;
       Weights.crit_rating = source.ep.crit;
       Weights.hit_rating = source.ep.white_hit;
@@ -2446,7 +2651,7 @@
         if (exist.length > 0) {
           exist.find("val").text(Weights[key].toFixed(2));
         } else {
-          e = $weights.append("<div class='stat' id='weight_" + key + "'><span class='key'>" + (titleize(key)) + "</span><span class='val'>" + (data.weights[key].toFixed(2)) + "</span></div>");
+          e = $weights.append("<div class='stat' id='weight_" + key + "'><span class='key'>" + (titleize(key)) + "</span><span class='val'>" + (Weights[key].toFixed(2)) + "</span></div>");
           exist = $(".stat#weight_" + key);
         }
         $.data(exist.get(0), "weight", Weights[key]);
@@ -2694,7 +2899,10 @@
       $altslots = $(".alternatives .body");
       Shadowcraft.Backend.bind("recompute", updateStatWeights);
       Shadowcraft.Backend.bind("recompute", function() {
-        return Shadowcraft.Gear.updateDisplay(true);
+        return Shadowcraft.Gear;
+      });
+      Shadowcraft.bind("loadData", function() {
+        return app.updateDisplay();
       });
       $("#reforgeAll").click(function() {
         return Shadowcraft.Gear.reforgeAll();
@@ -2754,6 +2962,7 @@
             Shadowcraft.Console.log("Regemming " + ItemLookup[data.gear[slot].item_id].name + " socket " + (gem_id + 1) + " to " + Gems[item_id].name);
             data.gear[slot]["g" + gem_id] = item_id;
           }
+          Shadowcraft.update();
           return app.updateDisplay();
         }
       }));
@@ -2792,7 +3001,7 @@
           });
         }
       }));
-      this.updateDisplay(true);
+      this.updateDisplay();
       $("input.search").keydown(function(e) {
         var $this, body, height, i, next, ot, slot, slots, _len, _len2;
         $this = $(this);

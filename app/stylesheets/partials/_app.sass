@@ -19,14 +19,13 @@ button
 #create_character
   display: block
   position: absolute
-  left: 20%
-  right: 20%
-  bottom: 35%
+  bottom: 300px
+  left: 440px
   text-align: center
   .form
     display: inline-block
     margin: auto
-    background: rgba(0, 0, 0, 0.6)
+    background: rgba(0, 0, 0, 0.4)
     padding: 30px
     +border-radius(15px)
     // +box-shadow(rgba(90, 30, 30, 0.1), 0px, 0px, 125px)
@@ -37,9 +36,15 @@ button
         font-size: 2em
         margin-bottom: 10px
         color: #ccc
-      .label_radio
-        font-size: 1em
-        font-weight: bold
+      .regions
+        white-space: nowrap
+        label
+          display: inline-block
+          font-size: 0.9em
+          font-weight: bold
+          input
+            vertical-align: text-bottom
+
       input[type='text']
         font-size: 1.8em
         width: 12em
@@ -69,7 +74,7 @@ button
   bottom: 0
   top: 0
 
-  &.characters-new
+  &.characters-new, &.characters-create
     background: #050505 url(../../images/splash-l.jpg) bottom left no-repeat
 
 #tabs > div.ui-tabs-panel
@@ -133,15 +138,16 @@ button
         border-top: 0
 
     span
-      padding-right: 10px
       +inline-block
+      vertical-align: top
     span.key
+      padding-right: 10px
       width: 105px
       text-align: right
       color: #aaa
     span.val
       font-weight: bold
-      width: 30px
+      width: 60px
   #weights
     input
       margin-bottom: 1em
@@ -200,7 +206,7 @@ button
     +border-radius(3px)
     +linear-gradient(color-stops(#222222, #323232, #4b4b4b), bottom)
     border: 1px solid #444444
-    left: 400px
+    left: 290px
     &.active
     +border-bottom-left-radius(0)
     +border-bottom-right-radius(0)
@@ -544,8 +550,8 @@ a
         margin-top: -0.5em
 
 #errorExplanation
-  border: 1px solid #333
   background: rgba(0, 0, 0, 0.3)
+  text-align: left
   padding: 1em
   margin: 1em 0
   h2
@@ -1097,8 +1103,12 @@ a
     right: 250px
 
   #container
-    &.characters-new
+    &.characters-new, &.characters-create
       background: #050505 url(../../images/splash-s.jpg) bottom left no-repeat
+
+  #create_character
+    bottom: 200px
+    left: 250px
 
   #card
     .img

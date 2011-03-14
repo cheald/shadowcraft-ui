@@ -17,6 +17,18 @@ class ShadowcraftGear
   SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13", "17"]]
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779]
 
+  Weights =
+    attack_power: 1
+    agility: 2.66
+    crit_rating: 0.87
+    spell_hit: 1.3
+    hit_rating: 1.02
+    expertise_rating: 1.51
+    haste_rating: 1.44
+    mastery_rating: 1.15
+    yellow_hit: 1.79
+    strength: 1.05
+
   SLOT_INVTYPES =
       0: 1
       1: 2
@@ -85,7 +97,7 @@ class ShadowcraftGear
 
   get_ep = (item, key, slot) ->
     data = Shadowcraft.Data
-    weights = data.weights
+    weights = Weights
 
     stats = {};
     if item.source and item.dest
@@ -95,7 +107,7 @@ class ShadowcraftGear
 
     total = 0
     for stat, value of stats
-      weight = data.weights[stat] || 0
+      weight = Weights[stat] || 0
       total += value * weight
 
     delete stats
@@ -105,10 +117,10 @@ class ShadowcraftGear
       if item.dps
         if slot == 15
           total += (item.dps * c.mh_ep.mh_dps) + (item.speed * c.mh_speed_ep["mh_" + item.speed]);
-          total += racialExpertiseBonus(item) * weights.expertise_rating;
+          total += racialExpertiseBonus(item) * Weights.expertise_rating;
         else if slot == 16
           total += (item.dps * c.oh_ep.oh_dps) + (item.speed * c.oh_speed_ep["oh_" + item.speed]);
-          total += racialExpertiseBonus(item) * weights.expertise_rating;
+          total += racialExpertiseBonus(item) * Weights.expertise_rating;
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem;
 
@@ -160,6 +172,7 @@ class ShadowcraftGear
     @statSum = stats
 
   racialExpertiseBonus = (item) ->
+    return 0 unless item?
     mh_type = item.subclass;
     race = Shadowcraft.Data.race
 
@@ -180,6 +193,37 @@ class ShadowcraftGear
   getStat: (stat) ->
     this.sumStats() if !@statSum
     (@statSum[stat] || 0)
+
+  getDodge: (hand) ->
+    data = Shadowcraft.Data
+    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+    expertise = @statSum.expertise_rating
+    boss_dodge = DEFAULT_BOSS_DODGE
+    if (!hand? or hand == "main") and data.gear[15] and data.gear[15].item_id
+      expertise += racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
+    else if (hand == "off") and data.gear[16] and data.gear[16].item_id
+      expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id])
+    return DEFAULT_BOSS_DODGE - (expertise / Shadowcraft._R("expertise_rating") * 0.25)
+
+  getMiss: (cap) ->
+    data = Shadowcraft.Data
+    switch cap
+      when "yellow"
+        r = Shadowcraft._R("hit_rating")
+        hitCap = r * (8 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
+      when "spell"
+        r = Shadowcraft._R("spell_hit")
+        hitCap = r * (17 - 2 * Shadowcraft._T("precision")) - racialHitBonus("spell_hit")
+      when "white"
+        r = Shadowcraft._R("hit_rating")
+        hitCap = r * (27 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
+    if r? and hitCap?
+      hasHit = @statSum.hit_rating || 0
+      if hasHit < hitCap or cap == "white"
+        return (hitCap - hasHit) / r
+      else
+        return 0
+    return -99
 
   # TODO: Adjust for racial bonuses.
   # Stat to get the real weight for, the amount of the stat, and a hash of {stat: amount} to ignore (like if swapping out a reforge or whatnot; nil the existing reforge for calcs)
@@ -206,7 +250,7 @@ class ShadowcraftGear
         usable = expertiseCap - exist
         usable = 0 if usable < 0
         usable = num if usable > num
-        return data.weights.expertise_rating * usable * neg
+        return Weights.expertise_rating * usable * neg
       when "hit_rating"
         yellowHitCap = Shadowcraft._R("hit_rating") * (8 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
         spellHitCap = Shadowcraft._R("spell_hit")  * (17 - 2 * Shadowcraft._T("precision")) - racialHitBonus("spell_hit")
@@ -216,25 +260,25 @@ class ShadowcraftGear
         remaining = num
         if remaining > 0 and exist < yellowHitCap
           delta = if (yellowHitCap - exist) > remaining then remaining else (yellowHitCap - exist)
-          total += delta * data.weights.yellow_hit
+          total += delta * Weights.yellow_hit
           remaining -= delta
           exist += delta
 
         if remaining > 0 and exist < spellHitCap
           delta = if (spellHitCap - exist) > remaining then remaining else (spellHitCap - exist)
-          total += delta * data.weights.spell_hit
+          total += delta * Weights.spell_hit
           remaining -= delta
           exist += delta
 
         if remaining > 0 && exist < whiteHitCap
           delta = if (whiteHitCap - exist) > remaining then remaining else (whiteHitCap - exist)
-          total += delta * data.weights.hit_rating
+          total += delta * Weights.hit_rating
           remaining -= delta
           exist += delta
 
         return total * neg
 
-    return (data.weights[stat] || 0) * num * neg;
+    return (Weights[stat] || 0) * num * neg;
 
   __epSort = (a, b) ->
     b.__ep - a.__ep
@@ -382,6 +426,7 @@ class ShadowcraftGear
             madeChanges = true
 
     if !madeChanges || depth >= 10
+      @app.update()
       this.updateDisplay()
       Shadowcraft.Console.log "Finished automatic regemming: &Delta; #{Math.floor(EP_TOTAL - EP_PRE_REGEM)} EP", "gold"
     else
@@ -476,6 +521,7 @@ class ShadowcraftGear
               this.sumStats()
 
     if !madeChanges || depth >= 10
+      @app.update()
       this.updateDisplay()
       Shadowcraft.Console.log("Finished automatic reforging: &Delta; " + Math.floor(EP_TOTAL - EP_PRE_REFORGE) + " EP", "gold")
     else
@@ -490,6 +536,7 @@ class ShadowcraftGear
     return unless gear
     delete gear.reforge if gear.reforge
     Shadowcraft.Console.log "Removing reforge on " + ItemLookup[gear.item_id].name
+    Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
     $("#reforge").removeClass("visible")
 
@@ -510,14 +557,14 @@ class ShadowcraftGear
       Shadowcraft.Console.log "Reforging #{item.name} to <span class='neg'>-#{amt} #{titleize(from)}</span> / <span class='pos'>+#{amt} #{titleize(to)}</span>"
 
     $("#reforge").removeClass("visible")
+    Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
 
   ###
   # View helpers
   ###
 
-  updateDisplay: (skipSave) ->
-    @app.History.saveData() unless skipSave
+  updateDisplay: (skipUpdate) ->
     this.updateStatsWindow()
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
@@ -587,6 +634,32 @@ class ShadowcraftGear
       $slots.get(ssi).innerHTML = buffer
     checkForWarnings('gear');
 
+  whiteWhite = (v, s) ->
+    s
+
+  redWhite = (v, s) ->
+    s ||= v
+    c = if v < 0 then "neg" else ""
+    colorSpan s, c
+
+  greenWhite = (v, s) ->
+    s ||= v
+    c = if v < 0 then "" else "pos"
+    colorSpan s, c
+
+  redGreen = (v, s) ->
+    s ||= v
+    c = if v < 0 then "neg" else "pos"
+    colorSpan s, c
+
+  colorSpan = (s, c) ->
+    "<span class='#{c}'>#{s}</span>"
+
+  pctColor = (v, func, reverse) ->
+    func ||= redGreen
+    reverse ||= 1
+    func v * reverse, v.toFixed(2) + "%"
+
   updateStatsWindow: ->
     this.sumStats()
     $stats = $("#stats .inner")
@@ -599,14 +672,31 @@ class ShadowcraftGear
       a_stats.push {
         name: titleize(stat),
         val: @statSum[stat],
-        ep: Math.floor(weight)
+        # ep: Math.floor(weight)
       }
+
+    a_stats.push {
+      name: "Dodge"
+      val: pctColor(this.getDodge("main"), redWhite) + " " + pctColor(this.getDodge("off"), redWhite)
+    }
+    a_stats.push {
+      name: "Yellow Miss"
+      val: pctColor this.getMiss("yellow"), redWhite, -1
+    }
+    a_stats.push {
+      name: "Spell Miss"
+      val: pctColor this.getMiss("spell"), redWhite
+    }
+    a_stats.push {
+      name: "White Miss"
+      val: pctColor this.getMiss("white"), redWhite
+    }
+
     EP_TOTAL = total
     $stats.get(0).innerHTML = Templates.stats {stats: a_stats}
 
   updateStatWeights = (source) ->
     data = Shadowcraft.Data
-    Weights = Shadowcraft.Data.weights
     Weights.agility = source.ep.agi
     Weights.crit_rating = source.ep.crit
     Weights.hit_rating = source.ep.white_hit
@@ -624,7 +714,7 @@ class ShadowcraftGear
       if exist.length > 0
         exist.find("val").text Weights[key].toFixed(2)
       else
-        e = $weights.append("<div class='stat' id='weight_#{key}'><span class='key'>#{titleize(key)}</span><span class='val'>#{data.weights[key].toFixed(2)}</span></div>");
+        e = $weights.append("<div class='stat' id='weight_#{key}'><span class='key'>#{titleize(key)}</span><span class='val'>#{Weights[key].toFixed(2)}</span></div>");
         exist = $(".stat#weight_" + key)
       $.data(exist.get(0), "weight", Weights[key])
 
@@ -850,7 +940,10 @@ class ShadowcraftGear
     $altslots = $(".alternatives .body")
 
     Shadowcraft.Backend.bind("recompute", updateStatWeights)
-    Shadowcraft.Backend.bind("recompute", -> Shadowcraft.Gear.updateDisplay(true) )
+    Shadowcraft.Backend.bind("recompute", -> Shadowcraft.Gear )
+
+    Shadowcraft.bind "loadData", ->
+      app.updateDisplay()
 
     $("#reforgeAll").click ->
       Shadowcraft.Gear.reforgeAll()
@@ -910,6 +1003,7 @@ class ShadowcraftGear
           gem_id = $.data(document.body, "gem-slot")
           Shadowcraft.Console.log("Regemming " + ItemLookup[data.gear[slot].item_id].name + " socket " + (gem_id + 1) + " to " + Gems[item_id].name)
           data.gear[slot]["g" + gem_id] = item_id
+        Shadowcraft.update()
         app.updateDisplay()
 
     $("#reforge").change $.delegate(
@@ -938,7 +1032,7 @@ class ShadowcraftGear
           $this.hide().fadeIn('normal')
         )
     )
-    this.updateDisplay(true)
+    this.updateDisplay()
 
     $("input.search").keydown((e) ->
       $this = $(this)

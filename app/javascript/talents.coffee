@@ -10,7 +10,6 @@ class ShadowcraftTalents
   talentMap = "0zMcmVokRsaqbdrfwihuGINALpTjnyxtgevElBCDFHJKOPQSUWXYZ123456789"
   @encodeTalents = (s) ->
     str = ""
-    console.log "parsing string", s
     offset = 0
     for size, index in TREE_SIZE
       sub = s.substr(offset, size).replace(/0+$/, "")
@@ -19,7 +18,6 @@ class ShadowcraftTalents
         l = parseInt(c, 10) * 5 + parseInt(sub[i+1] || 0, 10)
         str += talentMap[l]
       str += "Z" unless index == TREE_SIZE.length - 1
-    console.log(s, str, ShadowcraftTalents.decodeTalents(str))
     return str
 
   @decodeTalents = (s) ->
@@ -68,7 +66,7 @@ class ShadowcraftTalents
       else
         $this.css({backgroundImage: icons.normal}).addClass("active");
     Shadowcraft.Talents.trigger("changed")
-    Shadowcraft.History.saveData()
+    Shadowcraft.update()
 
   hoverTalent = ->
     return if window.Touch?
@@ -196,9 +194,9 @@ class ShadowcraftTalents
 
       switch(e.button)
         when 0
-          Shadowcraft.History.saveData() if applyTalentToButton(this, 1)
+          Shadowcraft.update() if applyTalentToButton(this, 1)
         when 2
-          Shadowcraft.History.saveData() if applyTalentToButton(this, -1)
+          Shadowcraft.update() if applyTalentToButton(this, -1)
 
       $(this).trigger("mouseenter")
     ).bind("contextmenu", -> false )
@@ -211,33 +209,37 @@ class ShadowcraftTalents
     ).bind("touchend", (e) ->
       $.data(this, "listening", false)
       unless $.data(this, "removed") or !$(this).hasClass("active")
-        Shadowcraft.History.saveData() if applyTalentToButton(this, 1)
+        Shadowcraft.update() if applyTalentToButton(this, 1)
     )
 
     talentframe.bind("touchstart", (e) ->
       listening = $.data(tframe, "listening")
       if e.originalEvent.touches.length > 1 and listening and $.data(listening, "listening")
-        Shadowcraft.History.saveData() if applyTalentToButton.call(listening, listening, -1)
+        Shadowcraft.update() if applyTalentToButton.call(listening, listening, -1)
         $.data(listening, "removed", true)
     )
 
     buffer = "";
     for talent in data.talents
       buffer += Templates.talentSet({
-        talent_string: talent.talents
+        talent_string: ShadowcraftTalents.encodeTalents(talent.talents)
         glyphs: talent.glyphs.join(",")
         name: "Imported " + getSpecFromString(talent.talents)
       })
 
     for talentName, talent of DEFAULT_SPECS
       buffer += Templates.talentSet({
-        talent_string: talent,
+        talent_string: ShadowcraftTalents.encodeTalents(talent),
         name: talentName
       })
 
     $("#talentsets").get(0).innerHTML = buffer
     this.updateActiveTalents()
     initTalentsPane = ->
+
+  setGlyphs: (glyphs) ->
+    Shadowcraft.Data.glyphs = glyphs
+    this.initGlyphs()
 
   initGlyphs: ->
     buffer = [null, "", "", ""]
@@ -289,7 +291,8 @@ class ShadowcraftTalents
     GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
     count = 0
     for glyph in data.glyphs
-      count++ if GlyphLookup[glyph].rank == 3
+      if GlyphLookup[glyph]?
+        count++ if GlyphLookup[glyph].rank == 3
     count
 
   toggleGlyph = (e, override) ->
@@ -314,7 +317,7 @@ class ShadowcraftTalents
         $set.addClass("full")
 
     checkForWarnings('glyphs')
-    Shadowcraft.History.saveData()
+    Shadowcraft.update()
 
   updateTalentContribution = (LC) ->
     return unless LC.talent_ranking_main
@@ -359,6 +362,7 @@ class ShadowcraftTalents
   boot: ->
     this.initTalentsPane()
     this.initGlyphs()
+    app = this
 
     Shadowcraft.Backend.bind("recompute", updateTalentContribution)
     Shadowcraft.Backend.bind("recompute", updateGlyphWeights)
@@ -368,9 +372,21 @@ class ShadowcraftTalents
     })
 
     $("#talentsets").click $.delegate({
-      ".talent_set": -> setTalents($(this).attr("data-talents"))
+      ".talent_set": ->
+        talents = ShadowcraftTalents.decodeTalents $(this).data("talents")
+        glyphs = ($(this).data("glyphs") || "").split(",")
+        for glyph, i in glyphs
+          glyphs[i] = parseInt(glyph, 10)
+        glyphs = _.compact(glyphs)
+
+        setTalents talents
+        app.setGlyphs glyphs
     })
     $("#reset_talents").click(resetTalents)
+
+    Shadowcraft.bind "loadData", ->
+      app.updateActiveTalents()
+      app.initGlyphs()
 
     $("#talents #talentframe").mousemove (e) ->
       $.data document, "mouse-x", e.pageX

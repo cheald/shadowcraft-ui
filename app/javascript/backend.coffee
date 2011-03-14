@@ -11,6 +11,7 @@ class ShadowcraftBackend
 
   boot: ->
     self = this
+    Shadowcraft.bind("update", -> self.recompute())
     @ws = $.websocket(WS_ENGINE, {
       error: (e)-> console.log(e)
       events:
@@ -34,7 +35,8 @@ class ShadowcraftBackend
     glyph_list = []
 
     for glyph in data.glyphs
-      glyph_list.push GlyphLookup[glyph].ename
+      if GlyphLookup[glyph]?
+        glyph_list.push GlyphLookup[glyph].ename
 
     buffList = []
     for key, val of data.options.buffs
@@ -65,24 +67,6 @@ class ShadowcraftBackend
         data.activeTalents.substr(Talents[0].talent.length, Talents[1].talent.length)
         data.activeTalents.substr(Talents[0].talent.length + Talents[1].talent.length, Talents[2].talent.length)
       ],
-      mh: [
-        mh.speed,
-        mh.dps * mh.speed,
-        data.gear[15].enchant,
-        mh.subclass
-      ],
-      oh: [
-        oh.speed,
-        oh.dps * oh.speed,
-        data.gear[16].enchant,
-        oh.subclass
-      ],
-      th: [
-        th.speed,
-        th.dps * th.speed,
-        data.gear[17].enchant,
-        th.subclass
-      ],
       sta: [
         statSummary.strength || 0,
         statSummary.agility || 0,
@@ -95,6 +79,28 @@ class ShadowcraftBackend
       ],
       gly: glyph_list,
       pro: data.options.professions
+
+    if mh?
+      payload.mh = [
+        mh.speed
+        mh.dps * mh.speed
+        data.gear[15].enchant
+        mh.subclass
+      ]
+    if oh?
+      payload.oh = [
+        oh.speed,
+        oh.dps * oh.speed,
+        data.gear[16].enchant,
+        oh.subclass
+      ]
+    if th?
+      payload.th = [
+        th.speed,
+        th.dps * th.speed,
+        data.gear[17].enchant,
+        th.subclass
+      ]
 
     gear_ids = []
     for k, g of data.gear

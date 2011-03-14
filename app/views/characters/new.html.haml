@@ -1,6 +1,6 @@
-=error_messages_for :character
 #create_character
   .form
+    =error_messages_for :character
     =form_for @character do |f|
       %span
         %label{:for => "character_name"} Character Name
@@ -10,17 +10,20 @@
         =f.text_field :realm
       %span
         %label{:for => "character_region"} Region
-        %label.label_radio
-          #{f.radio_button :region, "US"}  US
-        %label.label_radio
-          #{f.radio_button :region, "EU"} EU
+        .regions
+          %label
+            #{f.radio_button :region, "US"}  US
+          %label
+            #{f.radio_button :region, "EU"} EU
       .submit
         =f.submit "Begin"
   :javascript
     Shadowcraft.commonInit()
     $(".submit").hide()
-    $(".form input").change(function() {
-      if($("#character_name").val() && $("#character_realm").val()) {
+    var cname = $("#character_name"), crealm = $("#character_realm")
+    var showSubmit = function() {
+      if(cname.val() && crealm.val() && crealm.val().length > 3) {
         $(".submit:hidden").animate({opacity: 'show', height: 'show'}, 300)
       }
-    })
+    }
+    setInterval(showSubmit, 100)

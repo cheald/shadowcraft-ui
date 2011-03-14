@@ -4,6 +4,18 @@ class ShadowcraftHistory
     @app.History = this
     Shadowcraft.Reset = @reset
 
+  boot: ->
+    app = this
+    $("#tabs").tabs({
+      show: (event, ui) ->
+        if ui.tab.hash == "#impex"
+          app.buildExport()
+    })
+    Shadowcraft.bind("update", -> app.save())
+    $("#doImport").click ->
+      json = $.parseJSON $("textarea#import").val()
+      app.loadSnapshot json
+
     $("#dpsgraph").bind("plotclick", (event, pos, item) ->
       if item
         dpsPlot.unhighlight()
@@ -15,25 +27,42 @@ class ShadowcraftHistory
           return false
     )
 
-  boot: ->
-    app = this
-    $("#tabs").tabs({
-      show: (event, ui) ->
-        if ui.tab.hash == "#impex"
-          app.buildExport()
-    })
     this
 
-  recompute = ->
-    Shadowcraft.Backend.recompute()
+  save: ->
+    if @app.Data?
+      data = compress(@app.Data)
+      @persist(data)
+      $.jStorage.set(@app.uuid, data)
 
-  saveData: ->
-    $.jStorage.set(@app.uuid, @app.Data) if @app.Data?
-    if @recomputeTimeout
-      @recomputeTimeout = clearTimeout(@recomputeTimeout)
+  load: (defaults) ->
+    data = $.jStorage.get(@app.uuid, defaults)
+    if data instanceof Array and data.length != 0
+      data = decompress(data)
+    else
+      data = defaults
+    return data
 
-    cancelRecompute = true
-    @recomputeTimeout = setTimeout(recompute, 50)
+  loadFromFragment: ->
+    hash = window.location.hash
+    if hash and hash.match(/^#!/)
+      frag = hash.substring(3)
+      inflated = RawDeflate.inflate($.base64Decode(frag))
+      snapshot = null
+      try
+        snapshot = $.parseJSON(inflated)
+      catch TypeError
+        snapshot = null
+      if snapshot?
+        @loadSnapshot snapshot
+        return true
+    return false
+
+  persist: (data) ->
+    @lookups ||= {}
+    jd = json_encode(data)
+    frag = $.base64Encode(RawDeflate.deflate( jd ) )
+    window.history.replaceState("loadout", "Latest settings", window.location.pathname.replace(/\/+$/, "") + "/#!/" + frag)
 
   reset: ->
     if confirm("This will wipe out any changes you've made. Proceed?")
@@ -41,31 +70,39 @@ class ShadowcraftHistory
       window.location.reload()
 
   takeSnapshot: ->
-    return deepCopy(@app.Data)
+    return compress(deepCopy(@app.Data))
 
   loadSnapshot: (snapshot) ->
-    @app.Data = deepCopy(snapshot)
+    @app.Data = decompress (snapshot)
     loadingSnapshot = true
-    Shadowcraft.updateView()
+    Shadowcraft.loadData()
 
   buildExport: ->
-    $("#export").text json_encode(compress(Shadowcraft.Data))
+    data = json_encode compress(@app.Data)
+    encoded_data = $.base64Encode(lzw_encode(data))
+    $("#export").text data # encoded_data
 
-  base36Encode = (r) ->
-    for v, i in r
-      if v == 0
-        r[i] = ""
+  base10 = "0123456789"
+  base77 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+  base36Encode = (a) ->
+    r = []
+    for v, i in a
+      if v == undefined or v == null
+        continue
+      else if v == 0
+        r.push ""
       else
-        r[i] = v.toString(36)
-    r.join(":")
+        r.push convertBase(v.toString(), base10, base77)
+    r.join(";")
 
   base36Decode = (s) ->
     r = []
-    for v in s.split(":")
+    for v in s.split(";")
       if v == ""
         r.push 0
       else
-        r.push parseInt(v, 36)
+        r.push parseInt(convertBase(v, base77, base10), 10)
     r
 
   compress = (data) ->
@@ -77,6 +114,22 @@ class ShadowcraftHistory
       throw "Data version mismatch"
 
     decompress_handlers[version](data)
+
+  professionMap = [ "enchanting", "engineering", "blacksmithing", "inscription", "jewelcrafting", "leatherworking", "tailoring" ]
+  poisonMap = [ "ip", "dp", "wp" ]
+  raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf"]
+  rotationOptionsMap = [
+    "min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab"
+    "use_rupture", "ksp_immediately", "use_revealing_strike"
+    "clip_recuperate"
+  ]
+  rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, true, false, 'true', 'false', 'never', 'always', 'sometimes']
+
+  map = (value, m) ->
+    m.indexOf(value)
+
+  unmap = (value, m) ->
+    m[value]
 
   compress_handlers =
     "1": (data) ->
@@ -93,22 +146,25 @@ class ShadowcraftHistory
         gearSet.push gear.g2 || 0
       ret.push base36Encode(gearSet)
       ret.push ShadowcraftTalents.encodeTalents(data.activeTalents)
-      ret.push data.glyphs
+      ret.push base36Encode(data.glyphs)
 
       # Options
       options = []
-      options.push data.options.professions
+      professions = []
+      for profession, val of data.options.professions
+        professions.push map(profession, professionMap) if val
+      options.push professions
 
       # General options
       general = [
         data.options.general.level
-        data.options.general.race
+        map(data.options.general.race, raceMap)
         data.options.general.duration
-        data.options.general.mh_poison
-        data.options.general.oh_poison
-        data.options.general.potion_of_the_tolvir
+        map(data.options.general.mh_poison, poisonMap)
+        map(data.options.general.oh_poison, poisonMap)
+        if data.options.general.potion_of_the_tolvir then 1 else 0
       ]
-      options.push general
+      options.push base36Encode(general)
 
       # Buff options
       buffs = []
@@ -118,26 +174,13 @@ class ShadowcraftHistory
       options.push buffs
 
       # Rotation options
-      if data.tree0 >= 31
-        options.push data.options["rotation-mutilate"]
-      else if data.tree1 >= 31
-        options.push data.options["rotation-combat"]
-      else if data.tree2 >= 31
-        options.push data.options["rotation-subtlety"]
+      rotationOptions = []
+      for k, v of data.options["rotation"]
+        rotationOptions.push map(k, rotationOptionsMap)
+        rotationOptions.push map(v, rotationValueMap)
+      options.push base36Encode(rotationOptions)
 
       ret.push options
-
-      # Talents
-      talents = []
-      for set in data.talents
-        talentSet = base36Encode _.clone(set.glyphs || [])
-        talents.push talentSet
-        talents.push ShadowcraftTalents.encodeTalents(set.talents)
-      ret.push talents
-
-      ret.push data.active
-      console.log(ret)
-      console.log decompress(ret)
       return ret
 
   decompress_handlers =
@@ -145,13 +188,12 @@ class ShadowcraftHistory
       d =
         gear: {}
         activeTalents: ShadowcraftTalents.decodeTalents(data[2])
-        glyphs: data[3]
+        glyphs: base36Decode(data[3])
         options: {}
         talents: []
         active: data[6]
 
       gear = base36Decode data[1]
-      console.log(gear)
       for id, index in gear by 6
         slot = (index / 6).toString()
         d.gear[slot] =
@@ -165,24 +207,26 @@ class ShadowcraftHistory
           delete d.gear[slot][k] if v == 0
 
       options = data[4]
-      d.options.professions = options[0]
-      general = options[1]
+      d.options.professions = {}
+      for v, i in options[0]
+        d.options.professions[unmap(v, professionMap)] = true
+
+      general = base36Decode options[1]
       d.options.general =
         level:                general[0]
-        race:                 general[1]
+        race:                 unmap(general[1], raceMap)
         duration:             general[2]
-        mh_poison:            general[3]
-        oh_poison:            general[4]
-        potion_of_the_volvir: general[5]
+        mh_poison:            unmap(general[3], poisonMap)
+        oh_poison:            unmap(general[4], poisonMap)
+        potion_of_the_volvir: general[5] == 1
 
       d.options.buffs = {}
       for v, i in options[2]
         d.options.buffs[ShadowcraftOptions.buffMap[i]] = v == 1
 
-      talents = data[5]
-      for set, index in talents by 2
-        d.talents.push
-          glyphs: base36Decode(set)
-          talents: ShadowcraftTalents.decodeTalents(talents[index+1])
+      rotation = base36Decode options[3]
+      d.options.rotation = {}
+      for v, i in rotation by 2
+        d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i+1], rotationValueMap)
 
       return d

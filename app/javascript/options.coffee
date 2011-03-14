@@ -118,20 +118,20 @@ class ShadowcraftOptions
       potion_of_the_tolvir: {name: "Use Potion of the Tol'vir", 'default': true}
     })
 
-    @setup("#settings section.mutilate .settings", "rotation-mutilate", {
+    @setup("#settings section.mutilate .settings", "rotation", {
       min_envenom_size_mutilate: {type: "select", name: "Min CP/Envenom > 35%", options: [5,4,3,2,1], 'default': 4, desc: "Use Envenom at this many combo points, when your primary CP builder is Mutilate"}
       min_envenom_size_backstab: {type: "select", name: "Min CP/Envenom < 35%", options: [5,4,3,2,1], 'default': 5, desc: "Use Envenom at this many combo points, when your primary CP builder is Backstab"}
       prioritize_rupture_uptime_mutilate: {name: "Prioritize Rupture (>35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate", default: true}
       prioritize_rupture_uptime_backstab: {name: "Prioritize Rupture (<35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Backstab", default: true}
     })
 
-    @setup("#settings section.combat .settings", "rotation-combat", {
+    @setup("#settings section.combat .settings", "rotation", {
       use_rupture: {name: "Use Rupture?", right: true, default: true}
       ksp_immediately: {type: "select", name: "Killing Spree", options: {'true': "Killing Spree on cooldown", 'false': "Wait for Bandit's Guile before using Killing Spree"}, 'default': 'false'}
       use_revealing_strike: {type: "select", name: "Revealing Strike", options: {"always": "Use for every finisher", "sometimes": "Only use at 4CP", "never": "Never use"}, 'default': "sometimes"}
     })
 
-    @setup("#settings section.subtlety .settings", "rotation-subtlety", {
+    @setup("#settings section.subtlety .settings", "rotation", {
       clip_recuperate: "Clip Recuperate?"
     })
 
@@ -145,7 +145,7 @@ class ShadowcraftOptions
       val = $this.val()
 
     data.options[ns][name] = val
-    Shadowcraft.History.saveData()
+    Shadowcraft.update()
 
   changeCheck = ->
     $this = $(this)
@@ -159,9 +159,13 @@ class ShadowcraftOptions
     changeOption(this)
 
   boot: ->
-    this.initOptions()
+    app = this
+    @initOptions()
     unless window.Touch
       $("#settings select").selectmenu({ style: 'dropdown' });
+
+    Shadowcraft.bind "loadData", ->
+      app.initOptions()
 
     Shadowcraft.Talents.bind "changed", ->
       $("#settings section.mutilate, #settings section.combat, #settings section.subtlety").hide()

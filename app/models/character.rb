@@ -1,5 +1,4 @@
 class Character
-  class NotFoundException < Exception; end
   include Mongoid::Document
   include Mongoid::Timestamps
   include WowArmory::Document
@@ -30,6 +29,7 @@ class Character
   validates_length_of :name, :maximum => 30
   validates_length_of :realm, :maximum => 30
   validates_uniqueness_of :uid
+  validates_presence_of :uid
 
   before_validation :write_uid
 
@@ -41,15 +41,23 @@ class Character
     self.realm = self.realm.gsub(/-/, " ")
     self.region = self.region.upcase
     if self.properties.nil? or force
-      char = WowArmory::Character.new(name, realm, region)
+      begin
+        char = WowArmory::Character.new(name, realm, region)
+      rescue WowArmory::ArmoryError => e
+        errors.add :base, e.message
+        return
+      rescue WowArmory::MissingDocument => e
+        errors.add :base, "Character not found"
+        return
+      end
+
       self.properties = char.as_json
       self.properties.stringify_keys!
       self.portrait = char.portrait
     end
-    raise NotFoundException if properties.nil?
 
     properties["gear"].each do |slot, item|
-      Item.find_or_create_by(:remote_id => item["i"].to_i)
+      Item.find_or_create_by(:remote_id => item["item_id"].to_i)
     end
   end
 
@@ -66,7 +74,7 @@ class Character
           :level => properties["level"],
           :race => properties["race"]
         },
-        :professions => properties["professions"]
+        :professions => Hash[*properties["professions"].map {|p| [p, true]}.flatten]
       }
     }
   end
@@ -76,10 +84,21 @@ class Character
   end
 
   def write_uid
-    self.uid = "%s-%s-%s" % [region.downcase, realm.downcase.gsub(/ /, "-"), normalize_character(name)]
+    return if region.blank? or realm.blank? or name.blank?
+    region.upcase!
+    self.uid = ("%s-%s-%s" % [region.downcase, realm.downcase.gsub(/ /, "-"), normalize_character(name)]).downcase
   end
 
-  def self.get!(region, realm, character)
-    self.where(:uid => "%s-%s-%s" % [region.downcase, realm.downcase.gsub(/ /, "-"), normalize_character(character)]).first
+  def self.get!(region, realm = nil, character = nil)
+    if region.is_a? Hash
+      realm = region[:realm]
+      character = region[:name]
+      region = region[:region]
+    end
+    if region.blank? or realm.blank? or character.blank?
+      Character.new :region => region, :realm => realm, :name => character
+    else
+      self.where(:uid => "%s-%s-%s" % [region.downcase, realm.downcase.gsub(/ /, "-"), normalize_character(character)]).first
+    end
   end
 end

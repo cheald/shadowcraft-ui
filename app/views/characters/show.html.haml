@@ -21,8 +21,6 @@
         %a{:href => "#talents"} Talents &amp; Glyphs
       %li
         %a{:href => "#settings"} Settings
-      %li
-        %a{:href => "#impex"} Import/Export
     %a.dropdown#settingsDropdown{:href => "#", :"data-menu" => "settingsDropdownMenu"}<
       =image_tag "cog.png"
 
@@ -108,13 +106,6 @@
         %h3 Professions
         #professions
 
-  #impex
-    %h3 Import
-    %div
-      %textarea{:id => "import"}
-    %input{:type => "button", :id => "doImport", :value => "Import", :class => "button"}
-    %h3 Export
-    %textarea#export
   #console-footer
     %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :class => @character.properties['race'].downcase.gsub(/ /, "_")}
       .img
@@ -138,5 +129,5 @@
 
 :javascript
   var uuid = "#{@character.uid}";
-  #{flash[:_reset] ? "$.jStorage.flush();" : nil}
-  Shadowcraft.boot(uuid, #{@character.to_json }, ShadowcraftData);
+  #{flash[:reload] ? "$.jStorage.flush();" : nil}
+  Shadowcraft.boot(uuid, #{patch @character }, ShadowcraftData);

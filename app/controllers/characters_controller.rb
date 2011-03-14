@@ -1,21 +1,30 @@
 class CharactersController < ApplicationController
   def new
-    @characters = Character.asc(:name).asc(:realm).paginate :page => params[:page], :per_page => 30
-    @character ||= Character.new
+    @character ||= Character.new :region => "US"
     render :action => "new"
   end
 
-  def create
-    begin
-      @character = Character.get!(params[:character][:region], params[:character][:realm], params[:character][:name])
-      @character ||= Character.new(params[:character])
-      unless @character.name.blank? or @character.realm.blank? or @character.region.blank?
-        @character.update_from_armory! #(true)
+  def persist
+    if request.post?
+      sha = Digest::SHA1.hexdigest(params[:data].to_json)
+      Mongoid.master.collection("lookups").update({:sha => sha}, {:doc => params[:data]})
+      render :json => {"h" => sha}
+    elsif request.get?
+      r = if doc = Mongoid.master.collection("lookups").find_one(:sha => sha)
+        doc["doc"]
+      else
+        nil
       end
-    rescue Character::NotFoundException
-      @character.errors.add :base, "Character not found, or the Armory is offline"
-      return new
+      render :json => {:doc => p}
     end
+  end
+
+  def create
+    @character = Character.get!(params[:character])
+    @character ||= Character.new(params[:character])
+
+    @character.update_from_armory! if @character.valid?
+
     if @character.save
       flash[:message] = "Character imported!"
       redirect_to rebuild_items_path(:c => @character._id)
@@ -26,7 +35,7 @@ class CharactersController < ApplicationController
 
   def show
     @character = Character.get!(params[:region], params[:realm], params[:name])
-    if @character.nil?
+    if @character.nil? or !@character.valid?
       params[:character] = {
         :realm => params[:realm],
         :region => params[:region],
@@ -41,7 +50,7 @@ class CharactersController < ApplicationController
 
   def refresh
     @character = Character.get!(params[:region], params[:realm], params[:name])
-    flash[:_reset] = true
+    flash[:reload] = Time.now.to_i
     @character.update_from_armory!(true)
     redirect_to rebuild_items_path(:c => @character._id)
   end

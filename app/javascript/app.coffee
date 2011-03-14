@@ -47,26 +47,34 @@ class ShadowcraftApp
     $( "button, input:submit, .button").button()
     @setupLabels()
 
-  boot: (@uuid, @Data, @ServerData) ->
-    @Data = $.jStorage.get(uuid, @Data)
-    @Data.options ||= {}
+  _update = ->
+    Shadowcraft.trigger("update")
 
-    # These are dummy default weights
-    @Data.weights ||=
-      attack_power: 1
-      agility: 2.66
-      crit_rating: 0.87
-      spell_hit: 1.3
-      hit_rating: 1.02
-      expertise_rating: 1.51
-      haste_rating: 1.44
-      mastery_rating: 1.15
-      yellow_hit: 1.79
-      strength: 1.05
+  update: ->
+    if @updateThrottle
+      @updateThrottle = clearTimeout(@updateThrottle)
+    @updateThrottle = setTimeout(_update, 50)
+
+  loadData: ->
+    Shadowcraft.trigger("loadData")
+
+  constructor: ->
+    _.extend(this, Backbone.Events)
+
+  boot: (@uuid, data, @ServerData) ->
+    @History = new ShadowcraftHistory(this).boot()
+
+    unless @History.loadFromFragment()
+      try
+        @Data = @History.load(data)
+      catch TypeError
+        @Data = data
+    @Data ||= data
+
+    @Data.options ||= {}
 
     ShadowcraftApp.trigger("boot")
     @Console = new ShadowcraftConsole(this);
-    @History = new ShadowcraftHistory(this).boot()
     @Backend = new ShadowcraftBackend(this).boot()
     @Talents = new ShadowcraftTalents(this)
     @Options = new ShadowcraftOptions(this).boot()
@@ -105,8 +113,9 @@ class ShadowcraftApp
         menu.css({top: top + "px", left: right + "px"}).show()
       return false
 
-    $("body").append("<div id='wait' style='display: none'></div>")
+    $("body").append("<div id='wait' style='display: none'></div><div id='modal' style='display: none'></div>")
     $(".showWait").click ->
+      $("#modal").hide()
       $("#wait").fadeIn()
 
     $("#reloadAllData").click ->
