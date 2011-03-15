@@ -287,13 +287,16 @@ class ShadowcraftTalents
         else
           if an > bn then 1 else -1
 
-  majorGlyphCount = ->
+  glyphRankCount = (rank, g) ->
     data = Shadowcraft.Data
     GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
+    if g and !rank
+      rank = GlyphLookup[g].rank
+
     count = 0
     for glyph in data.glyphs
       if GlyphLookup[glyph]?
-        count++ if GlyphLookup[glyph].rank == 3
+        count++ if GlyphLookup[glyph].rank == rank
     count
 
   toggleGlyph = (e, override) ->
@@ -304,17 +307,16 @@ class ShadowcraftTalents
     $set = $e.parents(".glyphset")
     id = parseInt($e.data("id"), 10)
     glyph = GlyphLookup[id]
-    major = majorGlyphCount()
     if $e.hasClass("activated")
       $e.removeClass("activated")
       data.glyphs = _.without(data.glyphs, id)
       $set.removeClass("full")
     else
-      return if major >= 3 and !override
+      return if glyphRankCount(null, id) >= 3 and !override
       $e.addClass("activated")
       if !override and data.glyphs.indexOf(id) == -1
         data.glyphs.push(id);
-      if majorGlyphCount() >= 3
+      if glyphRankCount(null, id) >= 3
         $set.addClass("full")
 
     checkForWarnings('glyphs')

@@ -36,7 +36,7 @@ GEM
     activesupport (3.0.5)
     arel (2.0.9)
     bson (1.2.4)
-    bson_ext (1.0.4)
+    bson_ext (1.2.4)
     builder (2.1.2)
     closure-compiler (1.0.0)
     compass (0.10.6)
@@ -108,7 +108,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bson_ext (= 1.0.4)
+  bson_ext
   compass (>= 0.10.5)
   curb
   exception_notification!

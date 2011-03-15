@@ -64,9 +64,16 @@ class ShadowcraftApp
   boot: (@uuid, data, @ServerData) ->
     @History = new ShadowcraftHistory(this).boot()
 
+    patch = window.location.hash.match(/#reload$/)
+
     unless @History.loadFromFragment()
       try
         @Data = @History.load(data)
+        if patch
+          data.options = Object.deepExtend(@Data.options, data.options)
+          @Data = _.extend(@Data, data)
+
+          @Data.activeTalents = null
       catch TypeError
         @Data = data
     @Data ||= data
@@ -88,6 +95,11 @@ class ShadowcraftApp
       setTimeout(->
         flash "<p>#{window.FLASH.join('</p><p>')}</p>"
       , 1000)
+
+    $("#tabs").tabs({
+      show: (event, ui) ->
+        $("ul.dropdownMenu").hide()
+    })
 
     # Make scrolling more friendly on touchscreen devices
     $("body").bind "touchmove", (event) ->

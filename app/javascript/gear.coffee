@@ -15,6 +15,10 @@ class ShadowcraftGear
   REFORGE_CONST = 112
   SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16", "17"]
   SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13", "17"]]
+  PROC_ENCHANTS =
+    4099: "landslide"
+    4083: "hurricane"
+
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779]
 
   Weights =
@@ -112,7 +116,6 @@ class ShadowcraftGear
 
     delete stats
     c = Shadowcraft.lastCalculation
-
     if c
       if item.dps
         if slot == 15
@@ -123,9 +126,18 @@ class ShadowcraftGear
           total += racialExpertiseBonus(item) * Weights.expertise_rating;
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem;
+      else if PROC_ENCHANTS[item.id]
+        switch slot
+          when 15
+            pre = "mh_"
+          when 16
+            pre = "oh_"
+        enchant = PROC_ENCHANTS[item.id]
+        if pre and enchant
+          total += c[pre + "ep"][pre + enchant]
+      else if c.trinket_ranking[item.id]
+        total += c.trinket_ranking[item.id]
 
-    if c and c.trinket_ranking[item.id]
-      total += c.trinket_ranking[item.id]
     total
 
   sumReforge = (stats, item, reforge) ->
@@ -140,12 +152,12 @@ class ShadowcraftGear
   sumStats: ->
     stats = {};
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-    Gems = Shadowcraft.ServerData.GEMS
+    Gems = Shadowcraft.ServerData.GEM_LOOKUP
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
     data = Shadowcraft.Data
 
     for si, i in SLOT_ORDER
-      gear = data.gear[si];
+      gear = data.gear[si]
       continue unless gear and gear.item_id
       item = ItemLookup[gear.item_id]
       if item
@@ -174,7 +186,7 @@ class ShadowcraftGear
   racialExpertiseBonus = (item) ->
     return 0 unless item?
     mh_type = item.subclass;
-    race = Shadowcraft.Data.race
+    race = Shadowcraft.Data.options.general.race
 
     if(race == "Human" && (mh_type == 7 || mh_type == 4))
       Shadowcraft._R("expertise_rating") * 3
@@ -283,9 +295,9 @@ class ShadowcraftGear
   __epSort = (a, b) ->
     b.__ep - a.__ep
 
-  epSort = (list, skipSort) ->
+  epSort = (list, skipSort, slot) ->
     for item in list
-      item.__ep = get_ep(item) if item
+      item.__ep = get_ep(item, false, slot) if item
     list.sort(__epSort) unless skipSort
 
   needsDagger = ->
@@ -296,7 +308,7 @@ class ShadowcraftGear
 
   getProfessionalGemCount = ->
     count = 0
-    Gems = Shadowcraft.ServerData.GEMS
+    Gems = Shadowcraft.ServerData.GEM_LOOKUP
 
     for slot in SLOT_ORDER
       gear = Shadowcraft.Data.gear[slot]
@@ -325,7 +337,7 @@ class ShadowcraftGear
     for name in JC_ONLY_GEMS
       if gem.name.indexOf(name) >= 0
         prefix = gem.name.replace(name, "")
-        for j, reg of Shadowcraft.ServerData.GEM_LIST
+        for j, reg of Shadowcraft.ServerData.GEMS
           if !reg.requires?.profession? and reg.name.indexOf(prefix) == 0 and reg.quality == gem.quality
             equiv_ep = reg.__ep || get_ep(reg)
             equiv_ep += 1
@@ -393,7 +405,7 @@ class ShadowcraftGear
 
   optimizeGems: (depth)->
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-    Gems = Shadowcraft.ServerData.GEMS
+    Gems = Shadowcraft.ServerData.GEM_LOOKUP
     data = Shadowcraft.Data
 
     depth ||= 0
@@ -437,7 +449,7 @@ class ShadowcraftGear
   # This prevents the automatic picking algorithm from choosing
   # JC-only gems over the slot bonus.
   getGemRecommendationList = ->
-    Gems = Shadowcraft.ServerData.GEM_LIST
+    Gems = Shadowcraft.ServerData.GEMS
     list = $.extend(true, [], Gems)
     list.sort (a, b) ->
       getRegularGemEpValue(b) - getRegularGemEpValue(a)
@@ -569,15 +581,14 @@ class ShadowcraftGear
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
     EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS
-    Gems = Shadowcraft.ServerData.GEMS
+    Gems = Shadowcraft.ServerData.GEM_LOOKUP
     data = Shadowcraft.Data
     opt = {}
 
     for slotSet, ssi in SLOT_DISPLAY_ORDER
       buffer = ""
       for i, slotIndex in slotSet
-        gear = data.gear[i]
-        continue unless gear
+        gear = data.gear[i] || {}
         item = ItemLookup[gear.item_id]
         gems = []
         bonuses = null
@@ -619,7 +630,11 @@ class ShadowcraftGear
           enchant.desc = enchant.name
 
         opt.item = item
-        opt.ttid = if item then item.id else null
+        if item
+          if item.id > 100000 # It has a random component
+            opt.ttid = Math.floor(item.id / 1000)
+          else
+            opt.ttid = item.id
         opt.ep = if item then get_ep(item, null, i).toFixed(1) else 0
         opt.slot = i + ''
         opt.gems = gems
@@ -720,7 +735,7 @@ class ShadowcraftGear
 
     $("#weights .stat").sortElements (a, b) ->
       if $.data(a, "weight") > $.data(b, "weight") then -1 else 1
-    epSort(Shadowcraft.ServerData.GEM_LIST)
+    epSort(Shadowcraft.ServerData.GEMS)
 
   statsToDesc = (obj) ->
     return obj.__statsToDesc if obj.__statsToDesc
@@ -747,7 +762,7 @@ class ShadowcraftGear
     slot = buf[1]
     selected_id = parseInt $slot.attr("id"), 10
     equip_location = SLOT_INVTYPES[slot]
-    GemList = Shadowcraft.ServerData.GEM_LIST
+    GemList = Shadowcraft.ServerData.GEMS
 
     loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
 
@@ -781,11 +796,16 @@ class ShadowcraftGear
 
       iEP = l.__ep.toFixed(1);
 
+      if l.id > 100000 # It has a random component
+        ttid = Math.floor(l.id / 1000)
+      else
+        ttid = l.id
+
       buffer += Templates.itemSlot(
         item: l
         gear: {}
         gems: []
-        ttid: l.id
+        ttid: ttid
         desc: "#{get_ep(l).toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemEP.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" }"
         search: l.name
         percent: iEP / max * 100
@@ -814,14 +834,17 @@ class ShadowcraftGear
     equip_location = SLOT_INVTYPES[slot]
 
     enchants = EnchantSlots[equip_location]
-    epSort(enchants);
+    max = 0
+    for enchant in enchants
+      enchant.__ep = get_ep(enchant, null, slot)
+      max = if enchant.__ep > max then enchant.__ep else max
+    enchants.sort(__epSort)
     selected_id = data.gear[slot].enchant
-    max = get_ep(enchants[0])
     buffer = ""
 
     for enchant in enchants
       enchant.desc = statsToDesc(enchant) if enchant && !enchant.desc
-      eEP = get_ep(enchant)
+      eEP = enchant.__ep
       continue if eEP < 1
       buffer += Templates.itemSlot(
         item: enchant
@@ -839,7 +862,7 @@ class ShadowcraftGear
   # Change out a gem
   clickSlotGem = ->
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-    GemList = Shadowcraft.ServerData.GEM_LIST
+    GemList = Shadowcraft.ServerData.GEMS
     data = Shadowcraft.Data
 
     buf = clickSlot(this, "gem")
@@ -984,7 +1007,7 @@ class ShadowcraftGear
       ".slot": (e) ->
         ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
         EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
-        Gems = Shadowcraft.ServerData.GEMS
+        Gems = Shadowcraft.ServerData.GEM_LOOKUP
         data = Shadowcraft.Data
 
         slot = $.data(document.body, "selecting-slot")

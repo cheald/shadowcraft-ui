@@ -43,13 +43,13 @@ class CharactersController < ApplicationController
       return
     end
     @page_title = @character.fullname
-    # @loadout = @character.loadout || Loadout.new(:character => @character)
   end
 
   def refresh
     @character = Character.get!(params[:region], params[:realm], params[:name])
     flash[:reload] = Time.now.to_i
     @character.update_from_armory!(true)
+    @character.save
     redirect_to rebuild_items_path(:c => @character._id)
   end
 end

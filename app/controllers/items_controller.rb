@@ -17,7 +17,7 @@ class ItemsController < ApplicationController
     @alt_items.reject! {|item| item.properties['name'].match(/DONTUSE/) }
 
     gems = Item.where(:has_stats => true, :is_gem => true, :item_level.gt => 70).all
-    @gems = Hash[*gems.reject {|g| g.properties["name"].match(/Stormjewel/)}.map {|i| [i.remote_id, i] }.flatten]
+    @gems = gems.select {|g| !g.properties["name"].match(/Stormjewel/) }
     @enchants = Enchant.all
     h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talent-tree.xml")).read
     @talents = h["page"]["talentTrees"]["tree"].sort {|a, b| a["order"].to_i <=> b["order"].to_i }
@@ -37,10 +37,12 @@ class ItemsController < ApplicationController
 
   def rebuild
     first_item = Item.desc(:created_at).first
-    if File.mtime(File.join(Rails.root, "public", "items.js")) < first_item.created_at
+    anchor = flash[:reload].blank? ? nil : "reload"
+    f = File.join(Rails.root, "public", "items.js")
+    if !File.exists?(f) or File.mtime(f) < first_item.created_at
       index
       render_to_string :action => "index.js"
     end
-    redirect_to params[:c].blank? ? :back : character_path(character_options(Character.criteria.id(params[:c]).first))
+    redirect_to params[:c].blank? ? :back : character_path(character_options(Character.criteria.id(params[:c]).first).merge(:anchor => anchor))
   end
 end

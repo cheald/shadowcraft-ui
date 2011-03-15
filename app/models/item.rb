@@ -3,6 +3,7 @@ class Item
   include Mongoid::Timestamps
 
   field :remote_id, :type => Integer, :index => true
+  field :random_suffix, :type => Integer
   field :equip_location, :type => Integer, :index => true
   field :item_level, :type => Integer
   field :properties, :type => Hash
@@ -11,44 +12,38 @@ class Item
   field :has_stats, :type => Boolean
   field :requires, :type => Hash
   field :is_gem, :type => Boolean, :index => true
-  field :variant, :type => String
   field :is_glyph, :type => Boolean, :index => true
 
   referenced_in :loadout
 
-  attr_accessor :variant_info
+  attr_accessor :item_name_override, :scaling
 
   validates_presence_of :remote_id
+  validates_presence_of :properties
 
   before_validation :update_from_armory_if_necessary
   before_save :write_stats
-
   EXCLUDE_KEYS = [:stamina, :resilience_rating, :strength, :spirit, :intellect, :dodge_rating, :parry_rating, :health_regen]
 
   def update_from_armory_if_necessary
     return if remote_id == 0
     if self.properties.nil?
       Rails.logger.debug "Loading item #{remote_id}"
-      item = WowArmory::Item.new(remote_id, variant_info)
-      if item.stats.empty? and item.get_variants!.length > 0
-        item.variants.each do |variant|
-          unless existing = Item.where(:remote_id => remote_id, :variant => variant[:suffix]).first
-            puts "Creating item with variant: #{variant.inspect}"
-            Item.create :remote_id => remote_id, :variant_info => variant, :variant => variant[:suffix]
-          end
-        end
-        return false
-      else
-        self.properties = item.as_json.with_indifferent_access
-        self.equip_location = self.properties["equip_location"]
-        self.is_gem = !self.properties["gem_slot"].blank?
-      end
+      item = WowArmory::Item.new(remote_id, random_suffix, scaling, item_name_override)
+      # return false if item.stats.empty?
+      self.properties = item.as_json.with_indifferent_access
+      self.equip_location = self.properties["equip_location"]
+      self.is_gem = !self.properties["gem_slot"].blank?
     end
     true
   end
 
   def uid
-    variant? ? (remote_id + Digest::MD5.hexdigest(properties["name"]).slice(0, 4).to_i(16) * 10000) : remote_id
+    if random_suffix?
+      remote_id * 1000 + random_suffix.abs
+    else
+      remote_id
+    end
   end
 
   def icon(size = 51)
@@ -66,35 +61,36 @@ class Item
     end
     self.item_level = properties["ilevel"]
     self.has_stats = !(self.stats.keys - EXCLUDE_KEYS).empty?
+    true  # Returning false from a before_save filter causes it to fail.
   end
 
   def as_json(options={})
     json = {
       :id => uid.to_i,
-      :name => properties["name"],
-      :icon => icon.gsub(/\.(tga|jpg|png)$/i, ""),
-      :quality => properties["quality"],
+      :n => properties["name"],
+      :i => icon.gsub(/\.(tga|jpg|png)$/i, ""),
+      :q => properties["quality"],
       :stats => stats
     }
     if properties["sockets"] and !properties["sockets"].empty?
-      json[:sockets] = properties["sockets"]
+      json[:so] = properties["sockets"]
     end
 
     if properties["equip_location"]
-      json[:equip_location] = properties["equip_location"]
+      json[:e] = properties["equip_location"]
     end
     json[:ilvl] = properties["ilevel"]
 
     if properties["socket_bonus"]
-      json[:socketbonus] = properties["socket_bonus"]
+      json[:sb] = properties["socket_bonus"]
     end
 
     if properties["requirement"]
-      json[:requires] = {:profession => properties["requirement"].downcase}
+      json[:rq] = {:profession => properties["requirement"].downcase}
     end
 
     if properties["gem_slot"]
-      json[:slot] = properties["gem_slot"]
+      json[:sl] = properties["gem_slot"]
     end
 
     json[:heroic] = "Heroic" if properties["is_heroic"]

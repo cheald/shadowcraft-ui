@@ -91,3 +91,12 @@ modal = (dialog) ->
   $(dialog).detach()
   $("#wait").hide()
   $("#modal").append(dialog).fadeIn()
+
+Object.deepExtend = (destination, source) ->
+  for property, value of source
+    if value && value.constructor && value.constructor == Object
+      destination[property] ||= {}
+      arguments.callee(destination[property], value)
+    else
+      destination[property] = value
+  return destination

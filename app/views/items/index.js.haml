@@ -1,13 +1,50 @@
+- item_json = @alt_items.as_json
+- enchant_json = @enchants.as_json
+- gem_json = @gems.as_json
 - cache_to File.join(Rails.root, "public", "items.js") do
   :plain
     window.ShadowcraftData = {};
     (function(R) {
-      R.GEMS = #{raw @gems.to_json};
-      R.ITEMS = #{raw @alt_items.to_json};
-      R.ENCHANTS = #{raw @enchants.to_json};
+      var iStatMap = #{squish_stats(item_json).to_json};
+      var eStatMap = #{squish_stats(enchant_json).to_json};
+      var gStatMap = #{squish_stats(gem_json).to_json};
+
+      function expandStats(item, map) {
+        item.stats = {}
+        for(var i = 0; i < item.s.length; i++) {
+          if(item.s[i] != 0)
+            item.stats[map[i]] = item.s[i];
+        }
+        delete item.s;
+      }
+
+      R.GEMS = #{raw gem_json.to_json};
+      R.ITEMS = #{raw item_json.to_json};
+      R.ENCHANTS = #{raw enchant_json.to_json};
       R.TALENTS = #{raw @talents.to_json};
       R.TALENT_INDEX = #{raw Character::TALENTS.to_json};
       R.GLYPHS = #{raw @glyphs.to_json}
+
+      function expandItem(item, map) {
+        expandStats(item, map);
+        item.quality = item.q;
+        item.name = item.n;
+        item.icon = item.i;
+        item.item_id = item.id;
+        item.sockets = item.so;
+        item.equip_location = item.e;
+        item.socketbonus = item.sb;
+        item.requires = item.rq;
+        item.slot = item.sl;
+        delete item.q;
+        delete item.n;
+        delete item.i;
+        delete item.so;
+        delete item.e;
+        delete item.sb;
+        delete item.rq;
+        delete item.sl;
+      }
 
       function getRealSlot(slot, mergeRanged) {
         if(slot == 13 || slot == 21) { // Mainhand-only items
@@ -22,39 +59,40 @@
       }
       var i;
 
-      R.GEM_LIST = [];
-      for(var i in R.GEMS) {
-        if(R.GEMS.hasOwnProperty(i)) {
-          var g = R.GEMS[i];
-          g.Prismatic = true;
-          switch(g.slot) {
-            case "Blue":
-              g.Blue = true; break;
-            case "Purple":
-              g.Blue = true; g.Red = true; break;
-            case "Green":
-              g.Blue = true; g.Yellow = true; break;
-            case "Orange":
-              g.Red = true; g.Yellow = true; break;
-            case "Red":
-              g.Red = true; break;
-            case "Yellow":
-              g.Yellow = true; break;
-            case "Prismatic":
-              g.Red = true; g.Blue = true; g.Yellow = true; break;
-            case "Cogwheel":
-              g.Red = true; g.Blue = true; g.Yellow = true; break;
-            case "Meta":
-              g.Meta = true; break;
-          }
-          R.GEM_LIST[R.GEM_LIST.length] = R.GEMS[i];
-        };
+      R.GEM_LOOKUP = {};
+      for(var i = 0; i < R.GEMS.length; i++) {
+        var g = R.GEMS[i];
+        expandItem(g, gStatMap);
+        g.Prismatic = true;
+        switch(g.slot) {
+          case "Blue":
+            g.Blue = true; break;
+          case "Purple":
+            g.Blue = true; g.Red = true; break;
+          case "Green":
+            g.Blue = true; g.Yellow = true; break;
+          case "Orange":
+            g.Red = true; g.Yellow = true; break;
+          case "Red":
+            g.Red = true; break;
+          case "Yellow":
+            g.Yellow = true; break;
+          case "Prismatic":
+            g.Red = true; g.Blue = true; g.Yellow = true; break;
+          case "Cogwheel":
+            g.Red = true; g.Blue = true; g.Yellow = true; break;
+          case "Meta":
+            g.Meta = true; break;
+        }
+        R.GEM_LOOKUP[g.item_id] = g
       }
+
       R.SLOT_CHOICES = {mainhand: [], offhand: [], ranged: []};
       R.ENCHANT_SLOTS = {mainhand: []}; R.ENCHANT_SLOTS.offhand = R.ENCHANT_SLOTS.mainhand;
       R.ENCHANT_LOOKUP = {};
       for(i = 0; i <R.ENCHANTS.length; i++) {
         var enchant = R.ENCHANTS[i];
+        expandStats(enchant, eStatMap);
         var s = getRealSlot(enchant.slot, true);
         if(R.ENCHANT_SLOTS[s] === undefined) { R.ENCHANT_SLOTS[s] = []; }
         R.ENCHANT_SLOTS[s][R.ENCHANT_SLOTS[s].length] = enchant;
@@ -63,7 +101,9 @@
       R.ITEM_LOOKUP = {};
       for(i = 0; i < R.ITEMS.length; i++) {
         var item = R.ITEMS[i];
-        item.item_id = item.i;
+        expandItem(item, iStatMap);
+
+        item.item_id = item.id;
         if(item.equip_location == 6) {    // Add sockets to belts
           if(item.sockets === undefined) { item.sockets = []; }
           item.sockets[item.sockets.length] = "Prismatic";

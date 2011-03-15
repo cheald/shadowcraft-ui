@@ -1,6 +1,10 @@
 module WowArmory
   class Item
     unloadable
+
+    @random_suffix_csv = nil
+    @item_enchants = nil
+
     # STATS = Hash[*STAT_MAP.split(/\n/).map {|line| x = line.strip.split(" ", 2); [x.last.downcase.gsub(" ", "_").to_sym, x.first.to_i]}.flatten]
     STAT_INDEX = {
       :damage_done                      => 41,
@@ -72,11 +76,13 @@ module WowArmory
     STAT_LOOKUP = Hash[*STAT_INDEX.map {|k, v| [v, k]}.flatten]
 
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :is_heroic, :socket_bonus, :sockets, :gem_slot, :variants, :speed, :subclass, :dps, :armor_class
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :is_heroic, :socket_bonus, :sockets, :gem_slot, :speed, :subclass, :dps, :armor_class, :random_suffix, :scalar
     attr_accessor *ACCESSORS
-    def initialize(id, variant = nil)
+    def initialize(id, random_suffix = nil, scalar = nil, name = nil)
       self.stats = {}
-      @variant = variant
+      self.random_suffix = random_suffix
+      self.scalar = scalar > 5000 ? scalar & 65535 : scalar unless scalar.nil?
+      self.name = name
 
       if id == :empty or id == 0 or id.nil?
         @id = :empty
@@ -84,8 +90,11 @@ module WowArmory
       else
         @id = id.to_i
       end
-      self.stats = variant[:stats] unless variant.nil?
 
+      Rails.logger.debug "Populating with random suffix: #{random_suffix.inspect}, scalar: #{scalar.inspect}"
+      unless random_suffix.nil? or scalar.nil?
+        populate_random_suffix_item
+      end
       fetch "us", "item/%d/tooltip" % id
       populate_stats
     end
@@ -96,23 +105,37 @@ module WowArmory
       end
     end
 
-    def get_variants!
-      self.variants = []
-      doc = Nokogiri::HTML open("http://www.wowhead.com/item=%d" % @id, "User-Agent" => "Mozilla/5.0 (Windows; Windows NT 6.1) AppleWebKit/534.23 (KHTML, like Gecko) Chrome/11.0.686.3 Safari/534.23").read
-      # doc = Nokogiri::HTML open("http://us.battle.net/wow/en/item/%d" % @id).read
-      random_header = doc.css("h3").detect {|e| e.text.match(/Random Enchantments/) }
-      return self.variants if random_header.nil?
-      random_header.next_element.css("li").map(&:text).each do |glob|
-        bits = glob.split(/[()]/)
-        suffix = bits.first.strip.gsub("...", "")
-        stats = scan_str bits.last.strip
+    private
 
-        self.variants.push(:suffix => suffix, :stats => stats)
+    def populate_random_suffix_item
+      row = random_suffixes[random_suffix.abs.to_s]
+      # puts row.inspect
+      self.stats = {}
+      4.times do |i|
+        enchant = row[3+i]
+        scal = row[8+i].to_f / 10000.0
+        if enchant != "0"
+          stat = item_enchants[enchant][11].to_i
+          self.stats[STAT_LOOKUP[stat]] = (scal * self.scalar).floor
+        end
       end
-      variants
     end
 
-    private
+    def random_suffixes
+      @@random_suffix_csv ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "ItemRandomSuffix.dbc.csv")) do |row|
+          hash[row[0].to_s] = row
+        end
+      end
+    end
+
+    def item_enchants
+      @@item_enchants ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantment.dbc.csv")) do |row|
+          hash[row[0].to_s] = row
+        end
+      end
+    end
 
     def populate_weapon_stats!
       doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @id).read
@@ -126,8 +149,7 @@ module WowArmory
     end
 
     def populate_stats
-      self.name = value("h3")
-      self.name += " " + @variant[:suffix] unless @variant.nil?
+      self.name ||= value("h3")
       lis = @document.css(".item-specs li")
       self.quality = attr("h3", "class").match(/color-q(\d)/).try(:[], 1).try(:to_i)
       self.equip_location = lis.text.map {|e| EQUIP_LOCATIONS[e.strip.downcase] }.compact.first
@@ -150,12 +172,14 @@ module WowArmory
         populate_weapon_stats!
       end
 
-      nodes("ul.item-specs li").each do |spec|
-        id = spec.attr("id")
-        next if id.nil?
-        if attr_type = id.match(/stat-(\d+)/)
-          stat = STAT_LOOKUP[attr_type[1].to_i]
-          self.stats[stat] = value("span", spec).to_i
+      if self.stats.nil? or self.stats.blank?
+        nodes("ul.item-specs li").each do |spec|
+          id = spec.attr("id")
+          next if id.nil?
+          if attr_type = id.match(/stat-(\d+)/)
+            stat = STAT_LOOKUP[attr_type[1].to_i]
+            self.stats[stat] = value("span", spec).to_i
+          end
         end
       end
     end

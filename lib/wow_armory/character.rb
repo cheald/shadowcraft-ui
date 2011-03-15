@@ -15,11 +15,11 @@ module WowArmory
       @character = character
       @realm = realm
       @region = region
-      fetch region, "character/%s/%s/simple" % [normalize_realm(realm), normalize_character(character)]
+      fetch region, "character/%s/%s/advanced" % [normalize_realm(realm), normalize_character(character)]
       populate!
 
-      self.tree1 = Talents.new character,realm, region, 'primary'
-      self.tree2 = Talents.new character,realm, region, 'secondary'
+      self.tree1 = Talents.new character, realm, region, 'primary'
+      self.tree2 = Talents.new character, realm, region, 'secondary'
       self.active_talents = @document.css("#summary-talents a.active").attr("href").to_s.match(/primary/) ? 0 : 1
       self.professions = @document.css(".profession-details .name").map {|n| n.text.downcase }
     end
@@ -109,14 +109,18 @@ module WowArmory
     def populate_gear
       @gear = {}
       nodes("#summary-inventory div.slot").each do |slot|
-        item_info = attr("a.item", "data-item", slot)
+        item_info = attr(".details .name a", "data-item", slot)
+        item_name = value(".details .name a", slot)
         unless item_info.nil?
           id   = slot.attr("data-id").to_i
           info = Hash[*item_info.split("&").map {|i| v = i.split("=", 2); v[1] = v[1].to_i; v }.flatten]
-          info.delete "s"
           info["item_id"] = info.delete "i"
           info["enchant"] = info.delete "e"
           info["reforge"] = info.delete "re"
+          info["name"] = item_name
+          if info["scaling"] = info.delete("s")
+            info["scaling"] = info["scaling"].to_i & 65535
+          end
 
           info["slot"] = id
           %w(g0 g1 g2).each do |gem|

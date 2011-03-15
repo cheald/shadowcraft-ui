@@ -59,21 +59,24 @@ class Character
       end
       self.properties.stringify_keys!
       self.portrait = char.portrait
-    end
 
-    properties["gear"].each do |slot, item|
-      Item.find_or_create_by(:remote_id => item["item_id"].to_i)
+      properties["gear"].each do |slot, item|
+        i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i, :random_suffix => item["r"])
+        if i.new_record?
+          i.scaling = item["scaling"]
+          i.item_name_override = item["name"]
+          i.save
+        end
+      end
     end
   end
 
   def as_json(options = {})
+    Rails.logger.debug Character.encode_random_items(properties["gear"]).inspect
     {
-      :gear   => properties["gear"],
+      :gear   => Character.encode_random_items(properties["gear"]),
       :talents => properties["talents"],
       :active => properties["active_talents"],
-      :name   => name,
-      :realm  => realm,
-      :region => region,
       :options => {
         :general => {
           :level => properties["level"],
@@ -82,6 +85,17 @@ class Character
         :professions => Hash[*properties["professions"].map {|p| [p, true]}.flatten]
       }
     }
+  end
+
+  def self.encode_random_items(items)
+    items.clone.tap do |copy|
+      copy.each do |key, item|
+        if r = item.delete("r")
+          item.delete "s"
+          item["item_id"] = item["item_id"] * 1000 + r.to_i.abs
+        end
+      end
+    end
   end
 
   def fullname

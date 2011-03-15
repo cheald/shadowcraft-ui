@@ -6,11 +6,6 @@ class ShadowcraftHistory
 
   boot: ->
     app = this
-    $("#tabs").tabs({
-      show: (event, ui) ->
-        if ui.tab.hash == "#impex"
-          app.buildExport()
-    })
     Shadowcraft.bind("update", -> app.save())
     $("#doImport").click ->
       json = $.parseJSON $("textarea#import").val()
@@ -137,8 +132,8 @@ class ShadowcraftHistory
 
       gearSet = []
       for slot in [0..17]
-        gear = data.gear[slot]
-        gearSet.push gear.item_id
+        gear = data.gear[slot] || {}
+        gearSet.push gear.item_id || 0
         gearSet.push gear.enchant || 0
         gearSet.push gear.reforge || 0
         gearSet.push gear.g0 || 0

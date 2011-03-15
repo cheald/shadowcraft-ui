@@ -6,7 +6,7 @@ gem 'nokogiri'
 gem "compass", ">= 0.10.5"
 gem "formtastic"
 gem "haml"
-gem "bson_ext", "1.0.4"
+gem "bson_ext"
 gem "mongo"
 gem "mongoid", "2.0.0.rc.7"
 gem "httparty"
