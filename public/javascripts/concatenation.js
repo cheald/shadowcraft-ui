@@ -581,7 +581,6 @@
     };
     ShadowcraftHistory.prototype.loadSnapshot = function(snapshot) {
       this.app.Data = decompress(snapshot);
-      console.log(this.app.Data);
       loadingSnapshot = true;
       return Shadowcraft.loadData();
     };
@@ -1263,16 +1262,16 @@
       return str;
     };
     ShadowcraftTalents.decodeTalents = function(s) {
-      var a, b, char, i, idx, index, talents, tree, trees, treestr, _len, _ref;
+      var a, b, character, i, idx, index, talents, tree, trees, treestr, _len, _ref;
       trees = s.split("Z");
       talents = "";
       for (index = 0, _len = trees.length; index < _len; index++) {
         tree = trees[index];
         treestr = "";
         for (i = 0, _ref = Math.floor(TREE_SIZE[index] / 2); (0 <= _ref ? i <= _ref : i >= _ref); (0 <= _ref ? i += 1 : i -= 1)) {
-          char = tree[i];
-          if (char) {
-            idx = talentMap.indexOf(char);
+          character = tree[i];
+          if (character) {
+            idx = talentMap.indexOf(character);
             a = Math.floor(idx / 5);
             b = idx % 5;
           } else {
@@ -1744,7 +1743,6 @@
             glyphs[i] = parseInt(glyph, 10);
           }
           glyphs = _.compact(glyphs);
-          console.log('setting talents to', talents, glyphs);
           setTalents(talents);
           return app.setGlyphs(glyphs);
         }

@@ -26,9 +26,9 @@ class ShadowcraftTalents
     for tree, index in trees
       treestr = ""
       for i in [0..Math.floor(TREE_SIZE[index] / 2)]
-        char = tree[i]
-        if char
-          idx = talentMap.indexOf(char)
+        character = tree[i]
+        if character
+          idx = talentMap.indexOf(character)
           a = Math.floor(idx / 5)
           b = idx % 5
         else

@@ -1,5 +1,6 @@
 embed_assets: datauri
 package_path: packages
+javascript_compressor: closure
 
 javascripts:
   app:
@@ -14,14 +15,11 @@ javascripts:
     - public/javascripts/flot/jquery.flot.js
     - public/javascripts/flot/jquery.flot.crosshair.js
     - public/javascripts/jquery.websocket-0.0.1.js
-    - public/javascripts/lzw.js
     - public/javascripts/base64.js
-    - public/javascripts/sha1.js
     - public/javascripts/convertBase.js
-    - public/javascripts/concatenation.js
     - public/javascripts/deflate.js
     - public/javascripts/inflate.js
-    # - public/javascripts/compiled.js
+    - public/javascripts/concatenation.js
 stylesheets:
   app:
     - public/stylesheets/custom-theme/jquery-ui-1.8.5.custom.css
