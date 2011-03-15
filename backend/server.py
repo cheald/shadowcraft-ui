@@ -337,7 +337,7 @@ class ShadowcraftSocket(WebSocketHandler):
       # stats.sort_stats('time', 'calls')
       # stats.print_stats(50)
       
-     start = clock()
+      start = clock()
       response = engine.get_all(input["data"])      
       response["calc_time"] = clock() - start
       self.transport.write(json.dumps({'type': 'response', 'data': response}))
