@@ -78,7 +78,7 @@ class ShadowcraftOptions
     @setup("#settings #general", "general", {
       level: {type: "input", name: "Level", 'default': 85},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead"], name: "Race", 'default': "Human"}
-      duration: {type: "input", name: "Fight Duration", 'default': 600}
+      duration: {type: "input", name: "Fight Duration", 'default': 360}
       # tricks: {name: "Tricks of the Trade on cooldown", 'default': true}
       mh_poison: {name: "Mainhand Poison", type: 'select', options: {'ip': "Instant Poison", 'wp': 'Wound Poison', 'dp': 'Deadly Poison'}, 'default': 'ip'}
       oh_poison: {name: "Offhand Poison", type: 'select', options: {'ip': "Instant Poison", 'wp': 'Wound Poison', 'dp': 'Deadly Poison'}, 'default': 'dp'}

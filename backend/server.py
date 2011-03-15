@@ -5,7 +5,6 @@ sys.path.append("engine")
 
 from twisted.application import service, internet
 from twisted.web import server, resource
-from websocket import *
 from twisted.internet import reactor
 from time import clock
 
@@ -13,6 +12,7 @@ from shadowcraft.calcs.rogue.Aldriana import AldrianasRogueDamageCalculator, set
 from shadowcraft.objects import buffs, race, stats, procs
 from shadowcraft.objects.talents import InvalidTalentException
 from shadowcraft.objects.rogue import rogue_talents, rogue_glyphs
+from websocket import *
 
 import hotshot, hotshot.stats
 
@@ -88,15 +88,18 @@ class ShadowcraftComputation:
     'guild_feast'
   ]
 
-  validCycleKeys = [
-    'min_envenom_size_mutilate',
-    'min_envenom_size_backstab',
-    'prioritize_rupture_uptime_mutilate',
-    'prioritize_rupture_uptime_backstab',
-    'use_rupture',
-    'use_revealing_strike',
-    'ksp_immediately',
-    'clip_recuperate'
+  validCycleKeys = [[
+      'min_envenom_size_mutilate',
+      'min_envenom_size_backstab',
+      'prioritize_rupture_uptime_mutilate',
+      'prioritize_rupture_uptime_backstab'
+    ], [
+      'use_rupture',
+      'use_revealing_strike',
+      'ksp_immediately'
+    ], [
+      'clip_recuperate'
+    ]
   ]
 
   def sumstring(self, x):
@@ -220,19 +223,23 @@ class ShadowcraftComputation:
     # Glyphs
     _glyphs = rogue_glyphs.RogueGlyphs(*input.get("gly", []))
 
-    rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys )
-    print rotation_options
-        
     if self.sumstring(t[0]) >= 31:
-      _cycle = settings.AssassinationCycle(**rotation_options)
+      tree = 0
     elif self.sumstring(t[1]) >= 31:
+      tree = 1
+    else:
+      tree = 2
+      
+    rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
+    
+    if tree == 0:
+      _cycle = settings.AssassinationCycle(**rotation_options)
+    elif tree == 1:
       _cycle = settings.CombatCycle(**rotation_options)
     else:
       _cycle = settings.SubtletyCycle(5, **rotation_options)
 
     _opt = input.get("settings", {})
-    print _opt
-    print _opt.get("mh_poison", 'ip')
     _settings = settings.Settings(_cycle,
       response_time = 0.5,
       tricks_on_cooldown = _opt.get("tricks", True),
@@ -297,7 +304,6 @@ class ShadowcraftSite(resource.Resource):
       return '{"error": "Invalid input"}'
     
     input = json.loads(inbound[0])
-    print input
     
     response = engine.get_all(input)
     return json.dumps( response )
@@ -331,8 +337,7 @@ class ShadowcraftSocket(WebSocketHandler):
       # stats.sort_stats('time', 'calls')
       # stats.print_stats(50)
       
-      print input
-      start = clock()
+     start = clock()
       response = engine.get_all(input["data"])      
       response["calc_time"] = clock() - start
       self.transport.write(json.dumps({'type': 'response', 'data': response}))

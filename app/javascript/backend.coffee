@@ -43,19 +43,11 @@ class ShadowcraftBackend
       if val
         buffList.push ShadowcraftOptions.buffMap.indexOf(key)
 
-    rotation_options = null
-    if data.tree0 >= 31
-      rotation_options = data.options["rotation-mutilate"]
-    else if data.tree1 >= 31
-      rotation_options = data.options["rotation-combat"]
-    else if data.tree2 >= 31
-      rotation_options = data.options["rotation-subtlety"]
-
     payload =
       r: data.options.general.race
       l: data.options.general.level
       b: buffList
-      ro: rotation_options,
+      ro: data.options.rotation,
       settings: {
         # tricks: data.options.general.tricks
         mh_poison: data.options.general.mh_poison

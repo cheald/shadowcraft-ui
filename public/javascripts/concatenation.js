@@ -343,7 +343,7 @@
       return this;
     };
     ShadowcraftBackend.prototype.buildPayload = function() {
-      var Gems, GlyphLookup, ItemLookup, Talents, buffList, data, g, gear_ids, glyph, glyph_list, k, key, mh, oh, payload, rotation_options, statSum, statSummary, th, val, _i, _len, _ref, _ref2, _ref3;
+      var Gems, GlyphLookup, ItemLookup, Talents, buffList, data, g, gear_ids, glyph, glyph_list, k, key, mh, oh, payload, statSum, statSummary, th, val, _i, _len, _ref, _ref2, _ref3;
       data = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       Talents = Shadowcraft.ServerData.TALENTS;
@@ -370,19 +370,11 @@
           buffList.push(ShadowcraftOptions.buffMap.indexOf(key));
         }
       }
-      rotation_options = null;
-      if (data.tree0 >= 31) {
-        rotation_options = data.options["rotation-mutilate"];
-      } else if (data.tree1 >= 31) {
-        rotation_options = data.options["rotation-combat"];
-      } else if (data.tree2 >= 31) {
-        rotation_options = data.options["rotation-subtlety"];
-      }
       payload = {
         r: data.options.general.race,
         l: data.options.general.level,
         b: buffList,
-        ro: rotation_options,
+        ro: data.options.rotation,
         settings: {
           mh_poison: data.options.general.mh_poison,
           oh_poison: data.options.general.oh_poison,
@@ -1016,7 +1008,7 @@
         duration: {
           type: "input",
           name: "Fight Duration",
-          'default': 600
+          'default': 360
         },
         mh_poison: {
           name: "Mainhand Poison",
