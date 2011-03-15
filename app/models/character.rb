@@ -24,13 +24,13 @@ class Character
     :preparation, :sanguinary_vein, :slaughter_from_the_shadows, :serrated_blades, :shadow_dance]
 
   validates_inclusion_of :region, :in => REGIONS
-  validates_presence_of :name
+  validates_presence_of :name, :message => "%{value} could not be found on the Armory."
   validates_presence_of :realm
   validates_length_of :name, :maximum => 30
   validates_length_of :realm, :maximum => 30
   validates_uniqueness_of :uid
   validates_presence_of :uid
-  validates_presence_of :properties
+  validates_presence_of :properties, :message => 'Could not load character from the Armory.'
 
   before_validation :update_from_armory!
   before_validation :write_uid
