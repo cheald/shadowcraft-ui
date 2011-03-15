@@ -30,7 +30,9 @@ class Character
   validates_length_of :realm, :maximum => 30
   validates_uniqueness_of :uid
   validates_presence_of :uid
+  validates_presence_of :properties
 
+  before_validation :update_from_armory!
   before_validation :write_uid
 
   def to_param
@@ -44,14 +46,18 @@ class Character
       begin
         char = WowArmory::Character.new(name, realm, region)
       rescue WowArmory::ArmoryError => e
-        errors.add :base, e.message
+        errors.add :name, e.message
         return
       rescue WowArmory::MissingDocument => e
-        errors.add :base, "Character not found"
+        errors.add :name, "Character not found"
         return
       end
 
       self.properties = char.as_json
+      if self.properties.nil?
+        errors.add :base, "Character not found"
+        return
+      end
       self.properties.stringify_keys!
       self.portrait = char.portrait
     end

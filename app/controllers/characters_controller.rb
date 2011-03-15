@@ -23,8 +23,6 @@ class CharactersController < ApplicationController
     @character = Character.get!(params[:character])
     @character ||= Character.new(params[:character])
 
-    @character.update_from_armory! if @character.valid?
-
     if @character.save
       flash[:message] = "Character imported!"
       redirect_to rebuild_items_path(:c => @character._id)
