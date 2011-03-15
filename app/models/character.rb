@@ -30,7 +30,7 @@ class Character
   validates_length_of :realm, :maximum => 30
   validates_uniqueness_of :uid
   validates_presence_of :uid
-  validates_presence_of :properties, :message => 'Could not load character from the Armory.'
+  validates_presence_of :properties, :message => 'empty: could not load character from the Armory.'
 
   before_validation :update_from_armory!
   before_validation :write_uid
