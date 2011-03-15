@@ -266,12 +266,13 @@ class ShadowcraftTalents
     $(".glyph_slot .pct-inner").css({width: 0})
     for key, weight of data.glyph_ranking
       g = Shadowcraft.ServerData.GLYPHNAME_LOOKUP[key];
-      width = weight / max * 100;
-      slot = $(".glyph_slot[data-id='" + g.id + "']")
-      $.data(slot[0], "weight", weight)
-      $.data(slot[0], "name", g.name)
-      slot.show().find(".pct-inner").css({width: width + "%"})
-      slot.find(".label").text(weight.toFixed(1) + " DPS")
+      if g
+        width = weight / max * 100;
+        slot = $(".glyph_slot[data-id='" + g.id + "']")
+        $.data(slot[0], "weight", weight)
+        $.data(slot[0], "name", g.name)
+        slot.show().find(".pct-inner").css({width: width + "%"})
+        slot.find(".label").text(weight.toFixed(1) + " DPS")
 
     glyphSets = $(".glyphset")
     for glyphSet in glyphSets
