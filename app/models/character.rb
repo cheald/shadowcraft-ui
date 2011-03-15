@@ -46,16 +46,15 @@ class Character
       begin
         char = WowArmory::Character.new(name, realm, region)
       rescue WowArmory::ArmoryError => e
-        errors.add :name, e.message
+        errors.add :base, e.message
         return
       rescue WowArmory::MissingDocument => e
-        errors.add :name, "Character not found"
+        errors.add :base, "Character not found in the Armory"
         return
       end
 
       self.properties = char.as_json
       if self.properties.nil?
-        errors.add :base, "Character not found"
         return
       end
       self.properties.stringify_keys!
