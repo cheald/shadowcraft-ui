@@ -17,6 +17,8 @@ module WowArmory
         "http://us.battle.net/wow/en/"
       when "eu"
         "http://eu.battle.net/wow/en/"
+      when "kr"
+        "http://kr.battle.net/wow/ko/"
       else
         "http://us.battle.net/wow/en/"
       end

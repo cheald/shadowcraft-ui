@@ -13,7 +13,7 @@ class Character
 
   RACES = ["Human", "Gnome", "Dwarf", "Night Elf", "Worgen", "Troll", "Orc", "Goblin", "Undead"]
   REGIONS = ["US", "EU", "KR", "TW", "CN"]
-  CLASSES = ["Rogue"]
+  CLASSES = ["rogue"]
 
   TALENTS = [:deadly_momentum, :coup_de_grace, :lethality, :ruthlessness, :quickening, :puncturing_wounds, :blackjack, :deadly_brew, :cold_blood,
     :vile_poisons, :deadened_nerves, :seal_fate, :murderous_intent, :overkill, :master_poisoner, :improved_expose_armor, :cut_to_the_chase,
@@ -69,8 +69,10 @@ class Character
       properties["gear"].each do |slot, item|
         i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i, :random_suffix => item["r"])
         if i.new_record?
-          i.scaling = item["scaling"]
-          i.item_name_override = item["name"]
+          unless item["r"].blank?
+            i.scaling = item["scaling"]
+            i.item_name_override = item["name"]
+          end
           i.save
         end
       end
@@ -133,7 +135,7 @@ class Character
 
   def is_supported_class?
     Rails.logger.debug properties.inspect
-    unless CLASSES.include? properties["player_class"]
+    unless CLASSES.include? properties["player_class"].downcase
       errors.add :base, "The #{properties["player_class"]} class is not currently supported by Shadowcraft."
       return false
     end
