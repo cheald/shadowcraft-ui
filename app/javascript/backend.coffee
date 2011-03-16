@@ -1,6 +1,6 @@
 class ShadowcraftBackend
-  HTTP_ENGINE = "http://cheald.homedns.org:8880/"
-  WS_ENGINE   = "ws://cheald.homedns.org:8880/engine"
+  HTTP_ENGINE = "http://#{window.location.hostname}:8880/"
+  WS_ENGINE   = "ws://#{window.location.hostname}:8880/engine"
 
   constructor: (@app) ->
     @app.Backend = this
