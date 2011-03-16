@@ -181,7 +181,7 @@ class ShadowcraftHistory
 
   professionMap = [ "enchanting", "engineering", "blacksmithing", "inscription", "jewelcrafting", "leatherworking", "tailoring" ]
   poisonMap = [ "ip", "dp", "wp" ]
-  raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf"]
+  raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei"]
   rotationOptionsMap = [
     "min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab"
     "use_rupture", "ksp_immediately", "use_revealing_strike"

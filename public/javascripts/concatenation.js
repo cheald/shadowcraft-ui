@@ -609,9 +609,6 @@
       var d, key, snapshots;
       key = this.app.uuid + "snapshots";
       snapshots = $.jStorage.get(key, {});
-      console.log(key, snapshots, Templates.loadSnapshots({
-        snapshots: snapshots
-      }));
       d = $("#loadSnapshot");
       d.get(0).innerHTML = Templates.loadSnapshots({
         snapshots: _.keys(snapshots)
@@ -737,7 +734,7 @@
     };
     professionMap = ["enchanting", "engineering", "blacksmithing", "inscription", "jewelcrafting", "leatherworking", "tailoring"];
     poisonMap = ["ip", "dp", "wp"];
-    raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf"];
+    raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei"];
     rotationOptionsMap = ["min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab", "use_rupture", "ksp_immediately", "use_revealing_strike", "clip_recuperate"];
     rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, true, false, 'true', 'false', 'never', 'always', 'sometimes'];
     map = function(value, m) {
@@ -1095,7 +1092,7 @@
         },
         race: {
           type: "select",
-          options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead"],
+          options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin"],
           name: "Race",
           'default': "Human"
         },
