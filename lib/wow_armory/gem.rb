@@ -14,7 +14,7 @@ module WowArmory
       self.class.build_lookups
       @gem_id = gem_id
       effect = self.class.gem_to_effect[gem_id]
-      parse_effect! effect
+      parse_effect! effect unless effect.nil?
     end
 
     private
