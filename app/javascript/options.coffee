@@ -138,7 +138,7 @@ class ShadowcraftOptions
   changeOption = (elem, val) ->
     $this = $(elem)
     data = Shadowcraft.Data
-    ns = elem.attr("data-ns") || "root";
+    ns = elem.attr("data-ns") || "root"
     data.options[ns] ||= {}
     name = $this.attr("name")
     if val == undefined
@@ -162,7 +162,7 @@ class ShadowcraftOptions
     app = this
     @initOptions()
     unless window.Touch
-      $("#settings select").selectmenu({ style: 'dropdown' });
+      $("#settings select").selectmenu({ style: 'dropdown' })
 
     Shadowcraft.bind "loadData", ->
       app.initOptions()

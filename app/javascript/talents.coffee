@@ -57,14 +57,14 @@ class ShadowcraftTalents
   updateTalentAvailability = (selector) ->
     talents = if selector then selector.find(".talent") else $("#talentframe .tree .talent")
     talents.each ->
-      $this = $(this);
-      pos = $.data(this, "position");
-      tree = $.data(pos.tree, "info");
-      icons = $.data(this, "icons");
+      $this = $(this)
+      pos = $.data(this, "position")
+      tree = $.data(pos.tree, "info")
+      icons = $.data(this, "icons")
       if tree.points < (pos.row) * 5
         $this.css({backgroundImage: icons.grey}).removeClass("active")
       else
-        $this.css({backgroundImage: icons.normal}).addClass("active");
+        $this.css({backgroundImage: icons.normal}).addClass("active")
     Shadowcraft.Talents.trigger("changed")
     Shadowcraft.update()
 
@@ -122,7 +122,7 @@ class ShadowcraftTalents
       success = true
     else if dir == -1
       for tier in [position.row..7]
-        prequal = 0;
+        prequal = 0
         for prev in [0..tier]
           prequal += tree.rowPoints[prev]
         if tree.rowPoints[tier] > 0 and (tier * 5) >= prequal
@@ -143,7 +143,7 @@ class ShadowcraftTalents
         $points.addClass("full")
       else if points.cur > 0
         $points.addClass("partial")
-      $points.text(points.cur + "/" + points.max);
+      $points.text(points.cur + "/" + points.max)
       unless skipUpdate
         updateTalentAvailability $(button).parent()
         data.activeTalents = getTalents()
@@ -181,12 +181,12 @@ class ShadowcraftTalents
       myTree = trees.get(0)
       tree = talentTrees.index(myTree)
       talent = TalentLookup[tree + ":" + row + ":" + col]
-      $.data(this, "position", {tree: myTree, treeIndex: tree, row: row, col: col});
-      $.data(myTree, "info", {points: 0, rowPoints: [0, 0, 0, 0, 0, 0, 0]});
-      $.data(this, "talent", talent);
-      $.data(this, "points", {cur: 0, max: talent.maxRank});
-      $.data(this, "pointsButton", $this.find(".points"));
-      $.data(this, "spentButton", trees.find(".spent"));
+      $.data(this, "position", {tree: myTree, treeIndex: tree, row: row, col: col})
+      $.data(myTree, "info", {points: 0, rowPoints: [0, 0, 0, 0, 0, 0, 0]})
+      $.data(this, "talent", talent)
+      $.data(this, "points", {cur: 0, max: talent.maxRank})
+      $.data(this, "pointsButton", $this.find(".points"))
+      $.data(this, "spentButton", trees.find(".spent"))
       $.data(this, "icons", {grey: $this.css("backgroundImage"), normal: $this.css("backgroundImage").replace(/\/grey\//, "/")})
     ).mousedown((e) ->
       return if !$(this).hasClass("active")
@@ -219,7 +219,7 @@ class ShadowcraftTalents
         $.data(listening, "removed", true)
     )
 
-    buffer = "";
+    buffer = ""
     for talent in data.talents
       buffer += Templates.talentSet({
         talent_string: ShadowcraftTalents.encodeTalents(talent.talents)
@@ -257,7 +257,7 @@ class ShadowcraftTalents
 
     return unless data.glyphs?
     for glyph, i in data.glyphs
-      g = $(".glyph_slot[data-id='" + glyph + "']");
+      g = $(".glyph_slot[data-id='" + glyph + "']")
       toggleGlyph(g, true) if g.length > 0
 
   updateGlyphWeights = (data) ->
@@ -265,9 +265,9 @@ class ShadowcraftTalents
     $(".glyph_slot:not(.activated)").hide()
     $(".glyph_slot .pct-inner").css({width: 0})
     for key, weight of data.glyph_ranking
-      g = Shadowcraft.ServerData.GLYPHNAME_LOOKUP[key];
+      g = Shadowcraft.ServerData.GLYPHNAME_LOOKUP[key]
       if g
-        width = weight / max * 100;
+        width = weight / max * 100
         slot = $(".glyph_slot[data-id='" + g.id + "']")
         $.data(slot[0], "weight", weight)
         $.data(slot[0], "name", g.name)
@@ -315,7 +315,7 @@ class ShadowcraftTalents
       return if glyphRankCount(null, id) >= 3 and !override
       $e.addClass("activated")
       if !override and data.glyphs.indexOf(id) == -1
-        data.glyphs.push(id);
+        data.glyphs.push(id)
       if glyphRankCount(null, id) >= 3
         $set.addClass("full")
 
@@ -327,15 +327,15 @@ class ShadowcraftTalents
     sets = {
       "Primary": LC.talent_ranking_main,
       "Secondary": LC.talent_ranking_off
-    };
+    }
     rankings = _.extend({}, LC.talent_ranking_main, LC.talent_ranking_off)
     max = _.max(rankings)
     $("#talentrankings .talent_contribution").hide()
     for setKey, setVal of sets
-      buffer = "";
+      buffer = ""
       target = $("#talentrankings ." + setKey)
       for k, s of setVal
-        exist = $("#talentrankings #talent-weight-" + k);
+        exist = $("#talentrankings #talent-weight-" + k)
         val = parseInt(s, 10)
         if isNaN(val)
           name += " (NYI)"

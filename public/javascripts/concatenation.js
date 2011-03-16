@@ -2254,7 +2254,7 @@
         gear = Shadowcraft.Data.gear[slot];
         for (_j = 0, _len2 = gear.length; _j < _len2; _j++) {
           k = gear[_j];
-          if (k.indexOf("gem" === 0 && (((_ref = Gems[gear[k]].requires) != null ? _ref.profession : void 0) != null))) {
+          if (k.match(/g[0-2]/) && (((_ref = Gems[gear[k]].requires) != null ? _ref.profession : void 0) != null)) {
             count++;
           }
         }
@@ -2267,16 +2267,10 @@
       if ((((_ref = gem.requires) != null ? _ref.profession : void 0) != null) && !Shadowcraft.Data.options.professions[gem.requires.profession] || jc_gem_count >= MAX_PROFESSIONAL_GEMS) {
         return false;
       }
-      if (gemType === "Meta" && gem.slot !== "Meta") {
+      if ((gemType === "Meta" || gemType === "Cogwheel") && gem.slot !== gemType) {
         return false;
       }
-      if (gemType !== "Meta" && gem.slot === "Meta") {
-        return false;
-      }
-      if (gemType === "Cogwheel" && gem.slot !== "Cogwheel") {
-        return false;
-      }
-      if (gemType !== "Cogwheel" && gem.slot === "Cogwheel") {
+      if ((gem.slot === "Meta" || gem.slot === "Cogwheel") && gem.slot !== gemType) {
         return false;
       }
       return true;

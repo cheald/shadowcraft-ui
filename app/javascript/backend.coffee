@@ -96,7 +96,7 @@ class ShadowcraftBackend
 
     gear_ids = []
     for k, g of data.gear
-      gear_ids.push(g.item_id);
+      gear_ids.push(g.item_id)
       if k == 0 && g.g0 && Gems[g.g0] && Gems[g.g0].Meta
         if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(g.g0)
           payload.mg = "chaotic"
@@ -115,7 +115,7 @@ class ShadowcraftBackend
       snapshot = Shadowcraft.History.takeSnapshot()
 
     @app.lastCalculation = data
-    this.trigger("recompute", data);
+    this.trigger("recompute", data)
 
     if data.total_dps != @lastDPS || loadingSnapshot
       delta = data.total_dps - (@lastDPS || 0)
@@ -140,7 +140,7 @@ class ShadowcraftBackend
           grid: { hoverable: true, clickable: true, autoHighlight: true },
         })
       @lastDPS = data.total_dps
-    loadingSnapshot = false;
+    loadingSnapshot = false
 
   recompute: ->
     @cancelRecompute = false
@@ -176,7 +176,7 @@ class ShadowcraftBackend
     $.post(HTTP_ENGINE, {
       data: $.toJSON(payload)
     }, (data) ->
-      app.handleRecompute(data);
+      app.handleRecompute(data)
     , 'json')
 
 loadingSnapshot = false

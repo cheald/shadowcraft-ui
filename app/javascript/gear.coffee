@@ -103,7 +103,7 @@ class ShadowcraftGear
     data = Shadowcraft.Data
     weights = Weights
 
-    stats = {};
+    stats = {}
     if item.source and item.dest
       sumRecommendation(stats, item)
     else
@@ -119,13 +119,13 @@ class ShadowcraftGear
     if c
       if item.dps
         if slot == 15
-          total += (item.dps * c.mh_ep.mh_dps) + (item.speed * c.mh_speed_ep["mh_" + item.speed]);
-          total += racialExpertiseBonus(item) * Weights.expertise_rating;
+          total += (item.dps * c.mh_ep.mh_dps) + (item.speed * c.mh_speed_ep["mh_" + item.speed])
+          total += racialExpertiseBonus(item) * Weights.expertise_rating
         else if slot == 16
-          total += (item.dps * c.oh_ep.oh_dps) + (item.speed * c.oh_speed_ep["oh_" + item.speed]);
-          total += racialExpertiseBonus(item) * Weights.expertise_rating;
+          total += (item.dps * c.oh_ep.oh_dps) + (item.speed * c.oh_speed_ep["oh_" + item.speed])
+          total += racialExpertiseBonus(item) * Weights.expertise_rating
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
-        total += c.meta.chaotic_metagem;
+        total += c.meta.chaotic_metagem
       else if PROC_ENCHANTS[item.id]
         switch slot
           when 15
@@ -150,7 +150,7 @@ class ShadowcraftGear
     stats[to] += amt
 
   sumStats: ->
-    stats = {};
+    stats = {}
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
@@ -185,7 +185,7 @@ class ShadowcraftGear
 
   racialExpertiseBonus = (item) ->
     return 0 unless item?
-    mh_type = item.subclass;
+    mh_type = item.subclass
     race = Shadowcraft.Data.options.general.race
 
     if(race == "Human" && (mh_type == 7 || mh_type == 4))
@@ -290,7 +290,7 @@ class ShadowcraftGear
 
         return total * neg
 
-    return (Weights[stat] || 0) * num * neg;
+    return (Weights[stat] || 0) * num * neg
 
   __epSort = (a, b) ->
     b.__ep - a.__ep
@@ -313,17 +313,15 @@ class ShadowcraftGear
     for slot in SLOT_ORDER
       gear = Shadowcraft.Data.gear[slot]
       for k in gear
-        if k.indexOf "gem" == 0 && Gems[gear[k]].requires?.profession?
+        if k.match(/g[0-2]/) and Gems[gear[k]].requires?.profession?
           count++
     return count
 
   canUseGem = (gem, gemType) ->
     jc_gem_count = getProfessionalGemCount()
-    return false if gem.requires?.profession? && !Shadowcraft.Data.options.professions[gem.requires.profession] || jc_gem_count >= MAX_PROFESSIONAL_GEMS
-    return false if gemType == "Meta" && gem.slot != "Meta"
-    return false if gemType != "Meta" && gem.slot == "Meta"
-    return false if gemType == "Cogwheel" && gem.slot != "Cogwheel"
-    return false if gemType != "Cogwheel" && gem.slot == "Cogwheel"
+    return false if gem.requires?.profession? and !Shadowcraft.Data.options.professions[gem.requires.profession] or jc_gem_count >= MAX_PROFESSIONAL_GEMS
+    return false if (gemType == "Meta" or gemType == "Cogwheel") and gem.slot != gemType
+    return false if (gem.slot == "Meta" or gem.slot == "Cogwheel") and gem.slot != gemType
     true
 
   # Returns the EP value of a gem.  If it happens to require JC, it'll return
@@ -348,8 +346,8 @@ class ShadowcraftGear
 
 
   addTradeskillBonuses = (item) ->
-    item.sockets ||= [];
-    item._sockets ||= item.sockets.slice(0); # Originals
+    item.sockets ||= []
+    item._sockets ||= item.sockets.slice(0) # Originals
     blacksmith = Shadowcraft.Data.options.professions.blacksmithing?
     if item.equip_location == 9 or item.equip_location == 10
       if blacksmith && item.sockets[item.sockets.length-1] != "Prismatic"
@@ -419,7 +417,7 @@ class ShadowcraftGear
       gear = data.gear[slotIndex]
       continue unless gear
 
-      item = ItemLookup[gear.item_id];
+      item = ItemLookup[gear.item_id]
 
       if item
         rec = getGemmingRecommendation(gem_list, item, true)
@@ -437,7 +435,7 @@ class ShadowcraftGear
             gear["g" + gemIndex] = gem
             madeChanges = true
 
-    if !madeChanges || depth >= 10
+    if !madeChanges or depth >= 10
       @app.update()
       this.updateDisplay()
       Shadowcraft.Console.log "Finished automatic regemming: &Delta; #{Math.floor(@getEPTotal() - EP_PRE_REGEM)} EP", "gold"
@@ -532,7 +530,7 @@ class ShadowcraftGear
               gear.reforge = rec
               this.sumStats()
 
-    if !madeChanges || depth >= 10
+    if !madeChanges or depth >= 10
       @app.update()
       this.updateDisplay()
       Shadowcraft.Console.log("Finished automatic reforging: &Delta; " + Math.floor(@getEPTotal() - EP_PRE_REFORGE) + " EP", "gold")
@@ -647,7 +645,7 @@ class ShadowcraftGear
 
         buffer += Templates.itemSlot(opt)
       $slots.get(ssi).innerHTML = buffer
-    checkForWarnings('gear');
+    checkForWarnings('gear')
 
   whiteWhite = (v, s) ->
     s
@@ -732,13 +730,13 @@ class ShadowcraftGear
     Weights.yellow_hit = source.ep.yellow_hit
 
     $weights = $("#weights .inner")
-    $weights.empty();
+    $weights.empty()
     for key, weight of Weights
-      exist = $(".stat#weight_" + key);
+      exist = $(".stat#weight_" + key)
       if exist.length > 0
         exist.find("val").text Weights[key].toFixed(2)
       else
-        e = $weights.append("<div class='stat' id='weight_#{key}'><span class='key'>#{titleize(key)}</span><span class='val'>#{Weights[key].toFixed(2)}</span></div>");
+        e = $weights.append("<div class='stat' id='weight_#{key}'><span class='key'>#{titleize(key)}</span><span class='val'>#{Weights[key].toFixed(2)}</span></div>")
         exist = $(".stat#weight_" + key)
       $.data(exist.get(0), "weight", Weights[key])
 
@@ -748,10 +746,10 @@ class ShadowcraftGear
 
   statsToDesc = (obj) ->
     return obj.__statsToDesc if obj.__statsToDesc
-    buff = [];
+    buff = []
     for stat of obj.stats
-      buff[buff.length] = "+" + obj.stats[stat] + " " + titleize(stat);
-    obj.__statsToDesc = buff.join("/");
+      buff[buff.length] = "+" + obj.stats[stat] + " " + titleize(stat)
+    obj.__statsToDesc = buff.join("/")
     return obj.__statsToDesc
 
   # Standard setup for the popup
@@ -776,10 +774,10 @@ class ShadowcraftGear
     loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
 
     slot = parseInt($(this).parent().data("slot"), 10)
-    epSort(GemList); # Needed for gemming recommendations
+    epSort(GemList) # Needed for gemming recommendations
     for l in loc
-      l.__gemRec = getGemmingRecommendation(GemList, l, true);
-      l.__gemEP = l.__gemRec.ep;
+      l.__gemRec = getGemmingRecommendation(GemList, l, true)
+      l.__gemEP = l.__gemRec.ep
 
       rec = recommendReforge(l.stats)
       if rec
@@ -803,7 +801,7 @@ class ShadowcraftGear
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && !requireDagger && l.subclass == 15
 
-      iEP = l.__ep.toFixed(1);
+      iEP = l.__ep.toFixed(1)
 
       if l.id > 100000 # It has a random component
         ttid = Math.floor(l.id / 1000)
@@ -911,7 +909,7 @@ class ShadowcraftGear
       continue if gEP < 1
 
       if gem[item.sockets[gemSlot]]
-        desc += " (+#{socketEPBonus.toFixed(1)} bonus)";
+        desc += " (+#{socketEPBonus.toFixed(1)} bonus)"
 
       buffer += Templates.itemSlot
         item: gem

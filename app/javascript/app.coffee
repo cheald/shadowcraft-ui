@@ -81,7 +81,7 @@ class ShadowcraftApp
     @Data.options ||= {}
 
     ShadowcraftApp.trigger("boot")
-    @Console = new ShadowcraftConsole(this);
+    @Console = new ShadowcraftConsole(this)
     @Backend = new ShadowcraftBackend(this).boot()
     @Talents = new ShadowcraftTalents(this)
     @Options = new ShadowcraftOptions(this).boot()
