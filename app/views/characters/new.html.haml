@@ -1,5 +1,30 @@
 #create_character
   .form
+    .browser-support
+      %p.requires-js
+        Shadowcraft requires Javascript to run. Please turn it on and disable NoScript.
+
+      %p Shadowcraft runs best with a modern browser with full HTML5 support.
+      %p.browser-list
+        For best results, use:
+      .browsers
+        %a{:href => "http://www.google.com/chrome/intl/en/landing_chrome.html"}
+          =image_tag "browser/chrome.png"
+          %span Google Chrome
+          %em Best
+        %a{:href => "http://www.apple.com/safari/"}
+          =image_tag "browser/safari.png"
+          %span Apple Safari 5
+          %em Best
+        %a{:href => "http://www.mozilla.com/en-US/firefox/RC/"}
+          =image_tag "browser/firefox.png"
+          %span Mozille Firefox 4
+          %em Good
+        %a{:href => "http://www.beautyoftheweb.com"}
+          =image_tag "browser/ie.png"
+          %span Internet Explorer 9
+          %em Good
+
     =error_messages_for :character, :header_message => "Oops - something's not quite right!", :message => ""
     =form_for @character do |f|
       %span

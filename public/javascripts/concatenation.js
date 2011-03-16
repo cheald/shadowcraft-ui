@@ -488,7 +488,8 @@
       }
     };
     ShadowcraftBackend.prototype.recompute_via_xdr = function(payload) {
-      var xdr;
+      var app, xdr;
+      app = this;
       xdr = new XDomainRequest();
       xdr.open("get", HTTP_ENGINE + ("?rnd=" + (new Date().getTime()) + "&data=") + JSON.stringify(payload));
       xdr.send();
@@ -668,7 +669,11 @@
       this.lookups || (this.lookups = {});
       jd = json_encode(data);
       frag = $.base64Encode(RawDeflate.deflate(jd));
-      return window.history.replaceState("loadout", "Latest settings", window.location.pathname.replace(/\/+$/, "") + "/#!/" + frag);
+      if (window.history.replaceState) {
+        return window.history.replaceState("loadout", "Latest settings", window.location.pathname.replace(/\/+$/, "") + "/#!/" + frag);
+      } else {
+        return window.location.hash = "!/" + frag;
+      }
     };
     ShadowcraftHistory.prototype.reset = function() {
       if (confirm("This will wipe out any changes you've made. Proceed?")) {

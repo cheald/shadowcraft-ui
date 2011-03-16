@@ -162,6 +162,7 @@ class ShadowcraftBackend
       this.recompute_via_xhr payload
 
   recompute_via_xdr: (payload) ->
+    app = this
     xdr = new XDomainRequest()
     # We have to use GET because Twisted expects a proper form header for POST data, which XDR can't send. Yay IE.
     xdr.open "get", HTTP_ENGINE + "?rnd=#{new Date().getTime()}&data=" + JSON.stringify(payload)

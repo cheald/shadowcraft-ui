@@ -13,10 +13,11 @@ class Item
   field :requires, :type => Hash
   field :is_gem, :type => Boolean, :index => true
   field :is_glyph, :type => Boolean, :index => true
+  field :scaling, :type => Integer
 
   referenced_in :loadout
 
-  attr_accessor :item_name_override, :scaling
+  attr_accessor :item_name_override
 
   validates_presence_of :remote_id
   validates_presence_of :properties

@@ -126,7 +126,10 @@ class ShadowcraftHistory
     @lookups ||= {}
     jd = json_encode(data)
     frag = $.base64Encode(RawDeflate.deflate( jd ) )
-    window.history.replaceState("loadout", "Latest settings", window.location.pathname.replace(/\/+$/, "") + "/#!/" + frag)
+    if window.history.replaceState
+      window.history.replaceState("loadout", "Latest settings", window.location.pathname.replace(/\/+$/, "") + "/#!/" + frag)
+    else
+      window.location.hash = "!/" + frag
 
   reset: ->
     if confirm("This will wipe out any changes you've made. Proceed?")

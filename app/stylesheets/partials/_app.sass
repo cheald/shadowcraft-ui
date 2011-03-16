@@ -53,6 +53,41 @@ button
       input
         font-size: 1.5em
 
+.browser-support
+  p
+    margin: 1em 0
+  .browsers
+    padding-top: 12px
+    a
+      display: inline-block
+      width: 120px
+      span
+        display: block
+        white-space: nowrap
+      em
+        font-size: 0.85em
+        color: #444
+  background: rgba(0, 0, 0, 0.4)
+  padding: 30px
+  +border-radius(15px)
+  text-align: center
+  position: absolute
+  left: 0
+  right: 0
+  bottom: 110%
+
+.requires-js
+  font-size: 1.2em
+  color: #f00
+
+html.js
+  .requires-js
+    display: none
+
+html.websockets, html.history, html.canvas
+  .browser-support
+    display: none
+
 #notfound, #errorpage
   background: #111 url(../../images/404.jpg) center center no-repeat
   position: absolute
