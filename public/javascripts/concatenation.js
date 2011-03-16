@@ -542,7 +542,6 @@
         }
       });
       menu = $("#settingsDropdownMenu");
-      console.log(menu);
       menu.append("<li><a href='#' id='menuSaveSnapshot'>Save</li>");
       buttons = {
         Ok: function() {

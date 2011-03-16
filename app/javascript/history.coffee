@@ -22,7 +22,6 @@ class ShadowcraftHistory
           return false
     )
     menu = $("#settingsDropdownMenu")
-    console.log menu
     menu.append("<li><a href='#' id='menuSaveSnapshot'>Save</li>")
 
     buttons =
@@ -80,7 +79,6 @@ class ShadowcraftHistory
   selectSnapshot: ->
     key = @app.uuid + "snapshots"
     snapshots = $.jStorage.get(key, {})
-    console.log key, snapshots, Templates.loadSnapshots({snapshots: snapshots})
     d = $("#loadSnapshot")
     d.get(0).innerHTML = Templates.loadSnapshots({snapshots: _.keys(snapshots) })
     d.dialog({
