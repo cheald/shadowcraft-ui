@@ -18,6 +18,6 @@ class ApplicationController < ActionController::Base
   end
 
   def character_options(char)
-    {:region => char.region.downcase, :realm => char.realm.downcase.gsub(/ /, "-"), :name => char.normalize_character(char.name)}
+    {:region => char.region.downcase, :realm => char.normalize_realm(char.realm), :name => char.normalize_character(char.name)}
   end
 end

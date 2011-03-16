@@ -111,7 +111,11 @@ class Character
   def write_uid
     return if region.blank? or realm.blank? or name.blank?
     region.upcase!
-    self.uid = ("%s-%s-%s" % [region.downcase, realm.downcase.gsub(/ /, "-"), normalize_character(name)]).downcase
+    self.uid = Character.uid(region, realm, name)
+  end
+
+  def self.uid(region, realm, name)
+    ("%s-%s-%s" % [region.downcase, normalize_realm(realm), normalize_character(name)]).downcase
   end
 
   def self.get!(region, realm = nil, character = nil)
@@ -123,7 +127,7 @@ class Character
     if region.blank? or realm.blank? or character.blank?
       Character.new :region => region, :realm => realm, :name => character
     else
-      self.where(:uid => "%s-%s-%s" % [region.downcase, realm.downcase.gsub(/ /, "-"), normalize_character(character)]).first
+      self.where(:uid => Character.uid(region, realm, character)).first
     end
   end
 
