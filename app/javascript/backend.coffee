@@ -29,9 +29,9 @@ class ShadowcraftBackend
 
     statSummary = Shadowcraft.Gear.sumStats()
 
-    mh = ItemLookup[data.gear[15].item_id]
-    oh = ItemLookup[data.gear[16].item_id]
-    th = ItemLookup[data.gear[17].item_id]
+    mh = ItemLookup[data.gear[15].item_id] if data.gear[15]
+    oh = ItemLookup[data.gear[16].item_id] if data.gear[16]
+    th = ItemLookup[data.gear[17].item_id] if data.gear[17]
     glyph_list = []
 
     for glyph in data.glyphs

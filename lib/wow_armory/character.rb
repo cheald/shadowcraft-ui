@@ -35,6 +35,7 @@ module WowArmory
         :level => level,
         :active_talents => active_talents,
         :professions => professions,
+        :player_class => player_class,
         :talents => [
           tree1.as_json,
           tree2.as_json
@@ -109,8 +110,8 @@ module WowArmory
     def populate_gear
       @gear = {}
       nodes("#summary-inventory div.slot").each do |slot|
-        item_info = attr(".details .name a", "data-item", slot)
-        item_name = value(".details .name a", slot)
+        item_info = attr(".details .name a[data-item]", "data-item", slot)
+        item_name = value(".details .name a[data-item]", slot)
         unless item_info.nil?
           id   = slot.attr("data-id").to_i
           info = Hash[*item_info.split("&").map {|i| v = i.split("=", 2); v[1] = v[1].to_i; v }.flatten]

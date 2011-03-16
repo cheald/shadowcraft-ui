@@ -353,9 +353,15 @@
       Gems = Shadowcraft.ServerData;
       GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP;
       statSummary = Shadowcraft.Gear.sumStats();
-      mh = ItemLookup[data.gear[15].item_id];
-      oh = ItemLookup[data.gear[16].item_id];
-      th = ItemLookup[data.gear[17].item_id];
+      if (data.gear[15]) {
+        mh = ItemLookup[data.gear[15].item_id];
+      }
+      if (data.gear[16]) {
+        oh = ItemLookup[data.gear[16].item_id];
+      }
+      if (data.gear[17]) {
+        th = ItemLookup[data.gear[17].item_id];
+      }
       glyph_list = [];
       _ref = data.glyphs;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {

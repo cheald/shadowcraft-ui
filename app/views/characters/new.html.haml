@@ -1,6 +1,6 @@
 #create_character
   .form
-    =error_messages_for :character
+    =error_messages_for :character, :header_message => "Oops - something's not quite right!", :message => ""
     =form_for @character do |f|
       %span
         %label{:for => "character_name"} Character Name

@@ -32,6 +32,8 @@ class Character
   validates_presence_of :uid
   validates_presence_of :properties, :message => 'empty: could not load character from the Armory.'
 
+  # validate :is_supported_class?
+
   before_validation :update_from_armory!
   before_validation :write_uid
 
@@ -54,10 +56,14 @@ class Character
       end
 
       self.properties = char.as_json
+
       if self.properties.nil?
         return
       end
       self.properties.stringify_keys!
+
+      return unless is_supported_class? and is_supported_level?
+
       self.portrait = char.portrait
 
       properties["gear"].each do |slot, item|
@@ -119,5 +125,22 @@ class Character
     else
       self.where(:uid => "%s-%s-%s" % [region.downcase, realm.downcase.gsub(/ /, "-"), normalize_character(character)]).first
     end
+  end
+
+  def is_supported_class?
+    Rails.logger.debug properties.inspect
+    unless CLASSES.include? properties["player_class"]
+      errors.add :base, "The #{properties["player_class"]} class is not currently supported by Shadowcraft."
+      return false
+    end
+    return true
+  end
+
+  def is_supported_level?
+    unless properties["level"] >= 80
+      errors.add :base, "Rogues under level 80 are not currently supported by Shadowcraft."
+      return false
+    end
+    return true
   end
 end
