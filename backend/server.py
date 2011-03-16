@@ -151,7 +151,8 @@ class ShadowcraftComputation:
     # Set up gear buffs.
     buff_list = []
     buff_list.append('leather_specialization')
-    buff_list.append('potion_of_the_tolvir')
+    if input.get("pot", 0) == 1:
+      buff_list.append('potion_of_the_tolvir')
 
     if input.get("mg") == "chaotic":
       buff_list.append('chaotic_metagem')

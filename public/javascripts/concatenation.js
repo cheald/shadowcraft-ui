@@ -381,6 +381,7 @@
       payload = {
         r: data.options.general.race,
         l: data.options.general.level,
+        pot: data.options.general.potion_of_the_tolvir ? 1 : 0,
         b: buffList,
         ro: data.options.rotation,
         settings: {
