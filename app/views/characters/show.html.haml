@@ -6,14 +6,11 @@
   %li
     =link_to "Refresh from armory", refresh_character_path(char_options @character), :method => :put, :class => "showWait"
   %li
-    =link_to "Save", "#"
-  %li
-    =link_to "Load", "#"
-  %li
     =link_to "Reload", "#", :id => "reloadAllData"
 
 #tabs
   #top-pane
+    %a#logo{:href => "/"}
     %ul
       %li
         %a{:href => "#gear"} Gear
@@ -127,6 +124,12 @@
         %h3 Log
         .inner
 
+#dialogs
+  #saveSnapshot{:title => 'Save Snapshot'}
+    %label
+      Enter a name for this snapshot:
+    %input#snapshotName{:type => "text"}
+  #loadSnapshot{:title => 'Load Snapshot'}
 :javascript
   var uuid = "#{@character.uid}";
   #{flash[:reload] ? "$.jStorage.flush();" : nil}

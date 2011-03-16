@@ -85,9 +85,10 @@ class ShadowcraftApp
     @Backend = new ShadowcraftBackend(this).boot()
     @Talents = new ShadowcraftTalents(this)
     @Options = new ShadowcraftOptions(this).boot()
-    @Gear    = new ShadowcraftGear(this).boot()
+    @Gear    = new ShadowcraftGear(this)
 
     @Talents.boot()
+    @Gear.boot()
 
     @commonInit()
 

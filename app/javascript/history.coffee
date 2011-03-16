@@ -21,7 +21,47 @@ class ShadowcraftHistory
         when 2
           return false
     )
+    menu = $("#settingsDropdownMenu")
+    console.log menu
+    menu.append("<li><a href='#' id='menuSaveSnapshot'>Save</li>")
 
+    buttons =
+      Ok: ->
+        app.saveSnapshot($("#snapshotName").val())
+        $(this).dialog "close"
+      Cancel: ->
+        $(this).dialog "close"
+
+    $("#menuSaveSnapshot").click ->
+      $("#saveSnapshot").dialog({
+        modal: true,
+        buttons: buttons,
+        open: (event, ui) ->
+          sn = $("#snapshotName")
+          if Shadowcraft.Data.tree0 >= 31
+            t = "Mutilate"
+          else if Shadowcraft.Data.tree1 >= 31
+            t = "Combat"
+          else
+            t = "Subtlety"
+          d = new Date()
+          t += " #{d.getFullYear()}-#{d.getMonth()}-#{d.getDate()}"
+          sn.val(t)
+      })
+
+    $("#loadSnapshot").click $.delegate
+      ".selectSnapshot": ->
+        app.restoreSnapshot $(this).data("snapshot")
+        $("#loadSnapshot").dialog("close")
+
+      ".deleteSnapshot": ->
+        app.deleteSnapshot $(this).data("snapshot")
+        $("#loadSnapshot").dialog("close")
+        $("#menuLoadSnapshot").click()
+
+    menu.append("<li><a href='#' id='menuLoadSnapshot'>Load</li>")
+    $("#menuLoadSnapshot").click ->
+      app.selectSnapshot()
     this
 
   save: ->
@@ -29,6 +69,37 @@ class ShadowcraftHistory
       data = compress(@app.Data)
       @persist(data)
       $.jStorage.set(@app.uuid, data)
+
+  saveSnapshot: (name) ->
+    key = @app.uuid + "snapshots"
+    snapshots = $.jStorage.get(key, {})
+    snapshots[name] = @takeSnapshot()
+    $.jStorage.set(key, snapshots)
+    flash "#{name} has been saved"
+
+  selectSnapshot: ->
+    key = @app.uuid + "snapshots"
+    snapshots = $.jStorage.get(key, {})
+    console.log key, snapshots, Templates.loadSnapshots({snapshots: snapshots})
+    d = $("#loadSnapshot")
+    d.get(0).innerHTML = Templates.loadSnapshots({snapshots: _.keys(snapshots) })
+    d.dialog({
+      modal: true,
+      width: 500
+    })
+
+  restoreSnapshot: (name) ->
+    key = @app.uuid + "snapshots"
+    snapshots = $.jStorage.get(key, {})
+    @loadSnapshot snapshots[name]
+
+  deleteSnapshot: (name) ->
+    if confirm "Delete this snapshot?"
+      key = @app.uuid + "snapshots"
+      snapshots = $.jStorage.get(key, {})
+      delete snapshots[name]
+      $.jStorage.set(key, snapshots)
+      flash "#{name} has been deleted"
 
   load: (defaults) ->
     data = $.jStorage.get(@app.uuid, defaults)

@@ -1,5 +1,5 @@
 $width: 1400px
-$top-pane-height: 38px
+$top-pane-height: 48px
 body
   font-size: 12px
   font-family: "lucida grande", "verdana"
@@ -213,7 +213,14 @@ button
     border-bottom: 0
 
   #top-pane
-    background: #050505 url(../../images/logo2.png) center right no-repeat
+    a#logo
+      display: block
+      right: 5px
+      top: 0px
+      bottom: 0px
+      position: absolute
+      width: 319px
+      background: url(../../images/logo3.jpg) center center no-repeat
     position: relative
     height: $top-pane-height - 1
   .ui-tabs-nav
@@ -1122,3 +1129,44 @@ a
   .popup
     .body
       max-height: 400px
+
+#dialogs
+  display: none
+
+.ui-widget-overlay
+  background: rgba(0, 0, 0, 0.8)
+
+.ui-dialog
+  background: rgba(10, 15, 20, 0.9)
+  border: 2px solid #065175
+  +border-radius
+
+.ui-widget-content.ui-dialog-buttonpane
+  border-color: #222
+
+#saveSnapshot
+  label
+    font-weight: bold
+    margin-bottom: 0.5em
+  #snapshotName
+    width: 200px
+    margin: auto
+
+#loadSnapshot
+  table
+    border-collapse: collapse
+    width: 100%
+    th, td
+      border: 1px solid lighten(rgba(20, 25, 30, 0.9), 10%)
+    th
+      background: rgba(20, 25, 30, 0.9)
+      padding: 2px 5px
+      font-size: 1.1em
+      font-weight: bold
+    td:first-child
+      width: 75%
+    td
+      padding: 5px
+      a
+        font-weight: bold
+        text-decoration: underline

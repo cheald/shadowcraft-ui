@@ -13,3 +13,4 @@ ShadowcraftApp.bind "boot", ->
     log:                Handlebars.compile $("#template-log").html()
     glyphSlot:          Handlebars.compile $("#template-glyph_slot").html()
     talentContribution: Handlebars.compile $("#template-talent_contribution").html()
+    loadSnapshots:      Handlebars.compile $("#template-loadSnapshots").html()

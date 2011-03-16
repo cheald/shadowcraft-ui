@@ -163,3 +163,20 @@
       .label {{val}}
       .pct-inner{:style => "width: {{width}}%"}
 
+- mustache "loadSnapshots" do
+  %table
+    %thead
+      %tr
+        %th Name
+        %th Tools
+    %tbody
+      {{#snapshots}}
+      %tr
+        %td
+          %a{:href => '#', :'data-snapshot' => "{{.}}", :class => 'selectSnapshot' } {{.}}
+        %td
+          %a{:href => '#', :'data-snapshot' => "{{.}}", :class => 'deleteSnapshot' } Delete
+      {{/snapshots}}
+
+
+

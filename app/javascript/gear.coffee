@@ -410,7 +410,7 @@ class ShadowcraftGear
 
     depth ||= 0
     if depth == 0
-      EP_PRE_REGEM = EP_TOTAL
+      EP_PRE_REGEM = @getEPTotal()
       Shadowcraft.Console.log "Beginning auto-regem...", "gold underline"
     madeChanges = false
     gem_list = getGemRecommendationList()
@@ -440,7 +440,7 @@ class ShadowcraftGear
     if !madeChanges || depth >= 10
       @app.update()
       this.updateDisplay()
-      Shadowcraft.Console.log "Finished automatic regemming: &Delta; #{Math.floor(EP_TOTAL - EP_PRE_REGEM)} EP", "gold"
+      Shadowcraft.Console.log "Finished automatic regemming: &Delta; #{Math.floor(@getEPTotal() - EP_PRE_REGEM)} EP", "gold"
     else
       this.optimizeGems depth + 1
 
@@ -510,7 +510,7 @@ class ShadowcraftGear
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     depth ||= 0
     if depth == 0
-      EP_PRE_REFORGE = EP_TOTAL
+      EP_PRE_REFORGE = @getEPTotal()
       Shadowcraft.Console.log "Beginning automatic reforge...", "gold underline"
 
     madeChanges = false
@@ -535,7 +535,7 @@ class ShadowcraftGear
     if !madeChanges || depth >= 10
       @app.update()
       this.updateDisplay()
-      Shadowcraft.Console.log("Finished automatic reforging: &Delta; " + Math.floor(EP_TOTAL - EP_PRE_REFORGE) + " EP", "gold")
+      Shadowcraft.Console.log("Finished automatic reforging: &Delta; " + Math.floor(@getEPTotal() - EP_PRE_REFORGE) + " EP", "gold")
     else
       this.reforgeAll(depth + 1)
 
@@ -674,6 +674,15 @@ class ShadowcraftGear
     func ||= redGreen
     reverse ||= 1
     func v * reverse, v.toFixed(2) + "%"
+
+  getEPTotal: ->
+    this.sumStats()
+    keys = _.keys(@statSum).sort()
+    total = 0
+    for idx, stat of keys
+      weight = getStatWeight(stat, @statSum[stat], null, true)
+      total += weight
+    return total
 
   updateStatsWindow: ->
     this.sumStats()

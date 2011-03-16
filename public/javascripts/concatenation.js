@@ -92,8 +92,9 @@
       this.Backend = new ShadowcraftBackend(this).boot();
       this.Talents = new ShadowcraftTalents(this);
       this.Options = new ShadowcraftOptions(this).boot();
-      this.Gear = new ShadowcraftGear(this).boot();
+      this.Gear = new ShadowcraftGear(this);
       this.Talents.boot();
+      this.Gear.boot();
       this.commonInit();
       if (window.FLASH.length > 0) {
         setTimeout(function() {
@@ -309,7 +310,8 @@
       talentSet: Handlebars.compile($("#template-talent_set").html()),
       log: Handlebars.compile($("#template-log").html()),
       glyphSlot: Handlebars.compile($("#template-glyph_slot").html()),
-      talentContribution: Handlebars.compile($("#template-talent_contribution").html())
+      talentContribution: Handlebars.compile($("#template-talent_contribution").html()),
+      loadSnapshots: Handlebars.compile($("#template-loadSnapshots").html())
     };
   });
   ShadowcraftBackend = (function() {
@@ -511,7 +513,7 @@
       Shadowcraft.Reset = this.reset;
     }
     ShadowcraftHistory.prototype.boot = function() {
-      var app;
+      var app, buttons, menu;
       app = this;
       Shadowcraft.bind("update", function() {
         return app.save();
@@ -533,6 +535,53 @@
             return false;
         }
       });
+      menu = $("#settingsDropdownMenu");
+      console.log(menu);
+      menu.append("<li><a href='#' id='menuSaveSnapshot'>Save</li>");
+      buttons = {
+        Ok: function() {
+          app.saveSnapshot($("#snapshotName").val());
+          return $(this).dialog("close");
+        },
+        Cancel: function() {
+          return $(this).dialog("close");
+        }
+      };
+      $("#menuSaveSnapshot").click(function() {
+        return $("#saveSnapshot").dialog({
+          modal: true,
+          buttons: buttons,
+          open: function(event, ui) {
+            var d, sn, t;
+            sn = $("#snapshotName");
+            if (Shadowcraft.Data.tree0 >= 31) {
+              t = "Mutilate";
+            } else if (Shadowcraft.Data.tree1 >= 31) {
+              t = "Combat";
+            } else {
+              t = "Subtlety";
+            }
+            d = new Date();
+            t += " " + (d.getFullYear()) + "-" + (d.getMonth()) + "-" + (d.getDate());
+            return sn.val(t);
+          }
+        });
+      });
+      $("#loadSnapshot").click($.delegate({
+        ".selectSnapshot": function() {
+          app.restoreSnapshot($(this).data("snapshot"));
+          return $("#loadSnapshot").dialog("close");
+        },
+        ".deleteSnapshot": function() {
+          app.deleteSnapshot($(this).data("snapshot"));
+          $("#loadSnapshot").dialog("close");
+          return $("#menuLoadSnapshot").click();
+        }
+      }));
+      menu.append("<li><a href='#' id='menuLoadSnapshot'>Load</li>");
+      $("#menuLoadSnapshot").click(function() {
+        return app.selectSnapshot();
+      });
       return this;
     };
     ShadowcraftHistory.prototype.save = function() {
@@ -541,6 +590,46 @@
         data = compress(this.app.Data);
         this.persist(data);
         return $.jStorage.set(this.app.uuid, data);
+      }
+    };
+    ShadowcraftHistory.prototype.saveSnapshot = function(name) {
+      var key, snapshots;
+      key = this.app.uuid + "snapshots";
+      snapshots = $.jStorage.get(key, {});
+      snapshots[name] = this.takeSnapshot();
+      $.jStorage.set(key, snapshots);
+      return flash("" + name + " has been saved");
+    };
+    ShadowcraftHistory.prototype.selectSnapshot = function() {
+      var d, key, snapshots;
+      key = this.app.uuid + "snapshots";
+      snapshots = $.jStorage.get(key, {});
+      console.log(key, snapshots, Templates.loadSnapshots({
+        snapshots: snapshots
+      }));
+      d = $("#loadSnapshot");
+      d.get(0).innerHTML = Templates.loadSnapshots({
+        snapshots: _.keys(snapshots)
+      });
+      return d.dialog({
+        modal: true,
+        width: 500
+      });
+    };
+    ShadowcraftHistory.prototype.restoreSnapshot = function(name) {
+      var key, snapshots;
+      key = this.app.uuid + "snapshots";
+      snapshots = $.jStorage.get(key, {});
+      return this.loadSnapshot(snapshots[name]);
+    };
+    ShadowcraftHistory.prototype.deleteSnapshot = function(name) {
+      var key, snapshots;
+      if (confirm("Delete this snapshot?")) {
+        key = this.app.uuid + "snapshots";
+        snapshots = $.jStorage.get(key, {});
+        delete snapshots[name];
+        $.jStorage.set(key, snapshots);
+        return flash("" + name + " has been deleted");
       }
     };
     ShadowcraftHistory.prototype.load = function(defaults) {
@@ -2303,7 +2392,7 @@
       data = Shadowcraft.Data;
       depth || (depth = 0);
       if (depth === 0) {
-        EP_PRE_REGEM = EP_TOTAL;
+        EP_PRE_REGEM = this.getEPTotal();
         Shadowcraft.Console.log("Beginning auto-regem...", "gold underline");
       }
       madeChanges = false;
@@ -2340,7 +2429,7 @@
       if (!madeChanges || depth >= 10) {
         this.app.update();
         this.updateDisplay();
-        return Shadowcraft.Console.log("Finished automatic regemming: &Delta; " + (Math.floor(EP_TOTAL - EP_PRE_REGEM)) + " EP", "gold");
+        return Shadowcraft.Console.log("Finished automatic regemming: &Delta; " + (Math.floor(this.getEPTotal() - EP_PRE_REGEM)) + " EP", "gold");
       } else {
         return this.optimizeGems(depth + 1);
       }
@@ -2426,7 +2515,7 @@
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       depth || (depth = 0);
       if (depth === 0) {
-        EP_PRE_REFORGE = EP_TOTAL;
+        EP_PRE_REFORGE = this.getEPTotal();
         Shadowcraft.Console.log("Beginning automatic reforge...", "gold underline");
       }
       madeChanges = false;
@@ -2456,7 +2545,7 @@
       if (!madeChanges || depth >= 10) {
         this.app.update();
         this.updateDisplay();
-        return Shadowcraft.Console.log("Finished automatic reforging: &Delta; " + Math.floor(EP_TOTAL - EP_PRE_REFORGE) + " EP", "gold");
+        return Shadowcraft.Console.log("Finished automatic reforging: &Delta; " + Math.floor(this.getEPTotal() - EP_PRE_REFORGE) + " EP", "gold");
       } else {
         return this.reforgeAll(depth + 1);
       }
@@ -2622,6 +2711,18 @@
       func || (func = redGreen);
       reverse || (reverse = 1);
       return func(v * reverse, v.toFixed(2) + "%");
+    };
+    ShadowcraftGear.prototype.getEPTotal = function() {
+      var idx, keys, stat, total, weight;
+      this.sumStats();
+      keys = _.keys(this.statSum).sort();
+      total = 0;
+      for (idx in keys) {
+        stat = keys[idx];
+        weight = getStatWeight(stat, this.statSum[stat], null, true);
+        total += weight;
+      }
+      return total;
     };
     ShadowcraftGear.prototype.updateStatsWindow = function() {
       var $stats, a_stats, idx, keys, stat, total, weight;
