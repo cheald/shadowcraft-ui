@@ -3,5 +3,5 @@ db/*.sqlite3
 log/*.log
 tmp/**/*
 public/items.js
-public/stylesheets/compiled
 stats.yml
+public/stylesheets/compiled
