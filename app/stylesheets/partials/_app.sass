@@ -16,6 +16,9 @@ body
 button
   margin: 2px 0
 
+.clearfix
+  +clearfix
+
 #create_character
   display: block
   position: absolute
@@ -159,6 +162,13 @@ html.websockets, html.history, html.canvas
 
   button
     width: 100%
+
+  #getPawnString
+    float: right
+    margin: 7px
+    opacity: 0.8
+    &:hover
+      opacity: 1.0
 
   #stats, #weights
     background: rgba(0, 0, 0, 0.3)

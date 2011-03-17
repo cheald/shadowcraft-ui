@@ -561,13 +561,7 @@
           open: function(event, ui) {
             var d, sn, t;
             sn = $("#snapshotName");
-            if (Shadowcraft.Data.tree0 >= 31) {
-              t = "Mutilate";
-            } else if (Shadowcraft.Data.tree1 >= 31) {
-              t = "Combat";
-            } else {
-              t = "Subtlety";
-            }
+            t = ShadowcraftTalents.GetPrimaryTreeName();
             d = new Date();
             t += " " + (d.getFullYear()) + "-" + (d.getMonth()) + "-" + (d.getDate());
             return sn.val(t);
@@ -1347,6 +1341,15 @@
       "Stock Combat": "023200000000000000023322303100300123210030000000000000000",
       "Stock Subtlety": "023003000000000000000200000000000000000332031321310012321"
     };
+    ShadowcraftTalents.GetPrimaryTreeName = function() {
+      if (Shadowcraft.Data.tree0 >= 31) {
+        return "Mutilate";
+      } else if (Shadowcraft.Data.tree1 >= 31) {
+        return "Combat";
+      } else {
+        return "Subtlety";
+      }
+    };
     talentMap = "0zMcmVokRsaqbdrfwihuGINALpTjnyxtgevElBCDFHJKOPQSUWXYZ123456789";
     ShadowcraftTalents.encodeTalents = function(s) {
       var c, i, index, l, offset, size, str, sub, _len, _len2;
@@ -1842,6 +1845,10 @@
         ".glyph_slot": function() {
           return toggleGlyph(this);
         }
+      })).mouseover($.delegate({
+        ".glyph_slot": ttlib.requestTooltip
+      })).mouseout($.delegate({
+        ".glyph_slot": ttlib.hide
       }));
       $("#talentsets").click($.delegate({
         ".talent_set": function() {
@@ -1879,7 +1886,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, sourceStats, statsToDesc, sumItem, sumRecommendation, sumReforge, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, sourceStats, statsToDesc, sumItem, sumRecommendation, sumReforge, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 3;
     MAX_ENGINEERING_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"];
@@ -2098,12 +2105,23 @@
       }
       return this.statSum = stats;
     };
-    racialExpertiseBonus = function(item) {
-      var mh_type, race;
-      if (item == null) {
+    racialExpertiseBonus = function(item, mh_type) {
+      var m, n, race, t, _i, _len;
+      if (!((item != null) || (mh_type != null))) {
         return 0;
       }
-      mh_type = item.subclass;
+      if (item != null) {
+        mh_type = item.subclass;
+      }
+      if (mh_type instanceof Array) {
+        m = 0;
+        for (_i = 0, _len = mh_type.length; _i < _len; _i++) {
+          t = mh_type[_i];
+          n = racialExpertiseBonus(null, t);
+          m = n > m ? n : m;
+        }
+        return m;
+      }
       race = Shadowcraft.Data.options.general.race;
       if (race === "Human" && (mh_type === 7 || mh_type === 4)) {
         return Shadowcraft._R("expertise_rating") * 3;
@@ -2142,6 +2160,22 @@
         expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id]);
       }
       return DEFAULT_BOSS_DODGE - (expertise / Shadowcraft._R("expertise_rating") * 0.25);
+    };
+    getHitEP = function() {
+      var exist, spellHitCap, whiteHitCap, yellowHitCap;
+      yellowHitCap = Shadowcraft._R("hit_rating") * (8 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating");
+      spellHitCap = Shadowcraft._R("spell_hit") * (17 - 2 * Shadowcraft._T("precision")) - racialHitBonus("spell_hit");
+      whiteHitCap = Shadowcraft._R("hit_rating") * (27 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating");
+      exist = Shadowcraft.Gear.getStat("hit_rating");
+      if (exist < yellowHitCap) {
+        return Weights.yellow_hit;
+      } else if (exist < spellHitCap) {
+        return Weights.spell_hit;
+      } else if (exist < whiteHitCap) {
+        return Weights.hit_rating;
+      } else {
+        return 0;
+      }
     };
     ShadowcraftGear.prototype.getMiss = function(cap) {
       var data, hasHit, hitCap, r;
@@ -3077,7 +3111,7 @@
       return false;
     };
     ShadowcraftGear.prototype.boot = function() {
-      var app, reset;
+      var app, defaultScale, reset;
       app = this;
       $slots = $(".slots");
       $popup = $(".alternatives");
@@ -3122,6 +3156,60 @@
       $("#gear .slots").mousemove(function(e) {
         $.data(document, "mouse-x", e.pageX);
         return $.data(document, "mouse-y", e.pageY);
+      });
+      defaultScale = {
+        Intellect: -1000000,
+        Spirit: -1000000,
+        Is2HMace: -1000000,
+        IsPolearm: -1000000,
+        Is2HSword: -1000000,
+        IsShield: -1000000,
+        SpellPower: -1000000,
+        IsStaff: -1000000,
+        IsFrill: -1000000,
+        IsCloth: -1000000,
+        IsMail: -1000000,
+        IsPlate: -1000000,
+        IsRelic: -1000000,
+        Ap: 1,
+        IsWand: -1000000,
+        SpellPenetration: -1000000,
+        GemQualityLevel: 85,
+        MetaGemQualityLevel: 86,
+        SpeedBaseline: 2
+      };
+      $("#getPawnString").click(function() {
+        var name, pawnstr, scale, stats, val, weight;
+        scale = _.extend({}, defaultScale);
+        scale.ExpertiseRating = Weights.expertise_rating;
+        scale.CritRating = Weights.crit_rating;
+        scale.HasteRating = Weights.haste_rating;
+        scale.HitRating = getHitEP();
+        scale.Agility = Weights.agility;
+        scale.Strength = Weights.strength;
+        scale.MainHandDps = Shadowcraft.lastCalculation.mh_ep.mh_dps;
+        scale.MainHandSpeed = (Shadowcraft.lastCalculation.mh_speed_ep["mh_2.7"] - Shadowcraft.lastCalculation.mh_speed_ep["mh_2.6"]) * 10;
+        scale.OffHandDps = Shadowcraft.lastCalculation.oh_ep.oh_dps;
+        scale.OffHandSpeed = (Shadowcraft.lastCalculation.oh_speed_ep["oh_1.4"] - Shadowcraft.lastCalculation.oh_speed_ep["oh_1.3"]) * 10;
+        scale.IsMace = racialExpertiseBonus(null, 4);
+        scale.IsSword = racialExpertiseBonus(null, 7);
+        scale.IsDagger = racialExpertiseBonus(null, 15);
+        scale.IsAxe = racialExpertiseBonus(null, 0);
+        scale.IsFist = racialExpertiseBonus(null, 13);
+        scale.MetaSocketEffect = Shadowcraft.lastCalculation.meta.chaotic_metagem;
+        stats = [];
+        for (weight in scale) {
+          val = scale[weight];
+          stats.push("" + weight + "=" + val);
+        }
+        name = "Rogue: " + ShadowcraftTalents.GetPrimaryTreeName();
+        pawnstr = "(Pawn:v1:\"" + name + "\":" + (stats.join(",")) + ")";
+        $("#generalDialog").html("<textarea style='width: 450px; height: 300px;'>" + pawnstr + "</textarea>").attr("title", "Pawn Import String");
+        $("#generalDialog").dialog({
+          modal: true,
+          width: 500
+        });
+        return false;
       });
       $altslots.click($.delegate({
         ".slot": function(e) {

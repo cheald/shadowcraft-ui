@@ -184,9 +184,18 @@ class ShadowcraftGear
 
     @statSum = stats
 
-  racialExpertiseBonus = (item) ->
-    return 0 unless item?
-    mh_type = item.subclass
+  racialExpertiseBonus = (item, mh_type) ->
+    return 0 unless item? or mh_type?
+    if item?
+      mh_type = item.subclass
+
+    if mh_type instanceof Array
+      m = 0
+      for t in mh_type
+        n = racialExpertiseBonus(null, t)
+        m = if n > m then n else m
+      return m
+
     race = Shadowcraft.Data.options.general.race
 
     if(race == "Human" && (mh_type == 7 || mh_type == 4))
@@ -217,6 +226,20 @@ class ShadowcraftGear
     else if (hand == "off") and data.gear[16] and data.gear[16].item_id
       expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id])
     return DEFAULT_BOSS_DODGE - (expertise / Shadowcraft._R("expertise_rating") * 0.25)
+
+  getHitEP = ->
+    yellowHitCap = Shadowcraft._R("hit_rating") * (8 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
+    spellHitCap = Shadowcraft._R("spell_hit")  * (17 - 2 * Shadowcraft._T("precision")) - racialHitBonus("spell_hit")
+    whiteHitCap = Shadowcraft._R("hit_rating") * (27 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
+    exist = Shadowcraft.Gear.getStat("hit_rating")
+    if exist < yellowHitCap
+      Weights.yellow_hit
+    else if exist < spellHitCap
+      Weights.spell_hit
+    else if exist < whiteHitCap
+      Weights.hit_rating
+    else
+      0
 
   getMiss: (cap) ->
     data = Shadowcraft.Data
@@ -1032,6 +1055,56 @@ class ShadowcraftGear
     $("#gear .slots").mousemove (e) ->
       $.data document, "mouse-x", e.pageX
       $.data document, "mouse-y", e.pageY
+
+    defaultScale =
+      Intellect:            -1000000
+      Spirit:               -1000000
+      Is2HMace:             -1000000
+      IsPolearm:            -1000000
+      Is2HSword:            -1000000
+      IsShield:             -1000000
+      SpellPower:           -1000000
+      IsStaff:              -1000000
+      IsFrill:              -1000000
+      IsCloth:              -1000000
+      IsMail:               -1000000
+      IsPlate:              -1000000
+      IsRelic:              -1000000
+      Ap:                   1
+      IsWand:               -1000000
+      SpellPenetration:     -1000000
+      GemQualityLevel:      85
+      MetaGemQualityLevel:  86
+      SpeedBaseline:        2
+
+    $("#getPawnString").click ->
+      scale = _.extend({}, defaultScale)
+      scale.ExpertiseRating = Weights.expertise_rating
+      scale.CritRating = Weights.crit_rating
+      scale.HasteRating = Weights.haste_rating
+      scale.HitRating = getHitEP()
+      scale.Agility = Weights.agility
+      scale.Strength = Weights.strength
+      scale.MainHandDps = Shadowcraft.lastCalculation.mh_ep.mh_dps
+      scale.MainHandSpeed = (Shadowcraft.lastCalculation.mh_speed_ep["mh_2.7"] - Shadowcraft.lastCalculation.mh_speed_ep["mh_2.6"]) * 10
+      scale.OffHandDps = Shadowcraft.lastCalculation.oh_ep.oh_dps
+      scale.OffHandSpeed = (Shadowcraft.lastCalculation.oh_speed_ep["oh_1.4"] - Shadowcraft.lastCalculation.oh_speed_ep["oh_1.3"]) * 10
+      scale.IsMace = racialExpertiseBonus(null, 4)
+      scale.IsSword = racialExpertiseBonus(null, 7)
+      scale.IsDagger = racialExpertiseBonus(null, 15)
+      scale.IsAxe = racialExpertiseBonus(null, 0)
+      scale.IsFist = racialExpertiseBonus(null, 13)
+      scale.MetaSocketEffect = Shadowcraft.lastCalculation.meta.chaotic_metagem
+
+      stats = []
+      for weight, val of scale
+        stats.push "#{weight}=#{val}"
+      name = "Rogue: " + ShadowcraftTalents.GetPrimaryTreeName()
+      pawnstr = "(Pawn:v1:\"#{name}\":#{stats.join(",")})"
+      $("#generalDialog").html("<textarea style='width: 450px; height: 300px;'>#{pawnstr}</textarea>").attr("title", "Pawn Import String")
+      $("#generalDialog").dialog({ modal: true, width: 500 })
+      return false
+
 
     # Select an item from a popup
     $altslots.click $.delegate

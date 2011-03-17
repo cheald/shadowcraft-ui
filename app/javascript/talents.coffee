@@ -7,6 +7,14 @@ class ShadowcraftTalents
     "Stock Combat": "023200000000000000023322303100300123210030000000000000000"
     "Stock Subtlety": "023003000000000000000200000000000000000332031321310012321"
 
+  @GetPrimaryTreeName = ->
+    if Shadowcraft.Data.tree0 >= 31
+      "Mutilate"
+    else if Shadowcraft.Data.tree1 >= 31
+      "Combat"
+    else
+      "Subtlety"
+
   talentMap = "0zMcmVokRsaqbdrfwihuGINALpTjnyxtgevElBCDFHJKOPQSUWXYZ123456789"
   @encodeTalents = (s) ->
     str = ""
@@ -370,9 +378,13 @@ class ShadowcraftTalents
     Shadowcraft.Backend.bind("recompute", updateTalentContribution)
     Shadowcraft.Backend.bind("recompute", updateGlyphWeights)
 
-    $("#glyphs").click $.delegate({
+    $("#glyphs").click($.delegate
       ".glyph_slot": -> toggleGlyph(this)
-    })
+    ).mouseover($.delegate
+      ".glyph_slot": ttlib.requestTooltip
+    ).mouseout($.delegate
+      ".glyph_slot": ttlib.hide
+    )
 
     $("#talentsets").click $.delegate({
       ".talent_set": ->

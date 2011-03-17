@@ -37,12 +37,7 @@ class ShadowcraftHistory
         buttons: buttons,
         open: (event, ui) ->
           sn = $("#snapshotName")
-          if Shadowcraft.Data.tree0 >= 31
-            t = "Mutilate"
-          else if Shadowcraft.Data.tree1 >= 31
-            t = "Combat"
-          else
-            t = "Subtlety"
+          t = ShadowcraftTalents.GetPrimaryTreeName()
           d = new Date()
           t += " #{d.getFullYear()}-#{d.getMonth()}-#{d.getDate()}"
           sn.val(t)

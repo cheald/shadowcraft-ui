@@ -148,7 +148,7 @@
     %span.desc {{desc}}
 
 - mustache("glyph_slot") do
-  %div.glyph_slot{:"data-id" => "{{id}}"}
+  %div.glyph_slot{:"data-id" => "{{id}}", :"data-tooltip-id" => "{{id}}"}
     %span.img<
       %img{:src => "http://static.wowhead.com/images/wow/icons/medium/{{icon}}.jpg"}
     {{name}}

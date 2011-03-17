@@ -21,9 +21,11 @@
 
   #gear.with-tools
     .panel-tools
-      %section#stats
+      %section.clearfix#stats
         %h3 Stats
         .inner
+        %a#getPawnString{:href => "#"}
+          =image_tag "PawnButton.png"
       %section#weights
         %h3 Stat Weights
         .inner
@@ -128,6 +130,7 @@
       Enter a name for this snapshot:
     %input#snapshotName{:type => "text"}
   #loadSnapshot{:title => 'Load Snapshot'}
+  #generalDialog
 :javascript
   var uuid = "#{@character.uid}";
   #{flash[:reload] ? "$.jStorage.flush();" : nil}
