@@ -1,5 +1,6 @@
 class ShadowcraftGear
-  MAX_PROFESSIONAL_GEMS = 3
+  MAX_JEWELCRAFTING_GEMS = 3
+  MAX_ENGINEERING_GEMS = 1
   JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"]
   REFORGE_FACTOR = 0.4
   DEFAULT_BOSS_DODGE = 6.5
@@ -303,23 +304,46 @@ class ShadowcraftGear
   needsDagger = ->
     Shadowcraft.Data.tree0 >= 31 || Shadowcraft.Data.tree2 >= 31
 
-  isProfessionalGem = (gem) ->
-    gem.requires?.profession?
+  isProfessionalGem = (gem, profession) ->
+    gem.requires?.profession? and gem.requires.profession == profession
 
-  getProfessionalGemCount = ->
+  getEquippedGemCount = (gem, pendingChanges, ignoreSlotIndex) ->
+    count = 0
+    for slot in SLOT_ORDER
+      continue if slot == ignoreSlotIndex
+      gear = Shadowcraft.Data.gear[slot]
+      if gem.id == gear.g0 or gem.id == gear.g1 or gem.id == gear.g2
+        count++
+    if pendingChanges?
+      for g in pendingChanges
+        count++ if g == gem.id
+    return count
+
+  getProfessionalGemCount = (profession, pendingChanges, ignoreSlotIndex) ->
     count = 0
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
 
     for slot in SLOT_ORDER
+      continue if slot == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
-      for k in gear
-        if k.match(/g[0-2]/) and Gems[gear[k]].requires?.profession?
+      for i in [0..2]
+        gem = gear["g" + i]? and Gems[gear["g" + i]]
+        continue unless gem
+        if isProfessionalGem(gem, profession)
           count++
+
+    if pendingChanges?
+      for g in pendingChanges
+        count++ if isProfessionalGem(g, profession)
+
     return count
 
-  canUseGem = (gem, gemType) ->
-    jc_gem_count = getProfessionalGemCount()
-    return false if gem.requires?.profession? and !Shadowcraft.Data.options.professions[gem.requires.profession] or jc_gem_count >= MAX_PROFESSIONAL_GEMS
+  canUseGem = (gem, gemType, pendingChanges, ignoreSlotIndex) ->
+    if gem.requires?.profession?
+      return false unless Shadowcraft.Data.options.professions[gem.requires.profession]
+      return false if isProfessionalGem(gem, 'jewelcrafting') and getProfessionalGemCount('jewelcrafting', pendingChanges, ignoreSlotIndex) >= MAX_JEWELCRAFTING_GEMS
+      return false if isProfessionalGem(gem, 'engineering') and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
+
     return false if (gemType == "Meta" or gemType == "Cogwheel") and gem.slot != gemType
     return false if (gem.slot == "Meta" or gem.slot == "Cogwheel") and gem.slot != gemType
     true
@@ -329,7 +353,7 @@ class ShadowcraftGear
   getRegularGemEpValue = (gem) ->
     equiv_ep = gem.__ep || get_ep(gem)
 
-    return equiv_ep unless gem.requires?.profession?
+    return equiv_ep # unless gem.requires?.profession?
     return gem.__reg_ep if gem.__reg_ep
 
     for name in JC_ONLY_GEMS
@@ -358,7 +382,7 @@ class ShadowcraftGear
   # Assumes gem_list is already sorted preferred order.  Also, normalizes
   # JC-only gem EP to their non-JC-only values to prevent the algorithm from
   # picking up those gems over the socket bonus.
-  getGemmingRecommendation = (gem_list, item, returnFull) ->
+  getGemmingRecommendation = (gem_list, item, returnFull, ignoreSlotIndex) ->
     data = Shadowcraft.Data
     if !item.sockets or item.sockets.length == 0
       if returnFull
@@ -374,17 +398,17 @@ class ShadowcraftGear
 
     for gemType in item.sockets
       for gem in gem_list
-        continue unless canUseGem gem, gemType
+        continue unless canUseGem gem, gemType, sGems, ignoreSlotIndex
         straightGemEP += getRegularGemEpValue(gem)
-        sGems[sGems.length] = gem.id if returnFull
+        sGems.push gem.id if returnFull
         break
 
     for gemType in item.sockets
       for gem in gem_list
-        continue unless canUseGem gem, gemType
+        continue unless canUseGem gem, gemType, mGems, ignoreSlotIndex
         if gem[gemType]
           matchedGemEP += getRegularGemEpValue(gem)
-          mGems[mGems.length] = gem.id if returnFull
+          mGems.push gem.id if returnFull
           break
 
     bonus = false
@@ -420,7 +444,7 @@ class ShadowcraftGear
       item = ItemLookup[gear.item_id]
 
       if item
-        rec = getGemmingRecommendation(gem_list, item, true)
+        rec = getGemmingRecommendation(gem_list, item, true, slotIndex)
         for gem, gemIndex in rec.gems
           from_gem = Gems[gear["g#{gemIndex}"]]
           to_gem = Gems[gem]

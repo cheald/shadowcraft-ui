@@ -1879,8 +1879,9 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, JC_ONLY_GEMS, MAX_PROFESSIONAL_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getGemRecommendationList, getGemmingRecommendation, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, sourceStats, statsToDesc, sumItem, sumRecommendation, sumReforge, updateStatWeights, whiteWhite, __epSort;
-    MAX_PROFESSIONAL_GEMS = 3;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, sourceStats, statsToDesc, sumItem, sumRecommendation, sumReforge, updateStatWeights, whiteWhite, __epSort;
+    MAX_JEWELCRAFTING_GEMS = 3;
+    MAX_ENGINEERING_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"];
     REFORGE_FACTOR = 0.4;
     DEFAULT_BOSS_DODGE = 6.5;
@@ -2242,31 +2243,75 @@
     needsDagger = function() {
       return Shadowcraft.Data.tree0 >= 31 || Shadowcraft.Data.tree2 >= 31;
     };
-    isProfessionalGem = function(gem) {
+    isProfessionalGem = function(gem, profession) {
       var _ref;
-      return ((_ref = gem.requires) != null ? _ref.profession : void 0) != null;
+      return (((_ref = gem.requires) != null ? _ref.profession : void 0) != null) && gem.requires.profession === profession;
     };
-    getProfessionalGemCount = function() {
-      var Gems, count, gear, k, slot, _i, _j, _len, _len2, _ref;
+    getEquippedGemCount = function(gem, pendingChanges, ignoreSlotIndex) {
+      var count, g, gear, slot, _i, _j, _len, _len2;
       count = 0;
-      Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
         slot = SLOT_ORDER[_i];
+        if (slot === ignoreSlotIndex) {
+          continue;
+        }
         gear = Shadowcraft.Data.gear[slot];
-        for (_j = 0, _len2 = gear.length; _j < _len2; _j++) {
-          k = gear[_j];
-          if (k.match(/g[0-2]/) && (((_ref = Gems[gear[k]].requires) != null ? _ref.profession : void 0) != null)) {
+        if (gem.id === gear.g0 || gem.id === gear.g1 || gem.id === gear.g2) {
+          count++;
+        }
+      }
+      if (pendingChanges != null) {
+        for (_j = 0, _len2 = pendingChanges.length; _j < _len2; _j++) {
+          g = pendingChanges[_j];
+          if (g === gem.id) {
             count++;
           }
         }
       }
       return count;
     };
-    canUseGem = function(gem, gemType) {
-      var jc_gem_count, _ref;
-      jc_gem_count = getProfessionalGemCount();
-      if ((((_ref = gem.requires) != null ? _ref.profession : void 0) != null) && !Shadowcraft.Data.options.professions[gem.requires.profession] || jc_gem_count >= MAX_PROFESSIONAL_GEMS) {
-        return false;
+    getProfessionalGemCount = function(profession, pendingChanges, ignoreSlotIndex) {
+      var Gems, count, g, gear, gem, i, slot, _i, _j, _len, _len2;
+      count = 0;
+      Gems = Shadowcraft.ServerData.GEM_LOOKUP;
+      for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
+        slot = SLOT_ORDER[_i];
+        if (slot === ignoreSlotIndex) {
+          continue;
+        }
+        gear = Shadowcraft.Data.gear[slot];
+        for (i = 0; i <= 2; i++) {
+          gem = (gear["g" + i] != null) && Gems[gear["g" + i]];
+          if (!gem) {
+            continue;
+          }
+          if (isProfessionalGem(gem, profession)) {
+            count++;
+          }
+        }
+      }
+      if (pendingChanges != null) {
+        for (_j = 0, _len2 = pendingChanges.length; _j < _len2; _j++) {
+          g = pendingChanges[_j];
+          if (isProfessionalGem(g, profession)) {
+            count++;
+          }
+        }
+      }
+      return count;
+    };
+    canUseGem = function(gem, gemType, pendingChanges, ignoreSlotIndex) {
+      var _ref;
+      if (((_ref = gem.requires) != null ? _ref.profession : void 0) != null) {
+        if (!Shadowcraft.Data.options.professions[gem.requires.profession]) {
+          return false;
+        }
+        if (isProfessionalGem(gem, 'jewelcrafting') && getProfessionalGemCount('jewelcrafting', pendingChanges, ignoreSlotIndex) >= MAX_JEWELCRAFTING_GEMS) {
+          return false;
+        }
+        if (isProfessionalGem(gem, 'engineering') && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS) {
+          return false;
+        }
       }
       if ((gemType === "Meta" || gemType === "Cogwheel") && gem.slot !== gemType) {
         return false;
@@ -2277,11 +2322,9 @@
       return true;
     };
     getRegularGemEpValue = function(gem) {
-      var equiv_ep, j, name, prefix, reg, _i, _len, _ref, _ref2, _ref3;
+      var equiv_ep, j, name, prefix, reg, _i, _len, _ref, _ref2;
       equiv_ep = gem.__ep || get_ep(gem);
-      if (((_ref = gem.requires) != null ? _ref.profession : void 0) == null) {
-        return equiv_ep;
-      }
+      return equiv_ep;
       if (gem.__reg_ep) {
         return gem.__reg_ep;
       }
@@ -2289,10 +2332,10 @@
         name = JC_ONLY_GEMS[_i];
         if (gem.name.indexOf(name) >= 0) {
           prefix = gem.name.replace(name, "");
-          _ref2 = Shadowcraft.ServerData.GEMS;
-          for (j in _ref2) {
-            reg = _ref2[j];
-            if (!(((_ref3 = reg.requires) != null ? _ref3.profession : void 0) != null) && reg.name.indexOf(prefix) === 0 && reg.quality === gem.quality) {
+          _ref = Shadowcraft.ServerData.GEMS;
+          for (j in _ref) {
+            reg = _ref[j];
+            if (!(((_ref2 = reg.requires) != null ? _ref2.profession : void 0) != null) && reg.name.indexOf(prefix) === 0 && reg.quality === gem.quality) {
               equiv_ep = reg.__ep || get_ep(reg);
               equiv_ep += 1;
               gem.__reg_ep = equiv_ep;
@@ -2317,7 +2360,7 @@
         }
       }
     };
-    getGemmingRecommendation = function(gem_list, item, returnFull) {
+    getGemmingRecommendation = function(gem_list, item, returnFull, ignoreSlotIndex) {
       var bonus, data, epValue, gem, gemType, gems, mGems, matchedGemEP, sGems, straightGemEP, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref, _ref2;
       data = Shadowcraft.Data;
       if (!item.sockets || item.sockets.length === 0) {
@@ -2341,12 +2384,12 @@
         gemType = _ref[_i];
         for (_j = 0, _len2 = gem_list.length; _j < _len2; _j++) {
           gem = gem_list[_j];
-          if (!canUseGem(gem, gemType)) {
+          if (!canUseGem(gem, gemType, sGems, ignoreSlotIndex)) {
             continue;
           }
           straightGemEP += getRegularGemEpValue(gem);
           if (returnFull) {
-            sGems[sGems.length] = gem.id;
+            sGems.push(gem.id);
           }
           break;
         }
@@ -2356,13 +2399,13 @@
         gemType = _ref2[_k];
         for (_l = 0, _len4 = gem_list.length; _l < _len4; _l++) {
           gem = gem_list[_l];
-          if (!canUseGem(gem, gemType)) {
+          if (!canUseGem(gem, gemType, mGems, ignoreSlotIndex)) {
             continue;
           }
           if (gem[gemType]) {
             matchedGemEP += getRegularGemEpValue(gem);
             if (returnFull) {
-              mGems[mGems.length] = gem.id;
+              mGems.push(gem.id);
             }
             break;
           }
@@ -2407,7 +2450,7 @@
         }
         item = ItemLookup[gear.item_id];
         if (item) {
-          rec = getGemmingRecommendation(gem_list, item, true);
+          rec = getGemmingRecommendation(gem_list, item, true, slotIndex);
           _ref = rec.gems;
           for (gemIndex = 0, _len2 = _ref.length; gemIndex < _len2; gemIndex++) {
             gem = _ref[gemIndex];
