@@ -34,7 +34,7 @@ class ItemsController < ApplicationController
     f = File.join(Rails.root, "public", filename)
     if !File.exists?(f) or File.mtime(f) < first_item.created_at
       index
-      render_to_string :action => filename
+      render_to_string :action => "items.js"
     end
     redirect_to params[:c].blank? ? :back : character_path(character_options(char).merge(:anchor => anchor))
   end
