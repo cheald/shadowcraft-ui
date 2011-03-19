@@ -3449,27 +3449,55 @@
     return ShadowcraftGear;
   })();
   ShadowcraftTiniReforgeBackend = (function() {
-    var REFORGABLE;
+    var ENGINE, REFORGABLE, deferred;
+    ENGINE = "http://shadowref.appspot.com/calc";
     REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"];
+    deferred = null;
     function ShadowcraftTiniReforgeBackend(gear) {
       this.gear = gear;
     }
     ShadowcraftTiniReforgeBackend.prototype.request = function(req) {
+      deferred = $.Deferred();
       wait('Optimizing reforges...');
       Shadowcraft.Console.log("Starting reforge optimization...", "gold underline");
+      if ($.browser.msie && window.XDomainRequest) {
+        this.request_via_xdr(req);
+      } else {
+        this.request_via_ajax(req);
+      }
+      return deferred.promise();
+    };
+    ShadowcraftTiniReforgeBackend.prototype.request_via_xdr = function(req) {
+      var xdr;
+      xdr = new XDomainRequest();
+      xdr.open("post", ENGINE);
+      xdr.send(JSON.stringify(req));
+      xdr.onload = function() {
+        var data;
+        data = JSON.parse(xdr.responseText);
+        Shadowcraft.Gear.setReforges(data);
+        return deferred.resolve();
+      };
+      xdr.onerror(function() {
+        return flash("Error contacting reforging service");
+      });
+      return xdr.ontimeout(function() {
+        return flash("Timed out talking to reforging service");
+      });
+    };
+    ShadowcraftTiniReforgeBackend.prototype.request_via_ajax = function(req) {
       return $.ajax({
         type: "POST",
         url: "http://shadowref.appspot.com/calc",
         data: json_encode(req),
         complete: function() {
-          $("#wait").hide();
-          return Shadowcraft.Console.log("Finished reforge optimization!", "gold underline");
+          return deferred.resolve();
         },
         success: function(data) {
-          console.log(data);
           return Shadowcraft.Gear.setReforges(data);
         },
         error: function(xhr, textStatus, error) {
+          console.log(xhr, textStatus, error);
           return flash(textStatus);
         },
         dataType: "json",
@@ -3517,7 +3545,10 @@
         cap: caps,
         ratings: stats
       };
-      return this.request(req);
+      return this.request(req).then(function() {
+        $("#wait").hide();
+        return Shadowcraft.Console.log("Finished reforge optimization!", "gold underline");
+      });
     };
     return ShadowcraftTiniReforgeBackend;
   })();
@@ -3569,7 +3600,7 @@
           this.dpsHistory.push([this.dpsIndex, Math.floor(data.total_dps * 10) / 10]);
           this.dpsIndex++;
           this.snapshotHistory.push(snapshot);
-          if (this.dpsHistory.length > 30) {
+          if (this.dpsHistory.length > 100) {
             this.dpsHistory.shift();
             this.snapshotHistory.shift();
           }
@@ -3587,6 +3618,12 @@
               hoverable: true,
               clickable: true,
               autoHighlight: true
+            },
+            series: {
+              threshold: {
+                below: this.dpsHistory[0][1],
+                color: "rgb(200, 20, 20)"
+              }
             }
           });
         }

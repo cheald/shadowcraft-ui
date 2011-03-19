@@ -43,14 +43,17 @@ class ShadowcraftDpsGraph
         @dpsHistory.push [@dpsIndex, Math.floor(data.total_dps * 10) / 10]
         @dpsIndex++
         @snapshotHistory.push(snapshot)
-        if @dpsHistory.length > 30
+        if @dpsHistory.length > 100
           @dpsHistory.shift()
           @snapshotHistory.shift()
 
         @dpsPlot = $.plot($("#dpsgraph"), [@dpsHistory], {
-          lines: { show: true },
-          crosshair: { mode: "y" },
-          points: { show: true },
-          grid: { hoverable: true, clickable: true, autoHighlight: true },
+          lines: { show: true }
+          crosshair: { mode: "y" }
+          points: { show: true }
+          grid: { hoverable: true, clickable: true, autoHighlight: true }
+          series: {
+            threshold: { below: @dpsHistory[0][1], color: "rgb(200, 20, 20)" }
+          }
         })
       @lastDPS = data.total_dps

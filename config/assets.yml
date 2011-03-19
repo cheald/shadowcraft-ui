@@ -15,6 +15,7 @@ javascripts:
     - public/javascripts/jquery.json-2.2.js
     - public/javascripts/flot/jquery.flot.js
     - public/javascripts/flot/jquery.flot.crosshair.js
+    - public/javascripts/flot/jquery.flot.threshold.js
     - public/javascripts/jquery.websocket-0.0.1.js
     - public/javascripts/base64.js
     - public/javascripts/convertBase.js
