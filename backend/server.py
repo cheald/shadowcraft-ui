@@ -109,7 +109,10 @@ class ShadowcraftComputation:
     return total
 
   def weapon(self, input, index):
-    i = input.get(index, {})
+    i = input.get(index, [])
+    if len(i) < 4:
+      return stats.Weapon(0.01, 2, None, None)
+      
     speed = float(i[0])
     dmg = float(i[1])
     subclass = self.subclassMap.get(i[3], None)
