@@ -1,0 +1,41 @@
+/* TEAM */
+  Armory integration, Rails backend, Javascript frontend, CSS/HTML, non-WoW graphics, engine Twisted server, and engine performance optimizations:
+    Chris Heald
+    Contact: cheald@gmail.com
+    Twitter: @cheald
+    From: Phoenix: Arizona, USA
+    WoW: Adrine @ Cenarion Circle-US
+
+  Shadowcraft Engine Lead
+    Aldriana
+    Contact: aldriana@elitistjerks.com
+    WoW: Aldriana @ Doomhammer-US
+
+  Reforger Engine
+    bspot
+    WoW: Humbug @ Terenas-US
+
+  Reforger Engine Service
+    Tini
+    WoW: Tini @ Silvermoon-EU
+
+/* SITE */
+
+  Language: English
+  Doctype: HTML5 with CSS3
+  Tools: Rails 3, Coffeescript, Compass
+  Source URL: https://github.com/cheald/shadowcraft-ui
+
+/* ENGINE */
+
+  Language: English
+  Tools: Python 2.6
+  Source URL:
+    Origin: https://github.com/Aldriana/ShadowCraft-Engine
+    Active fork: https://github.com/cheald/ShadowCraft-Engine
+
+/* REFORGER */
+  Language: Agnostic
+  Tools: Java
+  Endpoint URL: http://shadowref.appspot.com/
+  Source URL: http://powerofb.wsnetwork.net/reforger/src.zip
