@@ -21,7 +21,8 @@ class ShadowcraftDpsGraph
       if item
         app.dpsPlot.unhighlight()
         app.dpsPlot.highlight(item.series, item.datapoint)
-        Shadowcraft.History.loadSnapshot(app.snapshotHistory[item.dataIndex])
+        snapshot = app.snapshotHistory[item.dataIndex - 1]
+        Shadowcraft.History.loadSnapshot(snapshot)
     ).mousedown((e) ->
       switch e.button
         when 2

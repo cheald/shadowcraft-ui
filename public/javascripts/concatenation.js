@@ -3574,10 +3574,12 @@
         }
       });
       $("#dpsgraph").bind("plotclick", function(event, pos, item) {
+        var snapshot;
         if (item) {
           app.dpsPlot.unhighlight();
           app.dpsPlot.highlight(item.series, item.datapoint);
-          return Shadowcraft.History.loadSnapshot(app.snapshotHistory[item.dataIndex]);
+          snapshot = app.snapshotHistory[item.dataIndex - 1];
+          return Shadowcraft.History.loadSnapshot(snapshot);
         }
       }).mousedown(function(e) {
         switch (e.button) {
