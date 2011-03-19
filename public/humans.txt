@@ -1,9 +1,9 @@
 /* TEAM */
   Armory integration, Rails backend, Javascript frontend, CSS/HTML, non-WoW graphics, engine Twisted server, and engine performance optimizations:
-    Chris Heald
+    Chris "Antiarc" Heald
     Contact: cheald@gmail.com
     Twitter: @cheald
-    From: Phoenix: Arizona, USA
+    From: Phoenix, Arizona, USA
     WoW: Adrine @ Cenarion Circle-US
 
   Shadowcraft Engine Lead
@@ -12,7 +12,7 @@
     WoW: Aldriana @ Doomhammer-US
 
   Reforger Engine
-    bspot
+    bsoft
     WoW: Humbug @ Terenas-US
 
   Reforger Engine Service

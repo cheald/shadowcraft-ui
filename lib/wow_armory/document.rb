@@ -24,10 +24,21 @@ module WowArmory
       end
       url = (host + resource)
       Rails.logger.debug "Reading #{url}"
-      result = Curl::Easy.http_get(url) do |curl|
-        curl.timeout = 15
-        curl.headers["User-Agent"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13"
+      tries = 0
+      begin
+        result = Curl::Easy.http_get(url) do |curl|
+          curl.timeout = 7
+          curl.headers["User-Agent"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13"
+        end
+      rescue Curl::Err::TimeoutError => e
+        if tries < 3
+          tries += 1
+          retry
+        else
+          raise e
+        end
       end
+
       if result.response_code >= 400 and result.response_code < 500
         raise MissingDocument.new "Armory returned #{result.response_code}", result.response_code
       elsif result.response_code >= 500
