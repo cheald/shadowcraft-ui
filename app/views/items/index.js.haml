@@ -1,7 +1,7 @@
 - item_json = @alt_items.as_json
 - enchant_json = @enchants.as_json
 - gem_json = @gems.as_json
-- cache_to File.join(Rails.root, "public", "items.js") do
+- cache_to File.join(Rails.root, "public", @filename) do
   :plain
     window.ShadowcraftData = {};
     (function(R) {

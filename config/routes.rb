@@ -69,5 +69,7 @@ Roguesim::Application.routes.draw do
   resources :items do
     get 'rebuild', :on => :collection
   end
+
+  match "/items-:class", :to => "items#index", :class => /rogue/i
   root :to => "characters#new"
 end

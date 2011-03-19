@@ -1,5 +1,5 @@
 - content_for :head do
-  =javascript_include_tag "/items.js"
+  =javascript_include_tag "/items-#{@character.properties["player_class"].downcase}.js"
   =render "templates"
 
 #curtain{:style => "display: none"}

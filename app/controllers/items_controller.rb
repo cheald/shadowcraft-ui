@@ -1,11 +1,50 @@
 class ItemsController < ApplicationController
   respond_to :json, :only => [:create]
   VALID_SLOTS = (1..28).to_a - [18, 19, 20, 24, 26, 27]
+  VALID_CLASSES = %w"rogue"
 
   def index
+    @klass = params[:class]
+    @klass = nil unless VALID_CLASSES.include?(@klass)
+    @klass ||= "rogue"
+
+    @filename = "items-#{@klass}.js"
+    case @klass
+    when "rogue"
+      index_rogue
+    end
+  end
+
+  def create
+    item = Item.find_or_create_by(:remote_id => params[:item][:remote_id])
+
+    respond_with(item) do |format|
+      format.html {
+        flash[:notice] = "#{item.properties["name"]} added to the database"
+        redirect_to :back
+      }
+    end
+  end
+
+  def rebuild
+    char = Character.criteria.id(params[:c]).first
+    filename = "items-#{char.properties['player_class'].downcase}.js"
+    first_item = Item.desc(:created_at).first
+    anchor = flash[:reload].blank? ? nil : "reload"
+    f = File.join(Rails.root, "public", filename)
+    if !File.exists?(f) or File.mtime(f) < first_item.created_at
+      index
+      render_to_string :action => filename
+    end
+    redirect_to params[:c].blank? ? :back : character_path(character_options(char).merge(:anchor => anchor))
+  end
+
+  private
+
+  def index_rogue
     @alt_items = []
     VALID_SLOTS.each do |i|
-      @alt_items += Item.where(:equip_location => i, :item_level.gte => 272).desc(:item_level).all
+      @alt_items += Item.where(:equip_location => i, :item_level.gte => 300).desc(:item_level).all
     end
 
     # This is really haxy, but it's flexible.
@@ -23,27 +62,5 @@ class ItemsController < ApplicationController
     h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talent-tree.xml")).read
     @talents = h["page"]["talentTrees"]["tree"].sort {|a, b| a["order"].to_i <=> b["order"].to_i }
     @glyphs = Glyph.asc(:name).all
-  end
-
-  def create
-    item = Item.find_or_create_by(:remote_id => params[:item][:remote_id])
-
-    respond_with(item) do |format|
-      format.html {
-        flash[:notice] = "#{item.properties["name"]} added to the database"
-        redirect_to :back
-      }
-    end
-  end
-
-  def rebuild
-    first_item = Item.desc(:created_at).first
-    anchor = flash[:reload].blank? ? nil : "reload"
-    f = File.join(Rails.root, "public", "items.js")
-    if !File.exists?(f) or File.mtime(f) < first_item.created_at
-      index
-      render_to_string :action => "index.js"
-    end
-    redirect_to params[:c].blank? ? :back : character_path(character_options(Character.criteria.id(params[:c]).first).merge(:anchor => anchor))
   end
 end
