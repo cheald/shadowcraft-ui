@@ -8,11 +8,13 @@ Currently, ShadowCraft uses server-side Ruby for Armory/Wowhead data import and 
 
 ## Requirements
 
-Requires Ruby 1.9.2 and MongoDB 1.6+, as well as a browser made this decade.
+Requires Ruby 1.9.2, Rails 3, Coffeescript (which means node.js), and MongoDB 1.6+, as well as a browser made this decade.
+
+The engine requires Python 2.6 and a recent version of Twisted.
 
 ## Installing it
 
-    git clone git://github.com/cheald/shadowcraft-ui.git    
+    git clone git://github.com/cheald/shadowcraft-ui.git
     cd shadowcraft-ui/
     bundle install
 
@@ -23,22 +25,20 @@ Start it up (passenger, unicorn, thin, whatever your poison) and you're rolling.
 You'll want items in your database. Fortunately, that's easy.
 
     rails console production
-    > Item.populate
+    > Item.populate_gear
+    > Item.populate_gems
+    > Glyph.populate!
     > Enchant.update_from_json!
 
 Congrats. You now have ~2000 items and gems locally cached.
-
-## To do
-
-* Aldriana is working on shadowcraft-engine, a Python library for computation of DPS and other metrics given various inputs. While not ready yet, the plan is to integrate by wrapping it in a Twisted app and communicating with the UI via websockets.
 
 ## Contributing
 
 Guidelines:
 
-* app.js should lint reasonably well.
+* All client app updates are done in coffeescript, and make.watchr is used to compile them into concatenation.js.
 * Markup should validate as HTML5.
-* Javascript should be tested for workingness in Chrome and Firefox at a minimum, with Safari, Opera, and IE9 as bonus candidates.
+* Javascript should be tested for workingness in Chrome, Firefox 3.6/4, Safari, and IE9.
 * Commits shall have useful (terse is okay) commit messages.
 * A test suite would be particularly welcome.
 

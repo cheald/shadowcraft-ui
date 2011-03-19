@@ -14,8 +14,6 @@ from shadowcraft.objects.talents import InvalidTalentException
 from shadowcraft.objects.rogue import rogue_talents, rogue_glyphs
 from websocket import *
 
-import hotshot, hotshot.stats
-
 from shadowcraft.core import i18n
 
 import json
@@ -106,7 +104,8 @@ class ShadowcraftComputation:
   def sumstring(self, x):
     total=0
     for letter in str(x):
-        total+=int(letter)
+        total += int(letter)
+        
     return total
 
   def weapon(self, input, index):

@@ -1538,7 +1538,7 @@
       }).join("");
     };
     applyTalentToButton = function(button, dir, force, skipUpdate) {
-      var $points, data, points, position, prequal, prev, success, tier, tree, _ref;
+      var $points, data, points, position, prequal, prev, success, tier, tree, _ref, _ref2;
       data = Shadowcraft.Data;
       points = $.data(button, "points");
       position = $.data(button, "position");
@@ -1549,13 +1549,15 @@
       } else if (dir === 1 && points.cur < points.max && talentsSpent < MAX_TALENT_POINTS) {
         success = true;
       } else if (dir === -1) {
-        for (tier = _ref = position.row; (_ref <= 7 ? tier <= 7 : tier >= 7); (_ref <= 7 ? tier += 1 : tier -= 1)) {
+        for (tier = _ref = position.row; (_ref <= 6 ? tier <= 6 : tier >= 6); (_ref <= 6 ? tier += 1 : tier -= 1)) {
           prequal = 0;
-          for (prev = 0; (0 <= tier ? prev <= tier : prev >= tier); (0 <= tier ? prev += 1 : prev -= 1)) {
-            prequal += tree.rowPoints[prev];
-          }
-          if (tree.rowPoints[tier] > 0 && (tier * 5) >= prequal) {
-            return false;
+          if (tier > 0) {
+            for (prev = 0, _ref2 = tier - 1; (0 <= _ref2 ? prev <= _ref2 : prev >= _ref2); (0 <= _ref2 ? prev += 1 : prev -= 1)) {
+              prequal += tree.rowPoints[prev];
+            }
+            if (tree.rowPoints[tier] > 0 && (tier * 5) >= prequal) {
+              return false;
+            }
           }
         }
         if (points.cur > 0) {
