@@ -1269,7 +1269,9 @@
           options: [5, 4, 3, 2, 1],
           'default': 4,
           desc: "Use Envenom at this many combo points, when your primary CP builder is Mutilate",
-          datatype: 'integer'
+          datatype: 'integer',
+          min: 1,
+          max: 5
         },
         min_envenom_size_backstab: {
           type: "select",
@@ -1277,7 +1279,9 @@
           options: [5, 4, 3, 2, 1],
           'default': 5,
           desc: "Use Envenom at this many combo points, when your primary CP builder is Backstab",
-          datatype: 'integer'
+          datatype: 'integer',
+          min: 1,
+          max: 5
         }
       });
       this.setup("#settings section.combat .settings", "rotation", {
