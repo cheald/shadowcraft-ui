@@ -143,8 +143,8 @@ class Character
   end
 
   def is_supported_level?
-    unless properties["level"] > 80
-      errors.add :base, "Rogues under level 81 are not currently supported by Shadowcraft."
+    unless properties["level"] >= 85
+      errors.add :base, "Rogues under level 85 are not currently supported by Shadowcraft."
       return false
     end
     return true

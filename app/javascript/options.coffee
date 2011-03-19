@@ -20,6 +20,7 @@ class ShadowcraftOptions
     switch dtype
       when "integer"
         val = parseInt(val, 10)
+        val = 0 if isNaN(val)
       when "float"
         val = parseFloat(val, 10)
       when "bool"
@@ -28,17 +29,30 @@ class ShadowcraftOptions
         val = val.toString()
     val
 
+  enforceBounds = (val, mn, mx) ->
+    if typeof(val) == "number"
+      if mn and val < mn
+        val = mn
+      else if mx and val > mx
+        val = mx
+    else
+      return val
+    val
+
   setup: (selector, namespace, checkData) ->
     data = Shadowcraft.Data
     s = $(selector);
     for key, opt of checkData
       ns = data.options[namespace]
+      val = null
       if !ns
         data.options[namespace] = {}
         ns = data.options[namespace]
       if data.options[namespace][key]
-        data.options[namespace][key] = cast(data.options[namespace][key], opt.datatype)
         val = data.options[namespace][key]
+        val = cast(val, opt.datatype)
+        val = enforceBounds(val, opt.min, opt.max)
+        data.options[namespace][key] = val
 
       if val == undefined and opt.default?
         data.options[namespace][key] = opt.default
@@ -78,7 +92,11 @@ class ShadowcraftOptions
           }, options))
 
         exist = s.find("#opt-" + namespace + "-" + key)
-        $.data(exist.get(0), "datatype", opt.datatype)
+        e0 = exist.get(0)
+        $.data(e0, "datatype", opt.datatype)
+        $.data(e0, "min", opt.min)
+        $.data(e0, "max", opt.max)
+
       switch inputType
         when "check"
           exist.attr("checked", val)
@@ -91,13 +109,13 @@ class ShadowcraftOptions
     data = Shadowcraft.Data
 
     @setup("#settings #general", "general", {
-      level: {type: "input", name: "Level", 'default': 85},
+      level: {type: "input", name: "Level", 'default': 85, datatype: 'integer', min: 85, max: 85},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin"], name: "Race", 'default': "Human"}
-      duration: {type: "input", name: "Fight Duration", 'default': 360}
+      duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
       # tricks: {name: "Tricks of the Trade on cooldown", 'default': true}
       mh_poison: {name: "Mainhand Poison", type: 'select', options: {'ip': "Instant Poison", 'wp': 'Wound Poison', 'dp': 'Deadly Poison'}, 'default': 'ip'}
       oh_poison: {name: "Offhand Poison", type: 'select', options: {'ip': "Instant Poison", 'wp': 'Wound Poison', 'dp': 'Deadly Poison'}, 'default': 'dp'}
-      max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this ilevel in gear lists", 'default': 500}
+      max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this ilevel in gear lists", 'default': 500, datatype: 'integer', min: 15, max: 500}
     })
 
     @setup("#settings #professions", "professions", {
@@ -159,8 +177,13 @@ class ShadowcraftOptions
     name = $this.attr("name")
     if val == undefined
       val = $this.val()
-    dtype = $.data($this.get(0), "datatype")
-    cast(val, dtype)
+    t0 = $this.get(0)
+    dtype = $.data(t0, "datatype")
+    min = $.data(t0, "min")
+    max = $.data(t0, "max")
+    val = enforceBounds(cast(val, dtype), min, max)
+    if $this.val() != val
+      $this.val(val)
 
     data.options[ns][name] = val
     Shadowcraft.update()

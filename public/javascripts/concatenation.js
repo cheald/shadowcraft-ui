@@ -980,12 +980,15 @@
     }
   };
   ShadowcraftOptions = (function() {
-    var cast, changeCheck, changeInput, changeOption, changeSelect;
+    var cast, changeCheck, changeInput, changeOption, changeSelect, enforceBounds;
     ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'all_damage_buff', 'melee_haste_buff', 'attack_power_buff', 'str_and_agi_buff', 'armor_debuff', 'physical_vulnerability_debuff', 'spell_damage_debuff', 'spell_crit_debuff', 'bleed_damage_debuff', 'agi_flask', 'guild_feast'];
     cast = function(val, dtype) {
       switch (dtype) {
         case "integer":
           val = parseInt(val, 10);
+          if (isNaN(val)) {
+            val = 0;
+          }
           break;
         case "float":
           val = parseFloat(val, 10);
@@ -998,20 +1001,35 @@
       }
       return val;
     };
+    enforceBounds = function(val, mn, mx) {
+      if (typeof val === "number") {
+        if (mn && val < mn) {
+          val = mn;
+        } else if (mx && val > mx) {
+          val = mx;
+        }
+      } else {
+        return val;
+      }
+      return val;
+    };
     ShadowcraftOptions.prototype.setup = function(selector, namespace, checkData) {
-      var data, exist, inputType, key, ns, opt, options, s, template, templateOptions, val, _i, _k, _len, _ref, _ref2, _v;
+      var data, e0, exist, inputType, key, ns, opt, options, s, template, templateOptions, val, _i, _k, _len, _ref, _ref2, _v;
       data = Shadowcraft.Data;
       s = $(selector);
       for (key in checkData) {
         opt = checkData[key];
         ns = data.options[namespace];
+        val = null;
         if (!ns) {
           data.options[namespace] = {};
           ns = data.options[namespace];
         }
         if (data.options[namespace][key]) {
-          data.options[namespace][key] = cast(data.options[namespace][key], opt.datatype);
           val = data.options[namespace][key];
+          val = cast(val, opt.datatype);
+          val = enforceBounds(val, opt.min, opt.max);
+          data.options[namespace][key] = val;
         }
         if (val === void 0 && (opt["default"] != null)) {
           data.options[namespace][key] = opt["default"];
@@ -1068,7 +1086,10 @@
             }, options)));
           }
           exist = s.find("#opt-" + namespace + "-" + key);
-          $.data(exist.get(0), "datatype", opt.datatype);
+          e0 = exist.get(0);
+          $.data(e0, "datatype", opt.datatype);
+          $.data(e0, "min", opt.min);
+          $.data(e0, "max", opt.max);
         }
         switch (inputType) {
           case "check":
@@ -1088,7 +1109,10 @@
         level: {
           type: "input",
           name: "Level",
-          'default': 85
+          'default': 85,
+          datatype: 'integer',
+          min: 85,
+          max: 85
         },
         race: {
           type: "select",
@@ -1099,7 +1123,10 @@
         duration: {
           type: "input",
           name: "Fight Duration",
-          'default': 360
+          'default': 360,
+          datatype: 'integer',
+          min: 15,
+          max: 1200
         },
         mh_poison: {
           name: "Mainhand Poison",
@@ -1125,7 +1152,10 @@
           name: "Max ILevel",
           type: "input",
           desc: "Don't show items over this ilevel in gear lists",
-          'default': 500
+          'default': 500,
+          datatype: 'integer',
+          min: 15,
+          max: 500
         }
       });
       this.setup("#settings #professions", "professions", {
@@ -1283,7 +1313,7 @@
       });
     };
     changeOption = function(elem, val) {
-      var $this, data, dtype, name, ns, _base;
+      var $this, data, dtype, max, min, name, ns, t0, _base;
       $this = $(elem);
       data = Shadowcraft.Data;
       ns = elem.attr("data-ns") || "root";
@@ -1292,8 +1322,14 @@
       if (val === void 0) {
         val = $this.val();
       }
-      dtype = $.data($this.get(0), "datatype");
-      cast(val, dtype);
+      t0 = $this.get(0);
+      dtype = $.data(t0, "datatype");
+      min = $.data(t0, "min");
+      max = $.data(t0, "max");
+      val = enforceBounds(cast(val, dtype), min, max);
+      if ($this.val() !== val) {
+        $this.val(val);
+      }
       data.options[ns][name] = val;
       return Shadowcraft.update();
     };
