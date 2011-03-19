@@ -980,8 +980,24 @@
     }
   };
   ShadowcraftOptions = (function() {
-    var changeCheck, changeInput, changeOption, changeSelect;
+    var cast, changeCheck, changeInput, changeOption, changeSelect;
     ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'all_damage_buff', 'melee_haste_buff', 'attack_power_buff', 'str_and_agi_buff', 'armor_debuff', 'physical_vulnerability_debuff', 'spell_damage_debuff', 'spell_crit_debuff', 'bleed_damage_debuff', 'agi_flask', 'guild_feast'];
+    cast = function(val, dtype) {
+      switch (dtype) {
+        case "integer":
+          val = parseInt(val, 10);
+          break;
+        case "float":
+          val = parseFloat(val, 10);
+          break;
+        case "bool":
+          val = val === true || val === "true" || val === 1;
+          break;
+        case "string":
+          val = val.toString();
+      }
+      return val;
+    };
     ShadowcraftOptions.prototype.setup = function(selector, namespace, checkData) {
       var data, exist, inputType, key, ns, opt, options, s, template, templateOptions, val, _i, _k, _len, _ref, _ref2, _v;
       data = Shadowcraft.Data;
@@ -993,7 +1009,10 @@
           data.options[namespace] = {};
           ns = data.options[namespace];
         }
-        val = data.options[namespace][key];
+        if (data.options[namespace][key]) {
+          data.options[namespace][key] = cast(data.options[namespace][key], opt.datatype);
+          val = data.options[namespace][key];
+        }
         if (val === void 0 && (opt["default"] != null)) {
           data.options[namespace][key] = opt["default"];
           val = opt["default"];
@@ -1274,19 +1293,7 @@
         val = $this.val();
       }
       dtype = $.data($this.get(0), "datatype");
-      switch (dtype) {
-        case "integer":
-          val = parseInt(val, 10);
-          break;
-        case "float":
-          val = parseFloat(val, 10);
-          break;
-        case "bool":
-          val = val === true || val === "true" || val === 1;
-          break;
-        case "string":
-          val = val.toString();
-      }
+      cast(val, dtype);
       data.options[ns][name] = val;
       return Shadowcraft.update();
     };

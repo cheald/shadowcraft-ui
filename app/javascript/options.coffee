@@ -16,6 +16,18 @@ class ShadowcraftOptions
     'guild_feast'
   ]
 
+  cast = (val, dtype) ->
+    switch dtype
+      when "integer"
+        val = parseInt(val, 10)
+      when "float"
+        val = parseFloat(val, 10)
+      when "bool"
+        val = val == true or val == "true" or val == 1
+      when "string"
+        val = val.toString()
+    val
+
   setup: (selector, namespace, checkData) ->
     data = Shadowcraft.Data
     s = $(selector);
@@ -24,7 +36,9 @@ class ShadowcraftOptions
       if !ns
         data.options[namespace] = {}
         ns = data.options[namespace]
-      val = data.options[namespace][key]
+      if data.options[namespace][key]
+        data.options[namespace][key] = cast(data.options[namespace][key], opt.datatype)
+        val = data.options[namespace][key]
 
       if val == undefined and opt.default?
         data.options[namespace][key] = opt.default
@@ -146,15 +160,7 @@ class ShadowcraftOptions
     if val == undefined
       val = $this.val()
     dtype = $.data($this.get(0), "datatype")
-    switch dtype
-      when "integer"
-        val = parseInt(val, 10)
-      when "float"
-        val = parseFloat(val, 10)
-      when "bool"
-        val = val == true or val == "true" or val == 1
-      when "string"
-        val = val.toString()
+    cast(val, dtype)
 
     data.options[ns][name] = val
     Shadowcraft.update()
