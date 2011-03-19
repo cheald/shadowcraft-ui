@@ -146,7 +146,7 @@ class ShadowcraftApp
       wait()
 
     $("#reloadAllData").click ->
-      if confirm("Reload all data? This will wipe out all changes.")
+      if confirm("Are you sure you want to clear all data?\n\nThis will wipe out all locally saved changes for ALL saved characters.\n\nThere is no undo!")
         $.jStorage.flush()
         location.reload(true)
 

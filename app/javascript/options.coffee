@@ -23,10 +23,9 @@ class ShadowcraftOptions
         val = 0 if isNaN(val)
       when "float"
         val = parseFloat(val, 10)
+        val = 0 if isNaN(val)
       when "bool"
         val = val == true or val == "true" or val == 1
-      when "string"
-        val = val.toString()
     val
 
   enforceBounds = (val, mn, mx) ->
@@ -50,13 +49,12 @@ class ShadowcraftOptions
         ns = data.options[namespace]
       if data.options[namespace][key]
         val = data.options[namespace][key]
-        val = cast(val, opt.datatype)
-        val = enforceBounds(val, opt.min, opt.max)
-        data.options[namespace][key] = val
-
-      if val == undefined and opt.default?
-        data.options[namespace][key] = opt.default
+      if val == null and opt.default?
         val = opt.default
+
+      val = cast(val, opt.datatype)
+      val = enforceBounds(val, opt.min, opt.max)
+      data.options[namespace][key] = val
 
       exist = s.find("#opt-" + namespace + "-" + key)
 

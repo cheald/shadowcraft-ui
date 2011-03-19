@@ -160,7 +160,7 @@
         return wait();
       });
       $("#reloadAllData").click(function() {
-        if (confirm("Reload all data? This will wipe out all changes.")) {
+        if (confirm("Are you sure you want to clear all data?\n\nThis will wipe out all locally saved changes for ALL saved characters.\n\nThere is no undo!")) {
           $.jStorage.flush();
           return location.reload(true);
         }
@@ -508,7 +508,7 @@
         return app.loadSnapshot(json);
       });
       menu = $("#settingsDropdownMenu");
-      menu.append("<li><a href='#' id='menuSaveSnapshot'>Save</li>");
+      menu.append("<li><a href='#' id='menuSaveSnapshot'>Save snapshot</li>");
       buttons = {
         Ok: function() {
           app.saveSnapshot($("#snapshotName").val());
@@ -543,7 +543,7 @@
           return $("#menuLoadSnapshot").click();
         }
       }));
-      menu.append("<li><a href='#' id='menuLoadSnapshot'>Load</li>");
+      menu.append("<li><a href='#' id='menuLoadSnapshot'>Load snapshot</li>");
       $("#menuLoadSnapshot").click(function() {
         return app.selectSnapshot();
       });
@@ -992,12 +992,12 @@
           break;
         case "float":
           val = parseFloat(val, 10);
+          if (isNaN(val)) {
+            val = 0;
+          }
           break;
         case "bool":
           val = val === true || val === "true" || val === 1;
-          break;
-        case "string":
-          val = val.toString();
       }
       return val;
     };
@@ -1027,14 +1027,13 @@
         }
         if (data.options[namespace][key]) {
           val = data.options[namespace][key];
-          val = cast(val, opt.datatype);
-          val = enforceBounds(val, opt.min, opt.max);
-          data.options[namespace][key] = val;
         }
-        if (val === void 0 && (opt["default"] != null)) {
-          data.options[namespace][key] = opt["default"];
+        if (val === null && (opt["default"] != null)) {
           val = opt["default"];
         }
+        val = cast(val, opt.datatype);
+        val = enforceBounds(val, opt.min, opt.max);
+        data.options[namespace][key] = val;
         exist = s.find("#opt-" + namespace + "-" + key);
         inputType = "check";
         if (typeof opt === "object" && (opt.type != null)) {

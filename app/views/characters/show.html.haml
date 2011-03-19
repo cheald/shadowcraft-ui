@@ -8,6 +8,8 @@
       =link_to "Refresh from armory", refresh_character_path(char_options @character), :method => :put, :class => "showWait"
     %li
       =link_to "Reset to last Armory import", character_path(char_options(@character)) + "#reload", :method => :get, :class => "showWait"
+    %li
+      =link_to "Clear all saved data", "#", :method => :get, :id => "reloadAllData"
 
   #tabs
     #top-pane

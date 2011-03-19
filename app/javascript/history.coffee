@@ -12,7 +12,7 @@ class ShadowcraftHistory
       app.loadSnapshot json
 
     menu = $("#settingsDropdownMenu")
-    menu.append("<li><a href='#' id='menuSaveSnapshot'>Save</li>")
+    menu.append("<li><a href='#' id='menuSaveSnapshot'>Save snapshot</li>")
 
     buttons =
       Ok: ->
@@ -43,7 +43,7 @@ class ShadowcraftHistory
         $("#loadSnapshot").dialog("close")
         $("#menuLoadSnapshot").click()
 
-    menu.append("<li><a href='#' id='menuLoadSnapshot'>Load</li>")
+    menu.append("<li><a href='#' id='menuLoadSnapshot'>Load snapshot</li>")
     $("#menuLoadSnapshot").click ->
       app.selectSnapshot()
     this
