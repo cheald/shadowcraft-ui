@@ -17,13 +17,19 @@
     {{/talents}}
     .spent
 - mustache "tooltip" do
-  .title {{title}}
-  .info {{info}}
+  {{#title}}
+  .title {{.}}
+  {{/title}}
+  {{#info}}
+  .info {{.}}
+  {{/info}}
+  {{#desc}}
   .desc
-    %p {{desc}}
+    %p {{.}}
     {{#nextdesc}}
     %p {{.}}
     {{/nextdesc}}
+  {{/desc}}
 - mustache "stats" do
   {{#stats}}
   .stat

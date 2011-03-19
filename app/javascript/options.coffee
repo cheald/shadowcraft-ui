@@ -82,6 +82,7 @@ class ShadowcraftOptions
       # tricks: {name: "Tricks of the Trade on cooldown", 'default': true}
       mh_poison: {name: "Mainhand Poison", type: 'select', options: {'ip': "Instant Poison", 'wp': 'Wound Poison', 'dp': 'Deadly Poison'}, 'default': 'ip'}
       oh_poison: {name: "Offhand Poison", type: 'select', options: {'ip': "Instant Poison", 'wp': 'Wound Poison', 'dp': 'Deadly Poison'}, 'default': 'dp'}
+      max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this ilevel in gear lists", 'default': 500}
     })
 
     @setup("#settings #professions", "professions", {
@@ -161,11 +162,11 @@ class ShadowcraftOptions
   boot: ->
     app = this
     @initOptions()
-    unless window.Touch
-      $("#settings select").selectmenu({ style: 'dropdown' })
 
     Shadowcraft.bind "loadData", ->
       app.initOptions()
+      Shadowcraft.setupLabels("#settings")
+      $("#settings select").change()
 
     Shadowcraft.Talents.bind "changed", ->
       $("#settings section.mutilate, #settings section.combat, #settings section.subtlety").hide()

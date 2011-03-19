@@ -4,9 +4,6 @@ class ShadowcraftBackend
 
   constructor: (@app) ->
     @app.Backend = this
-    @dpsHistory = []
-    @snapshotHistory = []
-    @dpsIndex = 0
     _.extend(this, Backbone.Events)
 
   boot: ->
@@ -112,36 +109,8 @@ class ShadowcraftBackend
       Shadowcraft.Console.warn {}, data.error, null, "error", "error"
       return
 
-    if data.total_dps != @lastDPS && !loadingSnapshot
-      snapshot = Shadowcraft.History.takeSnapshot()
-
     @app.lastCalculation = data
     this.trigger("recompute", data)
-
-    if data.total_dps != @lastDPS || loadingSnapshot
-      delta = data.total_dps - (@lastDPS || 0)
-      deltatext = ""
-      if @lastDPS
-        deltatext = if delta >= 0 then " <em class='p'>(+#{delta.toFixed(1)})</em>" else " <em class='n'>(#{delta.toFixed(1)})</em>"
-
-      $("#dps .inner").html(data.total_dps.toFixed(1) + " DPS" + deltatext)
-
-      if snapshot
-        @dpsHistory.push [@dpsIndex, Math.floor(data.total_dps * 10) / 10]
-        @dpsIndex++
-        @snapshotHistory.push(snapshot)
-        if @dpsHistory.length > 30
-          @dpsHistory.shift()
-          @snapshotHistory.shift()
-
-        dpsPlot = $.plot($("#dpsgraph"), [@dpsHistory], {
-          lines: { show: true },
-          crosshair: { mode: "y" },
-          points: { show: true },
-          grid: { hoverable: true, clickable: true, autoHighlight: true },
-        })
-      @lastDPS = data.total_dps
-    loadingSnapshot = false
 
   recompute: ->
     @cancelRecompute = false

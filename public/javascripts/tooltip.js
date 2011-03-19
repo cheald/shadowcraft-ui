@@ -18,7 +18,15 @@ var ttlib = {
   show: function() {
     if( !ttlib.jstooltip ) { return; }
     var pos = ttlib.jstooltip.owner.offset();
-    ttlib.mouseMove(pos.left + ttlib.jstooltip.owner.width() + 30, pos.top);
+    var dwidth = document.body.clientWidth
+
+    var left = pos.left + ttlib.jstooltip.owner.width() + 30;
+    var top  = pos.top;
+    if(dwidth - left < 400) {
+      left = pos.left - ttlib.jstooltip.offsetWidth - 30;
+    }
+
+    ttlib.mouseMove(left, top);
     ttlib.jstooltip.style.width = null;
     ttlib.jstooltip.style.visibility = "visible";
   },
@@ -80,16 +88,9 @@ var ttlib = {
     if( y < 0 ) { y = 0; }
 
     // Right clamp
-    var diff;
-    if( x + ttlib.jstooltip.offsetWidth > de.clientWidth ) {
-      diff = (x + ttlib.jstooltip.offsetWidth) - de.clientWidth;
-      x -= diff + (de.clientWidth - x) + 40;
-    // Simpler form, only for things that aren't actually off screen but are close enough to clipping that they go
-    // over the horizontal scroll bar
-    } else if( x + ttlib.jstooltip.offsetWidth + 30 > de.clientWidth ) {
-      diff = (x + ttlib.jstooltip.offsetWidth) - de.clientWidth;
-      x -= (de.clientWidth - x) + 30;
-    }
+    // if(x + ttlib.jstooltip.offsetWidth > de.clientWidth - 30)
+    // x -= ttlib.jstooltip.offsetWidth + 40
+
     ttlib.jstooltip.style.left = x+"px";
     ttlib.jstooltip.style.top = y+"px";
   },

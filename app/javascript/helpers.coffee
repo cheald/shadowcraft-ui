@@ -8,16 +8,28 @@ titleize = (str) ->
     word.push f+r
   word.join(' ')
 
-tooltip = (data, x, y) ->
+tip = null
+$doc = null
+tooltip = (data, x, y, ox, oy) ->
   tip = $("#tooltip")
   if !tip or tip.length == 0
     tip = $("<div id='tooltip'></div>")
     $(document.body).append(tip)
+    $doc = $(document.body)
 
   tip.html Templates.tooltip(data)
+  tip.attr("class", data.class)
   x ||= $.data(document, "mouse-x")
   y ||= $.data(document, "mouse-y")
-  tip.css({top: y, left: x}).show()
+  rx = x + ox
+  ry = y + oy
+
+  if rx + tip.outerWidth() > $doc.outerWidth()
+    rx = x - tip.outerWidth() - ox
+  if ry + tip.outerHeight() > $doc.outerHeight()
+    ry = y - tip.outerHeight() - oy
+
+  tip.css({top: ry, left: rx}).show()
 
 hideFlash = ->
   $(".flash").fadeOut("fast")
@@ -85,6 +97,10 @@ checkForWarnings = (section) ->
 
       if !enchant and enchantable
         Shadowcraft.Console.warn(item, "needs an enchantment", null, null, "items")
+
+wait = (msg) ->
+  $("#waitMsg").html(msg)
+  $("#wait").fadeIn()
 
 showPopup = (popup) ->
   $(".popup").removeClass("visible");

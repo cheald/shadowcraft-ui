@@ -212,6 +212,15 @@ html.websockets, html.history, html.canvas
   left: 0
   background: rgba(0, 0, 0, 0.7) url(../../images/wait.gif) center center no-repeat
   z-index: 1000
+  #waitMsg
+    position: absolute
+    top: 55%
+    left: 0
+    right: 0
+    font-size: 2em
+    color: #fff
+    font-weight: bold
+    text-align: center
 
 .with-tools
   background-image: url(../../images/panel-left.png) !important
@@ -562,6 +571,14 @@ a
       border: 1px solid #222
       +border-radius
 
+    select
+      background: #222
+      color: #fff
+      border-color: #000
+      padding: 5px
+      option
+        padding: 2px 0
+
     .label_check, .input, .select
       display: block
       width: 500px
@@ -584,7 +601,7 @@ a
         text-align: right
         margin-right: 10px
 
-    .select
+    .select, .input
       span.desc
         display: block
         clear: left
@@ -592,6 +609,7 @@ a
         font-size: 0.8em
         color: #666
         font-weight: normal
+        margin-left: 170px
     .label_check
       background-position: 3px 2px
       span
@@ -780,6 +798,17 @@ a
     p
       margin: 1em 0
     color: #ffd200
+  &.small
+    padding: 2px
+    font-size: 0.8em
+    .title
+      margin: 0
+  &.clean
+    border: 0
+    +box-shadow(#000, 0px, 0px, 3px, 3px)
+    background: rgba(0, 0, 0, 0.75)
+    .title
+      color: #edc
 
 #talents
   .panel-content

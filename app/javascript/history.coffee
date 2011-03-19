@@ -11,16 +11,6 @@ class ShadowcraftHistory
       json = $.parseJSON $("textarea#import").val()
       app.loadSnapshot json
 
-    $("#dpsgraph").bind("plotclick", (event, pos, item) ->
-      if item
-        dpsPlot.unhighlight()
-        dpsPlot.highlight(item.series, item.datapoint)
-        loadSnapshot(snapshotHistory[item.dataIndex])
-    ).mousedown((e) ->
-      switch e.button
-        when 2
-          return false
-    )
     menu = $("#settingsDropdownMenu")
     menu.append("<li><a href='#' id='menuSaveSnapshot'>Save</li>")
 
@@ -136,7 +126,6 @@ class ShadowcraftHistory
 
   loadSnapshot: (snapshot) ->
     @app.Data = decompress (snapshot)
-    loadingSnapshot = true
     Shadowcraft.loadData()
 
   buildExport: ->
@@ -225,6 +214,7 @@ class ShadowcraftHistory
         map(data.options.general.mh_poison, poisonMap)
         map(data.options.general.oh_poison, poisonMap)
         if data.options.general.potion_of_the_tolvir then 1 else 0
+        data.options.general.max_ilvl
       ]
       options.push base36Encode(general)
 
@@ -281,6 +271,7 @@ class ShadowcraftHistory
         mh_poison:            unmap(general[3], poisonMap)
         oh_poison:            unmap(general[4], poisonMap)
         potion_of_the_volvir: general[5] == 1
+        max_ilvl:             general[6] || 500
 
       d.options.buffs = {}
       for v, i in options[2]

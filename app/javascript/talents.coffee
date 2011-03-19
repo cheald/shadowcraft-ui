@@ -88,7 +88,7 @@ class ShadowcraftTalents
       desc: if rank then rank.description else null,
       nextdesc: if nextRank then "Next rank: " + nextRank.description else null
 
-    }, pos.left + 130, pos.top - 20)
+    }, pos.left, pos.top, 130, -20)
 
   resetTalents = ->
     $("#talentframe .talent").each ->

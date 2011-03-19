@@ -2,136 +2,137 @@
   =javascript_include_tag "/items.js"
   =render "templates"
 
-%ul.dropdownMenu#settingsDropdownMenu
-  %li
-    =link_to "Refresh from armory", refresh_character_path(char_options @character), :method => :put, :class => "showWait"
+#curtain{:style => "display: none"}
+  %ul.dropdownMenu#settingsDropdownMenu
+    %li
+      =link_to "Refresh from armory", refresh_character_path(char_options @character), :method => :put, :class => "showWait"
 
-#tabs
-  #top-pane
-    %a#logo{:href => "/"}
-    %ul
-      %li
-        %a{:href => "#gear"} Gear
-      %li
-        %a{:href => "#talents"} Talents &amp; Glyphs
-      %li
-        %a{:href => "#settings"} Settings
-    %a.dropdown#settingsDropdown{:href => "#", :"data-menu" => "settingsDropdownMenu"}<
-      =image_tag "cog.png"
+  #tabs
+    #top-pane
+      %a#logo{:href => "/"}
+      %ul
+        %li
+          %a{:href => "#gear"} Gear
+        %li
+          %a{:href => "#talents"} Talents &amp; Glyphs
+        %li
+          %a{:href => "#settings"} Settings
+      %a.dropdown#settingsDropdown{:href => "#", :"data-menu" => "settingsDropdownMenu"}<
+        =image_tag "cog.png"
 
-  #gear.with-tools
-    .panel-tools
-      %section.clearfix#stats
-        %h3 Stats
-        .inner
-        %a#getPawnString{:href => "#"}
-          =image_tag "PawnButton.png"
-      %section#weights
-        %h3 Stat Weights
-        .inner
-
-      %section
-        %h3 Toolbox
-        .inner
-          %button#reforgeAll Auto-Reforge All
-          %button#optimizeGems Optimize Gems
-    .panel-content
-      #slots-left.slots.half<>
-      #slots-right.slots.half<>
-
-      #reforge.popup.half
-        Reforge this item
-      .alternatives.popup.half<
-        #filter
-          %input{:type => "search", :class => "search", :placeholder => "Filter..."}
-        .body
-
-  #talents.with-tools
-    .panel-tools
-      %section
-        %h3 Talent Sets
-        #talentsets.inner
-      %section#talentrankings
-        %h3 Talent Rankings
-        .inner
-          .Primary
-          .Secondary
-    .panel-content
-      #talentframe
-      %button#reset_talents Reset Talents
-
-      #glyphs
-        #prime-glyphs.glyphset
-          %h2 Prime Glyphs
+    #gear.with-tools
+      .panel-tools
+        %section.clearfix#stats
+          %h3 Stats
           .inner
-        #major-glyphs.glyphset
-          %h2 Major Glyphs
+          %a#getPawnString{:href => "#"}
+            =image_tag "PawnButton.png"
+        %section#weights
+          %h3 Stat Weights
           .inner
-  #settings
-    %section.cluster.combat
-      .option-list
-        %h3 Rotation Settings
-        .settings
-    %section.cluster.mutilate
-      .option-list
-        %h3 Rotation Settings
-        .settings
-    %section.cluster.subtlety
-      .option-list
-        %h3 Rotation Settings
-        .settings
 
-    %section.cluster
-      .option-list
-        %h3 Raid Buffs
-        #playerBuffs
+        %section
+          %h3 Toolbox
+          .inner
+            %button#reforgeAll Auto-Reforge All
+            %button#optimizeGems Optimize Gems
+      .panel-content
+        #slots-left.slots.half<>
+        #slots-right.slots.half<>
 
-      .option-list
-        %h3 Raid Debuffs
-        #targetDebuffs
+        #reforge.popup.half
+          Reforge this item
+        .alternatives.popup.half<
+          #filter
+            %input{:type => "search", :class => "search", :placeholder => "Filter..."}
+          .body
 
-      .option-list
-        %h3 Other
-        #raidOther
+    #talents.with-tools
+      .panel-tools
+        %section
+          %h3 Talent Sets
+          #talentsets.inner
+        %section#talentrankings
+          %h3 Talent Rankings
+          .inner
+            .Primary
+            .Secondary
+      .panel-content
+        #talentframe
+        %button#reset_talents Reset Talents
 
-    %section.cluster
-      .option-list
-        %h3 General Settings
-        #general
+        #glyphs
+          #prime-glyphs.glyphset
+            %h2 Prime Glyphs
+            .inner
+          #major-glyphs.glyphset
+            %h2 Major Glyphs
+            .inner
+    #settings
+      %section.cluster.combat
+        .option-list
+          %h3 Rotation Settings
+          .settings
+      %section.cluster.mutilate
+        .option-list
+          %h3 Rotation Settings
+          .settings
+      %section.cluster.subtlety
+        .option-list
+          %h3 Rotation Settings
+          .settings
 
-      .option-list
-        %h3 Professions
-        #professions
+      %section.cluster
+        .option-list
+          %h3 Raid Buffs
+          #playerBuffs
 
-  #console-footer
-    %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :class => @character.properties['race'].downcase.gsub(/ /, "_")}
-      .img
-        %img{:src => @character.portrait}
-      %span.info
-        %span.name
-          #{@character.name.capitalize}
-        %span.realm
-          #{@character.realm.titleize}-#{@character.region.upcase}
-    #dps
-      .inner
-    #dpsgraph
-    %section
-      #console.window
-        %h3 Notices
+        .option-list
+          %h3 Raid Debuffs
+          #targetDebuffs
+
+        .option-list
+          %h3 Other
+          #raidOther
+
+      %section.cluster
+        .option-list
+          %h3 General Settings
+          #general
+
+        .option-list
+          %h3 Professions
+          #professions
+
+    #console-footer
+      %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :class => @character.properties['race'].downcase.gsub(/ /, "_")}
+        .img
+          %img{:src => @character.portrait}
+        %span.info
+          %span.name
+            #{@character.name.capitalize}
+          %span.realm
+            #{@character.realm.titleize}-#{@character.region.upcase}
+      #dps
         .inner
-    %section
-      #log.window
-        %h3 Log
-        .inner
+      #dpsgraph
+      %section
+        #console.window
+          %h3 Notices
+          .inner
+      %section
+        #log.window
+          %h3 Log
+          .inner
 
-#dialogs
-  #saveSnapshot{:title => 'Save Snapshot'}
-    %label
-      Enter a name for this snapshot:
-    %input#snapshotName{:type => "text"}
-  #loadSnapshot{:title => 'Load Snapshot'}
-  #generalDialog
-:javascript
-  var uuid = "#{@character.uid}";
-  #{flash[:reload] ? "$.jStorage.flush();" : nil}
-  Shadowcraft.boot(uuid, #{patch @character }, ShadowcraftData);
+  #dialogs
+    #saveSnapshot{:title => 'Save Snapshot'}
+      %label
+        Enter a name for this snapshot:
+      %input#snapshotName{:type => "text"}
+    #loadSnapshot{:title => 'Load Snapshot'}
+    #generalDialog
+  :javascript
+    var uuid = "#{@character.uid}";
+    #{flash[:reload] ? "$.jStorage.flush();" : nil}
+    Shadowcraft.boot(uuid, #{patch @character }, ShadowcraftData);

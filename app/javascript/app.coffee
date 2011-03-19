@@ -32,7 +32,6 @@ class ShadowcraftApp
     this.Options.initOptions()
     this.Talents.updateActiveTalents()
     this.Gear.updateDisplay()
-    # $("select").selectmenu({ style: 'dropdown' })
     # checkForWarnings() # TODO - warnings for each module
 
   setupLabels: (selector) ->
@@ -62,6 +61,18 @@ class ShadowcraftApp
     _.extend(this, Backbone.Events)
 
   boot: (@uuid, data, @ServerData) ->
+    try
+      @_boot @uuid, data, @ServerData
+    catch error
+      $("#curtain").html("<div id='loaderror'>A fatal error occurred while loading this page.</div>").show()
+      wait()
+      if confirm("An unrecoverable error has occurred. Reset data and reload?")
+        $.jStorage.flush()
+        location.reload(true)
+      else
+        throw error
+
+  _boot: (@uuid, data, @ServerData) ->
     @History = new ShadowcraftHistory(this).boot()
 
     patch = window.location.hash.match(/#reload$/)
@@ -81,16 +92,19 @@ class ShadowcraftApp
     @Data.options ||= {}
 
     ShadowcraftApp.trigger("boot")
-    @Console = new ShadowcraftConsole(this)
-    @Backend = new ShadowcraftBackend(this).boot()
-    @Talents = new ShadowcraftTalents(this)
-    @Options = new ShadowcraftOptions(this).boot()
-    @Gear    = new ShadowcraftGear(this)
+    @Console  = new ShadowcraftConsole(this)
+    @Backend  = new ShadowcraftBackend(this).boot()
+    @Talents  = new ShadowcraftTalents(this)
+    @Options  = new ShadowcraftOptions(this).boot()
+    @Gear     = new ShadowcraftGear(this)
+    @DpsGraph = new ShadowcraftDpsGraph(this)
 
     @Talents.boot()
     @Gear.boot()
 
     @commonInit()
+
+    $("#curtain").show()
 
     if window.FLASH.length > 0
       setTimeout(->
@@ -126,10 +140,10 @@ class ShadowcraftApp
         menu.css({top: top + "px", left: right + "px"}).show()
       return false
 
-    $("body").append("<div id='wait' style='display: none'></div><div id='modal' style='display: none'></div>")
+    $("body").append("<div id='wait' style='display: none'><div id='waitMsg'></div></div><div id='modal' style='display: none'></div>")
     $(".showWait").click ->
       $("#modal").hide()
-      $("#wait").fadeIn()
+      wait()
 
     $("#reloadAllData").click ->
       if confirm("Reload all data? This will wipe out all changes.")

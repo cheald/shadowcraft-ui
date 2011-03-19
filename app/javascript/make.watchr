@@ -8,6 +8,8 @@ scripts = %w(
   options
   talents
   gear
+  tini_reforge_backend
+  dps_graph
   console
   initialize
 )
