@@ -177,8 +177,11 @@ class ShadowcraftComputation:
 
     # If alchemist
     if "alchemy" in professions:
-      buff_list.append('lifeblood')
       buff_list.append('mixology')
+
+    # If herbalist
+    if "herbalism" in professions:
+      buff_list.append('lifeblood')
 
     # If skinner
     if "skinning" in professions:
