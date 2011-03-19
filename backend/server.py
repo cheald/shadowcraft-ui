@@ -231,7 +231,9 @@ class ShadowcraftComputation:
     else:
       tree = 2
       
-    rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
+    print input
+    rotation_options = dict( (key.encode('ascii'), val) for key, val in (input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
+    print rotation_options
     
     if tree == 0:
       _cycle = settings.AssassinationCycle(**rotation_options)

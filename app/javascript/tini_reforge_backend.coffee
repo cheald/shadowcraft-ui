@@ -40,7 +40,6 @@ class ShadowcraftTiniReforgeBackend
       success: (data) ->
         Shadowcraft.Gear.setReforges(data)
       error: (xhr, textStatus, error) ->
-        console.log xhr, textStatus, error
         flash textStatus
       dataType: "json",
       contentType: "application/json"
