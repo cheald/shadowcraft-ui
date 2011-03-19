@@ -122,7 +122,10 @@ class ShadowcraftOptions
       inscription: "Inscription",
       jewelcrafting: "Jewelcrafting",
       leatherworking: "Leatherworking",
-      tailoring: "Tailoring"
+      tailoring: "Tailoring",
+      alchemy: "Alchemy",
+      herbalism: "Herbalism",
+      skinning: "Skinning"
     })
 
     @setup("#settings #playerBuffs", "buffs", {
