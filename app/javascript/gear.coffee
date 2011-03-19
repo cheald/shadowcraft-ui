@@ -713,7 +713,8 @@ class ShadowcraftGear
     for slotSet, ssi in SLOT_DISPLAY_ORDER
       buffer = ""
       for i, slotIndex in slotSet
-        gear = data.gear[i] || {}
+        data.gear[i] ||= {}
+        gear = data.gear[i]
         item = ItemLookup[gear.item_id]
         gems = []
         bonuses = null

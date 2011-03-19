@@ -51,6 +51,7 @@ class ShadowcraftComputation:
   trinkets.remove("the_twilight_blade")
 
   tier11IDS = frozenset([60298, 65240, 60299, 65241, 60300, 65242, 60302, 65243, 60301, 65239])
+  arenaSeason9SetIds = frozenset([60458, 60459, 60460, 60461, 60462, 64769, 64770, 64771, 64772, 64773, 65545, 65546, 65547, 65548, 65549])
 
   subclassMap = {
    -1: None,
@@ -163,6 +164,13 @@ class ShadowcraftComputation:
     if len(self.tier11IDS & gear) >= 2:
       buff_list.append('rogue_t11_2pc')
 
+    agi_bonus = 0
+    if len(self.arenaSeason9SetIds & gear) >= 2:
+      agi_bonus += 70
+      
+    if len(self.arenaSeason9SetIds & gear) >= 4:
+      agi_bonus += 90
+
     # If engineer
     if "engineering" in professions:
       buff_list.append('engineer_glove_enchant')
@@ -213,7 +221,7 @@ class ShadowcraftComputation:
 
     _stats = stats.Stats(
       s[0] + _race.stat_set[_level][0], # Str
-      s[1] + _race.stat_set[_level][1], # AGI
+      s[1] + _race.stat_set[_level][1] + agi_bonus, # AGI
       s[2], # AP
       s[3], # Crit
       s[4], # Hit

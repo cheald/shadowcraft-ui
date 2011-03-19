@@ -939,6 +939,7 @@
     }
   };
   wait = function(msg) {
+    msg || (msg = "");
     $("#waitMsg").html(msg);
     return $("#wait").fadeIn();
   };
@@ -2822,7 +2823,7 @@
     # View helpers
     */
     ShadowcraftGear.prototype.updateDisplay = function(skipUpdate) {
-      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, data, enchant, enchantable, from, gear, gem, gems, i, item, opt, reforgable, reforge, slotIndex, slotSet, socket, ssi, stat, to, _i, _len, _len2, _len3, _ref, _ref2;
+      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, data, enchant, enchantable, from, gear, gem, gems, i, item, opt, reforgable, reforge, slotIndex, slotSet, socket, ssi, stat, to, _base, _i, _len, _len2, _len3, _ref, _ref2;
       this.updateStatsWindow();
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
@@ -2835,7 +2836,8 @@
         buffer = "";
         for (slotIndex = 0, _len2 = slotSet.length; slotIndex < _len2; slotIndex++) {
           i = slotSet[slotIndex];
-          gear = data.gear[i] || {};
+          (_base = data.gear)[i] || (_base[i] = {});
+          gear = data.gear[i];
           item = ItemLookup[gear.item_id];
           gems = [];
           bonuses = null;

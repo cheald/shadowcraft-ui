@@ -99,6 +99,7 @@ checkForWarnings = (section) ->
         Shadowcraft.Console.warn(item, "needs an enchantment", null, null, "items")
 
 wait = (msg) ->
+  msg ||= ""
   $("#waitMsg").html(msg)
   $("#wait").fadeIn()
 
