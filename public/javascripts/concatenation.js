@@ -1284,7 +1284,7 @@
           name: "Min CP/Envenom > 35%",
           options: [5, 4, 3, 2, 1],
           'default': 4,
-          desc: "Use Envenom at this many combo points, when your primary CP builder is Mutilate",
+          desc: "CP for Envenom when using Mutilate",
           datatype: 'integer',
           min: 1,
           max: 5
@@ -1294,7 +1294,7 @@
           name: "Min CP/Envenom < 35%",
           options: [5, 4, 3, 2, 1],
           'default': 5,
-          desc: "Use Envenom at this many combo points, when your primary CP builder is Backstab",
+          desc: "CP for Envenom when using Backstab",
           datatype: 'integer',
           min: 1,
           max: 5

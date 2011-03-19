@@ -152,8 +152,8 @@ class ShadowcraftOptions
     })
 
     @setup("#settings section.mutilate .settings", "rotation", {
-      min_envenom_size_mutilate: {type: "select", name: "Min CP/Envenom > 35%", options: [5,4,3,2,1], 'default': 4, desc: "Use Envenom at this many combo points, when your primary CP builder is Mutilate", datatype: 'integer', min: 1, max: 5}
-      min_envenom_size_backstab: {type: "select", name: "Min CP/Envenom < 35%", options: [5,4,3,2,1], 'default': 5, desc: "Use Envenom at this many combo points, when your primary CP builder is Backstab", datatype: 'integer', min: 1, max: 5}
+      min_envenom_size_mutilate: {type: "select", name: "Min CP/Envenom > 35%", options: [5,4,3,2,1], 'default': 4, desc: "CP for Envenom when using Mutilate", datatype: 'integer', min: 1, max: 5}
+      min_envenom_size_backstab: {type: "select", name: "Min CP/Envenom < 35%", options: [5,4,3,2,1], 'default': 5, desc: "CP for Envenom when using Backstab", datatype: 'integer', min: 1, max: 5}
       # prioritize_rupture_uptime_mutilate: {name: "Prioritize Rupture (>35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate", default: true, datatype: 'bool'}
       # prioritize_rupture_uptime_backstab: {name: "Prioritize Rupture (<35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Backstab", default: true, datatype: 'bool'}
     })
