@@ -6,6 +6,8 @@
   %ul.dropdownMenu#settingsDropdownMenu
     %li
       =link_to "Refresh from armory", refresh_character_path(char_options @character), :method => :put, :class => "showWait"
+    %li
+      =link_to "Reset to last Armory import", character_path(char_options(@character)) + "#reload", :method => :get, :class => "showWait"
 
   #tabs
     #top-pane
