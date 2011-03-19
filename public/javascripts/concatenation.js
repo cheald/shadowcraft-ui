@@ -400,6 +400,7 @@
         b: buffList,
         ro: data.options.rotation,
         settings: {
+          tricks: glyph_list.indexOf("tricks_of_the_trade") !== -1,
           mh_poison: data.options.general.mh_poison,
           oh_poison: data.options.general.oh_poison,
           duration: data.options.general.duration
@@ -1383,10 +1384,11 @@
     return ShadowcraftOptions;
   })();
   ShadowcraftTalents = (function() {
-    var DEFAULT_SPECS, MAX_TALENT_POINTS, TREE_SIZE, applyTalentToButton, getSpecFromString, getTalents, glyphRankCount, hoverTalent, resetTalents, setTalents, sumDigits, talentMap, talentsSpent, toggleGlyph, updateGlyphWeights, updateTalentAvailability, updateTalentContribution;
+    var ALWAYS_SHOW_GLYPHS, DEFAULT_SPECS, MAX_TALENT_POINTS, TREE_SIZE, applyTalentToButton, getSpecFromString, getTalents, glyphRankCount, hoverTalent, resetTalents, setTalents, sumDigits, talentMap, talentsSpent, toggleGlyph, updateGlyphWeights, updateTalentAvailability, updateTalentContribution;
     talentsSpent = 0;
     MAX_TALENT_POINTS = 41;
     TREE_SIZE = [19, 19, 19];
+    ALWAYS_SHOW_GLYPHS = [45767];
     DEFAULT_SPECS = {
       "Stock Assassination": "033323011302211032100200000000000000002030030000000000000",
       "Stock Combat": "023200000000000000023322303100300123210030000000000000000",
@@ -1734,7 +1736,7 @@
       return _results;
     };
     updateGlyphWeights = function(data) {
-      var g, glyphSet, glyphSets, key, max, slot, weight, width, _i, _len, _ref, _results;
+      var g, glyphSet, glyphSets, id, key, max, slot, weight, width, _i, _j, _len, _len2, _ref, _results;
       max = _.max(data.glyph_ranking);
       $(".glyph_slot:not(.activated)").hide();
       $(".glyph_slot .pct-inner").css({
@@ -1755,10 +1757,14 @@
           slot.find(".label").text(weight.toFixed(1) + " DPS");
         }
       }
+      for (_i = 0, _len = ALWAYS_SHOW_GLYPHS.length; _i < _len; _i++) {
+        id = ALWAYS_SHOW_GLYPHS[_i];
+        $(".glyph_slot[data-id='" + id + "']").show();
+      }
       glyphSets = $(".glyphset");
       _results = [];
-      for (_i = 0, _len = glyphSets.length; _i < _len; _i++) {
-        glyphSet = glyphSets[_i];
+      for (_j = 0, _len2 = glyphSets.length; _j < _len2; _j++) {
+        glyphSet = glyphSets[_j];
         _results.push($(glyphSet).find(".glyph_slot").sortElements(function(a, b) {
           var an, aw, bn, bw;
           aw = $.data(a, "weight");

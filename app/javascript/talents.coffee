@@ -2,6 +2,7 @@ class ShadowcraftTalents
   talentsSpent = 0
   MAX_TALENT_POINTS = 41
   TREE_SIZE = [19, 19, 19]
+  ALWAYS_SHOW_GLYPHS = [45767]
   DEFAULT_SPECS =
     "Stock Assassination": "033323011302211032100200000000000000002030030000000000000"
     "Stock Combat": "023200000000000000023322303100300123210030000000000000000"
@@ -281,6 +282,9 @@ class ShadowcraftTalents
         $.data(slot[0], "name", g.name)
         slot.show().find(".pct-inner").css({width: width + "%"})
         slot.find(".label").text(weight.toFixed(1) + " DPS")
+
+    for id in ALWAYS_SHOW_GLYPHS
+      $(".glyph_slot[data-id='#{id}']").show()
 
     glyphSets = $(".glyphset")
     for glyphSet in glyphSets

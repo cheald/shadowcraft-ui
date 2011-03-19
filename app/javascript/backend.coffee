@@ -47,7 +47,7 @@ class ShadowcraftBackend
       b: buffList
       ro: data.options.rotation,
       settings: {
-        # tricks: data.options.general.tricks
+        tricks: glyph_list.indexOf("tricks_of_the_trade") != -1
         mh_poison: data.options.general.mh_poison
         oh_poison: data.options.general.oh_poison
         duration: data.options.general.duration
