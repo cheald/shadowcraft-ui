@@ -400,7 +400,7 @@
         b: buffList,
         ro: data.options.rotation,
         settings: {
-          tricks: glyph_list.indexOf("tricks_of_the_trade") !== -1,
+          tricks: data.options.general.tricks,
           mh_poison: data.options.general.mh_poison,
           oh_poison: data.options.general.oh_poison,
           duration: data.options.general.duration
@@ -438,6 +438,9 @@
       if (data.error) {
         Shadowcraft.Console.warn({}, data.error, null, "error", "error");
         return;
+      }
+      if (Shadowcraft.Data.options.general.receive_tricks) {
+        data.total_dps *= 1.03;
       }
       this.app.lastCalculation = data;
       return this.trigger("recompute", data);
@@ -734,7 +737,7 @@
           }
         }
         options.push(professions);
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, poisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0, data.options.general.max_ilvl];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, poisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0];
         options.push(base36Encode(general));
         buffs = [];
         _ref2 = ShadowcraftOptions.buffMap;
@@ -801,8 +804,10 @@
           duration: general[2],
           mh_poison: unmap(general[3], poisonMap),
           oh_poison: unmap(general[4], poisonMap),
-          potion_of_the_tolvir: general[5] === 1,
-          max_ilvl: general[6] || 500
+          potion_of_the_tolvir: general[5] !== 0,
+          max_ilvl: general[6] || 500,
+          tricks: general[7] !== 0,
+          receive_tricks: general[8] !== 0
         };
         d.options.buffs = {};
         _ref3 = options[2];
@@ -1259,6 +1264,16 @@
       this.setup("#settings #raidOther", "general", {
         potion_of_the_tolvir: {
           name: "Use Potion of the Tol'vir",
+          'default': true,
+          datatype: 'bool'
+        },
+        tricks: {
+          name: "Tricks of the Trade on cooldown",
+          'default': true,
+          datatype: 'bool'
+        },
+        receive_tricks: {
+          name: "Receiving Tricks on cooldown from another rogue",
           'default': true,
           datatype: 'bool'
         }

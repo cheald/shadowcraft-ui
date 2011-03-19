@@ -215,6 +215,8 @@ class ShadowcraftHistory
         map(data.options.general.oh_poison, poisonMap)
         if data.options.general.potion_of_the_tolvir then 1 else 0
         data.options.general.max_ilvl
+        if data.options.general.tricks then 1 else 0
+        if data.options.general.receive_tricks then 1 else 0
       ]
       options.push base36Encode(general)
 
@@ -270,8 +272,10 @@ class ShadowcraftHistory
         duration:             general[2]
         mh_poison:            unmap(general[3], poisonMap)
         oh_poison:            unmap(general[4], poisonMap)
-        potion_of_the_tolvir: general[5] == 1
+        potion_of_the_tolvir: general[5] != 0
         max_ilvl:             general[6] || 500
+        tricks:               general[7] != 0
+        receive_tricks:       general[8] != 0
 
       d.options.buffs = {}
       for v, i in options[2]

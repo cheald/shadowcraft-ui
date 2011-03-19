@@ -110,7 +110,6 @@ class ShadowcraftOptions
       level: {type: "input", name: "Level", 'default': 85, datatype: 'integer', min: 85, max: 85},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin"], name: "Race", 'default': "Human"}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
-      # tricks: {name: "Tricks of the Trade on cooldown", 'default': true}
       mh_poison: {name: "Mainhand Poison", type: 'select', options: {'ip': "Instant Poison", 'wp': 'Wound Poison', 'dp': 'Deadly Poison'}, 'default': 'ip'}
       oh_poison: {name: "Offhand Poison", type: 'select', options: {'ip': "Instant Poison", 'wp': 'Wound Poison', 'dp': 'Deadly Poison'}, 'default': 'dp'}
       max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this ilevel in gear lists", 'default': 500, datatype: 'integer', min: 15, max: 500}
@@ -148,6 +147,8 @@ class ShadowcraftOptions
 
     @setup("#settings #raidOther", "general", {
       potion_of_the_tolvir: {name: "Use Potion of the Tol'vir", 'default': true, datatype: 'bool'}
+      tricks: {name: "Tricks of the Trade on cooldown", 'default': true, datatype: 'bool'}
+      receive_tricks: {name: "Receiving Tricks on cooldown from another rogue", 'default': true, datatype: 'bool'}
     })
 
     @setup("#settings section.mutilate .settings", "rotation", {

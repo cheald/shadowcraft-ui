@@ -47,7 +47,7 @@ class ShadowcraftBackend
       b: buffList
       ro: data.options.rotation,
       settings: {
-        tricks: glyph_list.indexOf("tricks_of_the_trade") != -1
+        tricks: data.options.general.tricks
         mh_poison: data.options.general.mh_poison
         oh_poison: data.options.general.oh_poison
         duration: data.options.general.duration
@@ -109,6 +109,8 @@ class ShadowcraftBackend
       Shadowcraft.Console.warn {}, data.error, null, "error", "error"
       return
 
+    if Shadowcraft.Data.options.general.receive_tricks
+      data.total_dps *= 1.03
     @app.lastCalculation = data
     this.trigger("recompute", data)
 
