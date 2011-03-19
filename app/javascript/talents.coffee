@@ -4,9 +4,15 @@ class ShadowcraftTalents
   TREE_SIZE = [19, 19, 19]
   ALWAYS_SHOW_GLYPHS = [45767]
   DEFAULT_SPECS =
-    "Stock Assassination": "033323011302211032100200000000000000002030030000000000000"
-    "Stock Combat": "023200000000000000023322303100300123210030000000000000000"
-    "Stock Subtlety": "023003000000000000000200000000000000000332031321310012321"
+    "Stock Assassination":
+      talents: "033323011302211032100200000000000000002030030000000000000"
+      glyphs: [45768, 42956, 42969, 45767]
+    "Stock Combat":
+      talents: "023200000000000000023322303100300123210030000000000000000"
+      glyphs: [42972, 42954, 42973, 45767]
+    "Stock Subtlety":
+      talents: "023003000000000000000200000000000000000332031321310012321"
+      glyphs: [42956, 42973, 45764, 45767]
 
   @GetPrimaryTreeName = ->
     if Shadowcraft.Data.tree0 >= 31
@@ -237,9 +243,10 @@ class ShadowcraftTalents
         name: "Imported " + getSpecFromString(talent.talents)
       })
 
-    for talentName, talent of DEFAULT_SPECS
+    for talentName, talentSet of DEFAULT_SPECS
       buffer += Templates.talentSet({
-        talent_string: ShadowcraftTalents.encodeTalents(talent),
+        talent_string: ShadowcraftTalents.encodeTalents(talentSet.talents),
+        glyphs: talentSet.glyphs.join(",")
         name: talentName
       })
 
