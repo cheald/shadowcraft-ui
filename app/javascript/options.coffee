@@ -159,7 +159,7 @@ class ShadowcraftOptions
 
     @setup("#settings section.combat .settings", "rotation", {
       use_rupture: {name: "Use Rupture?", right: true, default: true}
-      ksp_immediately: {type: "select", name: "Killing Spree", options: {'true': "Killing Spree on cooldown", 'false': "Wait for Bandit's Guile before using Killing Spree"}, 'default': 'false', datatype: 'bool'}
+      ksp_immediately: {type: "select", name: "Killing Spree", options: {'true': "Killing Spree on cooldown", 'false': "Wait for Bandit's Guile before using Killing Spree"}, 'default': 'false', datatype: 'string'}
       use_revealing_strike: {type: "select", name: "Revealing Strike", options: {"always": "Use for every finisher", "sometimes": "Only use at 4CP", "never": "Never use"}, 'default': "sometimes", datatype: 'string'}
     })
 

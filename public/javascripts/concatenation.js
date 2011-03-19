@@ -1297,7 +1297,7 @@
             'false': "Wait for Bandit's Guile before using Killing Spree"
           },
           'default': 'false',
-          datatype: 'bool'
+          datatype: 'string'
         },
         use_revealing_strike: {
           type: "select",
