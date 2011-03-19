@@ -41,7 +41,7 @@ class ShadowcraftBackend
         buffList.push ShadowcraftOptions.buffMap.indexOf(key)
 
     payload =
-      r: data.options.general.race
+      r: data.options.general.race 
       l: data.options.general.level
       pot: if data.options.general.potion_of_the_tolvir then 1 else 0
       b: buffList
