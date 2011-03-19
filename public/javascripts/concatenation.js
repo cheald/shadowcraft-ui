@@ -3645,7 +3645,7 @@
         if (item) {
           app.dpsPlot.unhighlight();
           app.dpsPlot.highlight(item.series, item.datapoint);
-          snapshot = app.snapshotHistory[item.dataIndex - 1];
+          snapshot = app.snapshotHistory[item.dataIndex];
           return Shadowcraft.History.loadSnapshot(snapshot);
         }
       }).mousedown(function(e) {
