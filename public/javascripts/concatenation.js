@@ -951,6 +951,16 @@
   showPopup = function(popup) {
     var $parent, body, ht, left, max, ot, speed, top;
     $(".popup").removeClass("visible");
+    if (popup.find(".close-popup").length === 0) {
+      popup.append("<a href='#' class='close-popup ui-dialog-titlebar-close ui-corner-all' role='button'><span class='ui-icon ui-icon-closethick'></span></a>");
+      popup.find(".close-popup").click(function() {
+        return $(".popup").removeClass("visible");
+      }).hover(function() {
+        return $(this).addClass('ui-state-hover');
+      }, function() {
+        return $(this).removeClass('ui-state-hover');
+      });
+    }
     $parent = popup.parents(".ui-tabs-panel");
     max = $parent.scrollTop() + $parent.outerHeight();
     top = $.data(document, "mouse-y") - 40;
@@ -3096,7 +3106,7 @@
         l.__ep = get_ep(l, null, slot) + l.__gemRec.ep + l.__reforgeEP;
       }
       loc.sort(__epSort);
-      max = loc[0].__ep;
+      max = null;
       buffer = "";
       requireDagger = needsDagger();
       for (_j = 0, _len2 = loc.length; _j < _len2; _j++) {
@@ -3113,6 +3123,7 @@
         if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
           continue;
         }
+        max || (max = l.__ep);
         iEP = l.__ep.toFixed(1);
         if (l.id > 100000) {
           ttid = Math.floor(l.id / 1000);
@@ -3682,47 +3693,45 @@
     }
     ShadowcraftDpsGraph.prototype.datapoint = function(data) {
       var delta, deltatext, snapshot;
-      if (data.total_dps !== this.lastDPS) {
-        snapshot = Shadowcraft.History.takeSnapshot();
-        delta = data.total_dps - (this.lastDPS || 0);
-        deltatext = "";
-        if (this.lastDPS) {
-          deltatext = delta >= 0 ? " <em class='p'>(+" + (delta.toFixed(1)) + ")</em>" : " <em class='n'>(" + (delta.toFixed(1)) + ")</em>";
-        }
-        $("#dps .inner").html(data.total_dps.toFixed(1) + " DPS" + deltatext);
-        if (snapshot) {
-          this.dpsHistory.push([this.dpsIndex, Math.floor(data.total_dps * 10) / 10]);
-          this.dpsIndex++;
-          this.snapshotHistory.push(snapshot);
-          if (this.dpsHistory.length > 100) {
-            this.dpsHistory.shift();
-            this.snapshotHistory.shift();
-          }
-          this.dpsPlot = $.plot($("#dpsgraph"), [this.dpsHistory], {
-            lines: {
-              show: true
-            },
-            crosshair: {
-              mode: "y"
-            },
-            points: {
-              show: true
-            },
-            grid: {
-              hoverable: true,
-              clickable: true,
-              autoHighlight: true
-            },
-            series: {
-              threshold: {
-                below: this.dpsHistory[0][1],
-                color: "rgb(200, 20, 20)"
-              }
-            }
-          });
-        }
-        return this.lastDPS = data.total_dps;
+      snapshot = Shadowcraft.History.takeSnapshot();
+      delta = data.total_dps - (this.lastDPS || 0);
+      deltatext = "";
+      if (this.lastDPS) {
+        deltatext = delta >= 0 ? " <em class='p'>(+" + (delta.toFixed(1)) + ")</em>" : " <em class='n'>(" + (delta.toFixed(1)) + ")</em>";
       }
+      $("#dps .inner").html(data.total_dps.toFixed(1) + " DPS" + deltatext);
+      if (snapshot) {
+        this.dpsHistory.push([this.dpsIndex, Math.floor(data.total_dps * 10) / 10]);
+        this.dpsIndex++;
+        this.snapshotHistory.push(snapshot);
+        if (this.dpsHistory.length > 100) {
+          this.dpsHistory.shift();
+          this.snapshotHistory.shift();
+        }
+        this.dpsPlot = $.plot($("#dpsgraph"), [this.dpsHistory], {
+          lines: {
+            show: true
+          },
+          crosshair: {
+            mode: "y"
+          },
+          points: {
+            show: true
+          },
+          grid: {
+            hoverable: true,
+            clickable: true,
+            autoHighlight: true
+          },
+          series: {
+            threshold: {
+              below: this.dpsHistory[0][1],
+              color: "rgb(200, 20, 20)"
+            }
+          }
+        });
+      }
+      return this.lastDPS = data.total_dps;
     };
     return ShadowcraftDpsGraph;
   })();

@@ -671,6 +671,8 @@ a
   background: rgba(20, 20, 20, 0.95)
   visibility: hidden
   z-index: 1000
+  .close-popup
+    top: 15px
   &.visible
     visibility: visible
   h1
@@ -699,7 +701,7 @@ a
       position: absolute
       padding: 5px
       left: 5px
-      right: 5px
+      right: 25px
       top: 5px
       background: #333
       color: #aaa
@@ -710,15 +712,13 @@ a
   padding: 1em
   fieldset
     margin: 2em 0
-    border-top: 1px solid #333
+    border-top: 1px solid darken(#065175, 5%)
     legend
       font-weight: bold
       margin-left: 1em
       margin-bottom: 0.5em
   .recommended
     margin-bottom: 0.5em
-    padding-bottom: 0.5em
-    border-bottom: 1px solid #333
     .oldstat
       color: #d00
       font-weight: bold
@@ -1135,11 +1135,22 @@ a
 
 .alternatives
   padding-top: 40px
+  border: 1px solid #222 !important
   .slot
-    margin: 0 0 0 50px
+    margin: 0 15px 1px 50px
     min-height: 46px
-    padding: 5px
-    +border-radius(0px)
+    padding: 10px 5px
+    +border-radius(5px)
+    background: transparent
+    &:hover
+      background: rgba(30, 35, 40, 0.9)
+    &.active, .active
+      +linear-gradient(color-stops(#031e33, lighten(#031e33, 10%)))
+      .pct
+        border-color: lighten(#031e33, 25%)
+      .pct-inner
+        background-color: lighten(#031e33, 25%)
+
     .gem
       +inline-block
     .reforge

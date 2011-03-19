@@ -920,7 +920,7 @@ class ShadowcraftGear
       l.__ep = get_ep(l, null, slot) + l.__gemRec.ep + l.__reforgeEP
 
     loc.sort(__epSort)
-    max = loc[0].__ep
+    max = null
     buffer = ""
     requireDagger = needsDagger()
 
@@ -929,6 +929,7 @@ class ShadowcraftGear
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && !requireDagger && l.subclass == 15
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
+      max ||= l.__ep
 
       iEP = l.__ep.toFixed(1)
 
