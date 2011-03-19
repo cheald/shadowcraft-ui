@@ -47,7 +47,7 @@ class ShadowcraftOptions
       if !ns
         data.options[namespace] = {}
         ns = data.options[namespace]
-      if data.options[namespace][key]
+      if data.options[namespace][key]?
         val = data.options[namespace][key]
       if val == null and opt.default?
         val = opt.default

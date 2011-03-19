@@ -435,9 +435,9 @@ class ShadowcraftGear
     item._sockets ||= item.sockets.slice(0) # Originals
     blacksmith = Shadowcraft.Data.options.professions.blacksmithing?
     if item.equip_location == 9 or item.equip_location == 10
-      if blacksmith && item.sockets[item.sockets.length-1] != "Prismatic"
+      if blacksmith and item.sockets[item.sockets.length-1] != "Prismatic"
         item.sockets[item.sockets.length] = "Prismatic"
-      else if !blacksmith && item.sockets[item.sockets.length-1] == "Prismatic"
+      else if !blacksmith and item.sockets[item.sockets.length-1] == "Prismatic" and item.sockets[item.sockets.length]?
         item.sockets[item.sockets.length].slice(0, item.sockets.length - 2)
 
   # Assumes gem_list is already sorted preferred order.  Also, normalizes

@@ -1026,7 +1026,7 @@
           data.options[namespace] = {};
           ns = data.options[namespace];
         }
-        if (data.options[namespace][key]) {
+        if (data.options[namespace][key] != null) {
           val = data.options[namespace][key];
         }
         if (val === null && (opt["default"] != null)) {
@@ -2485,7 +2485,7 @@
       if (item.equip_location === 9 || item.equip_location === 10) {
         if (blacksmith && item.sockets[item.sockets.length - 1] !== "Prismatic") {
           return item.sockets[item.sockets.length] = "Prismatic";
-        } else if (!blacksmith && item.sockets[item.sockets.length - 1] === "Prismatic") {
+        } else if (!blacksmith && item.sockets[item.sockets.length - 1] === "Prismatic" && (item.sockets[item.sockets.length] != null)) {
           return item.sockets[item.sockets.length].slice(0, item.sockets.length - 2);
         }
       }
