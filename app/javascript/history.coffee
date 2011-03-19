@@ -270,7 +270,7 @@ class ShadowcraftHistory
         duration:             general[2]
         mh_poison:            unmap(general[3], poisonMap)
         oh_poison:            unmap(general[4], poisonMap)
-        potion_of_the_volvir: general[5] == 1
+        potion_of_the_tolvir: general[5] == 1
         max_ilvl:             general[6] || 500
 
       d.options.buffs = {}
