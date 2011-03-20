@@ -69,6 +69,12 @@ class ShadowcraftGear
   $altslots = null
   $popup = null
 
+  statOffset = (gear) ->
+    statOffset = {}
+    if gear
+      sumSlot(gear, statOffset, false)
+    return statOffset
+
   reforgeAmount = (item, stat) ->
     Math.floor(item.stats[stat] * REFORGE_FACTOR)
 
@@ -83,6 +89,13 @@ class ShadowcraftGear
     to = base % 7
     to++ if from <= to
     return REFORGABLE[to]
+
+  reforgeToHash = (ref, amt) ->
+    return {} if !ref or ref == 0
+    r = {}
+    r[getReforgeFrom(ref)] = -amt
+    r[getReforgeTo(ref)] = amt
+    r
 
   compactReforge = (from, to) ->
     f = REFORGABLE.indexOf(from)
@@ -159,37 +172,43 @@ class ShadowcraftGear
     stats[to] ||= 0
     stats[to] += amt
 
-  sumStats: (excludeReforges) ->
-    stats = {}
+  sumSlot = (gear, out, excludeReforges) ->
+    return unless gear?.item_id?
+
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
+
+    item = ItemLookup[gear.item_id]
+    return unless item?
+
+    sumItem(out, item)
+    matchesAllSockets = item.sockets and item.sockets.length > 0
+    for socketIndex, socket of item.sockets
+        gid = gear["g" + socketIndex]
+        if gid and gid > 0
+          gem = Gems[gid]
+          sumItem(out, gem) if(gem)
+        matchesAllSockets = false if !gem or !gem[socket]
+
+    if matchesAllSockets
+      sumItem(out, item, "socketbonus")
+
+    if gear.reforge and not excludeReforges
+      sumReforge(out, item, gear.reforge)
+
+    enchant_id = gear.enchant
+    if enchant_id and enchant_id > 0
+      enchant = EnchantLookup[enchant_id]
+      sumItem(out, enchant) if enchant
+
+
+  sumStats: (excludeReforges) ->
+    stats = {}
     data = Shadowcraft.Data
 
     for si, i in SLOT_ORDER
-      gear = data.gear[si]
-      continue unless gear and gear.item_id
-      item = ItemLookup[gear.item_id]
-      if item
-        sumItem(stats, item)
-        matchesAllSockets = item.sockets and item.sockets.length > 0
-        for socketIndex, socket of item.sockets
-            gid = gear["g" + socketIndex]
-            if gid and gid > 0
-              gem = Gems[gid]
-              sumItem(stats, gem) if(gem)
-            matchesAllSockets = false if !gem or !gem[socket]
-
-        if matchesAllSockets
-          sumItem(stats, item, "socketbonus")
-
-        if gear.reforge and not excludeReforges
-          sumReforge(stats, item, gear.reforge)
-
-        enchant_id = gear.enchant
-        if enchant_id and enchant_id > 0
-          enchant = EnchantLookup[enchant_id]
-          sumItem(stats, enchant) if enchant
+      sumSlot(data.gear[si], stats, excludeReforges)
 
     @statSum = stats
     return stats
@@ -560,32 +579,38 @@ class ShadowcraftGear
         }
     source
 
-  recommendReforge = (item) ->
-    source = item.stats
-    ignore = item.reforge
-    dest = REFORGE_STATS
-    best = null
-    bestVal = null
-    for stat of source
-      if REFORGABLE.indexOf(stat) >= 0
-        ramt = Math.floor(source[stat] * REFORGE_FACTOR)
-        ep = getStatWeight(stat, -ramt, ignore)
-        for reforge_stat in REFORGE_STATS
-          dstat = reforge_stat.key
-          continue if source[dstat]
-          dep = getStatWeight(dstat, ramt, ignore)
-          if !bestVal or (dep + ep) > bestVal
-            best = compactReforge(stat, dstat)
-            bestVal = dep + ep
-    return best
+  recommendReforge = (item, offset) ->
+    return 0 if item.stats == null
+    best = 0
+    bestFrom = null
+    bestTo = null
 
-  reforgeEp = (reforge, item) ->
+    for stat, value of item.stats
+      ramt = Math.floor(value * REFORGE_FACTOR)
+      if REFORGABLE.indexOf(stat) >= 0
+        loss = getStatWeight(stat, -ramt, offset)
+        for dstat in REFORGABLE
+          if not item.stats[dstat]?
+            gain = getStatWeight(dstat, ramt, offset)
+            if gain + loss > best
+              best = gain + loss
+              bestFrom = stat
+              bestTo = dstat
+
+    if bestFrom? and bestTo?
+      return compactReforge(bestFrom, bestTo)
+    else
+      return 0
+
+  reforgeEp = (reforge, item, offset) ->
     stat = getReforgeFrom(reforge)
-    amt = item.stats[stat]
-    loss = getStatWeight(stat, -amt)
+    amt = Math.floor(item.stats[stat] * REFORGE_FACTOR)
+    loss = getStatWeight(stat, -amt, offset)
+    fstat = stat
 
     stat = getReforgeTo(reforge)
-    gain = getStatWeight(stat, amt)
+    gain = getStatWeight(stat, amt, offset)
+
     return gain + loss
 
   setReforges: (reforges) ->
@@ -614,55 +639,6 @@ class ShadowcraftGear
           Shadowcraft.Console.log "Reforged #{item.name} to <span class='neg'>-#{amt} #{titleize(from)}</span> / <span class='pos'>+#{amt} #{titleize(to)}</span>"
     Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
-
-  startReforges = null
-  reforgeAll: (depth) ->
-    data = Shadowcraft.Data
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-    depth ||= 0
-    if depth == 0
-      EP_PRE_REFORGE = @getEPTotal()
-      Shadowcraft.Console.log "Beginning automatic reforge...", "gold underline"
-      startReforges = {}
-      for slot in SLOT_ORDER
-        gear = data.gear[slot]
-        continue unless gear
-        startReforges[slot] = gear.reforge
-
-    madeChanges = false
-    slots = _.flatten [SLOT_ORDER.slice(depth), SLOT_ORDER.slice(0, depth)]
-    for slot in slots
-      gear = data.gear[slot]
-      continue unless gear
-
-      item = ItemLookup[gear.item_id]
-      if item and canReforge(item)
-          rec = recommendReforge(item)
-          if rec
-            ep = reforgeEp(rec, item)
-            if ep > 0 and gear.reforge != rec
-              # from = getReforgeFrom(rec)
-              # to = getReforgeTo(rec)
-              # amt = reforgeAmount(item, from)
-              # Shadowcraft.Console.log "Reforging #{item.name} to <span class='neg'>-#{amt} #{titleize(from)}</span> / <span class='pos'>+#{amt} #{titleize(to)}</span>"
-              madeChanges = true
-              gear.reforge = rec
-              this.sumStats()
-
-    if !madeChanges or depth >= SLOT_ORDER.length
-      @app.update()
-      this.updateDisplay()
-      for slot, reforge of startReforges
-        gear = data.gear[slot]
-        if gear and gear.reforge != reforge
-          from = getReforgeFrom(gear.reforge)
-          to = getReforgeTo(gear.reforge)
-          item = ItemLookup[gear.item_id]
-          amt = reforgeAmount(item, from)
-          Shadowcraft.Console.log "Reforged #{item.name} to <span class='neg'>-#{amt} #{titleize(from)}</span> / <span class='pos'>+#{amt} #{titleize(to)}</span>"
-      Shadowcraft.Console.log("Finished automatic reforging: &Delta; " + Math.floor(@getEPTotal() - EP_PRE_REFORGE) + " EP", "gold")
-    else
-      this.reforgeAll(depth + 1)
 
   clearReforge = ->
     data = Shadowcraft.Data
@@ -899,21 +875,19 @@ class ShadowcraftGear
     equip_location = SLOT_INVTYPES[slot]
     GemList = Shadowcraft.ServerData.GEMS
 
+    gear = Shadowcraft.Data.gear
     loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
 
     slot = parseInt($(this).parent().data("slot"), 10)
+    offset = statOffset(gear[slot])
+
     epSort(GemList) # Needed for gemming recommendations
     for l in loc
       l.__gemRec = getGemmingRecommendation(GemList, l, true)
       l.__gemEP = l.__gemRec.ep
-
-      rec = recommendReforge(l.stats)
+      rec = recommendReforge(l, offset)
       if rec
-        reforgedStats = {}
-        reforgedStats[rec.source.key] = -rec.qty
-        reforgedStats[rec.dest.key] = rec.qty
-        deltaEp = get_ep({stats: reforgedStats})
-        l.__reforgeEP = if deltaEp > 0 then deltaEp else 0
+        l.__reforgeEP = reforgeEp(rec, l, offset)
       else
         l.__reforgeEP = 0
 
@@ -1068,7 +1042,9 @@ class ShadowcraftGear
     id = $slot.attr("id")
     item = Shadowcraft.ServerData.ITEM_LOOKUP[id]
 
-    rec = recommendReforge(item)
+    offset = statOffset(Shadowcraft.Data.gear[slot])
+
+    rec = recommendReforge(item, offset)
     recommended = null
     if rec
       from = getReforgeFrom(rec)

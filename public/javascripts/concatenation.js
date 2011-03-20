@@ -1426,7 +1426,7 @@
       },
       "Stock Subtlety": {
         talents: "023003000000000000000200000000000000000332031321310012321",
-        glyphs: [42956, 42973, 45767]
+        glyphs: [42956, 42973, 45764, 45767]
       }
     };
     ShadowcraftTalents.GetPrimaryTreeName = function() {
@@ -1981,7 +1981,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, sourceStats, startReforges, statsToDesc, sumItem, sumRecommendation, sumReforge, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumRecommendation, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 3;
     MAX_ENGINEERING_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"];
@@ -2057,6 +2057,14 @@
     $slots = null;
     $altslots = null;
     $popup = null;
+    statOffset = function(gear) {
+      var statOffset;
+      statOffset = {};
+      if (gear) {
+        sumSlot(gear, statOffset, false);
+      }
+      return statOffset;
+    };
     reforgeAmount = function(item, stat) {
       return Math.floor(item.stats[stat] * REFORGE_FACTOR);
     };
@@ -2075,6 +2083,16 @@
         to++;
       }
       return REFORGABLE[to];
+    };
+    reforgeToHash = function(ref, amt) {
+      var r;
+      if (!ref || ref === 0) {
+        return {};
+      }
+      r = {};
+      r[getReforgeFrom(ref)] = -amt;
+      r[getReforgeTo(ref)] = amt;
+      return r;
     };
     compactReforge = function(from, to) {
       var f, t;
@@ -2158,51 +2176,55 @@
       stats[to] || (stats[to] = 0);
       return stats[to] += amt;
     };
-    ShadowcraftGear.prototype.sumStats = function(excludeReforges) {
-      var EnchantLookup, Gems, ItemLookup, data, enchant, enchant_id, gear, gem, gid, i, item, matchesAllSockets, si, socket, socketIndex, stats, _len, _ref;
-      stats = {};
+    sumSlot = function(gear, out, excludeReforges) {
+      var EnchantLookup, Gems, ItemLookup, enchant, enchant_id, gem, gid, item, matchesAllSockets, socket, socketIndex, _ref;
+      if ((gear != null ? gear.item_id : void 0) == null) {
+        return;
+      }
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
+      item = ItemLookup[gear.item_id];
+      if (item == null) {
+        return;
+      }
+      sumItem(out, item);
+      matchesAllSockets = item.sockets && item.sockets.length > 0;
+      _ref = item.sockets;
+      for (socketIndex in _ref) {
+        socket = _ref[socketIndex];
+        gid = gear["g" + socketIndex];
+        if (gid && gid > 0) {
+          gem = Gems[gid];
+          if (gem) {
+            sumItem(out, gem);
+          }
+        }
+        if (!gem || !gem[socket]) {
+          matchesAllSockets = false;
+        }
+      }
+      if (matchesAllSockets) {
+        sumItem(out, item, "socketbonus");
+      }
+      if (gear.reforge && !excludeReforges) {
+        sumReforge(out, item, gear.reforge);
+      }
+      enchant_id = gear.enchant;
+      if (enchant_id && enchant_id > 0) {
+        enchant = EnchantLookup[enchant_id];
+        if (enchant) {
+          return sumItem(out, enchant);
+        }
+      }
+    };
+    ShadowcraftGear.prototype.sumStats = function(excludeReforges) {
+      var data, i, si, stats, _len;
+      stats = {};
       data = Shadowcraft.Data;
       for (i = 0, _len = SLOT_ORDER.length; i < _len; i++) {
         si = SLOT_ORDER[i];
-        gear = data.gear[si];
-        if (!(gear && gear.item_id)) {
-          continue;
-        }
-        item = ItemLookup[gear.item_id];
-        if (item) {
-          sumItem(stats, item);
-          matchesAllSockets = item.sockets && item.sockets.length > 0;
-          _ref = item.sockets;
-          for (socketIndex in _ref) {
-            socket = _ref[socketIndex];
-            gid = gear["g" + socketIndex];
-            if (gid && gid > 0) {
-              gem = Gems[gid];
-              if (gem) {
-                sumItem(stats, gem);
-              }
-            }
-            if (!gem || !gem[socket]) {
-              matchesAllSockets = false;
-            }
-          }
-          if (matchesAllSockets) {
-            sumItem(stats, item, "socketbonus");
-          }
-          if (gear.reforge && !excludeReforges) {
-            sumReforge(stats, item, gear.reforge);
-          }
-          enchant_id = gear.enchant;
-          if (enchant_id && enchant_id > 0) {
-            enchant = EnchantLookup[enchant_id];
-            if (enchant) {
-              sumItem(stats, enchant);
-            }
-          }
-        }
+        sumSlot(data.gear[si], stats, excludeReforges);
       }
       this.statSum = stats;
       return stats;
@@ -2686,40 +2708,47 @@
       }
       return source;
     };
-    recommendReforge = function(item) {
-      var best, bestVal, dep, dest, dstat, ep, ignore, ramt, reforge_stat, source, stat, _i, _len;
-      source = item.stats;
-      ignore = item.reforge;
-      dest = REFORGE_STATS;
-      best = null;
-      bestVal = null;
-      for (stat in source) {
+    recommendReforge = function(item, offset) {
+      var best, bestFrom, bestTo, dstat, gain, loss, ramt, stat, value, _i, _len, _ref;
+      if (item.stats === null) {
+        return 0;
+      }
+      best = 0;
+      bestFrom = null;
+      bestTo = null;
+      _ref = item.stats;
+      for (stat in _ref) {
+        value = _ref[stat];
+        ramt = Math.floor(value * REFORGE_FACTOR);
         if (REFORGABLE.indexOf(stat) >= 0) {
-          ramt = Math.floor(source[stat] * REFORGE_FACTOR);
-          ep = getStatWeight(stat, -ramt, ignore);
-          for (_i = 0, _len = REFORGE_STATS.length; _i < _len; _i++) {
-            reforge_stat = REFORGE_STATS[_i];
-            dstat = reforge_stat.key;
-            if (source[dstat]) {
-              continue;
-            }
-            dep = getStatWeight(dstat, ramt, ignore);
-            if (!bestVal || (dep + ep) > bestVal) {
-              best = compactReforge(stat, dstat);
-              bestVal = dep + ep;
+          loss = getStatWeight(stat, -ramt, offset);
+          for (_i = 0, _len = REFORGABLE.length; _i < _len; _i++) {
+            dstat = REFORGABLE[_i];
+            if (!(item.stats[dstat] != null)) {
+              gain = getStatWeight(dstat, ramt, offset);
+              if (gain + loss > best) {
+                best = gain + loss;
+                bestFrom = stat;
+                bestTo = dstat;
+              }
             }
           }
         }
       }
-      return best;
+      if ((bestFrom != null) && (bestTo != null)) {
+        return compactReforge(bestFrom, bestTo);
+      } else {
+        return 0;
+      }
     };
-    reforgeEp = function(reforge, item) {
-      var amt, gain, loss, stat;
+    reforgeEp = function(reforge, item, offset) {
+      var amt, fstat, gain, loss, stat;
       stat = getReforgeFrom(reforge);
-      amt = item.stats[stat];
-      loss = getStatWeight(stat, -amt);
+      amt = Math.floor(item.stats[stat] * REFORGE_FACTOR);
+      loss = getStatWeight(stat, -amt, offset);
+      fstat = stat;
       stat = getReforgeTo(reforge);
-      gain = getStatWeight(stat, amt);
+      gain = getStatWeight(stat, amt, offset);
       return gain + loss;
     };
     ShadowcraftGear.prototype.setReforges = function(reforges) {
@@ -2758,65 +2787,6 @@
       }
       Shadowcraft.update();
       return Shadowcraft.Gear.updateDisplay();
-    };
-    startReforges = null;
-    ShadowcraftGear.prototype.reforgeAll = function(depth) {
-      var ItemLookup, amt, data, ep, from, gear, item, madeChanges, rec, reforge, slot, slots, to, _i, _j, _len, _len2;
-      data = Shadowcraft.Data;
-      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-      depth || (depth = 0);
-      if (depth === 0) {
-        EP_PRE_REFORGE = this.getEPTotal();
-        Shadowcraft.Console.log("Beginning automatic reforge...", "gold underline");
-        startReforges = {};
-        for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
-          slot = SLOT_ORDER[_i];
-          gear = data.gear[slot];
-          if (!gear) {
-            continue;
-          }
-          startReforges[slot] = gear.reforge;
-        }
-      }
-      madeChanges = false;
-      slots = _.flatten([SLOT_ORDER.slice(depth), SLOT_ORDER.slice(0, depth)]);
-      for (_j = 0, _len2 = slots.length; _j < _len2; _j++) {
-        slot = slots[_j];
-        gear = data.gear[slot];
-        if (!gear) {
-          continue;
-        }
-        item = ItemLookup[gear.item_id];
-        if (item && canReforge(item)) {
-          rec = recommendReforge(item);
-          if (rec) {
-            ep = reforgeEp(rec, item);
-            if (ep > 0 && gear.reforge !== rec) {
-              madeChanges = true;
-              gear.reforge = rec;
-              this.sumStats();
-            }
-          }
-        }
-      }
-      if (!madeChanges || depth >= SLOT_ORDER.length) {
-        this.app.update();
-        this.updateDisplay();
-        for (slot in startReforges) {
-          reforge = startReforges[slot];
-          gear = data.gear[slot];
-          if (gear && gear.reforge !== reforge) {
-            from = getReforgeFrom(gear.reforge);
-            to = getReforgeTo(gear.reforge);
-            item = ItemLookup[gear.item_id];
-            amt = reforgeAmount(item, from);
-            Shadowcraft.Console.log("Reforged " + item.name + " to <span class='neg'>-" + amt + " " + (titleize(from)) + "</span> / <span class='pos'>+" + amt + " " + (titleize(to)) + "</span>");
-          }
-        }
-        return Shadowcraft.Console.log("Finished automatic reforging: &Delta; " + Math.floor(this.getEPTotal() - EP_PRE_REFORGE) + " EP", "gold");
-      } else {
-        return this.reforgeAll(depth + 1);
-      }
     };
     clearReforge = function() {
       var ItemLookup, data, gear, slot;
@@ -3087,29 +3057,25 @@
       return [$slot, slotIndex];
     };
     clickSlotName = function() {
-      var $slot, GemList, buf, buffer, deltaEp, equip_location, iEP, l, loc, max, rec, reforgedStats, requireDagger, selected_id, slot, ttid, _i, _j, _len, _len2;
+      var $slot, GemList, buf, buffer, equip_location, gear, iEP, l, loc, max, offset, rec, requireDagger, selected_id, slot, ttid, _i, _j, _len, _len2;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
       selected_id = parseInt($slot.attr("id"), 10);
       equip_location = SLOT_INVTYPES[slot];
       GemList = Shadowcraft.ServerData.GEMS;
+      gear = Shadowcraft.Data.gear;
       loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
       slot = parseInt($(this).parent().data("slot"), 10);
+      offset = statOffset(gear[slot]);
       epSort(GemList);
       for (_i = 0, _len = loc.length; _i < _len; _i++) {
         l = loc[_i];
         l.__gemRec = getGemmingRecommendation(GemList, l, true);
         l.__gemEP = l.__gemRec.ep;
-        rec = recommendReforge(l.stats);
+        rec = recommendReforge(l, offset);
         if (rec) {
-          reforgedStats = {};
-          reforgedStats[rec.source.key] = -rec.qty;
-          reforgedStats[rec.dest.key] = rec.qty;
-          deltaEp = get_ep({
-            stats: reforgedStats
-          });
-          l.__reforgeEP = deltaEp > 0 ? deltaEp : 0;
+          l.__reforgeEP = reforgeEp(rec, l, offset);
         } else {
           l.__reforgeEP = 0;
         }
@@ -3267,7 +3233,7 @@
       return false;
     };
     clickSlotReforge = function() {
-      var $slot, amt, data, from, id, item, rec, recommended, slot, source, targetStats, to;
+      var $slot, amt, data, from, id, item, offset, rec, recommended, slot, source, targetStats, to;
       clickSlot(this, "reforge");
       $(".slot").removeClass("active");
       $(this).addClass("active");
@@ -3277,7 +3243,8 @@
       $.data(document.body, "selecting-slot", slot);
       id = $slot.attr("id");
       item = Shadowcraft.ServerData.ITEM_LOOKUP[id];
-      rec = recommendReforge(item);
+      offset = statOffset(Shadowcraft.Data.gear[slot]);
+      rec = recommendReforge(item, offset);
       recommended = null;
       if (rec) {
         from = getReforgeFrom(rec);
