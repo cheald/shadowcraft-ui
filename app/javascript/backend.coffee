@@ -40,6 +40,8 @@ class ShadowcraftBackend
       if val
         buffList.push ShadowcraftOptions.buffMap.indexOf(key)
 
+    professions = _.compact( _.map(data.options.professions, (v, k) -> if v then k else null ) )
+
     payload =
       r: data.options.general.race
       l: data.options.general.level
@@ -68,7 +70,7 @@ class ShadowcraftBackend
         statSummary.mastery_rating || 0
       ],
       gly: glyph_list,
-      pro: data.options.professions
+      pro: professions
 
     if mh?
       payload.mh = [

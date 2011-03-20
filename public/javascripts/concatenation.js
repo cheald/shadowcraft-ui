@@ -360,7 +360,7 @@
       return this;
     };
     ShadowcraftBackend.prototype.buildPayload = function() {
-      var Gems, GlyphLookup, ItemLookup, Talents, buffList, data, g, gear_ids, glyph, glyph_list, k, key, mh, oh, payload, statSum, statSummary, th, val, _i, _len, _ref, _ref2, _ref3;
+      var Gems, GlyphLookup, ItemLookup, Talents, buffList, data, g, gear_ids, glyph, glyph_list, k, key, mh, oh, payload, professions, statSum, statSummary, th, val, _i, _len, _ref, _ref2, _ref3;
       data = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       Talents = Shadowcraft.ServerData.TALENTS;
@@ -393,6 +393,13 @@
           buffList.push(ShadowcraftOptions.buffMap.indexOf(key));
         }
       }
+      professions = _.compact(_.map(data.options.professions, function(v, k) {
+        if (v) {
+          return k;
+        } else {
+          return null;
+        }
+      }));
       payload = {
         r: data.options.general.race,
         l: data.options.general.level,
@@ -408,7 +415,7 @@
         t: [data.activeTalents.substr(0, Talents[0].talent.length), data.activeTalents.substr(Talents[0].talent.length, Talents[1].talent.length), data.activeTalents.substr(Talents[0].talent.length + Talents[1].talent.length, Talents[2].talent.length)],
         sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit_rating || 0, statSummary.hit_rating || 0, statSummary.expertise_rating || 0, statSummary.haste_rating || 0, statSummary.mastery_rating || 0],
         gly: glyph_list,
-        pro: data.options.professions
+        pro: professions
       };
       if (mh != null) {
         payload.mh = [mh.speed, mh.dps * mh.speed, data.gear[15].enchant, mh.subclass];
@@ -699,7 +706,7 @@
       }
       return decompress_handlers[version](data);
     };
-    professionMap = ["enchanting", "engineering", "blacksmithing", "inscription", "jewelcrafting", "leatherworking", "tailoring"];
+    professionMap = ["enchanting", "engineering", "blacksmithing", "inscription", "jewelcrafting", "leatherworking", "tailoring", "alchemy", "skinning", "herbalism", "mining"];
     poisonMap = ["ip", "dp", "wp"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei"];
     rotationOptionsMap = ["min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab", "use_rupture", "ksp_immediately", "use_revealing_strike", "clip_recuperate"];
@@ -1175,12 +1182,16 @@
         }
       });
       this.setup("#settings #professions", "professions", {
+        alchemy: "Alchemy",
         blacksmithing: "Blacksmithing",
         enchanting: "Enchanting",
         engineering: "Engineering",
+        herbalism: "Herbalism",
         inscription: "Inscription",
         jewelcrafting: "Jewelcrafting",
         leatherworking: "Leatherworking",
+        mining: "Mining",
+        skinning: "Skinning",
         tailoring: "Tailoring"
       });
       this.setup("#settings #playerBuffs", "buffs", {

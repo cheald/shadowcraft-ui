@@ -116,16 +116,17 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #professions", "professions", {
-      blacksmithing: "Blacksmithing",
-      enchanting: "Enchanting",
-      engineering: "Engineering",
-      inscription: "Inscription",
-      jewelcrafting: "Jewelcrafting",
-      leatherworking: "Leatherworking",
-      tailoring: "Tailoring",
-      alchemy: "Alchemy",
-      herbalism: "Herbalism",
+      alchemy: "Alchemy"
+      blacksmithing: "Blacksmithing"
+      enchanting: "Enchanting"
+      engineering: "Engineering"
+      herbalism: "Herbalism"
+      inscription: "Inscription"
+      jewelcrafting: "Jewelcrafting"
+      leatherworking: "Leatherworking"
+      mining: "Mining"
       skinning: "Skinning"
+      tailoring: "Tailoring"
     })
 
     @setup("#settings #playerBuffs", "buffs", {
