@@ -136,13 +136,11 @@ class ShadowcraftTalents
     else if dir == 1 && points.cur < points.max && talentsSpent < MAX_TALENT_POINTS
       success = true
     else if dir == -1
-      for tier in [position.row..6]
-        prequal = 0
-        if tier > 0
-          for prev in [0..tier-1]
-            prequal += tree.rowPoints[prev]
-          if tree.rowPoints[tier] > 0 and (tier * 5) >= prequal
-            return false
+      prequal = 0
+      for tier in [0..position.row]
+        prequal += tree.rowPoints[tier]
+      if tree.rowPoints[position.row+1] and tree.rowPoints[position.row+1] > 0
+        return false if prequal <= (position.row+1) * 5
       success = true if points.cur > 0
 
     if success
