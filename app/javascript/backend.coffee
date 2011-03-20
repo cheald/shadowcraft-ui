@@ -97,7 +97,7 @@ class ShadowcraftBackend
     gear_ids = []
     for k, g of data.gear
       gear_ids.push(g.item_id)
-      if k == 0 && g.g0 && Gems[g.g0] && Gems[g.g0].Meta
+      if k == "0" && g.g0 && Gems[g.g0] && Gems[g.g0].Meta
         if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(g.g0)
           payload.mg = "chaotic"
 
