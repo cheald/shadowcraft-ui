@@ -1090,7 +1090,7 @@ a
   .image
     background: url(../../images/empty.png)
     position: absolute
-    top: 0px
+    top: 2px
     left: -60px
     width: 48px
     height: 48px
@@ -1137,19 +1137,19 @@ a
   padding-top: 40px
   border: 1px solid #222 !important
   .slot
-    margin: 0 15px 1px 50px
+    margin: 5px 15px 5px 50px
     min-height: 46px
-    padding: 10px 5px
+    padding: 3px 5px 5px
     +border-radius(5px)
     background: transparent
     &:hover
       background: rgba(30, 35, 40, 0.9)
     &.active, .active
-      +linear-gradient(color-stops(#031e33, lighten(#031e33, 10%)))
+      background: lighten(#031e33, 7%) // +linear-gradient(color-stops(#031e33, lighten(#031e33, 12%)))
       .pct
-        border-color: lighten(#031e33, 25%)
+        border-color: lighten(#031e33, 35%)
       .pct-inner
-        background-color: lighten(#031e33, 25%)
+        background-color: lighten(#031e33, 35%)
 
     .gem
       +inline-block
@@ -1159,7 +1159,7 @@ a
       width: 36px
       height: 36px
       left: -45px
-      top: 5px
+      top: 2px
       img
         margin-left: -2px
         margin-top: -2px

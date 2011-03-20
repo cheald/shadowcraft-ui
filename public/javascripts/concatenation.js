@@ -3690,7 +3690,7 @@
         this.dpsHistory.push([this.dpsIndex, Math.floor(data.total_dps * 10) / 10]);
         this.dpsIndex++;
         this.snapshotHistory.push(snapshot);
-        if (this.dpsHistory.length > 100) {
+        if (this.dpsHistory.length > 30) {
           this.dpsHistory.shift();
           this.snapshotHistory.shift();
         }
@@ -3731,7 +3731,7 @@
       return $("#console .inner, #log .inner").oneFingerScroll();
     };
     ShadowcraftConsole.prototype.log = function(msg, klass) {
-      return this.$log.prepend("<div class='" + klass + "'}>" + msg + "</div");
+      return this.$log.append("<div class='" + klass + "'}>" + msg + "</div").scrollTop(this.$log.get(0).scrollHeight);
     };
     ShadowcraftConsole.prototype.warn = function(item, msg, submsg, klass, section) {
       return this.consoleMessage(item, msg, submsg, "warning", klass, section);

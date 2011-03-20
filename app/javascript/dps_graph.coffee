@@ -44,7 +44,7 @@ class ShadowcraftDpsGraph
       @dpsHistory.push [@dpsIndex, Math.floor(data.total_dps * 10) / 10]
       @dpsIndex++
       @snapshotHistory.push(snapshot)
-      if @dpsHistory.length > 100
+      if @dpsHistory.length > 30
         @dpsHistory.shift()
         @snapshotHistory.shift()
 

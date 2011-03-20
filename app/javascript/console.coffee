@@ -8,7 +8,7 @@ class ShadowcraftConsole
     $("#console .inner, #log .inner").oneFingerScroll()
 
   log: (msg, klass) ->
-    @$log.prepend("<div class='#{klass}'}>#{msg}</div")
+    @$log.append("<div class='#{klass}'}>#{msg}</div").scrollTop(@$log.get(0).scrollHeight)
 
   warn: (item, msg, submsg, klass, section) ->
     this.consoleMessage(item, msg, submsg, "warning", klass, section)
