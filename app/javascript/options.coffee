@@ -116,17 +116,17 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #professions", "professions", {
-      alchemy: "Alchemy"
-      blacksmithing: "Blacksmithing"
-      enchanting: "Enchanting"
-      engineering: "Engineering"
-      herbalism: "Herbalism"
-      inscription: "Inscription"
-      jewelcrafting: "Jewelcrafting"
-      leatherworking: "Leatherworking"
-      mining: "Mining"
-      skinning: "Skinning"
-      tailoring: "Tailoring"
+      alchemy:        {'default': false, datatype: 'bool', name: "Alchemy"}
+      blacksmithing:  {'default': false, datatype: 'bool', name: "Blacksmithing"}
+      enchanting:     {'default': false, datatype: 'bool', name: "Enchanting"}
+      engineering:    {'default': false, datatype: 'bool', name: "Engineering"}
+      herbalism:      {'default': false, datatype: 'bool', name: "Herbalism"}
+      inscription:    {'default': false, datatype: 'bool', name: "Inscription"}
+      jewelcrafting:  {'default': false, datatype: 'bool', name: "Jewelcrafting"}
+      leatherworking: {'default': false, datatype: 'bool', name: "Leatherworking"}
+      mining:         {'default': false, datatype: 'bool', name: "Mining"}
+      skinning:       {'default': false, datatype: 'bool', name: "Skinning"}
+      tailoring:      {'default': false, datatype: 'bool', name: "Tailoring"}
     })
 
     @setup("#settings #playerBuffs", "buffs", {
@@ -189,6 +189,7 @@ class ShadowcraftOptions
       $this.val(val)
 
     data.options[ns][name] = val
+    Shadowcraft.Options.trigger("update", ns + "." + name, val)
     Shadowcraft.update()
 
   changeCheck = ->
@@ -226,3 +227,4 @@ class ShadowcraftOptions
     $("#settings").bind "change", $.delegate({ ".optionCheck": changeCheck })
     $("#settings").bind "change", $.delegate({ ".optionSelect": changeSelect })
     $("#settings").bind "change", $.delegate({ ".optionInput": changeInput })
+    _.extend(this, Backbone.Events)

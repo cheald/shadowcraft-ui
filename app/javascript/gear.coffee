@@ -238,7 +238,6 @@ class ShadowcraftGear
     else
       0
 
-
   racialHitBonus = (key) ->
     if Shadowcraft.Data.race == "Draenei" then Shadowcraft._R(key) else 0
 
@@ -448,16 +447,15 @@ class ShadowcraftGear
         return false
     return equiv_ep
 
-
   addTradeskillBonuses = (item) ->
     item.sockets ||= []
-    item._sockets ||= item.sockets.slice(0) # Originals
-    blacksmith = Shadowcraft.Data.options.professions.blacksmithing?
+    blacksmith = Shadowcraft.Data.options.professions.blacksmithing
     if item.equip_location == 9 or item.equip_location == 10
-      if blacksmith and item.sockets[item.sockets.length-1] != "Prismatic"
-        item.sockets[item.sockets.length] = "Prismatic"
-      else if !blacksmith and item.sockets[item.sockets.length-1] == "Prismatic" and item.sockets[item.sockets.length]?
-        item.sockets[item.sockets.length].slice(0, item.sockets.length - 2)
+      last = item.sockets[item.sockets.length - 1]
+      if last != "Prismatic" and blacksmith
+        item.sockets.push "Prismatic"
+      else if !blacksmith and last == "Prismatic"
+        item.sockets.pop()
 
   # Assumes gem_list is already sorted preferred order.  Also, normalizes
   # JC-only gem EP to their non-JC-only values to prevent the algorithm from
@@ -1290,6 +1288,11 @@ class ShadowcraftGear
     $("#filter, #reforge").click (e) ->
       e.cancelBubble = true
       e.stopPropagation()
+
+    Shadowcraft.Options.bind "update", (opt, val) ->
+      if opt == "professions.blacksmithing"
+        app.updateDisplay()
+
     this
 
   constructor: (@app) ->

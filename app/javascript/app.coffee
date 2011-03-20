@@ -148,6 +148,7 @@ class ShadowcraftApp
     $("#reloadAllData").click ->
       if confirm("Are you sure you want to clear all data?\n\nThis will wipe out all locally saved changes for ALL saved characters.\n\nThere is no undo!")
         $.jStorage.flush()
+        location.hash = ""
         location.reload(true)
 
     this.setupLabels()

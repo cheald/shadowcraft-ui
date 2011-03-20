@@ -162,6 +162,7 @@
       $("#reloadAllData").click(function() {
         if (confirm("Are you sure you want to clear all data?\n\nThis will wipe out all locally saved changes for ALL saved characters.\n\nThere is no undo!")) {
           $.jStorage.flush();
+          location.hash = "";
           return location.reload(true);
         }
       });
@@ -1182,17 +1183,61 @@
         }
       });
       this.setup("#settings #professions", "professions", {
-        alchemy: "Alchemy",
-        blacksmithing: "Blacksmithing",
-        enchanting: "Enchanting",
-        engineering: "Engineering",
-        herbalism: "Herbalism",
-        inscription: "Inscription",
-        jewelcrafting: "Jewelcrafting",
-        leatherworking: "Leatherworking",
-        mining: "Mining",
-        skinning: "Skinning",
-        tailoring: "Tailoring"
+        alchemy: {
+          'default': false,
+          datatype: 'bool',
+          name: "Alchemy"
+        },
+        blacksmithing: {
+          'default': false,
+          datatype: 'bool',
+          name: "Blacksmithing"
+        },
+        enchanting: {
+          'default': false,
+          datatype: 'bool',
+          name: "Enchanting"
+        },
+        engineering: {
+          'default': false,
+          datatype: 'bool',
+          name: "Engineering"
+        },
+        herbalism: {
+          'default': false,
+          datatype: 'bool',
+          name: "Herbalism"
+        },
+        inscription: {
+          'default': false,
+          datatype: 'bool',
+          name: "Inscription"
+        },
+        jewelcrafting: {
+          'default': false,
+          datatype: 'bool',
+          name: "Jewelcrafting"
+        },
+        leatherworking: {
+          'default': false,
+          datatype: 'bool',
+          name: "Leatherworking"
+        },
+        mining: {
+          'default': false,
+          datatype: 'bool',
+          name: "Mining"
+        },
+        skinning: {
+          'default': false,
+          datatype: 'bool',
+          name: "Skinning"
+        },
+        tailoring: {
+          'default': false,
+          datatype: 'bool',
+          name: "Tailoring"
+        }
       });
       this.setup("#settings #playerBuffs", "buffs", {
         guild_feast: {
@@ -1372,6 +1417,7 @@
         $this.val(val);
       }
       data.options[ns][name] = val;
+      Shadowcraft.Options.trigger("update", ns + "." + name, val);
       return Shadowcraft.update();
     };
     changeCheck = function() {
@@ -1417,6 +1463,7 @@
       $("#settings").bind("change", $.delegate({
         ".optionInput": changeInput
       }));
+      _.extend(this, Backbone.Events);
     }
     return ShadowcraftOptions;
   })();
@@ -2547,15 +2594,15 @@
       return equiv_ep;
     };
     addTradeskillBonuses = function(item) {
-      var blacksmith;
+      var blacksmith, last;
       item.sockets || (item.sockets = []);
-      item._sockets || (item._sockets = item.sockets.slice(0));
-      blacksmith = Shadowcraft.Data.options.professions.blacksmithing != null;
+      blacksmith = Shadowcraft.Data.options.professions.blacksmithing;
       if (item.equip_location === 9 || item.equip_location === 10) {
-        if (blacksmith && item.sockets[item.sockets.length - 1] !== "Prismatic") {
-          return item.sockets[item.sockets.length] = "Prismatic";
-        } else if (!blacksmith && item.sockets[item.sockets.length - 1] === "Prismatic" && (item.sockets[item.sockets.length] != null)) {
-          return item.sockets[item.sockets.length].slice(0, item.sockets.length - 2);
+        last = item.sockets[item.sockets.length - 1];
+        if (last !== "Prismatic" && blacksmith) {
+          return item.sockets.push("Prismatic");
+        } else if (!blacksmith && last === "Prismatic") {
+          return item.sockets.pop();
         }
       }
     };
@@ -3530,6 +3577,11 @@
       $("#filter, #reforge").click(function(e) {
         e.cancelBubble = true;
         return e.stopPropagation();
+      });
+      Shadowcraft.Options.bind("update", function(opt, val) {
+        if (opt === "professions.blacksmithing") {
+          return app.updateDisplay();
+        }
       });
       return this;
     };

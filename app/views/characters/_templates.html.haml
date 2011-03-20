@@ -113,9 +113,11 @@
       .gem.tt{:class => "{{slot}}", :"data-tooltip-id" => "{{gem/id}}"}
         %span.socket
           %img{:src => "/images/icons/Socket_{{socket}}.png"}
+        {{#gem}}
         %span.img<
-          %img{:src => "http://static.wowhead.com/images/wow/icons/small/{{gem/icon}}.jpg"}
-        %span.gem_name {{gem/name}}
+          %img{:src => "http://static.wowhead.com/images/wow/icons/small/{{icon}}.jpg"}
+        %span.gem_name {{name}}
+        {{/gem}}
       {{/gems}}
       {{#socketbonus}}
       .bonus
