@@ -219,8 +219,8 @@ class ShadowcraftComputation:
     s = input.get("sta", {})
 
     _stats = stats.Stats(
-      s[0] + _race.stat_set[_level][0], # Str
-      s[1] + _race.stat_set[_level][1] + agi_bonus, # AGI
+      s[0], # Str
+      s[1]  + agi_bonus, # AGI
       s[2], # AP
       s[3], # Crit
       s[4], # Hit
