@@ -1670,8 +1670,8 @@
         }
         $points.text(points.cur + "/" + points.max);
         if (!skipUpdate) {
-          updateTalentAvailability($(button).parent());
           data.activeTalents = getTalents();
+          updateTalentAvailability($(button).parent());
         }
       }
       return success;
@@ -3337,6 +3337,9 @@
       Shadowcraft.Backend.bind("recompute", updateStatWeights);
       Shadowcraft.Backend.bind("recompute", function() {
         return Shadowcraft.Gear;
+      });
+      Shadowcraft.Talents.bind("changed", function() {
+        return app.updateStatsWindow();
       });
       Shadowcraft.bind("loadData", function() {
         return app.updateDisplay();

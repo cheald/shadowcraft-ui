@@ -1078,6 +1078,9 @@ class ShadowcraftGear
     Shadowcraft.Backend.bind("recompute", updateStatWeights)
     Shadowcraft.Backend.bind("recompute", -> Shadowcraft.Gear )
 
+    Shadowcraft.Talents.bind "changed", ->
+      app.updateStatsWindow()
+
     Shadowcraft.bind "loadData", ->
       app.updateDisplay()
 

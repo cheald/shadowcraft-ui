@@ -159,8 +159,8 @@ class ShadowcraftTalents
         $points.addClass("partial")
       $points.text(points.cur + "/" + points.max)
       unless skipUpdate
-        updateTalentAvailability $(button).parent()
         data.activeTalents = getTalents()
+        updateTalentAvailability $(button).parent()
     return success
 
   updateActiveTalents: ->
