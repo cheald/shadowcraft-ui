@@ -116,26 +116,17 @@ class ShadowcraftGear
       s[stat] += i[key][stat]
     null
 
-  sumRecommendation = (s, rec) ->
-    s[rec.source.key] ||= 0
-    s[rec.source.key] += rec.qty
-    s[rec.dest.key] ||= 0
-    s[rec.dest.key] += rec.qty
-
   get_ep = (item, key, slot) ->
     data = Shadowcraft.Data
     weights = Weights
 
     stats = {}
-    if item.source and item.dest
-      sumRecommendation(stats, item)
-    else
-      sumItem(stats, item, key)
+    sumItem(stats, item, key)
 
     total = 0
     for stat, value of stats
-      weight = Weights[stat] || 0
-      total += value * weight
+      weight = getStatWeight(stat, value) || 0
+      total += weight
 
     delete stats
     c = Shadowcraft.lastCalculation
@@ -319,6 +310,7 @@ class ShadowcraftGear
       if ignore and ignore[stat]
         exist -= ignore[stat]
 
+
     neg = if num < 0 then -1 else 1
     num = Math.abs(num)
 
@@ -432,7 +424,7 @@ class ShadowcraftGear
   getRegularGemEpValue = (gem) ->
     equiv_ep = gem.__ep || get_ep(gem)
 
-    return equiv_ep # unless gem.requires?.profession?
+    return equiv_ep unless gem.requires?.profession?
     return gem.__reg_ep if gem.__reg_ep
 
     for name in JC_ONLY_GEMS
@@ -877,12 +869,11 @@ class ShadowcraftGear
     loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
 
     slot = parseInt($(this).parent().data("slot"), 10)
-    offset = statOffset(gear[slot])
 
+    offset = statOffset(gear[slot])
     epSort(GemList) # Needed for gemming recommendations
     for l in loc
       l.__gemRec = getGemmingRecommendation(GemList, l, true)
-      l.__gemEP = l.__gemRec.ep
       rec = recommendReforge(l, offset)
       if rec
         l.__reforgeEP = reforgeEp(rec, l, offset)
@@ -915,7 +906,7 @@ class ShadowcraftGear
         gear: {}
         gems: []
         ttid: ttid
-        desc: "#{get_ep(l).toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemEP.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" }"
+        desc: "#{get_ep(l).toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" }"
         search: l.name
         percent: iEP / max * 100
         ep: iEP

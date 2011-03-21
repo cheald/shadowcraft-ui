@@ -2037,7 +2037,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumRecommendation, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 3;
     MAX_ENGINEERING_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"];
@@ -2168,28 +2168,17 @@
       }
       return null;
     };
-    sumRecommendation = function(s, rec) {
-      var _name, _name2;
-      s[_name = rec.source.key] || (s[_name] = 0);
-      s[rec.source.key] += rec.qty;
-      s[_name2 = rec.dest.key] || (s[_name2] = 0);
-      return s[rec.dest.key] += rec.qty;
-    };
     get_ep = function(item, key, slot) {
       var c, data, enchant, pre, stat, stats, total, value, weight, weights;
       data = Shadowcraft.Data;
       weights = Weights;
       stats = {};
-      if (item.source && item.dest) {
-        sumRecommendation(stats, item);
-      } else {
-        sumItem(stats, item, key);
-      }
+      sumItem(stats, item, key);
       total = 0;
       for (stat in stats) {
         value = stats[stat];
-        weight = Weights[stat] || 0;
-        total += value * weight;
+        weight = getStatWeight(stat, value) || 0;
+        total += weight;
       }
       delete stats;
       c = Shadowcraft.lastCalculation;
@@ -2568,9 +2557,11 @@
       return true;
     };
     getRegularGemEpValue = function(gem) {
-      var equiv_ep, j, name, prefix, reg, _i, _len, _ref, _ref2;
+      var equiv_ep, j, name, prefix, reg, _i, _len, _ref, _ref2, _ref3;
       equiv_ep = gem.__ep || get_ep(gem);
-      return equiv_ep;
+      if (((_ref = gem.requires) != null ? _ref.profession : void 0) == null) {
+        return equiv_ep;
+      }
       if (gem.__reg_ep) {
         return gem.__reg_ep;
       }
@@ -2578,10 +2569,10 @@
         name = JC_ONLY_GEMS[_i];
         if (gem.name.indexOf(name) >= 0) {
           prefix = gem.name.replace(name, "");
-          _ref = Shadowcraft.ServerData.GEMS;
-          for (j in _ref) {
-            reg = _ref[j];
-            if (!(((_ref2 = reg.requires) != null ? _ref2.profession : void 0) != null) && reg.name.indexOf(prefix) === 0 && reg.quality === gem.quality) {
+          _ref2 = Shadowcraft.ServerData.GEMS;
+          for (j in _ref2) {
+            reg = _ref2[j];
+            if (!(((_ref3 = reg.requires) != null ? _ref3.profession : void 0) != null) && reg.name.indexOf(prefix) === 0 && reg.quality === gem.quality) {
               equiv_ep = reg.__ep || get_ep(reg);
               equiv_ep += 1;
               gem.__reg_ep = equiv_ep;
@@ -3128,7 +3119,6 @@
       for (_i = 0, _len = loc.length; _i < _len; _i++) {
         l = loc[_i];
         l.__gemRec = getGemmingRecommendation(GemList, l, true);
-        l.__gemEP = l.__gemRec.ep;
         rec = recommendReforge(l, offset);
         if (rec) {
           l.__reforgeEP = reforgeEp(rec, l, offset);
@@ -3167,7 +3157,7 @@
           gear: {},
           gems: [],
           ttid: ttid,
-          desc: "" + (get_ep(l).toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemEP.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : ""),
+          desc: "" + (get_ep(l).toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : ""),
           search: l.name,
           percent: iEP / max * 100,
           ep: iEP

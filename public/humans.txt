@@ -15,9 +15,13 @@
     bsoft
     WoW: Humbug @ Terenas-US
 
-  Reforger Engine Service
+  Reforger Engine Service & reforger optimizations
     Tini
     WoW: Tini @ Silvermoon-EU
+
+  UI & Engine bugfixes
+    Caffeine
+    WoW: Cappuccino @ Kilrogg-EU
 
 /* SITE */
 
