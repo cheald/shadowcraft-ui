@@ -432,8 +432,8 @@
       for (k in _ref3) {
         g = _ref3[k];
         gear_ids.push(g.item_id);
-        if (k === 0 && g.g0 && Gems[g.g0] && Gems[g.g0].Meta) {
-          if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(g.g0)) {
+        if (k === "0" && g.g0 && Gems[g.g0] && Gems[g.g0].Meta) {
+          if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(g.g0) !== -1) {
             payload.mg = "chaotic";
           }
         }
