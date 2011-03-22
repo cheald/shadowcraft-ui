@@ -444,13 +444,13 @@ class ShadowcraftGear
       if gem.name.indexOf(name) >= 0
         prefix = gem.name.replace(name, "")
         for j, reg of Shadowcraft.ServerData.GEMS
-          if !reg.requires?.profession? and reg.name.indexOf(prefix) == 0 and reg.quality == gem.quality
+          if reg.item_id != gem.item_id and !reg.requires?.profession? and reg.name.indexOf(prefix) == 0 and reg.ilvl == gem.ilvl
             equiv_ep = reg.__ep || get_ep(reg, offset)
-            equiv_ep += 1
-            gem.__reg_ep = equiv_ep
-            return false
-        return false
-    return equiv_ep
+            equiv_ep
+            gem.__reg_ep = equiv_ep += 0.0001
+            break
+        break if gem.__reg_ep
+    return gem.__reg_ep
 
   addTradeskillBonuses = (item) ->
     item.sockets ||= []

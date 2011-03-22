@@ -1,5 +1,8 @@
 class ShadowcraftBackend
-  HTTP_ENGINE = "http://#{window.location.hostname}:8880/"
+  if window.location.host.match(/:/)
+    HTTP_ENGINE = "http://#{window.location.hostname}:8880/engine"
+  else
+    HTTP_ENGINE = "http://#{window.location.hostname}/engine"
   WS_ENGINE   = "ws://#{window.location.hostname}:8880/engine"
 
   constructor: (@app) ->
@@ -116,18 +119,21 @@ class ShadowcraftBackend
     @app.lastCalculation = data
     this.trigger("recompute", data)
 
-  recompute: ->
+  recompute: (payload = null, forcePost = false) ->
     @cancelRecompute = false
-    payload = this.buildPayload()
+    payload ||= this.buildPayload()
     return if @cancelRecompute or not payload?
 
-    if window.WebSocket
+    if window.WebSocket and not forcePost
       this.recompute_via_websocket payload
     else
       this.recompute_via_post payload
 
   recompute_via_websocket: (payload) ->
-    @ws.send "m", payload
+    if @ws.readySate != 1
+      recompute(payload, true)
+    else
+      @ws.send "m", payload
 
   recompute_via_post: (payload) ->
    if $.browser.msie and window.XDomainRequest

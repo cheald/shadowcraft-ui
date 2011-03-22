@@ -335,7 +335,11 @@
   });
   ShadowcraftBackend = (function() {
     var HTTP_ENGINE, WS_ENGINE;
-    HTTP_ENGINE = "http://" + window.location.hostname + ":8880/";
+    if (window.location.host.match(/:/)) {
+      HTTP_ENGINE = "http://" + window.location.hostname + ":8880/engine";
+    } else {
+      HTTP_ENGINE = "http://" + window.location.hostname + "/engine";
+    }
     WS_ENGINE = "ws://" + window.location.hostname + ":8880/engine";
     function ShadowcraftBackend(app) {
       this.app = app;
@@ -453,21 +457,30 @@
       this.app.lastCalculation = data;
       return this.trigger("recompute", data);
     };
-    ShadowcraftBackend.prototype.recompute = function() {
-      var payload;
+    ShadowcraftBackend.prototype.recompute = function(payload, forcePost) {
+      if (payload == null) {
+        payload = null;
+      }
+      if (forcePost == null) {
+        forcePost = false;
+      }
       this.cancelRecompute = false;
-      payload = this.buildPayload();
+      payload || (payload = this.buildPayload());
       if (this.cancelRecompute || !(payload != null)) {
         return;
       }
-      if (window.WebSocket) {
+      if (window.WebSocket && !forcePost) {
         return this.recompute_via_websocket(payload);
       } else {
         return this.recompute_via_post(payload);
       }
     };
     ShadowcraftBackend.prototype.recompute_via_websocket = function(payload) {
-      return this.ws.send("m", payload);
+      if (this.ws.readySate !== 1) {
+        return recompute(payload, true);
+      } else {
+        return this.ws.send("m", payload);
+      }
     };
     ShadowcraftBackend.prototype.recompute_via_post = function(payload) {
       if ($.browser.msie && window.XDomainRequest) {
@@ -2587,17 +2600,19 @@
           _ref2 = Shadowcraft.ServerData.GEMS;
           for (j in _ref2) {
             reg = _ref2[j];
-            if (!(((_ref3 = reg.requires) != null ? _ref3.profession : void 0) != null) && reg.name.indexOf(prefix) === 0 && reg.quality === gem.quality) {
+            if (reg.item_id !== gem.item_id && !(((_ref3 = reg.requires) != null ? _ref3.profession : void 0) != null) && reg.name.indexOf(prefix) === 0 && reg.ilvl === gem.ilvl) {
               equiv_ep = reg.__ep || get_ep(reg, offset);
-              equiv_ep += 1;
-              gem.__reg_ep = equiv_ep;
-              return false;
+              equiv_ep;
+              gem.__reg_ep = equiv_ep += 0.0001;
+              break;
             }
           }
-          return false;
+          if (gem.__reg_ep) {
+            break;
+          }
         }
       }
-      return equiv_ep;
+      return gem.__reg_ep;
     };
     addTradeskillBonuses = function(item) {
       var blacksmith, last;
@@ -3603,7 +3618,11 @@
   })();
   ShadowcraftTiniReforgeBackend = (function() {
     var ENGINE, REFORGABLE, deferred;
-    ENGINE = "http://shadowref.appspot.com/calc";
+    if (window.location.host.match(/:/)) {
+      ENGINE = "http://shadowref.appspot.com/calc";
+    } else {
+      ENGINE = "http://" + window.location.hostname + "/reforge";
+    }
     REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"];
     deferred = null;
     function ShadowcraftTiniReforgeBackend(gear) {
