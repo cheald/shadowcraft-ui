@@ -69,10 +69,10 @@ class ShadowcraftGear
   $altslots = null
   $popup = null
 
-  statOffset = (gear) ->
+  statOffset = (gear, facet) ->
     statOffset = {}
     if gear
-      sumSlot(gear, statOffset, false)
+      sumSlot(gear, statOffset, facet)
     return statOffset
 
   reforgeAmount = (item, stat) ->
@@ -116,7 +116,7 @@ class ShadowcraftGear
       s[stat] += i[key][stat]
     null
 
-  get_ep = (item, key, slot) ->
+  get_ep = (item, key, slot, ignore) ->
     data = Shadowcraft.Data
     weights = Weights
 
@@ -125,7 +125,7 @@ class ShadowcraftGear
 
     total = 0
     for stat, value of stats
-      weight = getStatWeight(stat, value) || 0
+      weight = getStatWeight(stat, value, ignore) || 0
       total += weight
 
     delete stats
@@ -163,8 +163,9 @@ class ShadowcraftGear
     stats[to] ||= 0
     stats[to] += amt
 
-  sumSlot = (gear, out, excludeReforges) ->
+  sumSlot = (gear, out, facet) ->
     return unless gear?.item_id?
+    facet ||= "all"
 
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
@@ -173,33 +174,37 @@ class ShadowcraftGear
     item = ItemLookup[gear.item_id]
     return unless item?
 
-    sumItem(out, item)
-    matchesAllSockets = item.sockets and item.sockets.length > 0
-    for socketIndex, socket of item.sockets
-        gid = gear["g" + socketIndex]
-        if gid and gid > 0
-          gem = Gems[gid]
-          sumItem(out, gem) if(gem)
-        matchesAllSockets = false if !gem or !gem[socket]
+    if facet == "all" or facet == "item"
+      sumItem(out, item)
 
-    if matchesAllSockets
-      sumItem(out, item, "socketbonus")
+    if facet == "all" or facet == "gems"
+      matchesAllSockets = item.sockets and item.sockets.length > 0
+      for socketIndex, socket of item.sockets
+          gid = gear["g" + socketIndex]
+          if gid and gid > 0
+            gem = Gems[gid]
+            sumItem(out, gem) if(gem)
+          matchesAllSockets = false if !gem or !gem[socket]
 
-    if gear.reforge and not excludeReforges
-      sumReforge(out, item, gear.reforge)
+      if matchesAllSockets
+        sumItem(out, item, "socketbonus")
 
-    enchant_id = gear.enchant
-    if enchant_id and enchant_id > 0
-      enchant = EnchantLookup[enchant_id]
-      sumItem(out, enchant) if enchant
+    if facet == "all" or facet == "reforge"
+      if gear.reforge
+        sumReforge(out, item, gear.reforge)
 
+    if facet == "all" or facet == "enchant"
+      enchant_id = gear.enchant
+      if enchant_id and enchant_id > 0
+        enchant = EnchantLookup[enchant_id]
+        sumItem(out, enchant) if enchant
 
-  sumStats: (excludeReforges) ->
+  sumStats: ->
     stats = {}
     data = Shadowcraft.Data
 
     for si, i in SLOT_ORDER
-      sumSlot(data.gear[si], stats, excludeReforges)
+      sumSlot(data.gear[si], stats)
 
     @statSum = stats
     return stats
@@ -421,8 +426,8 @@ class ShadowcraftGear
 
   # Returns the EP value of a gem.  If it happens to require JC, it'll return
   # the regular EP value for the same quality gem, if found.
-  getRegularGemEpValue = (gem) ->
-    equiv_ep = gem.__ep || get_ep(gem)
+  getRegularGemEpValue = (gem, offset) ->
+    equiv_ep = gem.__ep || get_ep(gem, offset)
 
     return equiv_ep unless gem.requires?.profession?
     return gem.__reg_ep if gem.__reg_ep
@@ -432,7 +437,7 @@ class ShadowcraftGear
         prefix = gem.name.replace(name, "")
         for j, reg of Shadowcraft.ServerData.GEMS
           if !reg.requires?.profession? and reg.name.indexOf(prefix) == 0 and reg.quality == gem.quality
-            equiv_ep = reg.__ep || get_ep(reg)
+            equiv_ep = reg.__ep || get_ep(reg, offset)
             equiv_ep += 1
             gem.__reg_ep = equiv_ep
             return false
@@ -452,7 +457,7 @@ class ShadowcraftGear
   # Assumes gem_list is already sorted preferred order.  Also, normalizes
   # JC-only gem EP to their non-JC-only values to prevent the algorithm from
   # picking up those gems over the socket bonus.
-  getGemmingRecommendation = (gem_list, item, returnFull, ignoreSlotIndex) ->
+  getGemmingRecommendation = (gem_list, item, returnFull, ignoreSlotIndex, offset) ->
     data = Shadowcraft.Data
     if !item.sockets or item.sockets.length == 0
       if returnFull
@@ -461,7 +466,7 @@ class ShadowcraftGear
         return 0
 
     straightGemEP = 0
-    matchedGemEP = get_ep(item, "socketbonus")
+    matchedGemEP = get_ep(item, "socketbonus", null, offset)
     if returnFull
       sGems = []
       mGems = []
@@ -469,7 +474,7 @@ class ShadowcraftGear
     for gemType in item.sockets
       for gem in gem_list
         continue unless canUseGem gem, gemType, sGems, ignoreSlotIndex
-        straightGemEP += getRegularGemEpValue(gem)
+        straightGemEP += getRegularGemEpValue(gem, offset)
         sGems.push gem.id if returnFull
         break
 
@@ -477,7 +482,7 @@ class ShadowcraftGear
       for gem in gem_list
         continue unless canUseGem gem, gemType, mGems, ignoreSlotIndex
         if gem[gemType]
-          matchedGemEP += getRegularGemEpValue(gem)
+          matchedGemEP += getRegularGemEpValue(gem, offset)
           mGems.push gem.id if returnFull
           break
 
@@ -870,17 +875,20 @@ class ShadowcraftGear
 
     slot = parseInt($(this).parent().data("slot"), 10)
 
-    offset = statOffset(gear[slot])
+    reforge_offset = statOffset(gear[slot], "reforge")
+    gear_offset = statOffset(gear[slot], "item")
+    gem_offset = statOffset(gear[slot], "gems")
+
     epSort(GemList) # Needed for gemming recommendations
     for l in loc
-      l.__gemRec = getGemmingRecommendation(GemList, l, true)
-      rec = recommendReforge(l, offset)
+      l.__gemRec = getGemmingRecommendation(GemList, l, true, null, gem_offset)
+      rec = recommendReforge(l, reforge_offset)
       if rec
-        l.__reforgeEP = reforgeEp(rec, l, offset)
+        l.__reforgeEP = reforgeEp(rec, l, reforge_offset)
       else
         l.__reforgeEP = 0
 
-      l.__ep = get_ep(l, null, slot) + l.__gemRec.ep + l.__reforgeEP
+      l.__ep = get_ep(l, null, slot, gear_offset) + l.__gemRec.ep + l.__reforgeEP
 
     loc.sort(__epSort)
     max = null
@@ -935,8 +943,10 @@ class ShadowcraftGear
 
     enchants = EnchantSlots[equip_location]
     max = 0
+
+    offset = statOffset(Shadowcraft.Data.gear[slot], "enchant")
     for enchant in enchants
-      enchant.__ep = get_ep(enchant, null, slot)
+      enchant.__ep = get_ep(enchant, null, slot, offset)
       max = if enchant.__ep > max then enchant.__ep else max
     enchants.sort(__epSort)
     selected_id = data.gear[slot].enchant
@@ -1031,7 +1041,7 @@ class ShadowcraftGear
     id = $slot.attr("id")
     item = Shadowcraft.ServerData.ITEM_LOOKUP[id]
 
-    offset = statOffset(Shadowcraft.Data.gear[slot])
+    offset = statOffset(Shadowcraft.Data.gear[slot], "reforge")
 
     rec = recommendReforge(item, offset)
     recommended = null

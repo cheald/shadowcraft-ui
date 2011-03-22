@@ -2113,11 +2113,11 @@
     $slots = null;
     $altslots = null;
     $popup = null;
-    statOffset = function(gear) {
+    statOffset = function(gear, facet) {
       var statOffset;
       statOffset = {};
       if (gear) {
-        sumSlot(gear, statOffset, false);
+        sumSlot(gear, statOffset, facet);
       }
       return statOffset;
     };
@@ -2168,7 +2168,7 @@
       }
       return null;
     };
-    get_ep = function(item, key, slot) {
+    get_ep = function(item, key, slot, ignore) {
       var c, data, enchant, pre, stat, stats, total, value, weight, weights;
       data = Shadowcraft.Data;
       weights = Weights;
@@ -2177,7 +2177,7 @@
       total = 0;
       for (stat in stats) {
         value = stats[stat];
-        weight = getStatWeight(stat, value) || 0;
+        weight = getStatWeight(stat, value, ignore) || 0;
         total += weight;
       }
       delete stats;
@@ -2221,11 +2221,12 @@
       stats[to] || (stats[to] = 0);
       return stats[to] += amt;
     };
-    sumSlot = function(gear, out, excludeReforges) {
+    sumSlot = function(gear, out, facet) {
       var EnchantLookup, Gems, ItemLookup, enchant, enchant_id, gem, gid, item, matchesAllSockets, socket, socketIndex, _ref;
       if ((gear != null ? gear.item_id : void 0) == null) {
         return;
       }
+      facet || (facet = "all");
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
@@ -2233,43 +2234,51 @@
       if (item == null) {
         return;
       }
-      sumItem(out, item);
-      matchesAllSockets = item.sockets && item.sockets.length > 0;
-      _ref = item.sockets;
-      for (socketIndex in _ref) {
-        socket = _ref[socketIndex];
-        gid = gear["g" + socketIndex];
-        if (gid && gid > 0) {
-          gem = Gems[gid];
-          if (gem) {
-            sumItem(out, gem);
+      if (facet === "all" || facet === "item") {
+        sumItem(out, item);
+      }
+      if (facet === "all" || facet === "gems") {
+        matchesAllSockets = item.sockets && item.sockets.length > 0;
+        _ref = item.sockets;
+        for (socketIndex in _ref) {
+          socket = _ref[socketIndex];
+          gid = gear["g" + socketIndex];
+          if (gid && gid > 0) {
+            gem = Gems[gid];
+            if (gem) {
+              sumItem(out, gem);
+            }
+          }
+          if (!gem || !gem[socket]) {
+            matchesAllSockets = false;
           }
         }
-        if (!gem || !gem[socket]) {
-          matchesAllSockets = false;
+        if (matchesAllSockets) {
+          sumItem(out, item, "socketbonus");
         }
       }
-      if (matchesAllSockets) {
-        sumItem(out, item, "socketbonus");
+      if (facet === "all" || facet === "reforge") {
+        if (gear.reforge) {
+          sumReforge(out, item, gear.reforge);
+        }
       }
-      if (gear.reforge && !excludeReforges) {
-        sumReforge(out, item, gear.reforge);
-      }
-      enchant_id = gear.enchant;
-      if (enchant_id && enchant_id > 0) {
-        enchant = EnchantLookup[enchant_id];
-        if (enchant) {
-          return sumItem(out, enchant);
+      if (facet === "all" || facet === "enchant") {
+        enchant_id = gear.enchant;
+        if (enchant_id && enchant_id > 0) {
+          enchant = EnchantLookup[enchant_id];
+          if (enchant) {
+            return sumItem(out, enchant);
+          }
         }
       }
     };
-    ShadowcraftGear.prototype.sumStats = function(excludeReforges) {
+    ShadowcraftGear.prototype.sumStats = function() {
       var data, i, si, stats, _len;
       stats = {};
       data = Shadowcraft.Data;
       for (i = 0, _len = SLOT_ORDER.length; i < _len; i++) {
         si = SLOT_ORDER[i];
-        sumSlot(data.gear[si], stats, excludeReforges);
+        sumSlot(data.gear[si], stats);
       }
       this.statSum = stats;
       return stats;
@@ -2556,9 +2565,9 @@
       }
       return true;
     };
-    getRegularGemEpValue = function(gem) {
+    getRegularGemEpValue = function(gem, offset) {
       var equiv_ep, j, name, prefix, reg, _i, _len, _ref, _ref2, _ref3;
-      equiv_ep = gem.__ep || get_ep(gem);
+      equiv_ep = gem.__ep || get_ep(gem, offset);
       if (((_ref = gem.requires) != null ? _ref.profession : void 0) == null) {
         return equiv_ep;
       }
@@ -2573,7 +2582,7 @@
           for (j in _ref2) {
             reg = _ref2[j];
             if (!(((_ref3 = reg.requires) != null ? _ref3.profession : void 0) != null) && reg.name.indexOf(prefix) === 0 && reg.quality === gem.quality) {
-              equiv_ep = reg.__ep || get_ep(reg);
+              equiv_ep = reg.__ep || get_ep(reg, offset);
               equiv_ep += 1;
               gem.__reg_ep = equiv_ep;
               return false;
@@ -2597,7 +2606,7 @@
         }
       }
     };
-    getGemmingRecommendation = function(gem_list, item, returnFull, ignoreSlotIndex) {
+    getGemmingRecommendation = function(gem_list, item, returnFull, ignoreSlotIndex, offset) {
       var bonus, data, epValue, gem, gemType, gems, mGems, matchedGemEP, sGems, straightGemEP, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref, _ref2;
       data = Shadowcraft.Data;
       if (!item.sockets || item.sockets.length === 0) {
@@ -2611,7 +2620,7 @@
         }
       }
       straightGemEP = 0;
-      matchedGemEP = get_ep(item, "socketbonus");
+      matchedGemEP = get_ep(item, "socketbonus", null, offset);
       if (returnFull) {
         sGems = [];
         mGems = [];
@@ -2624,7 +2633,7 @@
           if (!canUseGem(gem, gemType, sGems, ignoreSlotIndex)) {
             continue;
           }
-          straightGemEP += getRegularGemEpValue(gem);
+          straightGemEP += getRegularGemEpValue(gem, offset);
           if (returnFull) {
             sGems.push(gem.id);
           }
@@ -2640,7 +2649,7 @@
             continue;
           }
           if (gem[gemType]) {
-            matchedGemEP += getRegularGemEpValue(gem);
+            matchedGemEP += getRegularGemEpValue(gem, offset);
             if (returnFull) {
               mGems.push(gem.id);
             }
@@ -3104,7 +3113,7 @@
       return [$slot, slotIndex];
     };
     clickSlotName = function() {
-      var $slot, GemList, buf, buffer, equip_location, gear, iEP, l, loc, max, offset, rec, requireDagger, selected_id, slot, ttid, _i, _j, _len, _len2;
+      var $slot, GemList, buf, buffer, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, max, rec, reforge_offset, requireDagger, selected_id, slot, ttid, _i, _j, _len, _len2;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -3114,18 +3123,20 @@
       gear = Shadowcraft.Data.gear;
       loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
       slot = parseInt($(this).parent().data("slot"), 10);
-      offset = statOffset(gear[slot]);
+      reforge_offset = statOffset(gear[slot], "reforge");
+      gear_offset = statOffset(gear[slot], "item");
+      gem_offset = statOffset(gear[slot], "gems");
       epSort(GemList);
       for (_i = 0, _len = loc.length; _i < _len; _i++) {
         l = loc[_i];
-        l.__gemRec = getGemmingRecommendation(GemList, l, true);
-        rec = recommendReforge(l, offset);
+        l.__gemRec = getGemmingRecommendation(GemList, l, true, null, gem_offset);
+        rec = recommendReforge(l, reforge_offset);
         if (rec) {
-          l.__reforgeEP = reforgeEp(rec, l, offset);
+          l.__reforgeEP = reforgeEp(rec, l, reforge_offset);
         } else {
           l.__reforgeEP = 0;
         }
-        l.__ep = get_ep(l, null, slot) + l.__gemRec.ep + l.__reforgeEP;
+        l.__ep = get_ep(l, null, slot, gear_offset) + l.__gemRec.ep + l.__reforgeEP;
       }
       loc.sort(__epSort);
       max = null;
@@ -3177,7 +3188,7 @@
       return false;
     };
     clickSlotEnchant = function() {
-      var EnchantSlots, buf, buffer, data, eEP, enchant, enchants, equip_location, max, selected_id, slot, _i, _j, _len, _len2;
+      var EnchantSlots, buf, buffer, data, eEP, enchant, enchants, equip_location, max, offset, selected_id, slot, _i, _j, _len, _len2;
       data = Shadowcraft.Data;
       EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
       buf = clickSlot(this, "enchant");
@@ -3185,9 +3196,10 @@
       equip_location = SLOT_INVTYPES[slot];
       enchants = EnchantSlots[equip_location];
       max = 0;
+      offset = statOffset(Shadowcraft.Data.gear[slot], "enchant");
       for (_i = 0, _len = enchants.length; _i < _len; _i++) {
         enchant = enchants[_i];
-        enchant.__ep = get_ep(enchant, null, slot);
+        enchant.__ep = get_ep(enchant, null, slot, offset);
         max = enchant.__ep > max ? enchant.__ep : max;
       }
       enchants.sort(__epSort);
@@ -3289,7 +3301,7 @@
       $.data(document.body, "selecting-slot", slot);
       id = $slot.attr("id");
       item = Shadowcraft.ServerData.ITEM_LOOKUP[id];
-      offset = statOffset(Shadowcraft.Data.gear[slot]);
+      offset = statOffset(Shadowcraft.Data.gear[slot], "reforge");
       rec = recommendReforge(item, offset);
       recommended = null;
       if (rec) {
