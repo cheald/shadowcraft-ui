@@ -355,6 +355,7 @@ class ShadowcraftTalents
       for k, s of setVal
         exist = $("#talentrankings #talent-weight-" + k)
         val = parseInt(s, 10)
+        name = k.replace(/_/g, " ").capitalize()        
         if isNaN(val)
           name += " (NYI)"
           val = 0
@@ -362,7 +363,6 @@ class ShadowcraftTalents
         pct = val / max * 100 + 0.01
 
         if exist.length == 0
-          name = k.replace(/_/g, " ").capitalize()
           buffer = Templates.talentContribution({
             name: name,
             raw_name: k,
@@ -374,6 +374,7 @@ class ShadowcraftTalents
         exist = $("#talentrankings #talent-weight-" + k)
         $.data(exist.get(0), "val", val)
         exist.show().find(".pct-inner").css({width: pct + "%"})
+        exist.find(".label").text(val.toFixed(1))
 
     $("#talentrankings .talent_contribution").sortElements (a, b) ->
       ad = $.data(a, "val")

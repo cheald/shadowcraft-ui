@@ -1965,13 +1965,13 @@
           s = setVal[k];
           exist = $("#talentrankings #talent-weight-" + k);
           val = parseInt(s, 10);
+          name = k.replace(/_/g, " ").capitalize();
           if (isNaN(val)) {
             name += " (NYI)";
             val = 0;
           }
           pct = val / max * 100 + 0.01;
           if (exist.length === 0) {
-            name = k.replace(/_/g, " ").capitalize();
             buffer = Templates.talentContribution({
               name: name,
               raw_name: k,
@@ -1985,6 +1985,7 @@
           exist.show().find(".pct-inner").css({
             width: pct + "%"
           });
+          exist.find(".label").text(val.toFixed(1));
         }
       }
       return $("#talentrankings .talent_contribution").sortElements(function(a, b) {
