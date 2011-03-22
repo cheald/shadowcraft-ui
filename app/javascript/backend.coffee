@@ -131,7 +131,7 @@ class ShadowcraftBackend
 
   recompute_via_websocket: (payload) ->
     if @ws.readySate != 1
-      recompute(payload, true)
+      @recompute(payload, true)
     else
       @ws.send "m", payload
 

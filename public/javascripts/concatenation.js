@@ -477,7 +477,7 @@
     };
     ShadowcraftBackend.prototype.recompute_via_websocket = function(payload) {
       if (this.ws.readySate !== 1) {
-        return recompute(payload, true);
+        return this.recompute(payload, true);
       } else {
         return this.ws.send("m", payload);
       }
