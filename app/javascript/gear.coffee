@@ -5,6 +5,15 @@ class ShadowcraftGear
   REFORGE_FACTOR = 0.4
   DEFAULT_BOSS_DODGE = 6.5
 
+  FACETS = {
+    ITEM: 1
+    GEMS: 2
+    ENCHANT: 4
+    REFORGE: 8,
+    ALL: 255
+  }
+  @FACETS = FACETS
+
   # Relative value of expertise per hand; both should add up to 1.
   MH_EXPERTISE_FACTOR = 0.63
   OH_EXPERTISE_FACTOR = 1 - MH_EXPERTISE_FACTOR
@@ -163,9 +172,9 @@ class ShadowcraftGear
     stats[to] ||= 0
     stats[to] += amt
 
-  sumSlot = (gear, out, facet) ->
+  sumSlot = (gear, out, facets) ->
     return unless gear?.item_id?
-    facet ||= "all"
+    facets ||= FACETS.ALL
 
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
@@ -174,10 +183,10 @@ class ShadowcraftGear
     item = ItemLookup[gear.item_id]
     return unless item?
 
-    if facet == "all" or facet == "item"
+    if (facets & FACETS.ITEM) == FACETS.ITEM
       sumItem(out, item)
 
-    if facet == "all" or facet == "gems"
+    if (facets & FACETS.GEMS) == FACETS.GEMS
       matchesAllSockets = item.sockets and item.sockets.length > 0
       for socketIndex, socket of item.sockets
           gid = gear["g" + socketIndex]
@@ -189,22 +198,21 @@ class ShadowcraftGear
       if matchesAllSockets
         sumItem(out, item, "socketbonus")
 
-    if facet == "all" or facet == "reforge"
-      if gear.reforge
-        sumReforge(out, item, gear.reforge)
+    if (facets & FACETS.REFORGE) == FACETS.REFORGE and gear.reforge
+      sumReforge(out, item, gear.reforge)
 
-    if facet == "all" or facet == "enchant"
+    if (facets & FACETS.ENCHANT) == FACETS.ENCHANT
       enchant_id = gear.enchant
       if enchant_id and enchant_id > 0
         enchant = EnchantLookup[enchant_id]
         sumItem(out, enchant) if enchant
 
-  sumStats: ->
+  sumStats: (facets) ->
     stats = {}
     data = Shadowcraft.Data
 
     for si, i in SLOT_ORDER
-      sumSlot(data.gear[si], stats)
+      sumSlot(data.gear[si], stats, facets)
 
     @statSum = stats
     return stats
@@ -875,9 +883,9 @@ class ShadowcraftGear
 
     slot = parseInt($(this).parent().data("slot"), 10)
 
-    reforge_offset = statOffset(gear[slot], "reforge")
-    gear_offset = statOffset(gear[slot], "item")
-    gem_offset = statOffset(gear[slot], "gems")
+    reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
+    gear_offset = statOffset(gear[slot], FACETS.ITEM)
+    gem_offset = statOffset(gear[slot], FACETS.GEMS)
 
     epSort(GemList) # Needed for gemming recommendations
     for l in loc
@@ -944,7 +952,7 @@ class ShadowcraftGear
     enchants = EnchantSlots[equip_location]
     max = 0
 
-    offset = statOffset(Shadowcraft.Data.gear[slot], "enchant")
+    offset = statOffset(Shadowcraft.Data.gear[slot], FACETS.ENCHANT)
     for enchant in enchants
       enchant.__ep = get_ep(enchant, null, slot, offset)
       max = if enchant.__ep > max then enchant.__ep else max
@@ -1041,7 +1049,7 @@ class ShadowcraftGear
     id = $slot.attr("id")
     item = Shadowcraft.ServerData.ITEM_LOOKUP[id]
 
-    offset = statOffset(Shadowcraft.Data.gear[slot], "reforge")
+    offset = statOffset(Shadowcraft.Data.gear[slot], FACETS.REFORGE)
 
     rec = recommendReforge(item, offset)
     recommended = null

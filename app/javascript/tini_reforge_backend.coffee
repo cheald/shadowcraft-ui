@@ -46,7 +46,8 @@ class ShadowcraftTiniReforgeBackend
 
   buildRequest: ->
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-    stats = @gear.sumStats(true)
+    f = ShadowcraftGear.FACETS
+    stats = @gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT)
 
     items = _.map(Shadowcraft.Data.gear, (e) ->
       r = { id: e.item_id }

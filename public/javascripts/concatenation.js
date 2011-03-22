@@ -2037,12 +2037,20 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 3;
     MAX_ENGINEERING_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"];
     REFORGE_FACTOR = 0.4;
     DEFAULT_BOSS_DODGE = 6.5;
+    FACETS = {
+      ITEM: 1,
+      GEMS: 2,
+      ENCHANT: 4,
+      REFORGE: 8,
+      ALL: 255
+    };
+    ShadowcraftGear.FACETS = FACETS;
     MH_EXPERTISE_FACTOR = 0.63;
     OH_EXPERTISE_FACTOR = 1 - MH_EXPERTISE_FACTOR;
     REFORGE_STATS = [
@@ -2221,12 +2229,12 @@
       stats[to] || (stats[to] = 0);
       return stats[to] += amt;
     };
-    sumSlot = function(gear, out, facet) {
+    sumSlot = function(gear, out, facets) {
       var EnchantLookup, Gems, ItemLookup, enchant, enchant_id, gem, gid, item, matchesAllSockets, socket, socketIndex, _ref;
       if ((gear != null ? gear.item_id : void 0) == null) {
         return;
       }
-      facet || (facet = "all");
+      facets || (facets = FACETS.ALL);
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
@@ -2234,10 +2242,10 @@
       if (item == null) {
         return;
       }
-      if (facet === "all" || facet === "item") {
+      if ((facets & FACETS.ITEM) === FACETS.ITEM) {
         sumItem(out, item);
       }
-      if (facet === "all" || facet === "gems") {
+      if ((facets & FACETS.GEMS) === FACETS.GEMS) {
         matchesAllSockets = item.sockets && item.sockets.length > 0;
         _ref = item.sockets;
         for (socketIndex in _ref) {
@@ -2257,12 +2265,10 @@
           sumItem(out, item, "socketbonus");
         }
       }
-      if (facet === "all" || facet === "reforge") {
-        if (gear.reforge) {
-          sumReforge(out, item, gear.reforge);
-        }
+      if ((facets & FACETS.REFORGE) === FACETS.REFORGE && gear.reforge) {
+        sumReforge(out, item, gear.reforge);
       }
-      if (facet === "all" || facet === "enchant") {
+      if ((facets & FACETS.ENCHANT) === FACETS.ENCHANT) {
         enchant_id = gear.enchant;
         if (enchant_id && enchant_id > 0) {
           enchant = EnchantLookup[enchant_id];
@@ -2272,13 +2278,13 @@
         }
       }
     };
-    ShadowcraftGear.prototype.sumStats = function() {
+    ShadowcraftGear.prototype.sumStats = function(facets) {
       var data, i, si, stats, _len;
       stats = {};
       data = Shadowcraft.Data;
       for (i = 0, _len = SLOT_ORDER.length; i < _len; i++) {
         si = SLOT_ORDER[i];
-        sumSlot(data.gear[si], stats);
+        sumSlot(data.gear[si], stats, facets);
       }
       this.statSum = stats;
       return stats;
@@ -3123,9 +3129,9 @@
       gear = Shadowcraft.Data.gear;
       loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
       slot = parseInt($(this).parent().data("slot"), 10);
-      reforge_offset = statOffset(gear[slot], "reforge");
-      gear_offset = statOffset(gear[slot], "item");
-      gem_offset = statOffset(gear[slot], "gems");
+      reforge_offset = statOffset(gear[slot], FACETS.REFORGE);
+      gear_offset = statOffset(gear[slot], FACETS.ITEM);
+      gem_offset = statOffset(gear[slot], FACETS.GEMS);
       epSort(GemList);
       for (_i = 0, _len = loc.length; _i < _len; _i++) {
         l = loc[_i];
@@ -3196,7 +3202,7 @@
       equip_location = SLOT_INVTYPES[slot];
       enchants = EnchantSlots[equip_location];
       max = 0;
-      offset = statOffset(Shadowcraft.Data.gear[slot], "enchant");
+      offset = statOffset(Shadowcraft.Data.gear[slot], FACETS.ENCHANT);
       for (_i = 0, _len = enchants.length; _i < _len; _i++) {
         enchant = enchants[_i];
         enchant.__ep = get_ep(enchant, null, slot, offset);
@@ -3301,7 +3307,7 @@
       $.data(document.body, "selecting-slot", slot);
       id = $slot.attr("id");
       item = Shadowcraft.ServerData.ITEM_LOOKUP[id];
-      offset = statOffset(Shadowcraft.Data.gear[slot], "reforge");
+      offset = statOffset(Shadowcraft.Data.gear[slot], FACETS.REFORGE);
       rec = recommendReforge(item, offset);
       recommended = null;
       if (rec) {
@@ -3651,9 +3657,10 @@
       });
     };
     ShadowcraftTiniReforgeBackend.prototype.buildRequest = function() {
-      var ItemLookup, caps, items, k, req, stats, v;
+      var ItemLookup, caps, f, items, k, req, stats, v;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-      stats = this.gear.sumStats(true);
+      f = ShadowcraftGear.FACETS;
+      stats = this.gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT);
       items = _.map(Shadowcraft.Data.gear, function(e) {
         var key, r, val, _ref;
         r = {
