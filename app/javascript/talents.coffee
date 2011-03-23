@@ -355,7 +355,7 @@ class ShadowcraftTalents
       for k, s of setVal
         exist = $("#talentrankings #talent-weight-" + k)
         val = parseInt(s, 10)
-        name = k.replace(/_/g, " ").capitalize()        
+        name = k.replace(/_/g, " ").capitalize()
         if isNaN(val)
           name += " (NYI)"
           val = 0

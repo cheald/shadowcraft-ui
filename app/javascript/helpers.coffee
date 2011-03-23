@@ -109,6 +109,7 @@ showPopup = (popup) ->
     popup.append("<a href='#' class='close-popup ui-dialog-titlebar-close ui-corner-all' role='button'><span class='ui-icon ui-icon-closethick'></span></a>")
     popup.find(".close-popup").click(->
       $(".popup").removeClass("visible")
+      return false
     ).hover ->
       $(this).addClass('ui-state-hover')
     , ->

@@ -975,7 +975,8 @@
     if (popup.find(".close-popup").length === 0) {
       popup.append("<a href='#' class='close-popup ui-dialog-titlebar-close ui-corner-all' role='button'><span class='ui-icon ui-icon-closethick'></span></a>");
       popup.find(".close-popup").click(function() {
-        return $(".popup").removeClass("visible");
+        $(".popup").removeClass("visible");
+        return false;
       }).hover(function() {
         return $(this).addClass('ui-state-hover');
       }, function() {
@@ -3158,7 +3159,8 @@
         } else {
           l.__reforgeEP = 0;
         }
-        l.__ep = get_ep(l, null, slot, gear_offset) + l.__gemRec.ep + l.__reforgeEP;
+        l.__gearEP = get_ep(l, null, slot, gear_offset);
+        l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP;
       }
       loc.sort(__epSort);
       max = null;
@@ -3190,7 +3192,7 @@
           gear: {},
           gems: [],
           ttid: ttid,
-          desc: "" + (get_ep(l).toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : ""),
+          desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : ""),
           search: l.name,
           percent: iEP / max * 100,
           ep: iEP

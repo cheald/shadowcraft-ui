@@ -896,7 +896,8 @@ class ShadowcraftGear
       else
         l.__reforgeEP = 0
 
-      l.__ep = get_ep(l, null, slot, gear_offset) + l.__gemRec.ep + l.__reforgeEP
+      l.__gearEP = get_ep(l, null, slot, gear_offset)
+      l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP
 
     loc.sort(__epSort)
     max = null
@@ -922,7 +923,7 @@ class ShadowcraftGear
         gear: {}
         gems: []
         ttid: ttid
-        desc: "#{get_ep(l).toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" }"
+        desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" }"
         search: l.name
         percent: iEP / max * 100
         ep: iEP
