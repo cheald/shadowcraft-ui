@@ -135,7 +135,7 @@ class ShadowcraftApp
         $this.addClass("active")
         p = $this.position()
         $this.css({zIndex: 102})
-        top = p.top + $this.height() + 2
+        top = p.top + $this.height() + 5
         right = p.left # + $this.width()
         menu.css({top: top + "px", left: right + "px"}).show()
       return false

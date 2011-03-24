@@ -145,7 +145,7 @@
           $this.css({
             zIndex: 102
           });
-          top = p.top + $this.height() + 2;
+          top = p.top + $this.height() + 5;
           right = p.left;
           menu.css({
             top: top + "px",
@@ -3728,6 +3728,8 @@
     return ShadowcraftTiniReforgeBackend;
   })();
   ShadowcraftDpsGraph = (function() {
+    var MAX_POINTS;
+    MAX_POINTS = 20;
     function ShadowcraftDpsGraph() {
       var app;
       this.dpsHistory = [];
@@ -3776,7 +3778,7 @@
         this.dpsHistory.push([this.dpsIndex, Math.floor(data.total_dps * 10) / 10]);
         this.dpsIndex++;
         this.snapshotHistory.push(snapshot);
-        if (this.dpsHistory.length > 30) {
+        if (this.dpsHistory.length > MAX_POINTS) {
           this.dpsHistory.shift();
           this.snapshotHistory.shift();
         }

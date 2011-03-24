@@ -1,4 +1,5 @@
 class ShadowcraftDpsGraph
+  MAX_POINTS = 20
   constructor: ->
     @dpsHistory = []
     @snapshotHistory = []
@@ -44,7 +45,7 @@ class ShadowcraftDpsGraph
       @dpsHistory.push [@dpsIndex, Math.floor(data.total_dps * 10) / 10]
       @dpsIndex++
       @snapshotHistory.push(snapshot)
-      if @dpsHistory.length > 30
+      if @dpsHistory.length > MAX_POINTS
         @dpsHistory.shift()
         @snapshotHistory.shift()
 
