@@ -869,6 +869,24 @@ class ShadowcraftGear
     $.data(document.body, "selecting-prop", prop)
     return [$slot, slotIndex]
 
+  # This artificially deflates stats if you're around, to give room for a calculated reforge to be effective.
+  # This is a really nasty hack, but it works nicely for the purposes of gear ranking
+  fudgeOffsets = (offsets) ->
+    caps = Shadowcraft.Gear.getCaps()
+    stats = Shadowcraft.Gear.sumStats()
+    offsets.hit_rating ||= 0
+    offsets.expertise_rating ||= 0
+    if stats.hit_rating > (caps.white_hit * 0.9) and stats.hit_rating < (caps.white_hit * 1.1)
+      offsets.hit_rating += stats.hit_rating - caps.spell_hit - 1
+    else if stats.hit_rating > (caps.spell_hit * 0.9) and stats.hit_rating < (caps.spell_hit * 1.1)
+      offsets.hit_rating += stats.hit_rating - caps.yellow_hit - 1
+
+    lowest_exp = if caps.mh_exp < caps.oh_exp then caps.mh_exp else caps.oh_exp
+    if stats.expertise_rating > (lowest_exp * 0.9)
+      offsets.expertise_rating += lowest_exp
+
+    offsets
+
   # Click a name in a slot, for binding to event delegation
   clickSlotName = ->
     buf = clickSlot(this, "item_id")
@@ -886,6 +904,8 @@ class ShadowcraftGear
     reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
     gear_offset = statOffset(gear[slot], FACETS.ITEM)
     gem_offset = statOffset(gear[slot], FACETS.GEMS)
+
+    fudgeOffsets(reforge_offset)
 
     epSort(GemList) # Needed for gemming recommendations
     for l in loc

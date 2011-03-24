@@ -2052,7 +2052,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, fudgeOffsets, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 3;
     MAX_ENGINEERING_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"];
@@ -3135,6 +3135,23 @@
       $.data(document.body, "selecting-prop", prop);
       return [$slot, slotIndex];
     };
+    fudgeOffsets = function(offsets) {
+      var caps, lowest_exp, stats;
+      caps = Shadowcraft.Gear.getCaps();
+      stats = Shadowcraft.Gear.sumStats();
+      offsets.hit_rating || (offsets.hit_rating = 0);
+      offsets.expertise_rating || (offsets.expertise_rating = 0);
+      if (stats.hit_rating > (caps.white_hit * 0.9) && stats.hit_rating < (caps.white_hit * 1.1)) {
+        offsets.hit_rating += stats.hit_rating - caps.spell_hit - 1;
+      } else if (stats.hit_rating > (caps.spell_hit * 0.9) && stats.hit_rating < (caps.spell_hit * 1.1)) {
+        offsets.hit_rating += stats.hit_rating - caps.yellow_hit - 1;
+      }
+      lowest_exp = caps.mh_exp < caps.oh_exp ? caps.mh_exp : caps.oh_exp;
+      if (stats.expertise_rating > (lowest_exp * 0.9)) {
+        offsets.expertise_rating += lowest_exp;
+      }
+      return offsets;
+    };
     clickSlotName = function() {
       var $slot, GemList, buf, buffer, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, max, rec, reforge_offset, requireDagger, selected_id, slot, ttid, _i, _j, _len, _len2;
       buf = clickSlot(this, "item_id");
@@ -3149,6 +3166,7 @@
       reforge_offset = statOffset(gear[slot], FACETS.REFORGE);
       gear_offset = statOffset(gear[slot], FACETS.ITEM);
       gem_offset = statOffset(gear[slot], FACETS.GEMS);
+      fudgeOffsets(reforge_offset);
       epSort(GemList);
       for (_i = 0, _len = loc.length; _i < _len; _i++) {
         l = loc[_i];
