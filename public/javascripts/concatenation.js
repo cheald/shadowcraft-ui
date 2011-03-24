@@ -3447,6 +3447,7 @@
         var name, pawnstr, scale, stats, val, weight;
         scale = _.extend({}, defaultScale);
         scale.ExpertiseRating = Weights.expertise_rating;
+        scale.MasteryRating = Weights.mastery_rating;
         scale.CritRating = Weights.crit_rating;
         scale.HasteRating = Weights.haste_rating;
         scale.HitRating = getHitEP();
