@@ -878,7 +878,7 @@ class ShadowcraftGear
     offsets.expertise_rating ||= 0
     if stats.hit_rating > (caps.white_hit * 0.9) and stats.hit_rating < (caps.white_hit * 1.1)
       offsets.hit_rating += stats.hit_rating - caps.spell_hit - 1
-    else if stats.hit_rating > (caps.spell_hit * 0.9) and stats.hit_rating < (caps.spell_hit * 1.1)
+    else if stats.hit_rating > (caps.spell_hit * 0.9) and stats.hit_rating < (caps.spell_hit * 1.1) 
       offsets.hit_rating += stats.hit_rating - caps.yellow_hit - 1
 
     lowest_exp = if caps.mh_exp < caps.oh_exp then caps.mh_exp else caps.oh_exp
