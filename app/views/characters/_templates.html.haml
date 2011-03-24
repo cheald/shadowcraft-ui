@@ -147,7 +147,7 @@
 - mustache("select") do
   %label.select
     %span.label {{label}}
-    .select-container
+    %span.select-container
       <select class="optionSelect" name="{{key}}" id="opt-{{namespace}}-{{key}}" data-ns="{{namespace}}">
       {{#options}}
       <option value="{{value}}">{{name}}</option>
