@@ -150,6 +150,9 @@ class ShadowcraftBackend
     xdr.onload = ->
       data = JSON.parse xdr.responseText
       app.handleRecompute(data)
+    xdr.onerror = ->
+      flash "Error contacting backend engine"
+      false
 
   recompute_via_xhr: (payload) ->
     app = this

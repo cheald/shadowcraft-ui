@@ -151,6 +151,9 @@ class ShadowcraftApp
         location.hash = ""
         location.reload(true)
 
+    $ ->
+      Shadowcraft.update()
+
     this.setupLabels()
     true
 

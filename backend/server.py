@@ -45,8 +45,16 @@ class ShadowcraftComputation:
     55874: 'tias_grace',
     59520: 'unheeded_warning'
   }
-  trinkets = gearProcs.values()
-  trinkets.remove("the_twilight_blade")
+  
+  gearBoosts = {
+    68709: 'unsolvable_riddle',
+    62468: 'unsolvable_riddle',
+    62463: 'unsolvable_riddle',
+    52199: 'demon_panther'
+  }
+  
+  trinketMap = dict(gearProcs, **gearBoosts)
+  trinkets = trinketMap.values()
 
   tier11IDS = frozenset([60298, 65240, 60299, 65241, 60300, 65242, 60302, 65243, 60301, 65239])
   arenaSeason9SetIds = frozenset([60458, 60459, 60460, 60461, 60462, 64769, 64770, 64771, 64772, 64773, 65545, 65546, 65547, 65548, 65549])
@@ -174,14 +182,10 @@ class ShadowcraftComputation:
     if "engineering" in professions:
       buff_list.append('engineer_glove_enchant')
 
-    # If is equipped
-    if 68709 in gear or 62468 in gear or 62463 in gear:
-      buff_list.append('unsolvable_riddle')
-
-    # If Jewelcrafter and trinket equipped
-    if 52199 in gear:
-      buff_list.append('demon_panther')
-
+    for k in self.gearBoosts:
+      if k in gear:
+        buff_list.append(self.gearBoosts[k])
+      
     # If alchemist
     if "alchemy" in professions:
       buff_list.append('mixology')
@@ -282,8 +286,8 @@ class ShadowcraftComputation:
       trinket_rankings = calculator.get_other_ep(self.trinkets)
       out["trinket_ranking"] = {}
       for k in trinket_rankings:
-        for id in self.gearProcs:
-          if self.gearProcs[id] == k:
+        for id in self.trinketMap:
+          if self.trinketMap[id] == k:
             out["trinket_ranking"][id] = floor(trinket_rankings[k] * 10) / 10      
       
       # Compute weapon ep

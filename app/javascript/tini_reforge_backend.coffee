@@ -31,10 +31,12 @@ class ShadowcraftTiniReforgeBackend
       data = JSON.parse xdr.responseText
       Shadowcraft.Gear.setReforges(data)
       deferred.resolve()
-    xdr.onerror ->
+    xdr.onerror = ->
       flash "Error contacting reforging service"
-    xdr.ontimeout ->
+      false
+    xdr.ontimeout = ->
       flash "Timed out talking to reforging service"
+      false
 
   request_via_ajax: (req) ->
     $.ajax

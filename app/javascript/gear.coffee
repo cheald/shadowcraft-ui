@@ -158,7 +158,8 @@ class ShadowcraftGear
         enchant = PROC_ENCHANTS[item.id]
         if pre and enchant
           total += c[pre + "ep"][pre + enchant]
-      else if c.trinket_ranking[item.id]
+
+      if c.trinket_ranking[item.id]
         total += c.trinket_ranking[item.id]
 
     total

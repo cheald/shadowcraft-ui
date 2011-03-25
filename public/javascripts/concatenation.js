@@ -166,6 +166,9 @@
           return location.reload(true);
         }
       });
+      $(function() {
+        return Shadowcraft.update();
+      });
       this.setupLabels();
       return true;
     };
@@ -495,10 +498,14 @@
       xdr = new XDomainRequest();
       xdr.open("get", HTTP_ENGINE + ("?rnd=" + (new Date().getTime()) + "&data=") + JSON.stringify(payload));
       xdr.send();
-      return xdr.onload = function() {
+      xdr.onload = function() {
         var data;
         data = JSON.parse(xdr.responseText);
         return app.handleRecompute(data);
+      };
+      return xdr.onerror = function() {
+        flash("Error contacting backend engine");
+        return false;
       };
     };
     ShadowcraftBackend.prototype.recompute_via_xhr = function(payload) {
@@ -2228,7 +2235,8 @@
           if (pre && enchant) {
             total += c[pre + "ep"][pre + enchant];
           }
-        } else if (c.trinket_ranking[item.id]) {
+        }
+        if (c.trinket_ranking[item.id]) {
           total += c.trinket_ranking[item.id];
         }
       }
@@ -3672,12 +3680,14 @@
         Shadowcraft.Gear.setReforges(data);
         return deferred.resolve();
       };
-      xdr.onerror(function() {
-        return flash("Error contacting reforging service");
-      });
-      return xdr.ontimeout(function() {
-        return flash("Timed out talking to reforging service");
-      });
+      xdr.onerror = function() {
+        flash("Error contacting reforging service");
+        return false;
+      };
+      return xdr.ontimeout = function() {
+        flash("Timed out talking to reforging service");
+        return false;
+      };
     };
     ShadowcraftTiniReforgeBackend.prototype.request_via_ajax = function(req) {
       return $.ajax({
