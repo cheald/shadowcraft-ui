@@ -57,7 +57,9 @@ module WowArmory
       self.name = value(".name a", prof)
       self.level = value(".level strong", prof).to_i
       self.realm = value(".realm", prof)
-      self.player_class = attr(".class", "href", prof).split("/").last
+      klass = attr(".class", "href", prof)
+      raise ArmoryError if klass.blank? 
+      self.player_class = klass.split("/").last
       self.achievement_points = value(".achievements a").to_i
       self.race = value(".race", prof)
       self.spec = value(".spec", prof)
