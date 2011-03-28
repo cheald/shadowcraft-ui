@@ -3088,7 +3088,7 @@
       });
     };
     updateStatWeights = function(source) {
-      var $weights, data, e, exist, key, weight;
+      var $weights, all, data, e, exist, key, other, weight;
       data = Shadowcraft.Data;
       Weights.agility = source.ep.agi;
       Weights.crit_rating = source.ep.crit;
@@ -3099,24 +3099,44 @@
       Weights.haste_rating = source.ep.haste;
       Weights.expertise_rating = source.ep.dodge_exp;
       Weights.yellow_hit = source.ep.yellow_hit;
+      other = {
+        mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps,
+        offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps
+      };
+      all = _.extend(Weights, other);
       $weights = $("#weights .inner");
       $weights.empty();
-      for (key in Weights) {
-        weight = Weights[key];
+      for (key in all) {
+        weight = all[key];
         exist = $(".stat#weight_" + key);
         if (exist.length > 0) {
-          exist.find("val").text(Weights[key].toFixed(2));
+          exist.find("val").text(weight.toFixed(2));
         } else {
           e = $weights.append("<div class='stat' id='weight_" + key + "'><span class='key'>" + (titleize(key)) + "</span><span class='val'>" + (Weights[key].toFixed(2)) + "</span></div>");
           exist = $(".stat#weight_" + key);
+          $.data(exist.get(0), "sortkey", 0);
+          if (key === "mainhand_dps" || key === "offhand_dps") {
+            $.data(exist.get(0), "sortkey", 1);
+          }
         }
-        $.data(exist.get(0), "weight", Weights[key]);
+        $.data(exist.get(0), "weight", weight);
       }
       $("#weights .stat").sortElements(function(a, b) {
-        if ($.data(a, "weight") > $.data(b, "weight")) {
-          return -1;
+        var as, bs;
+        as = $.data(a, "sortkey");
+        bs = $.data(b, "sortkey");
+        if (as !== bs) {
+          if (as > bs) {
+            return 1;
+          } else {
+            return -1;
+          }
         } else {
-          return 1;
+          if ($.data(a, "weight") > $.data(b, "weight")) {
+            return -1;
+          } else {
+            return 1;
+          }
         }
       });
       return epSort(Shadowcraft.ServerData.GEMS);

@@ -837,19 +837,33 @@ class ShadowcraftGear
     Weights.expertise_rating = source.ep.dodge_exp
     Weights.yellow_hit = source.ep.yellow_hit
 
+    other =
+      mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps
+      offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps
+
+    all = _.extend(Weights, other)
+
     $weights = $("#weights .inner")
     $weights.empty()
-    for key, weight of Weights
+    for key, weight of all
       exist = $(".stat#weight_" + key)
       if exist.length > 0
-        exist.find("val").text Weights[key].toFixed(2)
+        exist.find("val").text weight.toFixed(2)
       else
         e = $weights.append("<div class='stat' id='weight_#{key}'><span class='key'>#{titleize(key)}</span><span class='val'>#{Weights[key].toFixed(2)}</span></div>")
         exist = $(".stat#weight_" + key)
-      $.data(exist.get(0), "weight", Weights[key])
+        $.data(exist.get(0), "sortkey", 0)
+        if key == "mainhand_dps" or key == "offhand_dps"
+          $.data(exist.get(0), "sortkey", 1)
+      $.data(exist.get(0), "weight", weight)
 
     $("#weights .stat").sortElements (a, b) ->
-      if $.data(a, "weight") > $.data(b, "weight") then -1 else 1
+      as = $.data(a, "sortkey")
+      bs = $.data(b, "sortkey")
+      if as != bs
+        return if as > bs then 1 else -1
+      else
+        if $.data(a, "weight") > $.data(b, "weight") then -1 else 1
     epSort(Shadowcraft.ServerData.GEMS)
 
   statsToDesc = (obj) ->
