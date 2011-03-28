@@ -58,7 +58,7 @@ module WowArmory
       self.level = value(".level strong", prof).to_i
       self.realm = value(".realm", prof)
       klass = attr(".class", "href", prof)
-      raise ArmoryError if klass.blank? 
+      raise ArmoryError.new "Armory is offline", 404 if klass.blank?
       self.player_class = klass.split("/").last
       self.achievement_points = value(".achievements a").to_i
       self.race = value(".race", prof)
