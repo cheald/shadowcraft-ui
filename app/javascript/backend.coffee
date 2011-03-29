@@ -49,6 +49,7 @@ class ShadowcraftBackend
       r: data.options.general.race
       l: data.options.general.level
       pot: if data.options.general.potion_of_the_tolvir then 1 else 0
+      prepot: if data.options.general.prepot then 1 else 0
       b: buffList
       ro: data.options.rotation,
       settings: {

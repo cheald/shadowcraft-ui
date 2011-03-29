@@ -217,6 +217,7 @@ class ShadowcraftHistory
         data.options.general.max_ilvl
         if data.options.general.tricks then 1 else 0
         if data.options.general.receive_tricks then 1 else 0
+        if data.options.general.prepot then 1 else 0
       ]
       options.push base36Encode(general)
 
@@ -276,6 +277,7 @@ class ShadowcraftHistory
         max_ilvl:             general[6] || 500
         tricks:               general[7] != 0
         receive_tricks:       general[8] != 0
+        prepot:               general[9] != 0
 
       d.options.buffs = {}
       for v, i in options[2]

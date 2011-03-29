@@ -221,6 +221,12 @@ class ShadowcraftComputation:
     _race = race.Race(raceStr, 'rogue', _level)
 
     s = input.get("sta", {})
+    _opt = input.get("settings", {})
+    duration = int(_opt.get("duration", 300))
+    
+    # We'll give 2 seconds to engage when pre-potting. Not entirely accurate, but close enough.
+    if input.get("prepot", 0) == 1:
+      agi_bonus += (23 / float(duration)) * 1400
 
     _stats = stats.Stats(
       s[0], # Str
@@ -257,13 +263,12 @@ class ShadowcraftComputation:
     else:
       _cycle = settings.SubtletyCycle(5, **rotation_options)
 
-    _opt = input.get("settings", {})
     _settings = settings.Settings(_cycle,
       response_time = 0.5,
       tricks_on_cooldown = _opt.get("tricks", True),
       mh_poison = _opt.get("mh_poison", 'ip'),
       oh_poison = _opt.get("oh_poison", 'dp'),
-      duration = int(_opt.get("duration", 300)),
+      duration = duration,
     )
 
     calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)

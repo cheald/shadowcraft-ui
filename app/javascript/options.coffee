@@ -150,7 +150,8 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #raidOther", "general", {
-      potion_of_the_tolvir: {name: "Use Potion of the Tol'vir", 'default': true, datatype: 'bool'}
+      prepot: {name: "Pre-pot (Potion of the Tol'vir)", 'default': false, datatype: 'bool'}
+      potion_of_the_tolvir: {name: "Combat potion (Potion of the Tol'vir)", 'default': true, datatype: 'bool'}
       tricks: {name: "Tricks of the Trade on cooldown", 'default': true, datatype: 'bool'}
       receive_tricks: {name: "Receiving Tricks on cooldown from another rogue", 'default': true, datatype: 'bool'}
     })
