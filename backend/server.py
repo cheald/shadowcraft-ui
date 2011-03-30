@@ -164,6 +164,8 @@ class ShadowcraftComputation:
     buff_list.append('leather_specialization')
     if input.get("pot", 0) == 1:
       buff_list.append('potion_of_the_tolvir')
+    if input.get("prepot", 0) == 1:
+      buff_list.append('potion_of_the_tolvir_prepot')
 
     if input.get("mg") == "chaotic":
       buff_list.append('chaotic_metagem')
@@ -224,10 +226,6 @@ class ShadowcraftComputation:
     _opt = input.get("settings", {})
     duration = int(_opt.get("duration", 300))
     
-    # We'll give 2 seconds to engage when pre-potting. Not entirely accurate, but close enough.
-    if input.get("prepot", 0) == 1:
-      agi_bonus += (23 / float(duration)) * 1400
-
     _stats = stats.Stats(
       s[0], # Str
       s[1]  + agi_bonus, # AGI
