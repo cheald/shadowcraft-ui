@@ -114,10 +114,11 @@ module WowArmory
       nodes("#summary-inventory div.slot").each do |slot|
         item_info = attr(".details .name a[data-item]", "data-item", slot)
         item_name = value(".details .name a[data-item]", slot)
+        item_href = attr(".details .name a", "href", slot) || ""
         unless item_info.nil?
           id   = slot.attr("data-id").to_i
           info = Hash[*item_info.split("&").map {|i| v = i.split("=", 2); v[1] = v[1].to_i; v }.flatten]
-          info["item_id"] = info.delete "i"
+          info["item_id"] = item_href.split("/").last.to_i
           info["enchant"] = info.delete "e"
           info["reforge"] = info.delete "re"
           info["name"] = item_name

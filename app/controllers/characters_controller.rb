@@ -33,6 +33,12 @@ class CharactersController < ApplicationController
 
   def show
     @character = Character.get!(params[:region], params[:realm], params[:name])
+    begin
+      @character.as_json
+    rescue
+      @character.update_from_armory!(true)
+    end
+
     if @character.nil? or !@character.valid?
       params[:character] = {
         :realm => params[:realm],
