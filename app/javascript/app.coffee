@@ -61,7 +61,7 @@ class ShadowcraftApp
     _.extend(this, Backbone.Events)
 
   boot: (@uuid, data, @ServerData) ->
-    try
+    try  
       @_boot @uuid, data, @ServerData
     catch error
       $("#curtain").html("<div id='loaderror'>A fatal error occurred while loading this page.</div>").show()
