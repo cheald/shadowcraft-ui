@@ -6,6 +6,10 @@ class ArmoryResource
 
   include HTTParty
   format :xml
+  cookies(
+    :"int-WOW-arenapass2011" => 1
+  )
+  
   base_uri "http://www.wowarmory.com"
   AGENT = "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.10) Gecko/20100914 Firefox/3.6.10"
   headers "User-Agent" => AGENT
