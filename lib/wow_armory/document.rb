@@ -25,12 +25,13 @@ module WowArmory
         "http://us.battle.net/wow/en/"
       end
       url = (host + resource)
-      Rails.logger.debug "Reading #{url}"
+      puts "Reading #{url}"
       tries = 0
       begin
         result = Curl::Easy.http_get(url) do |curl|
           curl.timeout = 7
           curl.headers["User-Agent"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13"
+          curl.cookies = "int-WOW-arenapass2011=1"
         end
       rescue Curl::Err::TimeoutError => e
         if tries < 3
@@ -40,6 +41,8 @@ module WowArmory
           raise e
         end
       end
+
+      puts result.inspect
 
       if result.response_code >= 400 and result.response_code < 500
         raise MissingDocument.new "Armory returned #{result.response_code}", result.response_code
