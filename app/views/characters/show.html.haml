@@ -1,5 +1,6 @@
 - content_for :head do
   =javascript_include_tag "/items-#{@character.properties["player_class"].downcase}.js"
+  =javascript_include_tag "https://apis.google.com/js/plusone.js"
   =render "templates"
 
 #curtain{:style => "display: none"}
@@ -14,6 +15,9 @@
   #tabs
     #top-pane
       %a#logo{:href => "/"}
+      .social
+        %g:plusone{:size => "medium", :href => "http://shadowcraft.mmo-mumble.com"}
+        %iframe(src="http://www.facebook.com/plugins/like.php?app_id=153236851412082&amp;href=http://shadowcraft.mmo-mumble.com&amp;send=false&amp;layout=button_count&amp;width=95&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:95px; height:21px;" allowTransparency="true")
       %ul
         %li
           %a{:href => "#gear"} Gear
