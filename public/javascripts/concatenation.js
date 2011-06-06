@@ -337,13 +337,24 @@
     };
   });
   ShadowcraftBackend = (function() {
-    var HTTP_ENGINE, WS_ENGINE;
-    if (window.location.host.match(/:/)) {
-      HTTP_ENGINE = "http://" + window.location.hostname + ":8880/engine";
-    } else {
-      HTTP_ENGINE = "http://" + window.location.hostname + "/engine";
-    }
-    WS_ENGINE = "ws://" + window.location.hostname + ":8880/engine";
+    var get_engine;
+    get_engine = function() {
+      var endpoint, port;
+      switch (Shadowcraft.Data.options.general.patch) {
+        case 42:
+          port = 8881;
+          endpoint = "engine-4.2";
+          break;
+        default:
+          port = 8880;
+          endpoint = "engine-4.1";
+      }
+      if (window.location.host.match(/:/)) {
+        return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
+      } else {
+        return "http://" + window.location.hostname + "/" + endpoint;
+      }
+    };
     function ShadowcraftBackend(app) {
       this.app = app;
       this.app.Backend = this;
@@ -354,16 +365,6 @@
       self = this;
       Shadowcraft.bind("update", function() {
         return self.recompute();
-      });
-      this.ws = $.websocket(WS_ENGINE, {
-        error: function(e) {
-          return console.log(e);
-        },
-        events: {
-          response: function(e) {
-            return self.handleRecompute(e.data);
-          }
-        }
       });
       return this;
     };
@@ -473,7 +474,7 @@
       if (this.cancelRecompute || !(payload != null)) {
         return;
       }
-      if (window.WebSocket && !forcePost) {
+      if (window.WebSocket && !forcePost && false) {
         return this.recompute_via_websocket(payload);
       } else {
         return this.recompute_via_post(payload);
@@ -497,7 +498,7 @@
       var app, xdr;
       app = this;
       xdr = new XDomainRequest();
-      xdr.open("get", HTTP_ENGINE + ("?rnd=" + (new Date().getTime()) + "&data=") + JSON.stringify(payload));
+      xdr.open("get", get_engine() + ("?rnd=" + (new Date().getTime()) + "&data=") + JSON.stringify(payload));
       xdr.send();
       xdr.onload = function() {
         var data;
@@ -512,7 +513,7 @@
     ShadowcraftBackend.prototype.recompute_via_xhr = function(payload) {
       var app;
       app = this;
-      return $.post(HTTP_ENGINE, {
+      return $.post(get_engine(), {
         data: $.toJSON(payload)
       }, function(data) {
         return app.handleRecompute(data);
@@ -731,7 +732,7 @@
     professionMap = ["enchanting", "engineering", "blacksmithing", "inscription", "jewelcrafting", "leatherworking", "tailoring", "alchemy", "skinning", "herbalism", "mining"];
     poisonMap = ["ip", "dp", "wp"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei"];
-    rotationOptionsMap = ["min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab", "use_rupture", "ksp_immediately", "use_revealing_strike", "clip_recuperate"];
+    rotationOptionsMap = ["min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab", "use_rupture", "ksp_immediately", "use_revealing_strike", "clip_recuperate", "use_hemorrhage"];
     rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, true, false, 'true', 'false', 'never', 'always', 'sometimes'];
     map = function(value, m) {
       return m.indexOf(value);
@@ -766,7 +767,7 @@
           }
         }
         options.push(professions);
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, poisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, poisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch];
         options.push(base36Encode(general));
         buffs = [];
         _ref2 = ShadowcraftOptions.buffMap;
@@ -837,7 +838,8 @@
           max_ilvl: general[6] || 500,
           tricks: general[7] !== 0,
           receive_tricks: general[8] !== 0,
-          prepot: general[9] !== 0
+          prepot: general[9] !== 0,
+          patch: general[10] || '4.1'
         };
         d.options.buffs = {};
         _ref3 = options[2];
@@ -1153,6 +1155,16 @@
       var data;
       data = Shadowcraft.Data;
       this.setup("#settings #general", "general", {
+        patch: {
+          type: "select",
+          name: "Patch",
+          'default': '4.1',
+          datatype: 'integer',
+          options: {
+            41: '4.1',
+            42: '4.2'
+          }
+        },
         level: {
           type: "input",
           name: "Level",
@@ -1423,7 +1435,17 @@
         }
       });
       return this.setup("#settings section.subtlety .settings", "rotation", {
-        clip_recuperate: "Clip Recuperate?"
+        clip_recuperate: "Clip Recuperate?",
+        use_hemorrhage: {
+          type: "select",
+          name: "CP Builder",
+          options: {
+            'never': "Backstab",
+            'always': "Hemorrhage"
+          },
+          'default': 'never',
+          datatype: 'string'
+        }
       });
     };
     changeOption = function(elem, val) {
@@ -1860,7 +1882,6 @@
     updateGlyphWeights = function(data) {
       var g, glyphSet, glyphSets, id, key, max, slot, weight, width, _i, _j, _len, _len2, _ref, _results;
       max = _.max(data.glyph_ranking);
-      $(".glyph_slot:not(.activated)").hide();
       $(".glyph_slot .pct-inner").css({
         width: 0
       });
@@ -2066,7 +2087,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, fudgeOffsets, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, colorSpan, compactReforge, epSort, fudgeOffsets, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 3;
     MAX_ENGINEERING_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"];
@@ -3187,8 +3208,18 @@
       }
       return offsets;
     };
+    patch_max_ilevel = function(patch) {
+      switch (patch) {
+        case 41:
+          return 372;
+        case 42:
+          return 500;
+        default:
+          return 0;
+      }
+    };
     clickSlotName = function() {
-      var $slot, GemList, buf, buffer, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, max, rec, reforge_offset, requireDagger, selected_id, slot, ttid, _i, _j, _len, _len2;
+      var $slot, GemList, buf, buffer, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, max, minIEP, rec, reforge_offset, requireDagger, selected_id, slot, ttid, _i, _j, _len, _len2;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -3219,6 +3250,7 @@
       max = null;
       buffer = "";
       requireDagger = needsDagger();
+      minIEP = loc[loc.length - 1].__ep;
       for (_j = 0, _len2 = loc.length; _j < _len2; _j++) {
         l = loc[_j];
         if (l.__ep < 1) {
@@ -3233,7 +3265,10 @@
         if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
           continue;
         }
-        max || (max = l.__ep);
+        if (l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)) {
+          continue;
+        }
+        max || (max = l.__ep - minIEP);
         iEP = l.__ep.toFixed(1);
         if (l.id > 100000) {
           ttid = Math.floor(l.id / 1000);
@@ -3247,7 +3282,7 @@
           ttid: ttid,
           desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : ""),
           search: l.name,
-          percent: iEP / max * 100,
+          percent: (iEP - minIEP) / max * 100,
           ep: iEP
         });
       }

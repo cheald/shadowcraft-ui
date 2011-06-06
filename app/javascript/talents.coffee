@@ -277,7 +277,7 @@ class ShadowcraftTalents
 
   updateGlyphWeights = (data) ->
     max = _.max(data.glyph_ranking)
-    $(".glyph_slot:not(.activated)").hide()
+    # $(".glyph_slot:not(.activated)").hide()
     $(".glyph_slot .pct-inner").css({width: 0})
     for key, weight of data.glyph_ranking
       g = Shadowcraft.ServerData.GLYPHNAME_LOOKUP[key]

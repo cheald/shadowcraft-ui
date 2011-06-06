@@ -1,9 +1,19 @@
 class ShadowcraftBackend
-  if window.location.host.match(/:/)
-    HTTP_ENGINE = "http://#{window.location.hostname}:8880/engine"
-  else
-    HTTP_ENGINE = "http://#{window.location.hostname}/engine"
-  WS_ENGINE   = "ws://#{window.location.hostname}:8880/engine"
+  # WS_ENGINE   = "ws://#{window.location.hostname}:#{port}/engine"
+
+  get_engine = ->
+    switch Shadowcraft.Data.options.general.patch
+      when 42
+        port = 8881
+        endpoint = "engine-4.2"
+      else
+        port = 8880
+        endpoint = "engine-4.1"
+
+    if window.location.host.match(/:/)
+        "http://#{window.location.hostname}:#{port}/#{endpoint}"
+    else
+      "http://#{window.location.hostname}/#{endpoint}"
 
   constructor: (@app) ->
     @app.Backend = this
@@ -12,11 +22,11 @@ class ShadowcraftBackend
   boot: ->
     self = this
     Shadowcraft.bind("update", -> self.recompute())
-    @ws = $.websocket(WS_ENGINE, {
-      error: (e)-> console.log(e)
-      events:
-        response: (e) -> self.handleRecompute(e.data)
-    })
+    # @ws = $.websocket(WS_ENGINE, {
+    #  error: (e)-> console.log(e)
+    #  events:
+    #    response: (e) -> self.handleRecompute(e.data)
+    # })
     this
 
   buildPayload: ->
@@ -74,7 +84,7 @@ class ShadowcraftBackend
         statSummary.mastery_rating || 0
       ],
       gly: glyph_list,
-      pro: professions
+      pro: professions 
 
     if mh?
       payload.mh = [
@@ -125,7 +135,7 @@ class ShadowcraftBackend
     payload ||= this.buildPayload()
     return if @cancelRecompute or not payload?
 
-    if window.WebSocket and not forcePost
+    if window.WebSocket and not forcePost and false
       this.recompute_via_websocket payload
     else
       this.recompute_via_post payload
@@ -146,7 +156,7 @@ class ShadowcraftBackend
     app = this
     xdr = new XDomainRequest()
     # We have to use GET because Twisted expects a proper form header for POST data, which XDR can't send. Yay IE.
-    xdr.open "get", HTTP_ENGINE + "?rnd=#{new Date().getTime()}&data=" + JSON.stringify(payload)
+    xdr.open "get", get_engine() + "?rnd=#{new Date().getTime()}&data=" + JSON.stringify(payload)
     xdr.send()
     xdr.onload = ->
       data = JSON.parse xdr.responseText
@@ -157,7 +167,7 @@ class ShadowcraftBackend
 
   recompute_via_xhr: (payload) ->
     app = this
-    $.post(HTTP_ENGINE, {
+    $.post(get_engine(), {
       data: $.toJSON(payload)
     }, (data) ->
       app.handleRecompute(data)

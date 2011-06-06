@@ -1,0 +1,144 @@
+2011-06-06 11:52:03-0700 [-] Log opened.
+2011-06-06 11:52:03-0700 [-] twistd 10.2.0 (/usr/bin/python 2.6.0) starting up.
+2011-06-06 11:52:03-0700 [-] reactor class: twisted.internet.selectreactor.SelectReactor.
+2011-06-06 11:52:03-0700 [-] vendor.WebSocket.WebSocketSite starting on 8881
+2011-06-06 11:52:03-0700 [-] Starting factory <vendor.WebSocket.WebSocketSite instance at 0x911510c>
+2011-06-06 11:53:48-0700 [-] Received SIGTERM, shutting down.
+2011-06-06 11:53:48-0700 [-] (TCP Port 8881 Closed)
+2011-06-06 11:53:48-0700 [-] Stopping factory <vendor.WebSocket.WebSocketSite instance at 0x911510c>
+2011-06-06 11:53:48-0700 [-] Main loop terminated.
+2011-06-06 11:53:48-0700 [-] Server Shut Down.
+2011-06-06 11:53:49-0700 [-] Log opened.
+2011-06-06 11:53:49-0700 [-] twistd 10.2.0 (/usr/bin/python 2.6.0) starting up.
+2011-06-06 11:53:49-0700 [-] reactor class: twisted.internet.selectreactor.SelectReactor.
+2011-06-06 11:53:49-0700 [-] vendor.WebSocket.WebSocketSite starting on 8881
+2011-06-06 11:53:49-0700 [-] Starting factory <vendor.WebSocket.WebSocketSite instance at 0x9d210ec>
+2011-06-06 11:55:45-0700 [-] Received SIGTERM, shutting down.
+2011-06-06 11:55:45-0700 [-] (TCP Port 8881 Closed)
+2011-06-06 11:55:45-0700 [-] Stopping factory <vendor.WebSocket.WebSocketSite instance at 0x9d210ec>
+2011-06-06 11:55:45-0700 [-] Main loop terminated.
+2011-06-06 11:55:45-0700 [-] Server Shut Down.
+2011-06-06 11:55:46-0700 [-] Log opened.
+2011-06-06 11:55:46-0700 [-] twistd 10.2.0 (/usr/bin/python 2.6.0) starting up.
+2011-06-06 11:55:46-0700 [-] reactor class: twisted.internet.selectreactor.SelectReactor.
+2011-06-06 11:55:46-0700 [-] vendor.WebSocket.WebSocketSite starting on 8881
+2011-06-06 11:55:46-0700 [-] Starting factory <vendor.WebSocket.WebSocketSite instance at 0x99770ec>
+2011-06-06 11:56:29-0700 [-] Received SIGTERM, shutting down.
+2011-06-06 11:56:29-0700 [-] (TCP Port 8881 Closed)
+2011-06-06 11:56:29-0700 [-] Stopping factory <vendor.WebSocket.WebSocketSite instance at 0x99770ec>
+2011-06-06 11:56:29-0700 [-] Main loop terminated.
+2011-06-06 11:56:29-0700 [-] Server Shut Down.
+2011-06-06 11:56:30-0700 [-] Log opened.
+2011-06-06 11:56:30-0700 [-] twistd 10.2.0 (/usr/bin/python 2.6.0) starting up.
+2011-06-06 11:56:30-0700 [-] reactor class: twisted.internet.selectreactor.SelectReactor.
+2011-06-06 11:56:30-0700 [-] vendor.WebSocket.WebSocketSite starting on 8881
+2011-06-06 11:56:30-0700 [-] Starting factory <vendor.WebSocket.WebSocketSite instance at 0x89c40ec>
+2011-06-06 12:19:15-0700 [HTTPChannel,0,192.168.1.100] {'heart_of_the_vile': 160.17640714171478, 'matrix_restabilizer': 420.52768025869756, 'heroic_essence_of_the_cyclone': 377.55867397689076, 'left_eye_of_rajh': 757.00132706933812, 'heroic_matrix_restabilizer': 474.98266494594213, 'key_to_the_endless_chamber': 667.00235973163603, 'darkmoon_card_hurricane': 574.43660670227723, 'prestors_talisman_of_machination': 514.9641993125025, 'heroic_tias_grace': 921.55992320118833, 'heroic_the_hungerer': 624.18971139824248, 'heroic_grace_of_the_herald': 296.43036386615546, 'heroic_left_eye_of_rajh': 856.74748378382196, 'unheeded_warning': 355.62716261007591, 'demon_panther': 639.76560274750693, 'ancient_petrified_seed': 823.98718988209362, 'tias_grace': 812.50374413079533, 'the_hungerer': 552.55766135612828, 'fluid_death': 1030.7860661585564, 'aellas_bottle': 261.62131448797373, 'schnottz_medallion_of_command': 201.38162277767213, 'heroic_ancient_petrified_seed': 968.7049072348716, 'grace_of_the_herald': 160.17640714171478, 'heroic_skardyns_grace': 276.69414114061783, 'the_twilight_blade': 0.0, 'essence_of_the_cyclone': 333.87419930187764, 'corens_chilled_chromium_coaster': 0.0, 'heroic_prestors_talisman_of_machination': 584.95789380545591, 'unsolvable_riddle': 721.00080759447292, 'heroic_key_to_the_endless_chamber': 885.55917292134859, 'skardyns_grace': 244.56614433856777}
+2011-06-06 12:19:16-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:19:15 +0000] "POST /engine-4.2 HTTP/1.1" 200 2724 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:19:32-0700 [HTTPChannel,0,192.168.1.100] Unhandled Error
+	Traceback (most recent call last):
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/http.py", line 1585, in _finishRequestBody
+	    self.allContentReceived()
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/http.py", line 1641, in allContentReceived
+	    req.requestReceived(command, path, version)
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/http.py", line 807, in requestReceived
+	    self.process()
+	  File "vendor/WebSocket.py", line 39, in process
+	    return Request.process(self)
+	--- <exception caught here> ---
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/server.py", line 125, in process
+	    self.render(resrc)
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/server.py", line 132, in render
+	    body = resrc.render(self)
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/resource.py", line 210, in render
+	    return m(request)
+	  File "/var/www/roguesim/backend/app/server.py", line 369, in render_POST
+	    return json.dumps( response )
+	  File "/var/www/roguesim/backend/app/server.py", line 313, in get_all
+	    calculator = self.setup(input)
+	  File "/var/www/roguesim/backend/app/server.py", line 250, in setup
+	    _procs = procs.ProcsList(*proclist)
+	  File "engine-4.2/shadowcraft/objects/procs.py", line 102, in __init__
+	    
+	shadowcraft.objects.procs.InvalidProcException: No data for proc the_hungerer
+	
+2011-06-06 12:19:32-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:19:31 +0000] "POST /engine-4.2 HTTP/1.1" 500 25374 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:19:57-0700 [HTTPChannel,0,192.168.1.100] Unhandled Error
+	Traceback (most recent call last):
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/http.py", line 1585, in _finishRequestBody
+	    self.allContentReceived()
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/http.py", line 1641, in allContentReceived
+	    req.requestReceived(command, path, version)
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/http.py", line 807, in requestReceived
+	    self.process()
+	  File "vendor/WebSocket.py", line 39, in process
+	    return Request.process(self)
+	--- <exception caught here> ---
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/server.py", line 125, in process
+	    self.render(resrc)
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/server.py", line 132, in render
+	    body = resrc.render(self)
+	  File "/usr/lib/python2.6/site-packages/Twisted-10.2.0-py2.6-linux-i686.egg/twisted/web/resource.py", line 210, in render
+	    return m(request)
+	  File "/var/www/roguesim/backend/app/server.py", line 369, in render_POST
+	    return json.dumps( response )
+	  File "/var/www/roguesim/backend/app/server.py", line 313, in get_all
+	    calculator = self.setup(input)
+	  File "/var/www/roguesim/backend/app/server.py", line 250, in setup
+	    _procs = procs.ProcsList(*proclist)
+	  File "engine-4.2/shadowcraft/objects/procs.py", line 102, in __init__
+	    
+	shadowcraft.objects.procs.InvalidProcException: No data for proc heroic_the_hungerer
+	
+2011-06-06 12:19:57-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:19:56 +0000] "POST /engine-4.2 HTTP/1.1" 500 25395 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:23:51-0700 [-] Received SIGTERM, shutting down.
+2011-06-06 12:23:51-0700 [-] (TCP Port 8881 Closed)
+2011-06-06 12:23:51-0700 [-] Stopping factory <vendor.WebSocket.WebSocketSite instance at 0x89c40ec>
+2011-06-06 12:23:51-0700 [-] Main loop terminated.
+2011-06-06 12:23:51-0700 [-] Server Shut Down.
+2011-06-06 12:23:52-0700 [-] Log opened.
+2011-06-06 12:23:52-0700 [-] twistd 10.2.0 (/usr/bin/python 2.6.0) starting up.
+2011-06-06 12:23:52-0700 [-] reactor class: twisted.internet.selectreactor.SelectReactor.
+2011-06-06 12:23:52-0700 [-] vendor.WebSocket.WebSocketSite starting on 8881
+2011-06-06 12:23:52-0700 [-] Starting factory <vendor.WebSocket.WebSocketSite instance at 0x99f40ec>
+2011-06-06 12:24:06-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:24:06 +0000] "POST /engine-4.2 HTTP/1.1" 200 2775 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:24:10-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:24:10 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:24:14-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:24:13 +0000] "POST /engine-4.2 HTTP/1.1" 200 2791 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:24:21-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:24:21 +0000] "POST /engine-4.2 HTTP/1.1" 200 2805 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:24:25-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:24:25 +0000] "POST /engine-4.2 HTTP/1.1" 200 2775 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:27:47-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:27:47 +0000] "POST /engine-4.2 HTTP/1.1" 200 2775 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:27:52-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:27:51 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:28:04-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:28:03 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:30:40-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:30:38 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:31:57-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:31:56 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:32:12-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:32:11 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:32:38-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:32:38 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:32:48-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:32:47 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:33:37-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:33:35 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:34:22-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:34:21 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:34:42-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:34:41 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:37:23-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:37:22 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:37:33-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:37:32 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:37:41-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:37:40 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:38:14-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:38:13 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:38:34-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:38:32 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:38:46-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:38:45 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:38:50-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:38:49 +0000] "POST /engine-4.2 HTTP/1.1" 200 2812 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:38:55-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:38:54 +0000] "POST /engine-4.2 HTTP/1.1" 200 2724 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:39:09-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:39:08 +0000] "POST /engine-4.2 HTTP/1.1" 200 2724 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:39:09-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:39:09 +0000] "POST /engine-4.2 HTTP/1.1" 200 2724 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:39:18-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:39:17 +0000] "POST /engine-4.2 HTTP/1.1" 200 2799 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:39:22-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:39:21 +0000] "POST /engine-4.2 HTTP/1.1" 200 2799 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:39:23-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:39:22 +0000] "POST /engine-4.2 HTTP/1.1" 200 2799 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:39:28-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:39:27 +0000] "POST /engine-4.2 HTTP/1.1" 200 2839 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:39:29-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:39:28 +0000] "POST /engine-4.2 HTTP/1.1" 200 2765 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:39:30-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:39:29 +0000] "POST /engine-4.2 HTTP/1.1" 200 2765 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:39:36-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:39:35 +0000] "POST /engine-4.2 HTTP/1.1" 200 2810 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:40:02-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:40:01 +0000] "POST /engine-4.2 HTTP/1.1" 200 2810 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:40:31-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:40:31 +0000] "POST /engine-4.2 HTTP/1.1" 200 2810 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:40:34-0700 [HTTPChannel,0,192.168.1.100] 192.168.1.100 - - [06/Jun/2011:19:40:34 +0000] "POST /engine-4.2 HTTP/1.1" 200 2810 "http://192.168.1.102:3194/us/cenarion-circle/adrine/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.77 Safari/534.30"
+2011-06-06 12:41:06-0700 [-] Received SIGTERM, shutting down.
+2011-06-06 12:41:06-0700 [-] (TCP Port 8881 Closed)
+2011-06-06 12:41:06-0700 [-] Stopping factory <vendor.WebSocket.WebSocketSite instance at 0x99f40ec>
+2011-06-06 12:41:06-0700 [-] Main loop terminated.
+2011-06-06 12:41:06-0700 [-] Server Shut Down.

@@ -902,6 +902,12 @@ class ShadowcraftGear
 
     offsets
 
+  patch_max_ilevel = (patch) ->
+    switch patch
+      when 41 then 372
+      when 42 then 500
+      else 0
+
   # Click a name in a slot, for binding to event delegation
   clickSlotName = ->
     buf = clickSlot(this, "item_id")
@@ -939,12 +945,16 @@ class ShadowcraftGear
     buffer = ""
     requireDagger = needsDagger()
 
+    minIEP = loc[loc.length-1].__ep
+
     for l in loc
       continue if l.__ep < 1
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && !requireDagger && l.subclass == 15
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
-      max ||= l.__ep
+      continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
+
+      max ||= l.__ep - minIEP
 
       iEP = l.__ep.toFixed(1)
 
@@ -960,7 +970,7 @@ class ShadowcraftGear
         ttid: ttid
         desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" }"
         search: l.name
-        percent: iEP / max * 100
+        percent: (iEP - minIEP) / max * 100
         ep: iEP
       )
 

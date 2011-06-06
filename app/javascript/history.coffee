@@ -172,7 +172,7 @@ class ShadowcraftHistory
   rotationOptionsMap = [
     "min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab"
     "use_rupture", "ksp_immediately", "use_revealing_strike"
-    "clip_recuperate"
+    "clip_recuperate", "use_hemorrhage"
   ]
   rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, true, false, 'true', 'false', 'never', 'always', 'sometimes']
 
@@ -218,6 +218,7 @@ class ShadowcraftHistory
         if data.options.general.tricks then 1 else 0
         if data.options.general.receive_tricks then 1 else 0
         if data.options.general.prepot then 1 else 0
+        data.options.general.patch
       ]
       options.push base36Encode(general)
 
@@ -269,7 +270,7 @@ class ShadowcraftHistory
       general = base36Decode options[1]
       d.options.general =
         level:                general[0]
-        race:                 unmap(general[1], raceMap)
+        race:                 unmap(general[1], raceMap) 
         duration:             general[2]
         mh_poison:            unmap(general[3], poisonMap)
         oh_poison:            unmap(general[4], poisonMap)
@@ -278,6 +279,7 @@ class ShadowcraftHistory
         tricks:               general[7] != 0
         receive_tricks:       general[8] != 0
         prepot:               general[9] != 0
+        patch:                general[10] || '4.1'
 
       d.options.buffs = {}
       for v, i in options[2]
