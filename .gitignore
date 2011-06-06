@@ -5,3 +5,4 @@ tmp/**/*
 public/items.js
 stats.yml
 public/stylesheets/compiled
+backend/log/*.log

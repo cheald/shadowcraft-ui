@@ -384,6 +384,7 @@ class ShadowcraftGear
   epSort = (list, skipSort, slot) ->
     for item in list
       item.__ep = get_ep(item, false, slot) if item
+      item.__ep = 0 if isNaN(item.__ep)
     list.sort(__epSort) unless skipSort
 
   needsDagger = ->
@@ -938,14 +939,14 @@ class ShadowcraftGear
         l.__reforgeEP = 0
 
       l.__gearEP = get_ep(l, null, slot, gear_offset)
+      l.__gearEP = 0 if isNaN l.__gearEP
       l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP
 
     loc.sort(__epSort)
-    max = null
+    maxIEP = 1
+    minIEP = 0
     buffer = ""
     requireDagger = needsDagger()
-
-    minIEP = loc[loc.length-1].__ep
 
     for l in loc
       continue if l.__ep < 1
@@ -953,8 +954,18 @@ class ShadowcraftGear
       continue if (slot == 15) && !requireDagger && l.subclass == 15
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
+      unless isNaN l.__ep 
+        maxIEP = l.__ep if maxIEP <= 1
+        minIEP = l.__ep
 
-      max ||= l.__ep - minIEP
+    maxIEP -= minIEP
+
+    for l in loc
+      continue if l.__ep < 1
+      continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
+      continue if (slot == 15) && !requireDagger && l.subclass == 15
+      continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
+      continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
 
       iEP = l.__ep.toFixed(1)
 
@@ -970,7 +981,7 @@ class ShadowcraftGear
         ttid: ttid
         desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" }"
         search: l.name
-        percent: (iEP - minIEP) / max * 100
+        percent: (iEP - minIEP) / maxIEP * 100
         ep: iEP
       )
 

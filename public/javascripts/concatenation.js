@@ -1158,7 +1158,7 @@
         patch: {
           type: "select",
           name: "Patch",
-          'default': '4.1',
+          'default': 41,
           datatype: 'integer',
           options: {
             41: '4.1',
@@ -2536,6 +2536,9 @@
         if (item) {
           item.__ep = get_ep(item, false, slot);
         }
+        if (isNaN(item.__ep)) {
+          item.__ep = 0;
+        }
       }
       if (!skipSort) {
         return list.sort(__epSort);
@@ -3219,7 +3222,7 @@
       }
     };
     clickSlotName = function() {
-      var $slot, GemList, buf, buffer, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, max, minIEP, rec, reforge_offset, requireDagger, selected_id, slot, ttid, _i, _j, _len, _len2;
+      var $slot, GemList, buf, buffer, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, maxIEP, minIEP, rec, reforge_offset, requireDagger, selected_id, slot, ttid, _i, _j, _k, _len, _len2, _len3;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -3244,13 +3247,16 @@
           l.__reforgeEP = 0;
         }
         l.__gearEP = get_ep(l, null, slot, gear_offset);
+        if (isNaN(l.__gearEP)) {
+          l.__gearEP = 0;
+        }
         l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP;
       }
       loc.sort(__epSort);
-      max = null;
+      maxIEP = 1;
+      minIEP = 0;
       buffer = "";
       requireDagger = needsDagger();
-      minIEP = loc[loc.length - 1].__ep;
       for (_j = 0, _len2 = loc.length; _j < _len2; _j++) {
         l = loc[_j];
         if (l.__ep < 1) {
@@ -3268,7 +3274,31 @@
         if (l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)) {
           continue;
         }
-        max || (max = l.__ep - minIEP);
+        if (!isNaN(l.__ep)) {
+          if (maxIEP <= 1) {
+            maxIEP = l.__ep;
+          }
+          minIEP = l.__ep;
+        }
+      }
+      maxIEP -= minIEP;
+      for (_k = 0, _len3 = loc.length; _k < _len3; _k++) {
+        l = loc[_k];
+        if (l.__ep < 1) {
+          continue;
+        }
+        if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
+          continue;
+        }
+        if ((slot === 15) && !requireDagger && l.subclass === 15) {
+          continue;
+        }
+        if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
+          continue;
+        }
+        if (l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)) {
+          continue;
+        }
         iEP = l.__ep.toFixed(1);
         if (l.id > 100000) {
           ttid = Math.floor(l.id / 1000);
@@ -3282,7 +3312,7 @@
           ttid: ttid,
           desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : ""),
           search: l.name,
-          percent: (iEP - minIEP) / max * 100,
+          percent: (iEP - minIEP) / maxIEP * 100,
           ep: iEP
         });
       }
