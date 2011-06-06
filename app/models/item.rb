@@ -137,7 +137,11 @@ class Item
     gem_ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i
 
     gem_ids.each do |id|
-      Item.find_or_create_by options.merge(:remote_id => id)
+      begin
+        Item.find_or_create_by options.merge(:remote_id => id)
+      rescue WowArmory::MissingDocument => e
+        puts e.message
+      end
     end
     nil
   end
