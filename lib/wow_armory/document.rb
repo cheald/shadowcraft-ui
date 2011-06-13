@@ -31,7 +31,7 @@ module WowArmory
         result = Curl::Easy.http_get(url) do |curl|
           curl.timeout = 7
           curl.headers["User-Agent"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13"
-          curl.cookies = "int-WOW-arenapass2011=1"
+          curl.cookies = "int-WOW-arenapass2011=1;int-WOW-epic-savings-promo"
         end
       rescue Curl::Err::TimeoutError => e
         if tries < 3
