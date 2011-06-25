@@ -24,7 +24,7 @@ watch( "(#{scripts.join("|")})\.coffee" ) do |md|
   end
 
   path = File.join(File.dirname(__FILE__), "..", "..", "public", "javascripts")
-  cmd = "coffee -c -j -o #{path} #{scripts.map {|s| "#{s}.coffee"}.join " "}"
+  cmd = "coffee -c -j concatenation.js -o #{path} #{scripts.map {|s| "#{s}.coffee"}.join " "}"
   puts "Compiling package: #{cmd}"
   `#{cmd}`
 end
