@@ -261,7 +261,7 @@
       out = [];
       i = 0;
       len = obj.length;
-      for (i = 0; (0 <= len ? i <= len : i >= len); (0 <= len ? i += 1 : i -= 1)) {
+      for (i = 0; 0 <= len ? i <= len : i >= len; 0 <= len ? i++ : i--) {
         out[i] = arguments.callee(obj[i]);
       }
       return out;
@@ -791,7 +791,7 @@
     };
     decompress_handlers = {
       "1": function(data) {
-        var d, gear, general, i, id, index, k, options, rotation, slot, v, _len, _len2, _len3, _len4, _ref, _ref2, _ref3;
+        var d, gear, general, i, id, index, k, options, rotation, slot, v, _len, _len2, _len3, _len4, _ref, _ref2, _ref3, _step, _step2;
         d = {
           gear: {},
           activeTalents: ShadowcraftTalents.decodeTalents(data[2]),
@@ -801,7 +801,7 @@
           active: data[6]
         };
         gear = base36Decode(data[1]);
-        for (index = 0, _len = gear.length; index < _len; index += 6) {
+        for (index = 0, _len = gear.length, _step = 6; index < _len; index += _step) {
           id = gear[index];
           slot = (index / 6).toString();
           d.gear[slot] = {
@@ -849,7 +849,7 @@
         }
         rotation = base36Decode(options[3]);
         d.options.rotation = {};
-        for (i = 0, _len4 = rotation.length; i < _len4; i += 2) {
+        for (i = 0, _len4 = rotation.length, _step2 = 2; i < _len4; i += _step2) {
           v = rotation[i];
           d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i + 1], rotationValueMap);
         }
@@ -1548,14 +1548,14 @@
     };
     talentMap = "0zMcmVokRsaqbdrfwihuGINALpTjnyxtgevElBCDFHJKOPQSUWXYZ123456789";
     ShadowcraftTalents.encodeTalents = function(s) {
-      var c, i, index, l, offset, size, str, sub, _len, _len2;
+      var c, i, index, l, offset, size, str, sub, _len, _len2, _step;
       str = "";
       offset = 0;
       for (index = 0, _len = TREE_SIZE.length; index < _len; index++) {
         size = TREE_SIZE[index];
         sub = s.substr(offset, size).replace(/0+$/, "");
         offset += size;
-        for (i = 0, _len2 = sub.length; i < _len2; i += 2) {
+        for (i = 0, _len2 = sub.length, _step = 2; i < _len2; i += _step) {
           c = sub[i];
           l = parseInt(c, 10) * 5 + parseInt(sub[i + 1] || 0, 10);
           str += talentMap[l];
@@ -1573,7 +1573,7 @@
       for (index = 0, _len = trees.length; index < _len; index++) {
         tree = trees[index];
         treestr = "";
-        for (i = 0, _ref = Math.floor(TREE_SIZE[index] / 2); (0 <= _ref ? i <= _ref : i >= _ref); (0 <= _ref ? i += 1 : i -= 1)) {
+        for (i = 0, _ref = Math.floor(TREE_SIZE[index] / 2); 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
           character = tree[i];
           if (character) {
             idx = talentMap.indexOf(character);
@@ -1692,7 +1692,7 @@
         success = true;
       } else if (dir === -1) {
         prequal = 0;
-        for (tier = 0, _ref = position.row; (0 <= _ref ? tier <= _ref : tier >= _ref); (0 <= _ref ? tier += 1 : tier -= 1)) {
+        for (tier = 0, _ref = position.row; 0 <= _ref ? tier <= _ref : tier >= _ref; 0 <= _ref ? tier++ : tier--) {
           prequal += tree.rowPoints[tier];
         }
         if (tree.rowPoints[position.row + 1] && tree.rowPoints[position.row + 1] > 0) {
@@ -2172,7 +2172,6 @@
     $altslots = null;
     $popup = null;
     statOffset = function(gear, facet) {
-      var statOffset;
       statOffset = {};
       if (gear) {
         sumSlot(gear, statOffset, facet);
@@ -2797,8 +2796,8 @@
       return list;
     };
     /*
-    # Reforge helpers
-    */
+      # Reforge helpers
+      */
     canReforge = function(item) {
       var stat;
       if (item.ilvl < 200) {
@@ -2945,8 +2944,8 @@
       return Shadowcraft.Gear.updateDisplay();
     };
     /*
-    # View helpers
-    */
+      # View helpers
+      */
     ShadowcraftGear.prototype.updateDisplay = function(skipUpdate) {
       var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, data, enchant, enchantable, from, gear, gem, gems, i, item, opt, reforgable, reforge, slotIndex, slotSet, socket, ssi, stat, to, _base, _i, _len, _len2, _len3, _ref, _ref2;
       this.updateStatsWindow();
@@ -3570,10 +3569,11 @@
         }
         name = "Rogue: " + ShadowcraftTalents.GetPrimaryTreeName();
         pawnstr = "(Pawn:v1:\"" + name + "\":" + (stats.join(",")) + ")";
-        $("#generalDialog").html("<textarea style='width: 450px; height: 300px;'>" + pawnstr + "</textarea>").attr("title", "Pawn Import String");
+        $("#generalDialog").html("<textarea style='width: 450px; height: 300px;'>" + pawnstr + "</textarea>");
         $("#generalDialog").dialog({
           modal: true,
-          width: 500
+          width: 500,
+          title: "Pawn Import String"
         });
         return false;
       });
@@ -3725,6 +3725,41 @@
       $("#filter, #reforge").click(function(e) {
         e.cancelBubble = true;
         return e.stopPropagation();
+      });
+      $("#exportReforging").click(function() {
+        var ItemLookup, amt, cols, data, from, gear, item, reforge, s, slot, to, _i, _j, _len, _len2;
+        data = Shadowcraft.Data;
+        ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
+        reforge = [];
+        for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
+          slot = SLOT_ORDER[_i];
+          gear = data.gear[slot];
+          if (gear) {
+            item = ItemLookup[gear.item_id];
+            if (gear.reforge) {
+              to = getReforgeTo(gear.reforge);
+              from = getReforgeFrom(gear.reforge);
+              amt = reforgeAmount(item, from);
+              reforge.push("Reforging " + item.name + " to -" + amt + " " + (titleize(from)) + " / +" + amt + " " + (titleize(to)));
+            } else {
+              reforge.push("Removing reforge on " + item.name);
+            }
+          }
+          cols = 40;
+          for (_j = 0, _len2 = reforge.length; _j < _len2; _j++) {
+            s = reforge[_j];
+            if (s.length > cols) {
+              cols = s.length;
+            }
+          }
+        }
+        $("#generalDialog").html("<textarea rows='" + reforge.length + "' cols='" + cols + "' style='width: auto; height: auto;'>" + (reforge.join('\n')) + "</textarea>");
+        $("#generalDialog").dialog({
+          modal: true,
+          width: 'auto',
+          title: "Reforgerade Import String"
+        });
+        return false;
       });
       Shadowcraft.Options.bind("update", function(opt, val) {
         if (opt === "professions.blacksmithing") {
