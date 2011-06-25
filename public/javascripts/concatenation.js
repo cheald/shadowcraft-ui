@@ -3740,7 +3740,7 @@
               to = getReforgeTo(gear.reforge);
               from = getReforgeFrom(gear.reforge);
               amt = reforgeAmount(item, from);
-              reforge.push("Reforging " + item.name + " to -" + amt + " " + (titleize(from)) + " / +" + amt + " " + (titleize(to)));
+              reforge.push("Reforged " + item.name + " to -" + amt + " " + (titleize(from)) + " / +" + amt + " " + (titleize(to)));
             } else {
               reforge.push("Removing reforge on " + item.name);
             }
@@ -3753,7 +3753,7 @@
             }
           }
         }
-        $("#generalDialog").html("<textarea rows='" + reforge.length + "' cols='" + cols + "' style='width: auto; height: auto;'>" + (reforge.join('\n')) + "</textarea>");
+        $("#generalDialog").html("<textarea rows='20' cols='" + cols + "' style='width: auto; height: auto;'>" + (reforge.join('\n')) + "</textarea>");
         $("#generalDialog").dialog({
           modal: true,
           width: 'auto',
