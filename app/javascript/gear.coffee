@@ -1231,8 +1231,8 @@ class ShadowcraftGear
         stats.push "#{weight}=#{val}"
       name = "Rogue: " + ShadowcraftTalents.GetPrimaryTreeName()
       pawnstr = "(Pawn:v1:\"#{name}\":#{stats.join(",")})"
-      $("#generalDialog").html("<textarea style='width: 450px; height: 300px;'>#{pawnstr}</textarea>").attr("title", "Pawn Import String")
-      $("#generalDialog").dialog({ modal: true, width: 500 })
+      $("#generalDialog").html("<textarea style='width: 450px; height: 300px;'>#{pawnstr}</textarea>")
+      $("#generalDialog").dialog({ modal: true, width: 500, title: "Pawn Import String" })
       return false
 
 
@@ -1358,6 +1358,29 @@ class ShadowcraftGear
     $("#filter, #reforge").click (e) ->
       e.cancelBubble = true
       e.stopPropagation()
+
+    $("#exportReforging").click ->
+      data = Shadowcraft.Data
+      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+      reforge = []
+      for slot in SLOT_ORDER
+        gear = data.gear[slot]
+        if gear
+          item = ItemLookup[gear.item_id]
+          if gear.reforge
+            to = getReforgeTo(gear.reforge)
+            from = getReforgeFrom(gear.reforge)
+            amt = reforgeAmount(item, from)
+            reforge.push "Reforged #{item.name} to -#{amt} #{titleize(from)} / +#{amt} #{titleize(to)}"
+          else
+            reforge.push "Removing reforge on #{item.name}"
+
+        cols = 40
+        for s in reforge
+          cols = s.length if s.length > cols
+      $("#generalDialog").html("<textarea rows='20' cols='#{cols}' style='width: auto; height: auto;'>#{reforge.join('\n')}</textarea>")
+      $("#generalDialog").dialog({ modal: true, width: 'auto', title: "Reforgerade Import String"})
+      false
 
     Shadowcraft.Options.bind "update", (opt, val) ->
       if opt == "professions.blacksmithing"
