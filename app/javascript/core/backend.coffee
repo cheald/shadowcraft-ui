@@ -3,7 +3,7 @@ class ShadowcraftBackend
 
   get_engine = ->
     switch Shadowcraft.Data.options.general.patch
-      when 42
+      when 4201
         port = 8881
         endpoint = "engine-4.2"
       else
@@ -22,11 +22,6 @@ class ShadowcraftBackend
   boot: ->
     self = this
     Shadowcraft.bind("update", -> self.recompute())
-    # @ws = $.websocket(WS_ENGINE, {
-    #  error: (e)-> console.log(e)
-    #  events:
-    #    response: (e) -> self.handleRecompute(e.data)
-    # })
     this
 
   buildPayload: ->
@@ -84,7 +79,7 @@ class ShadowcraftBackend
         statSummary.mastery_rating || 0
       ],
       gly: glyph_list,
-      pro: professions 
+      pro: professions
 
     if mh?
       payload.mh = [

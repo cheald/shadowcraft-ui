@@ -1,4 +1,4 @@
-$ = window.jQuery
+$ = window.jQuery 
 
 class ShadowcraftApp
   RATING_CONVERSIONS = {
@@ -19,7 +19,7 @@ class ShadowcraftApp
       spell_hit: 59.4204
       expertise_rating: 17.4163
     84:
-      hit_rating: 91.4738
+      hit_rating: 91.4738 
       spell_hit: 78.0218
       expertise_rating: 22.8685
     85:

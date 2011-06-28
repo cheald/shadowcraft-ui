@@ -79,10 +79,10 @@ class ShadowcraftGear
   $popup = null
 
   statOffset = (gear, facet) ->
-    statOffset = {}
+    offsets = {}
     if gear
-      sumSlot(gear, statOffset, facet)
-    return statOffset
+      sumSlot(gear, offsets, facet)
+    return offsets
 
   reforgeAmount = (item, stat) ->
     Math.floor(item.stats[stat] * REFORGE_FACTOR)
@@ -904,10 +904,7 @@ class ShadowcraftGear
     offsets
 
   patch_max_ilevel = (patch) ->
-    switch patch
-      when 41 then 372
-      when 42 then 500
-      else 0
+    500
 
   # Click a name in a slot, for binding to event delegation
   clickSlotName = ->
@@ -923,6 +920,7 @@ class ShadowcraftGear
 
     slot = parseInt($(this).parent().data("slot"), 10)
 
+    console.log statOffset
     reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
     gear_offset = statOffset(gear[slot], FACETS.ITEM)
     gem_offset = statOffset(gear[slot], FACETS.GEMS)
@@ -954,7 +952,7 @@ class ShadowcraftGear
       continue if (slot == 15) && !requireDagger && l.subclass == 15
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
-      unless isNaN l.__ep 
+      unless isNaN l.__ep
         maxIEP = l.__ep if maxIEP <= 1
         minIEP = l.__ep
 

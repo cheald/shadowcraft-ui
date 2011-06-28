@@ -107,7 +107,7 @@ class ShadowcraftOptions
     data = Shadowcraft.Data
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Patch", 'default': 41, datatype: 'integer', options: {41: '4.1', 42: '4.2'}},
+      patch: {type: "select", name: "Engine", 'default': 42, datatype: 'integer', options: {42: '4.2', 4201: '4.2 (experimental)'}},
       level: {type: "input", name: "Level", 'default': 85, datatype: 'integer', min: 85, max: 85},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin"], name: "Race", 'default': "Human"}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
@@ -155,7 +155,7 @@ class ShadowcraftOptions
       potion_of_the_tolvir: {name: "Combat potion (Potion of the Tol'vir)", 'default': true, datatype: 'bool'}
       tricks: {name: "Tricks of the Trade on cooldown", 'default': true, datatype: 'bool'}
       receive_tricks: {name: "Receiving Tricks on cooldown from another rogue", 'default': true, datatype: 'bool'}
-    }) 
+    })
 
     @setup("#settings section.mutilate .settings", "rotation", {
       min_envenom_size_mutilate: {type: "select", name: "Min CP/Envenom > 35%", options: [5,4,3,2,1], 'default': 4, desc: "CP for Envenom when using Mutilate", datatype: 'integer', min: 1, max: 5}

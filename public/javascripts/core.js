@@ -341,7 +341,7 @@
     get_engine = function() {
       var endpoint, port;
       switch (Shadowcraft.Data.options.general.patch) {
-        case 42:
+        case 4201:
           port = 8881;
           endpoint = "engine-4.2";
           break;
@@ -839,7 +839,7 @@
           tricks: general[7] !== 0,
           receive_tricks: general[8] !== 0,
           prepot: general[9] !== 0,
-          patch: general[10] || '4.1'
+          patch: general[10] || 42
         };
         d.options.buffs = {};
         _ref3 = options[2];
@@ -1157,12 +1157,12 @@
       this.setup("#settings #general", "general", {
         patch: {
           type: "select",
-          name: "Patch",
-          'default': 41,
+          name: "Engine",
+          'default': 42,
           datatype: 'integer',
           options: {
-            41: '4.1',
-            42: '4.2'
+            42: '4.2',
+            4201: '4.2 (experimental)'
           }
         },
         level: {
@@ -2172,11 +2172,12 @@
     $altslots = null;
     $popup = null;
     statOffset = function(gear, facet) {
-      statOffset = {};
+      var offsets;
+      offsets = {};
       if (gear) {
-        sumSlot(gear, statOffset, facet);
+        sumSlot(gear, offsets, facet);
       }
-      return statOffset;
+      return offsets;
     };
     reforgeAmount = function(item, stat) {
       return Math.floor(item.stats[stat] * REFORGE_FACTOR);
@@ -3211,14 +3212,7 @@
       return offsets;
     };
     patch_max_ilevel = function(patch) {
-      switch (patch) {
-        case 41:
-          return 372;
-        case 42:
-          return 500;
-        default:
-          return 0;
-      }
+      return 500;
     };
     clickSlotName = function() {
       var $slot, GemList, buf, buffer, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, maxIEP, minIEP, rec, reforge_offset, requireDagger, selected_id, slot, ttid, _i, _j, _k, _len, _len2, _len3;
@@ -3231,6 +3225,7 @@
       gear = Shadowcraft.Data.gear;
       loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
       slot = parseInt($(this).parent().data("slot"), 10);
+      console.log(statOffset);
       reforge_offset = statOffset(gear[slot], FACETS.REFORGE);
       gear_offset = statOffset(gear[slot], FACETS.ITEM);
       gem_offset = statOffset(gear[slot], FACETS.GEMS);

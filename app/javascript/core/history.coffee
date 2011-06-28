@@ -270,7 +270,7 @@ class ShadowcraftHistory
       general = base36Decode options[1]
       d.options.general =
         level:                general[0]
-        race:                 unmap(general[1], raceMap) 
+        race:                 unmap(general[1], raceMap)
         duration:             general[2]
         mh_poison:            unmap(general[3], poisonMap)
         oh_poison:            unmap(general[4], poisonMap)
@@ -279,7 +279,7 @@ class ShadowcraftHistory
         tricks:               general[7] != 0
         receive_tricks:       general[8] != 0
         prepot:               general[9] != 0
-        patch:                general[10] || '4.1'
+        patch:                general[10] || 42
 
       d.options.buffs = {}
       for v, i in options[2]

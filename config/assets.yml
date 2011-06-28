@@ -21,7 +21,7 @@ javascripts:
     - public/javascripts/convertBase.js
     - public/javascripts/deflate.js
     - public/javascripts/inflate.js
-    - public/javascripts/concatenation.js
+    - public/javascripts/core.js
 stylesheets:
   app:
     - public/stylesheets/custom-theme/jquery-ui-1.8.5.custom.css

@@ -18,6 +18,8 @@ gem "json"
 gem "jammit"
 gem "fastercsv"
 gem "curb"
+gem "therubyracer"
+gem "coffee-script"
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
