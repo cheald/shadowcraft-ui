@@ -951,6 +951,7 @@ class ShadowcraftGear
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && !requireDagger && l.subclass == 15
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
+      continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
       unless isNaN l.__ep
         maxIEP = l.__ep if maxIEP <= 1
@@ -963,6 +964,7 @@ class ShadowcraftGear
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && !requireDagger && l.subclass == 15
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
+      continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
 
       iEP = l.__ep.toFixed(1)

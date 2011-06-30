@@ -767,7 +767,7 @@
           }
         }
         options.push(professions);
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, poisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, poisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl];
         options.push(base36Encode(general));
         buffs = [];
         _ref2 = ShadowcraftOptions.buffMap;
@@ -839,7 +839,8 @@
           tricks: general[7] !== 0,
           receive_tricks: general[8] !== 0,
           prepot: general[9] !== 0,
-          patch: general[10] || 42
+          patch: general[10] || 42,
+          min_ilvl: general[11] || 333
         };
         d.options.buffs = {};
         _ref3 = options[2];
@@ -1212,6 +1213,15 @@
           type: "input",
           desc: "Don't show items over this ilevel in gear lists",
           'default': 500,
+          datatype: 'integer',
+          min: 15,
+          max: 500
+        },
+        min_ilvl: {
+          name: "Min ILevel",
+          type: "input",
+          desc: "Don't show items under this ilevel in gear lists",
+          'default': 333,
           datatype: 'integer',
           min: 15,
           max: 500
@@ -3265,6 +3275,9 @@
         if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
           continue;
         }
+        if (l.ilvl < Shadowcraft.Data.options.general.min_ilvl) {
+          continue;
+        }
         if (l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)) {
           continue;
         }
@@ -3288,6 +3301,9 @@
           continue;
         }
         if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
+          continue;
+        }
+        if (l.ilvl < Shadowcraft.Data.options.general.min_ilvl) {
           continue;
         }
         if (l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)) {
