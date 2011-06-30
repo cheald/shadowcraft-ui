@@ -51,16 +51,18 @@ class ShadowcraftComputation:
         69150: 'heroic_matrix_restabilizer',
         71335: 'corens_chilled_chromium_coaster',
         66969: 'heart_of_the_vile',
-        65805: 'schnottz_medallion_of_command'
+        65805: 'schnottz_medallion_of_command',
+        68927: 'the_hungerer',
+        69112: 'heroic_the_hungerer',
+        70144: 'rickets_magnetic_fireball_proc'
     }
     
     gearBoosts = {
         68709: 'unsolvable_riddle',
         62468: 'unsolvable_riddle',
         62463: 'unsolvable_riddle',
-        68927: 'the_hungerer',
-        69112: 'heroic_the_hungerer',
-        52199: 'demon_panther'
+        52199: 'demon_panther',
+        70144: 'rickets_magnetic_fireball_proc'
     }
     
     trinketMap = dict(gearProcs, **gearBoosts)
