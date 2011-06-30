@@ -62,7 +62,7 @@ class ShadowcraftComputation:
         62468: 'unsolvable_riddle',
         62463: 'unsolvable_riddle',
         52199: 'demon_panther',
-        70144: 'rickets_magnetic_fireball_proc'
+        70144: 'rickets_magnetic_fireball'
     }
     
     trinketMap = dict(gearProcs, **gearBoosts)
