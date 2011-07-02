@@ -44,7 +44,7 @@ class ItemsController < ApplicationController
   def index_rogue
     @alt_items = []
     VALID_SLOTS.each do |i|
-      @alt_items += Item.where(:equip_location => i, :item_level.gte => 300).desc(:item_level).all
+      @alt_items += Item.where(:equip_location => i, :item_level.gte => 265).desc(:item_level).all
     end
 
     # This is really haxy, but it's flexible.
