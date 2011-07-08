@@ -43,8 +43,6 @@ class ShadowcraftComputation:
         55874: 'tias_grace',
         59520: 'unheeded_warning',
         71633: 'aellas_bottle',
-        56115: 'skardyns_grace',
-        56440: 'heroic_skardyns_grace',
         68994: 'matrix_restabilizer',
         69150: 'heroic_matrix_restabilizer',
         71335: 'corens_chilled_chromium_coaster',
@@ -60,6 +58,8 @@ class ShadowcraftComputation:
         62468: 'unsolvable_riddle',
         62463: 'unsolvable_riddle',
         52199: 'demon_panther',
+        56440: 'heroic_skardyns_grace',
+        56115: 'skardyns_grace',
         69199: 'heroic_ancient_petrified_seed',
         69001: 'ancient_petrified_seed',
         70144: 'rickets_magnetic_fireball'
