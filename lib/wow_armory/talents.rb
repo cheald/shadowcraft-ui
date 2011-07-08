@@ -6,7 +6,7 @@ module WowArmory
     include Document
     attr_accessor :talent_string, :glyphs
 
-    def initialize(character, realm, region = 'US', tree = 'primary')
+    def initialize(data, tree = 'primary')
       @character = character
       @realm = realm
       @region = region

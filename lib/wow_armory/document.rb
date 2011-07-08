@@ -11,19 +11,36 @@ module WowArmory
 
   module Document
     unloadable
-    def fetch(region, resource, parse = true)
-      host = case region.downcase
-      when "us"
-        "http://us.battle.net/wow/en/"
-      when "eu"
-        "http://eu.battle.net/wow/en/"
-      when "kr"
-        "http://kr.battle.net/wow/ko/"
-      when "tw"
-        "http://tw.battle.net/wow/zh/"
-      else
-        "http://us.battle.net/wow/en/"
+    def fetch(region, resource, parse = :xml)
+      host = case parse
+      when :json
+        case region.downcase
+          when "us"
+            "http://us.battle.net/"
+          when "eu"
+            "http://eu.battle.net/"
+          when "kr"
+            "http://kr.battle.net/"
+          when "tw"
+            "http://tw.battle.net/"
+          else
+            "http://us.battle.net/"
+        end
+      when :xml, false
+        case region.downcase
+          when "us"
+            "http://us.battle.net/wow/en/"
+          when "eu"
+            "http://eu.battle.net/wow/en/"
+          when "kr"
+            "http://kr.battle.net/wow/ko/"
+          when "tw"
+            "http://tw.battle.net/wow/zh/"
+          else
+            "http://us.battle.net/wow/en/"
+        end
       end
+
       url = (host + resource)
       puts "Reading #{url}"
       tries = 0
@@ -31,7 +48,6 @@ module WowArmory
         result = Curl::Easy.http_get(url) do |curl|
           curl.timeout = 7
           curl.headers["User-Agent"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13"
-          curl.cookies = "int-WOW-arenapass2011=1;int-WOW-epic-savings-promo"
         end
       rescue Curl::Err::TimeoutError => e
         if tries < 3
@@ -42,16 +58,18 @@ module WowArmory
         end
       end
 
-      puts result.inspect
-
       if result.response_code >= 400 and result.response_code < 500
         raise MissingDocument.new "Armory returned #{result.response_code}", result.response_code
       elsif result.response_code >= 500
         raise ArmoryError.new "Armory returned #{result.response_code}", result.response_code
       end
+
       @content = result.body_str
-      if parse
+      puts @content
+      if parse == :xml
         @document = Nokogiri::HTML @content
+      elsif parse == :json
+        @json = JSON::load @content
       else
         @content
       end

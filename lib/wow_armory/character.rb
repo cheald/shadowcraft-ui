@@ -2,26 +2,76 @@ module WowArmory
   class Character
     unloadable
 
-    POWER_TYPES = [:mana, :rage, :focus, :energy]
-    include Document
-    attr_accessor :realm, :region, :name, :player_class, :level, :achievement_points, :race, :spec, :battlegroup, :guild, :title, :average_ilvl,
-      :agility, :strength, :spirit, :stamina, :intellect, :mastery, :mainhand_dps, :offhand_dps, :mainhand_speed, :offhand_speed,
-      :attack_power, :health, :power, :power_type, :haste, :hit, :ranged_dps, :ranged_speed, :ranged_attack_power,
-      :spell_power, :spell_hit, :spell_crit, :spell_haste, :mana_regen, :combat_regen, :spell_penetration,
-      :dodge, :block, :parry, :resilience, :armor, :warnings, :portrait, :glyphs, :tree1, :tree2, :active_talents, :professions
+    CLASS_MAP = {
+      4 => "rogue"
+    }
 
+    POWER_TYPES = [:mana, :rage, :focus, :energy]
+    PROF_MAP = {
+      755 => "jewelcrafting",
+      164 => "blacksmithing",
+      165 => "leatherworking",
+      333 => "enchanting",
+      202 => "engineering",
+      171 => "alchemy",
+      197 => "tailoring",
+      773 => "inscription",
+      182 => "herbalism"
+    }
+
+    RACE_MAP = {
+      1 => 'human',
+      2 => 'orc',
+      3 => 'dwarf',
+      4 => 'night elf',
+      5 => 'undead',
+      6 => 'tauren',
+      7 => 'gnome',
+      8 => 'troll',
+      10 => 'blood elf',
+      11 => 'draenei'
+    }
+
+    SLOT_MAP = {
+      "head" => 0,
+      "neck" => 1,
+      "shoulder" => 2,
+      "back" => 14,
+      "chest" => 4,
+      "wrist" => 8,
+      "hands" => 9,
+      "waist" => 5,
+      "legs" => 6,
+      "feet" => 7,
+      "finger1" => 10,
+      "finger2" => 11,
+      "trinket1" => 12,
+      "trinket2" => 13,
+      "mainHand" => 15,
+      "offHand" => 16,
+      "ranged" => 17
+    }
+
+    include Document
+
+    attr_accessor :realm, :region, :name, :active_talents, :professions, :gear, :race, :level, :player_class, :talents, :portrait
 
     def initialize(character, realm, region = 'US')
       @character = character
       @realm = realm
       @region = region
-      fetch region, "character/%s/%s/advanced" % [normalize_realm(realm), normalize_character(character)]
-      populate!
+      fetch region, "api/wow/character/%s/%s?fields=talents,items,professions,appearance" % [normalize_realm(realm), normalize_character(character)], :json
 
-      self.tree1 = Talents.new character, realm, region, 'primary'
-      self.tree2 = Talents.new character, realm, region, 'secondary'
-      self.active_talents = @document.css("#summary-talents a.active").attr("href").to_s.match(/primary/) ? 0 : 1
-      self.professions = @document.css(".profession-details .name").map {|n| n.text.downcase }
+      populate!
+      
+      @json["talents"].each_with_index do |tree, index|
+        self.active_talents = index if tree["selected"]
+      end
+
+      self.professions = @json["professions"]["primary"].map do |prof|
+        puts prof.inspect
+        PROF_MAP[prof["id"]]
+      end
     end
 
     def gear
@@ -36,109 +86,50 @@ module WowArmory
         :active_talents => active_talents,
         :professions => professions,
         :player_class => player_class,
-        :talents => [
-          tree1.as_json,
-          tree2.as_json
-        ]
+        :talents => self.talents.map do |tree|
+          glyphs = tree["glyphs"].map do |glyphset, set|
+            set.map {|g| g["glyph"].to_i }
+          end.flatten
+          {:talents => tree["build"], :glyphs => glyphs}
+        end
       }
     end
 
     private
 
     def populate!
-      populate_info
-      # populate_stats
+      self.name = @json["name"]
+      self.level = @json["level"].to_i
+      self.realm = @json["realm"].to_i
+      self.player_class = CLASS_MAP[@json["class"].to_i] || "unknown"
+      self.race = RACE_MAP[@json["race"].to_i]
+      self.talents = @json["talents"]
+
+      self.portrait = "http://%s.battle.net/static-render/%s/%s" % [ @region.downcase, @region.downcase, @json["thumbnail"].gsub(/-avatar/, "-card") ]
+
       populate_gear
-      populate_portrait
-    end
-
-    def populate_info
-      prof = @document.css(".profile-info").first
-      self.name = value(".name a", prof)
-      self.level = value(".level strong", prof).to_i
-      self.realm = value(".realm", prof)
-      klass = attr(".class", "href", prof)
-      raise ArmoryError.new "Armory is offline", 404 if klass.blank?
-      self.player_class = klass.split("/").last
-      self.achievement_points = value(".achievements a").to_i
-      self.race = value(".race", prof)
-      self.spec = value(".spec", prof)
-      self.battlegroup = attr("#profile-info-realm", "data-battlegroup", prof)
-      self.guild = value(".guild a", prof)
-      self.title = value(".title-guild .title")
-      self.average_ilvl = value("#summary-averageilvl-best").to_i
-      self.warnings = nodes(".summary-audit-list li").map {|li| li.text.strip}
-    end
-
-    def populate_stats
-      stats = @document.css(".summary-bottom")
-      %w"agility strength stamina intellect spirit".each do |stat|
-        self.send(:"#{stat}=", value(".summary-stats-column li[data-id='#{stat}'] .value", stats).to_i)
-      end
-      power_index              = attr("#summary-power", "data-id", stats).match(/power-(\d)/)[1].to_i
-      self.power_type          = POWER_TYPES[power_index]
-      self.mastery             = value(".summary-stats-column li[data-id='mastery'] .value", stats).to_f
-      self.health              = value(".health .value", stats).to_i
-      self.power               = value("#summary-power .value", stats).to_i
-
-      damages                  = value("li[data-id='meleedps'] .value", stats).split(" / ")
-      self.mainhand_dps        = damages[0].to_f
-      self.offhand_dps         = damages[1].nil? ? nil : damages[1].to_f
-      self.ranged_dps          = value("li[data-id='rangeddps'] .value", stats).to_f
-
-      speeds                   = value("li[data-id='meleespeed'] .value", stats).split(" / ")
-      self.mainhand_speed      = speeds[0].to_f
-      self.offhand_speed       = speeds[1].nil? ? nil : speeds[1].to_f
-      self.ranged_speed        = (value("li[data-id='rangedspeed'] .value", stats) || 0).to_f
-
-      self.attack_power        = value("li[data-id='meleeattackpower'] .value", stats).to_i
-      self.ranged_attack_power = value("li[data-id='rangedattackpower'] .value", stats).to_i
-
-      self.spell_power         = value("li[data-id='spellpower'] .value", stats).to_i
-      self.spell_haste         = value("li[data-id='spellhaste'] .value", stats).to_f
-      self.spell_hit           = value("li[data-id='spellhit'] .value", stats).to_f
-      self.spell_crit          = value("li[data-id='spellcrit'] .value", stats).to_f
-      self.spell_penetration   = value("li[data-id='spellpenetration'] .value", stats).to_i
-      self.mana_regen          = value("li[data-id='manaregen'] .value", stats).to_i
-      self.combat_regen        = value("li[data-id='combatregen'] .value", stats).to_i
-
-      self.resilience          = value("li[data-id='resilience'] .value", stats).to_i
-      self.block               = value("li[data-id='block'] .value", stats).to_f
-      self.dodge               = value("li[data-id='dodge'] .value", stats).to_f
-      self.parry               = value("li[data-id='parry'] .value", stats).to_f
-      self.armor               = value("li[data-id='armor'] .value", stats).to_i
     end
 
     def populate_gear
       @gear = {}
-      nodes("#summary-inventory div.slot").each do |slot|
-        item_info = attr(".details .name a[data-item]", "data-item", slot)
-        item_name = value(".details .name a[data-item]", slot)
-        item_href = attr(".details .name a[data-item]", "href", slot) || ""
-        unless item_info.nil?
-          id   = slot.attr("data-id").to_i
-          info = Hash[*item_info.split("&").map {|i| v = i.split("=", 2); v[1] = v[1].to_i; v }.flatten]
-          info["item_id"] = item_href.split("/").last.to_i
-          info["enchant"] = info.delete "e"
-          info["reforge"] = info.delete "re"
-          info["name"] = item_name
-          if info["scaling"] = info.delete("s")
-            info["scaling"] = info["scaling"].to_i & 65535
-          end
+      @json["items"].each do |k, v|
+        next unless v.is_a? Hash
+        next if SLOT_MAP[k].nil?
+        tooltip = v["tooltipParams"] || {}
+        info = {
+          "item_id" => v["id"],
+          "name" => v["name"],
+          "enchant" => tooltip['enchant'],
+          "g0" => tooltip["gem0"],
+          "g1" => tooltip["gem1"],
+          "g2" => tooltip["gem2"],
+          "reforge" => tooltip["reforge"],
+          "scaling" => (tooltip["seed"] || 0).to_i & 65535,
+          "slot" => SLOT_MAP[k]
+        }
 
-          info["slot"] = id
-          %w(g0 g1 g2).each do |gem|
-            if !info[gem].blank? and info[gem].to_i != 0
-              info[gem] = WowArmory::Gem.new(info[gem]).item_id
-            end
-          end
-          @gear[id.to_s] = info
-        end
+        @gear[info["slot"].to_s] = info
       end
-    end
-
-    def populate_portrait
-      self.portrait = @content.match(/(http.*?\/static-render\/.*?)\?/ ).to_a.last.gsub(/profilemain/, "card")
     end
   end
 end
