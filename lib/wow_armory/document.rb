@@ -65,7 +65,6 @@ module WowArmory
       end
 
       @content = result.body_str
-      puts @content
       if parse == :xml
         @document = Nokogiri::HTML @content
       elsif parse == :json

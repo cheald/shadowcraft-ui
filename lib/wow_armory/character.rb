@@ -28,8 +28,10 @@ module WowArmory
       6 => 'tauren',
       7 => 'gnome',
       8 => 'troll',
+      9 => 'goblin',
       10 => 'blood elf',
-      11 => 'draenei'
+      11 => 'draenei',
+      22 => 'worgen'
     }
 
     SLOT_MAP = {
