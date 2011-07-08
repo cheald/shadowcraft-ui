@@ -35,6 +35,7 @@ class CharactersController < ApplicationController
     @character = Character.get!(params[:region], params[:realm], params[:name])
     begin
       @character.as_json
+      @character.properties['race'].downcase
     rescue
       @character.update_from_armory!(true)
     end

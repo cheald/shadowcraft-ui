@@ -65,7 +65,7 @@ module WowArmory
       fetch region, "api/wow/character/%s/%s?fields=talents,items,professions,appearance" % [normalize_realm(realm), normalize_character(character)], :json
 
       populate!
-      
+
       @json["talents"].each_with_index do |tree, index|
         self.active_talents = index if tree["selected"]
       end
@@ -114,6 +114,7 @@ module WowArmory
 
     def populate_gear
       @gear = {}
+      raise ArmoryError.new("No items found on character", 500) if @json["items"].nil?
       @json["items"].each do |k, v|
         next unless v.is_a? Hash
         next if SLOT_MAP[k].nil?
