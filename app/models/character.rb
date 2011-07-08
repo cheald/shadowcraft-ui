@@ -67,9 +67,9 @@ class Character
       self.portrait = char.portrait
 
       properties["gear"].each do |slot, item|
-        i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i, :random_suffix => item["r"])
+        i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i, :random_suffix => item["suffix"])
         if i.new_record?
-          unless item["r"].blank?
+          unless item["suffix"].blank?
             i.scaling = item["scaling"]
             i.item_name_override = item["name"]
           end
@@ -98,8 +98,8 @@ class Character
   def self.encode_random_items(items)
     items.clone.tap do |copy|
       copy.each do |key, item|
-        if r = item.delete("r")
-          item.delete "s"
+        if r = item.delete("suffix")
+          item.delete "scaling"
           item["item_id"] = item["item_id"] * 1000 + r.to_i.abs
         end
       end

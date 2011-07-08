@@ -124,9 +124,10 @@ module WowArmory
           "g1" => tooltip["gem1"],
           "g2" => tooltip["gem2"],
           "reforge" => tooltip["reforge"],
-          "scaling" => (tooltip["seed"] || 0).to_i & 65535,
           "slot" => SLOT_MAP[k]
         }
+        info["suffix"] = tooltip["suffix"].to_i unless tooltip["suffix"].blank?
+        info["scaling"] = tooltip["seed"].to_i & 65535 unless tooltip["seed"].blank?
 
         @gear[info["slot"].to_s] = info
       end

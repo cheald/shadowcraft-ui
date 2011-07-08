@@ -81,6 +81,7 @@ module WowArmory
     def initialize(id, random_suffix = nil, scalar = nil, name = nil)
       self.stats = {}
       self.random_suffix = random_suffix
+      self.random_suffix = nil if self.random_suffix == 0
       self.scalar = scalar > 5000 ? scalar & 65535 : scalar unless scalar.nil?
       self.name = name
 
