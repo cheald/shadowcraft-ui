@@ -1871,6 +1871,7 @@
       if (!data.glyphs) {
         data.glyphs = data.talents[data.active].glyphs;
       }
+      console.log(data.glyphs);
       for (idx = 0, _len = Glyphs.length; idx < _len; idx++) {
         g = Glyphs[idx];
         buffer[g.rank] += Templates.glyphSlot(g);
@@ -1885,6 +1886,7 @@
       for (i = 0, _len2 = _ref.length; i < _len2; i++) {
         glyph = _ref[i];
         g = $(".glyph_slot[data-id='" + glyph + "']");
+        console.log(g);
         _results.push(g.length > 0 ? toggleGlyph(g, true) : void 0);
       }
       return _results;

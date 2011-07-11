@@ -92,7 +92,7 @@ module WowArmory
         :player_class => player_class,
         :talents => self.talents.map do |tree|
           glyphs = tree["glyphs"].map do |glyphset, set|
-            set.map {|g| g["glyph"].to_i }
+            set.map {|g| g["item"].to_i }
           end.flatten
           {:talents => tree["build"], :glyphs => glyphs}
         end
