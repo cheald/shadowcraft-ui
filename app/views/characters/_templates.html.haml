@@ -86,6 +86,9 @@
     .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}"}
       {{item/name}}
       %em.heroic {{item/heroic}}
+      {{#item/id}}
+      %a.wowhead{:href => "http://www.wowhead.com/item={{.}}", :target => "_blank"} Wowhead
+      {{/item/id}}
 
     {{#reforgable}}
     .reforge<

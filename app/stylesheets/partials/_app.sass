@@ -526,13 +526,25 @@ input[type='text'] //, input[type='search']
 a
   text-decoration: none
 
+a.wowhead
+  opacity: 0.2
+  background: url(../../images/wowhead.png) center center no-repeat
+  text-indent: -9999px
+  display: block
+  width: 16px
+  height: 16px
+  float: right
+  +transition(opacity, 0.1s)
+  &:hover
+    opacity: 1.0
+
 #tabs, #create_character
   .label_check, .label_radio
     +inline-block
     line-height: 2em
     padding-left: 30px
     margin-right: 20px
-    background: url(../../images/controls.png) top left no-repeat
+    background: url(../../images/wowhead.png) top left no-repeat
     -webkit-user-select: none
     -moz-user-select: none
 
@@ -1024,9 +1036,9 @@ a
     background: #0e0e0e url(../../images/texture.png)
     margin-bottom: 2px
     +border-radius(2px)
-    padding: 4px
+    padding: 5px
     font-size: 0.9em
-    min-height: 16px
+    min-height: 14px
     +transition(background, 0.2s)
     &:hover, &.active
       background-color: rgba(0,128,255,0.15)

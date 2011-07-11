@@ -1133,6 +1133,11 @@ class ShadowcraftGear
     showPopup $("#reforge.popup") # TODO
     false
 
+  clickWowhead = (e) ->
+    console.log e
+    e.stopPropagation()
+    true
+
   boot: ->
     app = this
     $slots = $(".slots")
@@ -1165,6 +1170,7 @@ class ShadowcraftGear
 
     #  Change out an item
     $slots.click $.delegate
+      ".wowhead" : clickWowhead
       ".name"    : clickSlotName
       ".enchant" : clickSlotEnchant
       ".gem"     : clickSlotGem
