@@ -70,7 +70,14 @@ class Character
         i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i, :random_suffix => item["suffix"])
         if i.new_record?
           unless item["suffix"].blank?
-            i.scaling = item["scaling"]
+
+            # This is a hack to work around some items not having the proper seeds
+            scaling = item["scaling"]
+            if scaling.blank?
+              scaling = Item.where(:remote_id => item["item_id"].to_i, :scaling.ne => nil).fields(:scaling => true).first.scaling
+            end
+
+            i.scaling = scaling
             i.item_name_override = item["name"]
           end
           i.save

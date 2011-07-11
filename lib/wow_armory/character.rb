@@ -16,7 +16,9 @@ module WowArmory
       171 => "alchemy",
       197 => "tailoring",
       773 => "inscription",
-      182 => "herbalism"
+      182 => "herbalism",
+      186 => "mining",
+      393 => "skinning"
     }
 
     RACE_MAP = {
