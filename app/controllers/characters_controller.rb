@@ -37,7 +37,7 @@ class CharactersController < ApplicationController
       @character.as_json
       @character.properties['race'].downcase
     rescue
-      @character.update_from_armory!(true)
+      @character.update_from_armory!(true) unless @character.nil?
     end
 
     if @character.nil? or !@character.valid?

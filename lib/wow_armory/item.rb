@@ -110,7 +110,7 @@ module WowArmory
 
     def populate_random_suffix_item
       row = random_suffixes[random_suffix.abs.to_s]
-      # puts row.inspect
+      
       self.stats = {}
       4.times do |i|
         enchant = row[3+i]

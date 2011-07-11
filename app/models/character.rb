@@ -129,7 +129,8 @@ class Character
     if region.blank? or realm.blank? or character.blank?
       Character.new :region => region, :realm => realm, :name => character
     else
-      self.where(:uid => Character.uid(region, realm, character)).first
+      self.where(:uid => Character.uid(region, realm, character)).first ||
+        Character.create(:region => region, :realm => realm, :name => character)
     end
   end
 

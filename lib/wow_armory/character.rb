@@ -20,18 +20,18 @@ module WowArmory
     }
 
     RACE_MAP = {
-      1 => 'human',
-      2 => 'orc',
-      3 => 'dwarf',
-      4 => 'night elf',
-      5 => 'undead',
-      6 => 'tauren',
-      7 => 'gnome',
-      8 => 'troll',
-      9 => 'goblin',
-      10 => 'blood elf',
-      11 => 'draenei',
-      22 => 'worgen'
+      1 => 'Human',
+      2 => 'Orc',
+      3 => 'Dwarf',
+      4 => 'Night Elf',
+      5 => 'Undead',
+      6 => 'Tauren',
+      7 => 'Gnome',
+      8 => 'Troll',
+      9 => 'Goblin',
+      10 => 'Blood Elf',
+      11 => 'Draenei',
+      22 => 'Worgen'
     }
 
     SLOT_MAP = {
