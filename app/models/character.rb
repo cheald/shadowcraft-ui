@@ -74,7 +74,7 @@ class Character
             # This is a hack to work around some items not having the proper seeds
             scaling = item["scaling"]
             if scaling.blank?
-              scaling = Item.where(:remote_id => item["item_id"].to_i, :scaling.ne => nil).fields(:scaling => true).first.scaling
+              scaling = Item.where(:remote_id => item["item_id"].to_i, :scaling.ne => nil).first.scaling
             end
 
             i.scaling = scaling
