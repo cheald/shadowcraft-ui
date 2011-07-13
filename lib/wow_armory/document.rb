@@ -49,7 +49,7 @@ module WowArmory
           curl.timeout = 7
           curl.headers["User-Agent"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13"
         end
-      rescue Curl::Err::TimeoutError => e
+      rescue Curl::Err::TimeoutError, Curl::Err::ConnectionFailedError => e
         if tries < 3
           tries += 1
           retry

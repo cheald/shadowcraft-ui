@@ -1871,7 +1871,6 @@
       if (!data.glyphs) {
         data.glyphs = data.talents[data.active].glyphs;
       }
-      console.log(data.glyphs);
       for (idx = 0, _len = Glyphs.length; idx < _len; idx++) {
         g = Glyphs[idx];
         buffer[g.rank] += Templates.glyphSlot(g);
@@ -1886,7 +1885,6 @@
       for (i = 0, _len2 = _ref.length; i < _len2; i++) {
         glyph = _ref[i];
         g = $(".glyph_slot[data-id='" + glyph + "']");
-        console.log(g);
         _results.push(g.length > 0 ? toggleGlyph(g, true) : void 0);
       }
       return _results;
@@ -3237,7 +3235,6 @@
       gear = Shadowcraft.Data.gear;
       loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
       slot = parseInt($(this).parent().data("slot"), 10);
-      console.log(statOffset);
       reforge_offset = statOffset(gear[slot], FACETS.REFORGE);
       gear_offset = statOffset(gear[slot], FACETS.ITEM);
       gem_offset = statOffset(gear[slot], FACETS.GEMS);
@@ -3484,7 +3481,6 @@
       return false;
     };
     clickWowhead = function(e) {
-      console.log(e);
       e.stopPropagation();
       return true;
     };

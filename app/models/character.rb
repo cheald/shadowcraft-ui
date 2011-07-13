@@ -139,6 +139,8 @@ class Character
       self.where(:uid => Character.uid(region, realm, character)).first ||
         Character.create(:region => region, :realm => realm, :name => character)
     end
+  rescue BSON::InvalidStringEncoding
+    nil
   end
 
   def is_supported_class?

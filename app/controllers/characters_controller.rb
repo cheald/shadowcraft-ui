@@ -33,6 +33,8 @@ class CharactersController < ApplicationController
 
   def show
     @character = Character.get!(params[:region], params[:realm], params[:name])
+    raise Mongoid::Errors::DocumentNotFound.new(Character, {}) if @character.nil?
+
     begin
       @character.as_json
       @character.properties['race'].downcase

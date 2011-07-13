@@ -920,7 +920,6 @@ class ShadowcraftGear
 
     slot = parseInt($(this).parent().data("slot"), 10)
 
-    console.log statOffset
     reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
     gear_offset = statOffset(gear[slot], FACETS.ITEM)
     gem_offset = statOffset(gear[slot], FACETS.GEMS)
@@ -1134,7 +1133,6 @@ class ShadowcraftGear
     false
 
   clickWowhead = (e) ->
-    console.log e
     e.stopPropagation()
     true
 
