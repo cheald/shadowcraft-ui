@@ -43,8 +43,6 @@ class ShadowcraftComputation:
         55874: 'tias_grace',
         59520: 'unheeded_warning',
         71633: 'aellas_bottle',
-        56115: 'skardyns_grace',
-        56440: 'heroic_skardyns_grace',
         68994: 'matrix_restabilizer',
         69150: 'heroic_matrix_restabilizer',
         71335: 'corens_chilled_chromium_coaster',
@@ -56,6 +54,8 @@ class ShadowcraftComputation:
     }
     
     gearBoosts = {
+        56115: 'skardyns_grace',
+        56440: 'heroic_skardyns_grace',
         68709: 'unsolvable_riddle',
         62468: 'unsolvable_riddle',
         62463: 'unsolvable_riddle',
