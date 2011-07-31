@@ -3790,7 +3790,7 @@
   })();
   ShadowcraftTiniReforgeBackend = (function() {
     var ENGINE, ENGINES, REFORGABLE, deferred;
-    ENGINES = ["http://shadowref.appspot.com/calc", "http://shadowref2.appspot.com/calc"];
+    ENGINES = ["http://shadowref2.appspot.com/calc"];
     ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
     REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"];
     deferred = null;
