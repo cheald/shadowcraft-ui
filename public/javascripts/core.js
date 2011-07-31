@@ -3793,7 +3793,7 @@
     if (window.location.host.match(/:/)) {
       ENGINE = "http://shadowref.appspot.com/calc";
     } else {
-      ENGINE = "http://" + window.location.hostname + "/reforge";
+      ENGINE = "http://" + window.location.hostname + "/calc";
     }
     REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"];
     deferred = null;
