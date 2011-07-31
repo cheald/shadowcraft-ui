@@ -2,10 +2,12 @@ class ShadowcraftTiniReforgeBackend
   # Rather than sending the client to shadowref directly, we'll proxy through nginx.
   # This lets us set up load balancing if needed and plays nicely with noscript.
   # We'll go directly if running on a custom port, though, since this likely means development mode
-  if window.location.host.match(/:/)
-    ENGINE = "http://shadowref.appspot.com/calc"
-  else
-    ENGINE = "http://#{window.location.hostname}/calc"
+  # if window.location.host.match(/:/)
+  #  ENGINE = "http://shadowref.appspot.com/calc"
+  # else
+  #  ENGINE = "http://#{window.location.hostname}/calc"
+  ENGINES = ["http://shadowref.appspot.com/calc", "http://shadowref2.appspot.com/calc"]
+  ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)]
   REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"]
 
   deferred = null
