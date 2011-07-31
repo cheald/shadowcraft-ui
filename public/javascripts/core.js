@@ -3834,7 +3834,7 @@
     ShadowcraftTiniReforgeBackend.prototype.request_via_ajax = function(req) {
       return $.ajax({
         type: "POST",
-        url: "http://shadowref.appspot.com/calc",
+        url: ENGINE,
         data: json_encode(req),
         complete: function() {
           return deferred.resolve();

@@ -41,7 +41,7 @@ class ShadowcraftTiniReforgeBackend
   request_via_ajax: (req) ->
     $.ajax
       type: "POST"
-      url: "http://shadowref.appspot.com/calc"
+      url: ENGINE
       data: json_encode(req)
       complete: ->
         deferred.resolve()
