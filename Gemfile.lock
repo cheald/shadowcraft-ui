@@ -103,6 +103,7 @@ GEM
       rake (>= 0.8.7)
       thor (~> 0.14.4)
     rake (0.8.7)
+    ruby-hmac (0.4.0)
     therubyracer (0.9.2)
       libv8 (~> 3.3.10)
     thor (0.14.6)
@@ -132,5 +133,6 @@ DEPENDENCIES
   mongoid (= 2.0.0.rc.7)
   nokogiri
   rails (= 3.0.5)
+  ruby-hmac
   therubyracer
   will_paginate

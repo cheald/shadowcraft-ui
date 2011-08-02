@@ -16,6 +16,7 @@ gem "json"
 gem "jammit"
 gem "fastercsv"
 gem "curb"
+gem 'ruby-hmac', :require => 'hmac-sha1'
 
 group :development do
   gem "therubyracer"

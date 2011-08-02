@@ -1,3 +1,7 @@
+require 'hmac-sha1'
+require 'digest/sha1'
+require 'base64'
+
 module WowArmory
   class CurlException < Exception
     attr_accessor :error
@@ -44,10 +48,12 @@ module WowArmory
       url = (host + resource)
       puts "Reading #{url}"
       tries = 0
+      # BLIZZARD_CREDENTIALS
       begin
         result = Curl::Easy.http_get(url) do |curl|
           curl.timeout = 7
           curl.headers["User-Agent"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13"
+          sign_request("GET", curl)
         end
       rescue Curl::Err::TimeoutError, Curl::Err::ConnectionFailedError => e
         if tries < 3
@@ -72,6 +78,15 @@ module WowArmory
       else
         @content
       end
+    end
+
+    def sign_request(verb, curl)
+      return if BLIZZARD_CREDENTIALS["public"].nil?
+      path = URI.parse(curl.url).path
+      curl.headers["Date"] = Time.now.gmtime.rfc2822.gsub("-0000", "GMT")
+      string_to_sign = "%s\n%s\n%s\n" % [verb, curl.headers["Date"], path]
+      signature = Base64.encode64(HMAC::SHA1.digest(BLIZZARD_CREDENTIALS["private"], string_to_sign)).strip
+      curl.headers["Authorization"] = "BNET %s:%s" % [BLIZZARD_CREDENTIALS["public"], signature]
     end
 
     def normalize_realm(realm)
