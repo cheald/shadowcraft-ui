@@ -45,8 +45,7 @@ module WowArmory
         end
       end
 
-      url = (host + resource)
-      puts "Reading #{url}"
+      url = URI.escape(host + resource)
       tries = 0
       # BLIZZARD_CREDENTIALS
       begin
