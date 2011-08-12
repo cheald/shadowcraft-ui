@@ -27,6 +27,8 @@ module WowArmory
             "http://kr.battle.net/"
           when "tw"
             "http://tw.battle.net/"
+          when "cn"
+            "http://cn.battle.net/"
           else
             "http://us.battle.net/"
         end
@@ -40,6 +42,8 @@ module WowArmory
             "http://kr.battle.net/wow/ko/"
           when "tw"
             "http://tw.battle.net/wow/zh/"
+          when "cn"
+            "http://cn.battle.net/wow/zh/"
           else
             "http://us.battle.net/wow/en/"
         end
