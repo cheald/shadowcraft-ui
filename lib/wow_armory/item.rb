@@ -202,6 +202,9 @@ module WowArmory
         if str =~/\+(\d+) (#{attr})/i
           qty = $1.to_i
           [(SCAN_OVERRIDE[attr] || attr).gsub(/ /, "_").to_sym, qty]
+        elsif str =~/(#{attr}) by (\d+)/i
+          qty = $2.to_i
+          [(SCAN_OVERRIDE[attr] || attr).gsub(/ /, "_").to_sym, qty]
         else
           nil
         end
