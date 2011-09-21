@@ -1753,7 +1753,7 @@
       for (treeIndex in Talents) {
         tree = Talents[treeIndex];
         buffer += Templates.talentTree({
-          background: tree.bgImage,
+          background: parseInt(treeIndex, 10) + 1,
           talents: tree.talent
         });
       }

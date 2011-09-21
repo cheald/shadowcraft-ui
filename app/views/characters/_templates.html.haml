@@ -9,7 +9,7 @@
 - mustache "talent_set" do
   %button.talent_set{:"data-talents" => "{{talent_string}}", :"data-glyphs" => "{{glyphs}}"} {{name}}
 - mustache "tree" do
-  .tree{:style => "background-image: url(http://www.wowarmory.com/_images/talents/bg/small/{{background}}.jpg);"}
+  .tree{:style => "background-image: url(http://wow.zamimg.com/images/wow/talents/backgrounds/live/rogue_{{background}}.jpg);"}
     {{#talents}}
     .talent{:class => "row-{{tier}} col-{{column}}", :style => "background-image: url(http://static.wowhead.com/images/wow/icons/medium/{{icon}}.jpg);"}
       .grey

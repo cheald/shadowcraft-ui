@@ -177,7 +177,7 @@ class ShadowcraftTalents
     buffer = ""
     for treeIndex, tree of Talents
       buffer += Templates.talentTree({
-        background: tree.bgImage,
+        background: parseInt(treeIndex, 10) + 1,
         talents: tree.talent
       })
 
