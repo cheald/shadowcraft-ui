@@ -6,6 +6,7 @@ from math import floor
 from twisted.application import service, internet
 from twisted.web import server, resource
 from twisted.internet import reactor
+from twisted.python import log
 from time import clock
 
 from vendor.WebSocket import *
@@ -407,8 +408,10 @@ class ShadowcraftSite(resource.Resource):
             return '{"error": "Invalid input"}'
         
         input = json.loads(inbound[0])
-        
+        start = clock()        
+        log.msg("Request: %s" % input)
         response = engine.get_all(input)
+        log.msg("Request time: %s sec" % (clock() - start))
         return json.dumps( response )
     
     # Because IE is terrible.
