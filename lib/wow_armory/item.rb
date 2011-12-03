@@ -183,6 +183,11 @@ module WowArmory
       end
     end
 
+    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike rating", "hit rating", "expertise rating", "crit rating",
+                       "haste rating", "armor penetration", "mastery rating", "resilience rating", "all stats", "dodge rating", "block rating", "parry rating"
+    ]
+    SCAN_OVERRIDE = {"critical strike rating" => "crit rating"}
+
     def scan_stats
       stats = {}
       @document.css(".item-specs li").each do  |li|
@@ -195,6 +200,21 @@ module WowArmory
         end
       end
       stats
+    end
+
+    def scan_str(str)
+      map = SCAN_ATTRIBUTES.map do |attr|
+        if str =~/\+(\d+) (#{attr})/i
+          qty = $1.to_i
+          [(SCAN_OVERRIDE[attr] || attr).gsub(/ /, "_").to_sym, qty]
+        elsif str =~/Equip:.*(#{attr}) by (\d+)/i
+          qty = $2.to_i
+          [(SCAN_OVERRIDE[attr] || attr).gsub(/ /, "_").to_sym, qty]
+        else
+          nil
+        end
+      end.compact
+      Hash[*map.flatten]
     end
 
     def fix_gem_colors(color)
