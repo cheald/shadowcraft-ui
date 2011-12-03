@@ -58,28 +58,29 @@ module WowArmory
           curl.headers["User-Agent"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13"
           sign_request("GET", curl)
         end
-      rescue Curl::Err::TimeoutError, Curl::Err::ConnectionFailedError => e
+
+        if result.response_code >= 400 and result.response_code < 500
+          raise MissingDocument.new "Armory returned #{result.response_code}", result.response_code
+        elsif result.response_code >= 500
+          raise ArmoryError.new "Armory returned #{result.response_code}", result.response_code
+        end
+
+        @content = result.body_str
+        if parse == :xml
+          @document = Nokogiri::HTML @content
+        elsif parse == :json
+          @json = JSON::load @content
+        else
+          @content
+        end
+        
+      rescue Curl::Err::TimeoutError, Curl::Err::ConnectionFailedError, JSON::ParserError => e, 
         if tries < 3
           tries += 1
           retry
         else
           raise e
         end
-      end
-
-      if result.response_code >= 400 and result.response_code < 500
-        raise MissingDocument.new "Armory returned #{result.response_code}", result.response_code
-      elsif result.response_code >= 500
-        raise ArmoryError.new "Armory returned #{result.response_code}", result.response_code
-      end
-
-      @content = result.body_str
-      if parse == :xml
-        @document = Nokogiri::HTML @content
-      elsif parse == :json
-        @json = JSON::load @content
-      else
-        @content
       end
     end
 
