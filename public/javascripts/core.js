@@ -346,7 +346,7 @@
           endpoint = "engine-4.2";
           break;
         default:
-          port = 8880;
+          port = 8881;
           endpoint = "engine-4.1";
       }
       if (window.location.host.match(/:/)) {
@@ -839,7 +839,7 @@
           tricks: general[7] !== 0,
           receive_tricks: general[8] !== 0,
           prepot: general[9] !== 0,
-          patch: general[10] || 42,
+          patch: general[10] || 43,
           min_ilvl: general[11] || 333
         };
         d.options.buffs = {};
@@ -1162,8 +1162,7 @@
           'default': 42,
           datatype: 'integer',
           options: {
-            42: '4.2',
-            4201: '4.2 (experimental)'
+            43: '4.3'
           }
         },
         level: {
