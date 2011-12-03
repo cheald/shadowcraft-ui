@@ -74,7 +74,7 @@ module WowArmory
           @content
         end
         
-      rescue Curl::Err::TimeoutError, Curl::Err::ConnectionFailedError, JSON::ParserError => e, 
+      rescue Curl::Err::TimeoutError, Curl::Err::ConnectionFailedError, JSON::ParserError => e
         if tries < 3
           tries += 1
           retry
