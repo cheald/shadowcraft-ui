@@ -3267,7 +3267,7 @@
         if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
           continue;
         }
-        if ((slot === 15) && !requireDagger && l.subclass === 15) {
+        if ((slot === 15) && !requireDagger && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
           continue;
         }
         if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
