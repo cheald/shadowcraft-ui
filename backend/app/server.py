@@ -50,7 +50,24 @@ class ShadowcraftComputation:
         65805: 'schnottz_medallion_of_command',
         68927: 'the_hungerer',
         69112: 'heroic_the_hungerer',
-        70144: 'rickets_magnetic_fireball_proc'
+        70144: 'rickets_magnetic_fireball_proc',
+
+        # 4.3
+        77979: 'lfr_vial_of_shadows',
+        77207: 'vial_of_shadows',
+        77999: 'heroic_vial_of_shadows',
+
+        77974: 'lfr_wrath_of_unchaining',
+        77197: 'wrath_of_unchaining',
+        77994: 'heroic_wrath_of_unchaining',
+
+        77993: 'heroic_starcatcher_compass',
+        77973: 'lfr_starcatcher_compass',
+        77292: 'starcatcher_compass',
+
+        78481 : 'lfr_nokaled_the_elements_of_death',
+        77188: 'nokaled_the_elements_of_death',
+        78472: 'heroic_nokaled_the_elements_of_death'
     }
     
     gearBoosts = {
@@ -70,6 +87,11 @@ class ShadowcraftComputation:
 
     tier11IDS = frozenset([60298, 65240, 60299, 65241, 60300, 65242, 60302, 65243, 60301, 65239])
     tier12IDS = frozenset([71046, 71538, 71047, 71539, 71048, 71540, 71049, 71541, 71045, 71537])
+    tier13IDS = frozenset([78664, 78679, 78699, 78708, 78738, 77023, 77024, 77025, 77026, 77027, 78759, 78774, 78794, 78803, 78833])
+    
+    legendary_tier_1 = frozenset([77945, 77946])
+    legendary_tier_2 = frozenset([77947, 77948])
+    legendary_tier_3 = frozenset([77949, 77950])
 
     arenaSeason9SetIds = frozenset([60458, 60459, 60460, 60461, 60462, 64769, 64770, 64771, 64772, 64773, 65545, 65546, 65547, 65548, 65549])
 
@@ -123,7 +145,7 @@ class ShadowcraftComputation:
                 'clip_recuperate'
             ]
         ]
-    elif __builtin__.shadowcraft_engine_version == 4.2:
+    elif __builtin__.shadowcraft_engine_version == 4.2 or __builtin__.shadowcraft_engine_version == 4.3:
         validCycleKeys = [[
                 'min_envenom_size_mutilate',
                 'min_envenom_size_backstab',
@@ -210,6 +232,15 @@ class ShadowcraftComputation:
         if len(self.tier12IDS & gear) >= 4:
             buff_list.append('rogue_t12_4pc')
 
+        if len(self.tier13IDS & gear) >= 4:
+            buff_list.append('rogue_t13_2pc')
+
+        if len(self.tier13IDS & gear) >= 4:
+            buff_list.append('rogue_t13_4pc')
+
+        if len(self.legendary_tier_3 & gear) >= 1:
+            buff_list.append('rogue_t13_legendary')
+    
         agi_bonus = 0
         if len(self.arenaSeason9SetIds & gear) >= 2:
             agi_bonus += 70
@@ -248,7 +279,16 @@ class ShadowcraftComputation:
         
         if len(self.tier11IDS & gear) >= 4:
             proclist.append('rogue_t11_4pc')
-            
+
+        if len(self.legendary_tier_1 & gear) >= 2:
+            proclist.append('jaws_of_retribution')
+
+        if len(self.legendary_tier_2 & gear) >= 2:
+            proclist.append('maw_of_oblivion')
+
+        if len(self.legendary_tier_3 & gear) >= 2:
+            proclist.append('fangs_of_the_father')
+
         _procs = procs.ProcsList(*proclist)
 
         # ##################################################################################
