@@ -234,7 +234,7 @@ class ShadowcraftComputation:
         if len(self.tier12IDS & gear) >= 4:
             buff_list.append('rogue_t12_4pc')
 
-        if len(self.tier13IDS & gear) >= 4:
+        if len(self.tier13IDS & gear) >= 2:
             buff_list.append('rogue_t13_2pc')
 
         if len(self.tier13IDS & gear) >= 4:
