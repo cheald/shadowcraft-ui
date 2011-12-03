@@ -92,6 +92,7 @@ class ShadowcraftComputation:
     legendary_tier_1 = frozenset([77945, 77946])
     legendary_tier_2 = frozenset([77947, 77948])
     legendary_tier_3 = frozenset([77949, 77950])
+    legendary_mainhands = frozenset([77945, 77947, 77949])
 
     arenaSeason9SetIds = frozenset([60458, 60459, 60460, 60461, 60462, 64769, 64770, 64771, 64772, 64773, 65545, 65546, 65547, 65548, 65549])
 
@@ -238,7 +239,7 @@ class ShadowcraftComputation:
         if len(self.tier13IDS & gear) >= 4:
             buff_list.append('rogue_t13_4pc')
 
-        if len(self.legendary_tier_3 & gear) >= 1:
+        if len(self.legendary_mainhands & gear) >= 1:
             buff_list.append('rogue_t13_legendary')
     
         agi_bonus = 0
