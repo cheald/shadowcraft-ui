@@ -51,7 +51,7 @@ class ItemsController < ApplicationController
     bad_keys = %w"intellect spell_power spirit parry_rating dodge_rating"
     bad_classes = %w"Plate Mail"
     @alt_items.reject! {|item| !(item.stats.keys & bad_keys).empty? }
-    @alt_items.reject! {|item| item.stats.empty? }
+    @alt_items.reject! {|item| item.stats.empty? and item.equip_location != 12 } # Don't reject trinkets with empty stats
     @alt_items.reject! {|item| bad_classes.include? item.properties['armor_class'] }
     @alt_items.reject! {|item| item.properties['armor_class'] == "Cloth" && item.equip_location != 16 }
     @alt_items.reject! {|item| item.properties['name'].match(/DONTUSE/) }
