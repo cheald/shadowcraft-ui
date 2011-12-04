@@ -191,11 +191,16 @@ module WowArmory
     def scan_stats
       stats = {}
       @document.css(".item-specs li").each do  |li|
-        next if li.attr("id").blank?
-        if match = li.attr("id").match(/stat-(\d+)/)
+        if li.attr("id").present? and match = li.attr("id").match(/stat-(\d+)/)
           if value = li.text.strip.match(/(\d+)/)
             stat = STAT_LOOKUP[ match[1].to_i ]
             stats[stat] = value[1].to_i
+          end
+        end
+
+        li.text.strip.split(" and ").each do |chunk|
+          scan_str(chunk.strip).each do |stat, val|
+            stats[stat] ||= val
           end
         end
       end
