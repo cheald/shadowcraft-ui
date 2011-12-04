@@ -767,7 +767,7 @@
           }
         }
         options.push(professions);
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, poisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, poisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems];
         options.push(base36Encode(general));
         buffs = [];
         _ref2 = ShadowcraftOptions.buffMap;
@@ -840,7 +840,8 @@
           receive_tricks: general[8] !== 0,
           prepot: general[9] !== 0,
           patch: general[10] || 43,
-          min_ilvl: general[11] || 333
+          min_ilvl: general[11] || 333,
+          epic_gems: general[12] || 0
         };
         d.options.buffs = {};
         _ref3 = options[2];
@@ -1224,6 +1225,15 @@
           datatype: 'integer',
           min: 15,
           max: 500
+        },
+        epic_gems: {
+          name: "Recommend Epic Gems",
+          datatype: 'integer',
+          type: 'select',
+          options: {
+            1: 'Yes',
+            0: 'No'
+          }
         }
       });
       this.setup("#settings #professions", "professions", {
@@ -2797,11 +2807,23 @@
       }
     };
     getGemRecommendationList = function() {
-      var Gems, list;
+      var Gems, copy, gem, list, use_epic_gems, _i, _len;
       Gems = Shadowcraft.ServerData.GEMS;
-      list = $.extend(true, [], Gems);
+      copy = $.extend(true, [], Gems);
+      list = [];
+      use_epic_gems = Shadowcraft.Data.options.general.epic_gems === 1;
+      for (_i = 0, _len = copy.length; _i < _len; _i++) {
+        gem = copy[_i];
+        if (gem.quality >= 4 && gem.requires === void 0 && !use_epic_gems) {
+          continue;
+        }
+        gem.normal_ep = getRegularGemEpValue(gem);
+        if (gem.normal_ep && gem.normal_ep > 1) {
+          list.push(gem);
+        }
+      }
       list.sort(function(a, b) {
-        return getRegularGemEpValue(b) - getRegularGemEpValue(a);
+        return b.normal_ep - a.normal_ep;
       });
       return list;
     };
