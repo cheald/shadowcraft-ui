@@ -35,6 +35,7 @@
     - if Rails.env.production?
       :javascript
         var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12517505-2']); _gaq.push(['_trackPageview']);
+        window._gaq = _gaq;
         (function() {
           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';

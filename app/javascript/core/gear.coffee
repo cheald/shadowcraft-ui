@@ -1163,9 +1163,11 @@ class ShadowcraftGear
 
     $("#reforgeAll").click ->
       # Shadowcraft.Gear.reforgeAll()
+      window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
       TiniReforger.buildRequest()
 
     $("#optimizeGems").click ->
+      window._gaq.push ['_trackEvent', "Character", "Optimize Gems"] if window._gaq
       Shadowcraft.Gear.optimizeGems()
 
     # Initialize UI handlers

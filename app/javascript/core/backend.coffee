@@ -129,6 +129,7 @@ class ShadowcraftBackend
     @cancelRecompute = false
     payload ||= this.buildPayload()
     return if @cancelRecompute or not payload?
+    window._gaq.push ['_trackEvent', "Character", "Recompute"] if window._gaq
 
     if window.WebSocket and not forcePost and false
       this.recompute_via_websocket payload

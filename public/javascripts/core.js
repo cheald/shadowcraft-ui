@@ -474,6 +474,9 @@
       if (this.cancelRecompute || !(payload != null)) {
         return;
       }
+      if (window._gaq) {
+        window._gaq.push(['_trackEvent', "Character", "Recompute"]);
+      }
       if (window.WebSocket && !forcePost && false) {
         return this.recompute_via_websocket(payload);
       } else {
@@ -3523,9 +3526,15 @@
         return app.updateDisplay();
       });
       $("#reforgeAll").click(function() {
+        if (window._gaq) {
+          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
+        }
         return TiniReforger.buildRequest();
       });
       $("#optimizeGems").click(function() {
+        if (window._gaq) {
+          window._gaq.push(['_trackEvent', "Character", "Optimize Gems"]);
+        }
         return Shadowcraft.Gear.optimizeGems();
       });
       $("#reforge").click($.delegate({
