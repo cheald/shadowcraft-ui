@@ -65,7 +65,7 @@ class ShadowcraftComputation:
 
         77993: 'heroic_starcatcher_compass',
         77973: 'lfr_starcatcher_compass',
-        77292: 'starcatcher_compass',
+        77202: 'starcatcher_compass',
 
         78481 : 'lfr_nokaled_the_elements_of_death',
         77188: 'nokaled_the_elements_of_death',
@@ -360,9 +360,10 @@ class ShadowcraftComputation:
             calculator = self.setup(input)
             out["ep"] = calculator.get_ep()
 
-            # Talent ranking is slow
-            out["talent_ranking_main"], out["talent_ranking_off"] = calculator.get_talents_ranking()      
-            
+            # Compute DPS Breakdown.
+            breakdown = calculator.get_dps_breakdown()
+            out["total_dps"] = sum(entry[1] for entry in breakdown.items())
+
             # Glyph ranking is slow
             out["glyph_ranking"] = calculator.get_glyphs_ranking(rogue_glyphs.RogueGlyphs.allowed_glyphs)
             
@@ -377,15 +378,14 @@ class ShadowcraftComputation:
                             out["trinket_ranking"][id] = floor(float(trinket_rankings[k]) * 10) / 10      
                         except ValueError:
                             pass
-
             
             # Compute weapon ep
             out["mh_ep"], out["oh_ep"] = calculator.get_weapon_ep(dps=True, enchants=True)
             out["mh_speed_ep"], out["oh_speed_ep"] = calculator.get_weapon_ep([2.9, 2.7, 2.6, 1.8, 1.4, 1.3])
 
-            # Compute DPS Breakdown.
-            breakdown = calculator.get_dps_breakdown()
-            out["total_dps"] = sum(entry[1] for entry in breakdown.items())
+            # Talent ranking is slow. This is done last per a note from nextormento.
+            out["talent_ranking_main"], out["talent_ranking_off"] = calculator.get_talents_ranking()      
+
             return out
         except (InvalidTalentException, InputNotModeledException) as e:
             out["error"] = e.error_msg
@@ -419,7 +419,7 @@ class ShadowcraftSite(resource.Resource):
             return '{"error": "Invalid input"}'
         
         input = json.loads(inbound[0])
-        
+
         # d = threads.deferToThread(self._render_post, input)
         # d.addCallback(request.write)
         # d.addCallback(lambda _: request.finish())
