@@ -69,7 +69,9 @@ class ShadowcraftComputation:
 
         78481 : 'lfr_nokaled_the_elements_of_death',
         77188: 'nokaled_the_elements_of_death',
-        78472: 'heroic_nokaled_the_elements_of_death'
+        78472: 'heroic_nokaled_the_elements_of_death',
+
+        72897: 'arrow_of_time'
     }
     
     gearBoosts = {
@@ -416,11 +418,12 @@ class ShadowcraftSite(resource.Resource):
         if not inbound:
             return '{"error": "Invalid input"}'
         
-        input = json.loads(inbound[0])
-        d = threads.deferToThread(self._render_post, input)
-        d.addCallback(request.write)
-        d.addCallback(lambda _: request.finish())
-        return server.NOT_DONE_YET
+        # input = json.loads(inbound[0])
+        # d = threads.deferToThread(self._render_post, input)
+        # d.addCallback(request.write)
+        # d.addCallback(lambda _: request.finish())
+        # return server.NOT_DONE_YET
+        return self._render_post(input)
     
     # Because IE is terrible.
     def render_GET(self, request):
