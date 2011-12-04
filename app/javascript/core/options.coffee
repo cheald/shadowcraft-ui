@@ -140,7 +140,7 @@ class ShadowcraftOptions
       crit_chance_buff: {name: "5% Crit", desc: "Honor Among Thieves/Leader of the Pack/Rampage/Elemental Oath", 'default': true, datatype: 'bool'},
       all_damage_buff: {name: "3% All Damage", desc: "Arcane Tactics/Ferocious Inspiration/Communion", 'default': true, datatype: 'bool'},
       melee_haste_buff: {name: "10% Haste", desc: "Hunting Party/Windfury Totem/Icy Talons", 'default': true, datatype: 'bool'},
-      attack_power_buff: {name: "10% Attack Power", desc: "Abomination's Might/Blessing of Might/Trueshot Aura/Unleashed Rage", 'default': true, datatype: 'bool'},
+      attack_power_buff: {name: "20% Attack Power", desc: "Abomination's Might/Blessing of Might/Trueshot Aura/Unleashed Rage", 'default': true, datatype: 'bool'},
       str_and_agi_buff: {name: "Agility", desc: "Strength of Earth/Battle Shout/Horn of Winter/Roar of Courage", 'default': true, datatype: 'bool'}
     })
 

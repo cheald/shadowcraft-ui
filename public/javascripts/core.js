@@ -1337,7 +1337,7 @@
           datatype: 'bool'
         },
         attack_power_buff: {
-          name: "10% Attack Power",
+          name: "20% Attack Power",
           desc: "Abomination's Might/Blessing of Might/Trueshot Aura/Unleashed Rage",
           'default': true,
           datatype: 'bool'
