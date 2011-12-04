@@ -4,6 +4,7 @@ import __builtin__
 
 from math import floor
 from twisted.application import service, internet
+from twisted.internet import threads
 from twisted.web import server, resource
 from twisted.internet import reactor
 from twisted.python import log
@@ -389,6 +390,7 @@ class ShadowcraftComputation:
             return out
 
 engine = ShadowcraftComputation()
+reactor.suggestThreadPoolSize(16)
 
 class ShadowcraftSite(resource.Resource):
     isLeaf = True
@@ -400,6 +402,13 @@ class ShadowcraftSite(resource.Resource):
         request.setHeader("Access-Control-Allow-Headers", "x-requested-with")
         return ""
         
+    def _render_post(self, input):
+        start = clock()
+        log.msg("Request: %s" % input)
+        response = engine.get_all(input)
+        log.msg("Request time: %s sec" % (clock() - start))
+        return json.dumps(response)
+
     def render_POST(self, request):
         request.setHeader("Access-Control-Allow-Origin", "*")
         
@@ -408,11 +417,10 @@ class ShadowcraftSite(resource.Resource):
             return '{"error": "Invalid input"}'
         
         input = json.loads(inbound[0])
-        start = clock()        
-        log.msg("Request: %s" % input)
-        response = engine.get_all(input)
-        log.msg("Request time: %s sec" % (clock() - start))
-        return json.dumps( response )
+        d = threads.deferToThread(self._render_post, input)
+        d.addCallback(request.write)
+        d.addCallback(lambda _: request.finish())
+        return server.NOT_DONE_YET
     
     # Because IE is terrible.
     def render_GET(self, request):
