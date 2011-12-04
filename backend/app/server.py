@@ -418,7 +418,8 @@ class ShadowcraftSite(resource.Resource):
         if not inbound:
             return '{"error": "Invalid input"}'
         
-        # input = json.loads(inbound[0])
+        input = json.loads(inbound[0])
+        
         # d = threads.deferToThread(self._render_post, input)
         # d.addCallback(request.write)
         # d.addCallback(lambda _: request.finish())
