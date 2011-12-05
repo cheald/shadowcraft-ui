@@ -83,7 +83,10 @@ class ShadowcraftComputation:
         52199: 'demon_panther',
         69199: 'heroic_ancient_petrified_seed',
         69001: 'ancient_petrified_seed',
-        70144: 'rickets_magnetic_fireball'
+        70144: 'rickets_magnetic_fireball',
+        77113: 'kiroptyric_sigil',
+        78004: 'heroic_kiroptyric_sigil',
+        77974: 'lfr_kiroptyric_sigil'
     }
     
     trinketMap = dict(gearProcs, **gearBoosts)
