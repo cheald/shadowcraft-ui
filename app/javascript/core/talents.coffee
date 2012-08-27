@@ -1,26 +1,22 @@
 class ShadowcraftTalents
   talentsSpent = 0
-  MAX_TALENT_POINTS = 41
-  TREE_SIZE = [19, 19, 19]
-  ALWAYS_SHOW_GLYPHS = [45767]
+  MAX_TALENT_POINTS = 6
+  TREE_SIZE = 6
+  ALWAYS_SHOW_GLYPHS = []
+  CHARACTER_SPEC = ""
   DEFAULT_SPECS =
     "Stock Assassination":
-      talents: "033323011302211032100200000000000000002030030000000000000"
-      glyphs: [45768, 42956, 42969, 45767]
+      talents: "2.10.2"
+      glyphs: [45761]
     "Stock Combat":
-      talents: "023200000000000000023322303100300123210030000000000000000"
-      glyphs: [42972, 42954, 42973, 45767]
+      talents: "2.10.2"
+      glyphs: [42972]
     "Stock Subtlety":
-      talents: "023003000000000000000200000000000000000332031321310012321"
-      glyphs: [42956, 42973, 45764, 45767]
+      talents: "2.10.2"
+      glyphs: []
 
   @GetPrimaryTreeName = ->
-    if Shadowcraft.Data.tree0 >= 31
-      "Mutilate"
-    else if Shadowcraft.Data.tree1 >= 31
-      "Combat"
-    else
-      "Subtlety"
+    CHARACTER_SPEC
 
   talentMap = "0zMcmVokRsaqbdrfwihuGINALpTjnyxtgevElBCDFHJKOPQSUWXYZ123456789"
   @encodeTalents = (s) ->
@@ -36,23 +32,9 @@ class ShadowcraftTalents
     return str
 
   @decodeTalents = (s) ->
-    trees = s.split("Z")
     talents = ""
-    for tree, index in trees
-      treestr = ""
-      for i in [0..Math.floor(TREE_SIZE[index] / 2)]
-        character = tree[i]
-        if character
-          idx = talentMap.indexOf(character)
-          a = Math.floor(idx / 5)
-          b = idx % 5
-        else
-          a = "0"
-          b = "0"
-        treestr += a
-        if treestr.length < TREE_SIZE[index]
-          treestr += b
-      talents += treestr
+    for char, index in s.split ''
+      # Needs to be fleshed out
     return talents
 
   sumDigits = (s) ->
