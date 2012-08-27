@@ -22,6 +22,7 @@ module WowArmory
       :intellect                        => 5,
       :attack_power                     => 38,
       :resilience_rating                => 35,
+      :pvp_power_rating                 => 57,
       :armor_penetration                => 44,
       :hit_rating                       => 31,
       :expertise_rating                 => 37,
@@ -44,7 +45,8 @@ module WowArmory
       8 => "Blue",
       4 => "Yellow",
       14 => "Prismatic",
-      32 => "Cogwheel"
+      32 => "Cogwheel",
+      64 => "Hydraulic"
     }
 
     EQUIP_LOCATIONS = {
