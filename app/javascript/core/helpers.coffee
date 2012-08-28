@@ -75,7 +75,7 @@ checkForWarnings = (section) ->
       continue unless item
       enchant = EnchantLookup[gear.enchant]
       enchantable = EnchantSlots[item.equip_location] != undefined
-      if (!data.options.professions.enchanting && item.equip_location == 11) || item.equip_location == "ranged"
+      if (!data.options.professions.enchanting && item.equip_location == 11)
         enchantable = false
 
       if canReforge item
