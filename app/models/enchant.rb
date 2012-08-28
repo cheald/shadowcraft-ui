@@ -20,6 +20,7 @@ class Enchant
     "3832" => 10,   # Chest
     "4063" => 15,   # Chest
     "4102" => 20,   # Chest
+    "4419" => 80,   # Chest
   }
 
   def encode_json(options = {})
@@ -116,7 +117,7 @@ class Enchant
     0x100000, 0x200000, 0x400000, 0x800000
   ]
 
-  ACCEPTED_ENCHANTS = ["Black Magic", "Berserking", "Mongoose", "Hurricane", "Avalanche", "Landslide"]
+  ACCEPTED_ENCHANTS = ["Black Magic", "Berserking", "Mongoose", "Hurricane", "Avalanche", "Landslide", "Windsong", "Dancing Steel"]
 
   def self.get_slots(k)
     SLOT_MAP.each_with_index do |e, i|

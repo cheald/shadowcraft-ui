@@ -3,7 +3,7 @@ class ShadowcraftGear
   MAX_ENGINEERING_GEMS = 1
   JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"]
   REFORGE_FACTOR = 0.4
-  DEFAULT_BOSS_DODGE = 6.5
+  DEFAULT_BOSS_DODGE = 7.5
 
   FACETS = {
     ITEM: 1
@@ -34,8 +34,10 @@ class ShadowcraftGear
   PROC_ENCHANTS =
     4099: "landslide"
     4083: "hurricane"
+    4441: "windsong"
+    4444: "dancing_steel"
 
-  @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779]
+  @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
 
   Weights =
     attack_power: 1
