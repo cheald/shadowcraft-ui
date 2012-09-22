@@ -167,14 +167,15 @@ class ShadowcraftHistory
     decompress_handlers[version](data)
 
   professionMap = [ "enchanting", "engineering", "blacksmithing", "inscription", "jewelcrafting", "leatherworking", "tailoring", "alchemy", "skinning", "herbalism", "mining" ]
-  poisonMap = [ "ip", "dp", "wp" ]
-  raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei"]
+  poisonMap = [ "dp", "wp" ]
+  utilPoisonMap = [ "lp", "n" ]
+  raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"]
   rotationOptionsMap = [
-    "min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab"
+    "min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab", "opener_name", "opener_use"
     "use_rupture", "ksp_immediately", "use_revealing_strike"
     "clip_recuperate", "use_hemorrhage"
   ]
-  rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, true, false, 'true', 'false', 'never', 'always', 'sometimes']
+  rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, true, false, 'true', 'false', 'never', 'always', 'sometimes', 'pool', 'garrote', 'ambush', 'mutilate']
 
   map = (value, m) ->
     m.indexOf(value)
@@ -274,10 +275,10 @@ class ShadowcraftHistory
         level:                general[0]
         race:                 unmap(general[1], raceMap)
         duration:             general[2]
-        mh_poison:            unmap(general[3], poisonMap)
-        oh_poison:            unmap(general[4], poisonMap)
-        potion_of_the_tolvir: general[5] != 0
-        max_ilvl:             general[6] || 500
+        lethal_poison:        unmap(general[3], poisonMap)
+        utility_poison:       unmap(general[4], utilPoisonMap)
+        virmens_bite:         general[5] != 0
+        max_ilvl:             general[6] || 600
         tricks:               general[7] != 0
         receive_tricks:       general[8] != 0
         prepot:               general[9] != 0

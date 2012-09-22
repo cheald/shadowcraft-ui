@@ -120,7 +120,7 @@ class Item
   def self.populate_gear(prefix = "www")
     populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=346;maxle=358;ub=4;cr=21;crs=1;crv=0"
     populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=359;maxle=371;ub=4;cr=21;crs=1;crv=0"
-    populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=372;maxle=500;ub=4;cr=21;crs=1;crv=0"
+    populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=372;maxle=700;ub=4;cr=21;crs=1;crv=0"
 
     populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=346;ub=4;cr=21;crs=1;crv=0"
     populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=359;cr=13;crs=1;crv=0"

@@ -4,28 +4,37 @@ class ShadowcraftApp
   RATING_CONVERSIONS = {
     80:
       hit_rating: 30.7548
-      spell_hit: 26.232
       expertise_rating: 7.68869
     81:
       hit_rating: 40.3836
-      spell_hit: 34.4448
       expertise_rating: 10.0959
     82:
       hit_rating: 53.0304
-      spell_hit: 45.2318
       expertise_rating: 13.2576
     83:
       hit_rating: 69.6653
-      spell_hit: 59.4204
       expertise_rating: 17.4163
     84:
       hit_rating: 91.4738 
-      spell_hit: 78.0218
       expertise_rating: 22.8685
     85:
       hit_rating: 120.109
-      spell_hit: 102.446
       expertise_rating: 30.0272
+    86:
+      hit_rating: 120.109
+      expertise_rating: 30.0272
+    87:
+      hit_rating: 120.109
+      expertise_rating: 30.0272
+    88:
+      hit_rating: 120.109
+      expertise_rating: 30.0272
+    89:
+      hit_rating: 120.109
+      expertise_rating: 30.0272
+    90:
+      hit_rating: 340
+      expertise_rating: 340
   }
 
   reload: ->
