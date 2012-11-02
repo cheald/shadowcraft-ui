@@ -404,8 +404,8 @@ class ShadowcraftComputation:
         _settings = settings.Settings(_cycle,
             response_time = 0.5,
             duration = duration,
-            dmg_poison = _opt.get("mh_poison", 'dp'),
-            utl_poison = _opt.get("oh_poison", 'lp'),
+            dmg_poison = _opt.get("dmg_poison", 'dp'),
+            utl_poison = _opt.get("utl_poison", 'lp'),
         )
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)
         return calculator

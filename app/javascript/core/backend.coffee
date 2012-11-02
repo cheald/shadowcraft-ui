@@ -72,8 +72,8 @@ class ShadowcraftBackend
       ro: data.options.rotation,
       settings: {
         tricks: data.options.general.tricks
-        mh_poison: data.options.general.mh_poison
-        oh_poison: data.options.general.oh_poison
+        dmg_poison: data.options.general.mh_poison
+        utl_poison: data.options.general.oh_poison
         duration: data.options.general.duration
       }
       spec: data.activeSpec,
