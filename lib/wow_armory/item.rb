@@ -57,8 +57,8 @@ module WowArmory
       8 => "Blue",
       4 => "Yellow",
       14 => "Prismatic",
-      16 => "Hydraulic"
-      32 => "Cogwheel",
+      16 => "Hydraulic",
+      32 => "Cogwheel"
     }
 
     EQUIP_LOCATIONS = {
