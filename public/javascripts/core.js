@@ -444,8 +444,8 @@
         ro: data.options.rotation,
         settings: {
           tricks: data.options.general.tricks,
-          dmg_poison: data.options.general.mh_poison,
-          utl_poison: data.options.general.oh_poison,
+          dmg_poison: data.options.general.leathal_poison,
+          utl_poison: data.options.general.utility_poison,
           duration: data.options.general.duration
         },
         spec: data.activeSpec,
@@ -760,7 +760,7 @@
     poisonMap = ["dp", "wp"];
     utilPoisonMap = ["lp", "n"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"];
-    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_execute", "opener_name", "opener_use", "use_rupture", "ksp_immediately", "use_revealing_strike", "clip_recuperate", "use_hemorrhage"];
+    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "opener_name", "opener_use", "use_rupture", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "clip_recuperate", "use_hemorrhage"];
     rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, true, false, 'true', 'false', 'never', 'always', 'sometimes', 'pool', 'garrote', 'ambush', 'mutilate'];
     map = function(value, m) {
       return m.indexOf(value);
@@ -870,8 +870,8 @@
           tricks: general[7] !== 0,
           receive_tricks: general[8] !== 0,
           prepot: general[9] !== 0,
-          patch: general[10] || 43,
-          min_ilvl: general[11] || 333,
+          patch: general[10] || 50,
+          min_ilvl: general[11] || 430,
           epic_gems: general[12] || 0
         };
         d.options.buffs = {};
