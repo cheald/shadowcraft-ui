@@ -177,6 +177,17 @@ module WowArmory
       stats
     end
 
+    def is_hydraulic_gem
+      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @id).read
+      eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
+      stats1 = JSON::load("{%s}" % doc.css("json").text)
+      ret = false
+      if stats1["classs"] == 3 and stats1["subclass"] == 9
+        ret = true
+      end
+      ret
+    end
+
     def populate_stats
       self.name ||= value("h3")
       lis = @document.css(".item-specs li")
@@ -192,6 +203,8 @@ module WowArmory
       self.is_heroic = value(".color-tooltip-green").try(:strip) == "Heroic"
       self.gem_slot = fix_gem_colors lis.map {|t| t.text.match(/Matches a ([a-z ]+) socket/i).try(:[], 1) }.compact.first
       self.gem_slot ||= lis.map {|t| t.text.match(/Only fits in a (Cogwheel|Meta) (socket|gem slot)/i).try(:[], 1) }.compact.first.try(:humanize)
+      self.gem_slot = "Hydraulic" if is_hydraulic_gem
+  
       self.armor_class ||= lis.map {|t| t.text.strip.match(/(^|\s)(Plate|Mail|Leather|Cloth)($|\s)/).try(:[], 2) }.compact.first
 
       self.stats = get_item_stats

@@ -134,6 +134,8 @@ class Item
   def self.populate_gems
     populate_from_wowhead "http://www.wowhead.com/items=3?filter=qu=2:3;minle=86;maxle=90;eb=1"
     populate_from_wowhead "http://www.wowhead.com/items=3?filter=qu=2:3:4;minle=86;maxle=90;cr=99;crs=11;crv=0"
+
+    single_import 89873 # 500agi gem
   end
 
   def self.populate_glyphs
