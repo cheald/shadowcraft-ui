@@ -438,7 +438,7 @@
       payload = {
         r: data.options.general.race,
         l: data.options.general.level,
-        pot: data.options.general.potion_of_the_tolvir ? 1 : 0,
+        pot: data.options.general.virmens_bite ? 1 : 0,
         prepot: data.options.general.prepot ? 1 : 0,
         b: buffList,
         ro: data.options.rotation,
@@ -797,7 +797,7 @@
           }
         }
         options.push(professions);
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, utilPoisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.virmens_bite ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems];
         options.push(base36Encode(general));
         buffs = [];
         _ref2 = ShadowcraftOptions.buffMap;
@@ -1399,7 +1399,7 @@
           'default': false,
           datatype: 'bool'
         },
-        virmens_bit: {
+        virmens_bite: {
           name: "Combat potion (Virmen's Bite)",
           'default': true,
           datatype: 'bool'
