@@ -171,7 +171,7 @@ class ShadowcraftHistory
   utilPoisonMap = [ "lp", "n" ]
   raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"]
   rotationOptionsMap = [
-    "min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab", "opener_name", "opener_use"
+    "min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_execute", "opener_name", "opener_use"
     "use_rupture", "ksp_immediately", "use_revealing_strike"
     "clip_recuperate", "use_hemorrhage"
   ]
@@ -197,7 +197,9 @@ class ShadowcraftHistory
         gearSet.push gear.g1 || 0
         gearSet.push gear.g2 || 0
       ret.push base36Encode(gearSet)
-      ret.push ShadowcraftTalents.encodeTalents(data.activeTalents)
+      ret.push data.active
+      ret.push data.activeSpec
+      ret.push data.activeTalents
       ret.push base36Encode(data.glyphs)
 
       # Options
@@ -213,7 +215,7 @@ class ShadowcraftHistory
         map(data.options.general.race, raceMap)
         data.options.general.duration
         map(data.options.general.mh_poison, poisonMap)
-        map(data.options.general.oh_poison, poisonMap)
+        map(data.options.general.oh_poison, utilPoisonMap)
         if data.options.general.potion_of_the_tolvir then 1 else 0
         data.options.general.max_ilvl
         if data.options.general.tricks then 1 else 0
@@ -246,11 +248,12 @@ class ShadowcraftHistory
     "1": (data) ->
       d =
         gear: {}
-        activeTalents: ShadowcraftTalents.decodeTalents(data[2])
-        glyphs: base36Decode(data[3])
+        active: data[2]
+        activeSpec: data[3]
+        activeTalents: data[4]
+        glyphs: base36Decode(data[5])
         options: {}
         talents: []
-        active: data[6]
 
       gear = base36Decode data[1]
       for id, index in gear by 6
@@ -265,7 +268,7 @@ class ShadowcraftHistory
         for k, v of d.gear[slot]
           delete d.gear[slot][k] if v == 0
 
-      options = data[4]
+      options = data[6]
       d.options.professions = {}
       for v, i in options[0]
         d.options.professions[unmap(v, professionMap)] = true

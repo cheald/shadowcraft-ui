@@ -52,6 +52,8 @@ class Character
       end
 
       self.properties = char.as_json
+      Rails.logger.debug self.properties.inspect
+      Rails.logger.debug self.properties
 
       if self.properties.nil?
         return
@@ -83,11 +85,12 @@ class Character
   end
 
   def as_json(options = {})
-    Rails.logger.debug Character.encode_random_items(properties["gear"]).inspect
+    #Rails.logger.debug Character.encode_random_items(properties["gear"]).inspect
     {
       :gear   => Character.encode_random_items(properties["gear"]),
       :talents => properties["talents"],
       :active => properties["active_talents"],
+      :active_talents => properties["active_talents"],
       :options => {
         :general => {
           :level => properties["level"],

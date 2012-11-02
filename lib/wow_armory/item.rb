@@ -170,13 +170,10 @@ module WowArmory
       stats1 = JSON::load("{%s}" % doc.css("json").text)
       eqstats.each do |stat, val|
         stat2 = WOWHEAD_MAP[stat]
-        puts stat2
         unless stat2.nil?
-          puts stat2
           stats[stat2] = val
         end
       end
-      puts stats
       stats
     end
 

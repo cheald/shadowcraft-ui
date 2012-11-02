@@ -760,7 +760,7 @@
     poisonMap = ["dp", "wp"];
     utilPoisonMap = ["lp", "n"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"];
-    rotationOptionsMap = ["min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab", "opener_name", "opener_use", "use_rupture", "ksp_immediately", "use_revealing_strike", "clip_recuperate", "use_hemorrhage"];
+    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_execute", "opener_name", "opener_use", "use_rupture", "ksp_immediately", "use_revealing_strike", "clip_recuperate", "use_hemorrhage"];
     rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, true, false, 'true', 'false', 'never', 'always', 'sometimes', 'pool', 'garrote', 'ambush', 'mutilate'];
     map = function(value, m) {
       return m.indexOf(value);
@@ -783,7 +783,9 @@
           gearSet.push(gear.g2 || 0);
         }
         ret.push(base36Encode(gearSet));
-        ret.push(ShadowcraftTalents.encodeTalents(data.activeTalents));
+        ret.push(data.active);
+        ret.push(data.activeSpec);
+        ret.push(data.activeTalents);
         ret.push(base36Encode(data.glyphs));
         options = [];
         professions = [];
@@ -795,7 +797,7 @@
           }
         }
         options.push(professions);
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, poisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.mh_poison, poisonMap), map(data.options.general.oh_poison, utilPoisonMap), data.options.general.potion_of_the_tolvir ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems];
         options.push(base36Encode(general));
         buffs = [];
         _ref2 = ShadowcraftOptions.buffMap;
@@ -822,11 +824,12 @@
         var d, gear, general, i, id, index, k, options, rotation, slot, v, _len, _len2, _len3, _len4, _ref, _ref2, _ref3, _step, _step2;
         d = {
           gear: {},
-          activeTalents: ShadowcraftTalents.decodeTalents(data[2]),
-          glyphs: base36Decode(data[3]),
+          active: data[2],
+          activeSpec: data[3],
+          activeTalents: data[4],
+          glyphs: base36Decode(data[5]),
           options: {},
-          talents: [],
-          active: data[6]
+          talents: []
         };
         gear = base36Decode(data[1]);
         for (index = 0, _len = gear.length, _step = 6; index < _len; index += _step) {
@@ -848,7 +851,7 @@
             }
           }
         }
-        options = data[4];
+        options = data[6];
         d.options.professions = {};
         _ref2 = options[0];
         for (i = 0, _len2 = _ref2.length; i < _len2; i++) {
@@ -1781,7 +1784,7 @@
     ShadowcraftTalents.prototype.updateActiveTalents = function() {
       var data;
       data = Shadowcraft.Data;
-      if (!data.activeSpec) {
+      if (!data.activeTalents) {
         data.activeTalents = data.talents[data.active].talents;
         data.activeSpec = data.talents[data.active].spec;
       }
