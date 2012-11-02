@@ -214,9 +214,9 @@ class ShadowcraftHistory
         data.options.general.level
         map(data.options.general.race, raceMap)
         data.options.general.duration
-        map(data.options.general.mh_poison, poisonMap)
-        map(data.options.general.oh_poison, utilPoisonMap)
-        if data.options.general.potion_of_the_tolvir then 1 else 0
+        map(data.options.general.lethal_poison, poisonMap)
+        map(data.options.general.utility_poison, utilPoisonMap)
+        if data.options.general.virmens_bite then 1 else 0
         data.options.general.max_ilvl
         if data.options.general.tricks then 1 else 0
         if data.options.general.receive_tricks then 1 else 0
