@@ -3,9 +3,9 @@ class ShadowcraftBackend
 
   get_engine = ->
     switch Shadowcraft.Data.options.general.patch
-      when 4201
+      when 50
         port = 8881
-        endpoint = "engine-4.2"
+        endpoint = "engine-5.0"
       else
         port = 8881
         endpoint = "engine-4.1"
@@ -36,7 +36,6 @@ class ShadowcraftBackend
 
     mh = ItemLookup[data.gear[15].item_id] if data.gear[15]
     oh = ItemLookup[data.gear[16].item_id] if data.gear[16]
-    th = ItemLookup[data.gear[17].item_id] if data.gear[17]
     glyph_list = []
 
     for glyph in data.glyphs
@@ -49,7 +48,21 @@ class ShadowcraftBackend
         buffList.push ShadowcraftOptions.buffMap.indexOf(key)
 
     professions = _.compact( _.map(data.options.professions, (v, k) -> if v then k else null ) )
-
+    
+    # TODO find a better solution this is very hacky but working
+    talentArray = data.activeTalents.split ""
+    talentString = ""
+    for val, key in talentArray
+      if val == "."
+        talentArray[key] = "0"
+      else if val == "0"
+        talentArray[key] = "1"
+      else if val == "1"
+        talentArray[key] = "2"
+      else if val == "2"
+        talentArray[key] = "3"
+      talentString += talentArray[key]
+    
     payload =
       r: data.options.general.race
       l: data.options.general.level
@@ -63,11 +76,8 @@ class ShadowcraftBackend
         oh_poison: data.options.general.oh_poison
         duration: data.options.general.duration
       }
-      t: [
-        data.activeTalents.substr(0, Talents[0].talent.length)
-        data.activeTalents.substr(Talents[0].talent.length, Talents[1].talent.length)
-        data.activeTalents.substr(Talents[0].talent.length + Talents[1].talent.length, Talents[2].talent.length)
-      ],
+      spec: data.activeSpec,
+      t: talentString,
       sta: [
         statSummary.strength || 0,
         statSummary.agility || 0,
@@ -78,7 +88,7 @@ class ShadowcraftBackend
         statSummary.haste_rating || 0,
         statSummary.mastery_rating || 0
       ],
-      gly: glyph_list,
+      #gly: glyph_list, # FIXME glyphs temporary disabled
       pro: professions
 
     if mh?
@@ -94,13 +104,6 @@ class ShadowcraftBackend
         oh.dps * oh.speed,
         data.gear[16].enchant,
         oh.subclass
-      ]
-    if th?
-      payload.th = [
-        th.speed,
-        th.dps * th.speed,
-        data.gear[17].enchant,
-        th.subclass
       ]
 
     gear_ids = []
@@ -123,6 +126,7 @@ class ShadowcraftBackend
     if Shadowcraft.Data.options.general.receive_tricks
       data.total_dps *= 1.03
     @app.lastCalculation = data
+    this.trigger("recompute2", data)
     this.trigger("recompute", data)
 
   recompute: (payload = null, forcePost = false) ->

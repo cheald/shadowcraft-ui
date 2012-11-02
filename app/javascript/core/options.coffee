@@ -104,7 +104,7 @@ class ShadowcraftOptions
     data = Shadowcraft.Data
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Engine", 'default': 50, datatype: 'integer', options: {50: '5.0.4'}},
+      patch: {type: "select", name: "Engine", 'default': 50, datatype: 'integer', options: {50: '5.0.5'}},
       level: {type: "input", name: "Level", 'default': 90, datatype: 'integer', min: 85, max: 90},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
@@ -149,23 +149,24 @@ class ShadowcraftOptions
     @setup("#settings #raidOther", "general", {
       prepot: {name: "Pre-pot (Virmen's Bite)", 'default': false, datatype: 'bool'}
       virmens_bit: {name: "Combat potion (Virmen's Bite)", 'default': true, datatype: 'bool'}
-      tricks: {name: "Tricks of the Trade on cooldown", 'default': true, datatype: 'bool'}
-      receive_tricks: {name: "Receiving Tricks on cooldown from another rogue", 'default': true, datatype: 'bool'}
+      tricks: {name: "Tricks of the Trade on cooldown", 'default': false, datatype: 'bool'}
+      receive_tricks: {name: "Receiving Tricks on cooldown from another rogue", 'default': false, datatype: 'bool'}
     })
 
     @setup("#settings section.mutilate .settings", "rotation", {
-      min_envenom_size_mutilate: {type: "select", name: "Min CP/Envenom > 35%", options: [5,4,3,2,1], 'default': 4, desc: "CP for Envenom when using Mutilate", datatype: 'integer', min: 1, max: 5}
-      min_envenom_size_backstab: {type: "select", name: "Min CP/Envenom < 35%", options: [5,4,3,2,1], 'default': 5, desc: "CP for Envenom when using Backstab", datatype: 'integer', min: 1, max: 5}
+      min_envenom_size_non_execute: {type: "select", name: "Min CP/Envenom > 35%", options: [5,4,3,2,1], 'default': 4, desc: "CP for Envenom when using Mutilate", datatype: 'integer', min: 1, max: 5}
+      min_envenom_size_execute: {type: "select", name: "Min CP/Envenom < 35%", options: [5,4,3,2,1], 'default': 5, desc: "CP for Envenom when using Dispatch", datatype: 'integer', min: 1, max: 5}
       opener_name: {type: "select", name: "Opener Name", options: {'mutilate': "Mutilate", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'mutilate', datatype: 'string'}
       opener_use: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
-      # prioritize_rupture_uptime_mutilate: {name: "Prioritize Rupture (>35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate", default: true, datatype: 'bool'}
-      # prioritize_rupture_uptime_backstab: {name: "Prioritize Rupture (<35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Backstab", default: true, datatype: 'bool'}
+      prioritize_rupture_uptime_non_execute: {name: "Prioritize Rupture (>35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate", default: true, datatype: 'bool'}
+      prioritize_rupture_uptime_execute: {name: "Prioritize Rupture (<35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Dispatch", default: true, datatype: 'bool'}
     })
 
     @setup("#settings section.combat .settings", "rotation", {
       use_rupture: {name: "Use Rupture?", right: true, default: true}
-      ksp_immediately: {type: "select", name: "Killing Spree", options: {'true': "Killing Spree on cooldown", 'false': "Wait for Bandit's Guile before using Killing Spree"}, 'default': 'false', datatype: 'string'}
+      ksp_immediately: {type: "select", name: "Killing Spree", options: {'true': "Killing Spree on cooldown", 'false': "Wait for Bandit's Guile before using Killing Spree"}, 'default': 'true', datatype: 'string'}
       revealing_strike_pooling: {name: "Pool for Revealing Strike", right: true, default: true}
+      blade_flurry: {name: "Blade Flurry", right: true, desc: "Use Blade Flurry", default: false, datatype: 'bool'}
     })
 
     @setup("#settings section.subtlety .settings", "rotation", {
@@ -214,9 +215,9 @@ class ShadowcraftOptions
 
     Shadowcraft.Talents.bind "changed", ->
       $("#settings section.mutilate, #settings section.combat, #settings section.subtlety").hide()
-      if Shadowcraft.Data.tree0 >= 31
+      if Shadowcraft.Data.activeSpec == "a"
         $("#settings section.mutilate").show()
-      else if Shadowcraft.Data.tree1 >= 31
+      else if Shadowcraft.Data.activeSpec == "Z"
         $("#settings section.combat").show()
       else
         $("#settings section.subtlety").show()

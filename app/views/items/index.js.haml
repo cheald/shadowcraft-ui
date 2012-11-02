@@ -119,12 +119,10 @@
         R.ITEM_LOOKUP[item.id] = item;
       }
       R.TALENT_LOOKUP = {};
-      for(var tree = 0; tree < R.TALENTS.length; tree++) {
-        for(var talent = 0; talent < R.TALENTS[tree].talent.length; talent++) {
-          var t = R.TALENTS[tree].talent[talent];
+        for(var talent = 0; talent < R.TALENTS.talent.length; talent++) {
+          var t = R.TALENTS.talent[talent];
           t.maxRank = t.rank.length || 1;
-          R.TALENT_LOOKUP[tree + ":" + t.tier + ":" + t.column] = t;
-        }
+          R.TALENT_LOOKUP[t.tier + ":" + t.column] = t;
       }
       R.GLYPH_LOOKUP = {}, R.GLYPHNAME_LOOKUP = {};;
       for(var i = 0; i < R.GLYPHS.length; i++) {

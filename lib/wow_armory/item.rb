@@ -39,6 +39,18 @@ module WowArmory
       :hit_avoidance_rating             => 33
     }
 
+    WOWHEAD_MAP = {
+      "hitrtng" => "hit_rating",
+      "hastertng" => "haste_rating",
+      "critstrkrtng" => "crit_rating",
+      "mastrtng" => "mastery_rating",
+      "exprtng" => "expertise_rating",
+      "agi" => "agility",
+      "sta" => "stamina",
+      "pvppower" => "pvp_power_rating",
+      "resirtng" => "resilience_rating"
+    }
+
     SOCKET_MAP = {
       1 => "Meta",
       2 => "Red",
@@ -151,6 +163,23 @@ module WowArmory
       end
     end
 
+    def get_item_stats
+      stats = {}
+      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @id).read
+      eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
+      stats1 = JSON::load("{%s}" % doc.css("json").text)
+      eqstats.each do |stat, val|
+        stat2 = WOWHEAD_MAP[stat]
+        puts stat2
+        unless stat2.nil?
+          puts stat2
+          stats[stat2] = val
+        end
+      end
+      puts stats
+      stats
+    end
+
     def populate_stats
       self.name ||= value("h3")
       lis = @document.css(".item-specs li")
@@ -168,7 +197,7 @@ module WowArmory
       self.gem_slot ||= lis.map {|t| t.text.match(/Only fits in a (Cogwheel|Meta) (socket|gem slot)/i).try(:[], 1) }.compact.first.try(:humanize)
       self.armor_class ||= lis.map {|t| t.text.strip.match(/(^|\s)(Plate|Mail|Leather|Cloth)($|\s)/).try(:[], 2) }.compact.first
 
-      self.stats = scan_stats
+      self.stats = get_item_stats
       if weapon_type = lis.text.map {|e| e.strip.match(/^(Dagger|Mace|Axe|Thrown|Wand|Bow|Gun|Crossbow|Fist Weapon|Sword)$/)}.compact.first
         populate_weapon_stats!
       end

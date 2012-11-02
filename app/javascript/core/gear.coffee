@@ -1,5 +1,5 @@
 class ShadowcraftGear
-  MAX_JEWELCRAFTING_GEMS = 3
+  MAX_JEWELCRAFTING_GEMS = 2
   MAX_ENGINEERING_GEMS = 1
   JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"]
   REFORGE_FACTOR = 0.4
@@ -29,12 +29,13 @@ class ShadowcraftGear
   REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"]
   @REFORGABLE = REFORGABLE
   REFORGE_CONST = 112
-  SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16", "17"]
-  SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13", "17"]]
+  SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"]
+  SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13"]]
   PROC_ENCHANTS =
     4099: "landslide"
     4083: "hurricane"
     4441: "windsong"
+    4443: "elemental_force"
     4444: "dancing_steel"
 
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
@@ -71,7 +72,6 @@ class ShadowcraftGear
       13: 12
       15: "mainhand"
       16: "offhand"
-      17: "ranged"
 
   EP_PRE_REGEM = null
   EP_PRE_REFORGE = null
@@ -264,9 +264,9 @@ class ShadowcraftGear
     return DEFAULT_BOSS_DODGE - (expertise / Shadowcraft._R("expertise_rating") * 0.25)
 
   getHitEP = ->
-    yellowHitCap = Shadowcraft._R("hit_rating") * (8 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
-    spellHitCap = Shadowcraft._R("spell_hit")  * (17 - 2 * Shadowcraft._T("precision")) - racialHitBonus("spell_hit")
-    whiteHitCap = Shadowcraft._R("hit_rating") * (27 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
+    yellowHitCap = Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating")
+    spellHitCap = Shadowcraft._R("spell_hit")  * 7.5 - racialHitBonus("spell_hit")
+    whiteHitCap = Shadowcraft._R("hit_rating") * 26.5 - racialHitBonus("hit_rating")
     exist = Shadowcraft.Gear.getStat("hit_rating")
     if exist < yellowHitCap
       Weights.yellow_hit
@@ -281,13 +281,13 @@ class ShadowcraftGear
     data = Shadowcraft.Data
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
 
-    exp_base = Shadowcraft._R("expertise_rating") * DEFAULT_BOSS_DODGE * 4
+    exp_base = Shadowcraft._R("expertise_rating") * DEFAULT_BOSS_DODGE
     caps =
-      yellow_hit: Shadowcraft._R("hit_rating") * (8 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
-      spell_hit: Shadowcraft._R("spell_hit")  * (17 - 2 * Shadowcraft._T("precision")) - racialHitBonus("spell_hit")
-      white_hit: Shadowcraft._R("hit_rating") * (27 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
-      mh_exp: 791
-      oh_exp: 791
+      yellowHitCap: Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating")
+      spellHitCap: Shadowcraft._R("hit_rating")  * 7.5 - racialHitBonus("hit_rating")
+      whiteHitCap: Shadowcraft._R("hit_rating") * 26.5 - racialHitBonus("hit_rating")
+      mh_exp: 2550
+      oh_exp: 2550
     if data.gear[15]
       caps.mh_exp = exp_base - racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
     if data.gear[16]
@@ -299,13 +299,13 @@ class ShadowcraftGear
     switch cap
       when "yellow"
         r = Shadowcraft._R("hit_rating")
-        hitCap = r * (8 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
+        hitCap = r * 7.5 - racialHitBonus("hit_rating")
       when "spell"
-        r = Shadowcraft._R("spell_hit")
-        hitCap = r * (17 - 2 * Shadowcraft._T("precision")) - racialHitBonus("spell_hit")
+        r = Shadowcraft._R("hit_rating")
+        hitCap = r * 7.5 - racialHitBonus("hit_rating")
       when "white"
         r = Shadowcraft._R("hit_rating")
-        hitCap = r * (27 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
+        hitCap = r * 26.5 - racialHitBonus("hit_rating")
     if r? and hitCap?
       hasHit = @statSum.hit_rating || 0
       if hasHit < hitCap or cap == "white"
@@ -333,7 +333,7 @@ class ShadowcraftGear
     switch(stat)
       when "expertise_rating"
         boss_dodge = DEFAULT_BOSS_DODGE
-        mhCap = Shadowcraft._R("expertise_rating") * boss_dodge * 4
+        mhCap = Shadowcraft._R("expertise_rating") * boss_dodge
         ohCap = mhCap
         if data.gear[15] and data.gear[15].item_id
           mhCap -= racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
@@ -352,9 +352,9 @@ class ShadowcraftGear
 
         return total * neg
       when "hit_rating"
-        yellowHitCap = Shadowcraft._R("hit_rating") * (8 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
-        spellHitCap = Shadowcraft._R("spell_hit")  * (17 - 2 * Shadowcraft._T("precision")) - racialHitBonus("spell_hit")
-        whiteHitCap = Shadowcraft._R("hit_rating") * (27 - 2 * Shadowcraft._T("precision")) - racialHitBonus("hit_rating")
+        yellowHitCap = Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating")
+        spellHitCap = Shadowcraft._R("hit_rating")  * 7.5 - racialHitBonus("hit_rating")
+        whiteHitCap = Shadowcraft._R("hit_rating") * 26.5 - racialHitBonus("hit_rating")
 
         total = 0
         remaining = num
@@ -390,7 +390,7 @@ class ShadowcraftGear
     list.sort(__epSort) unless skipSort
 
   needsDagger = ->
-    Shadowcraft.Data.tree0 >= 31 || Shadowcraft.Data.tree2 >= 31
+    Shadowcraft.Data.activeSpec == "a" || Shadowcraft.Data.activeSpec == "b"
 
   isProfessionalGem = (gem, profession) ->
     gem.requires?.profession? and gem.requires.profession == profession
@@ -914,7 +914,11 @@ class ShadowcraftGear
     offsets
 
   patch_max_ilevel = (patch) ->
-    500
+    switch patch
+      when 50
+        600
+      else
+        500
 
   # Click a name in a slot, for binding to event delegation
   clickSlotName = ->
@@ -1154,8 +1158,8 @@ class ShadowcraftGear
 
     TiniReforger = new ShadowcraftTiniReforgeBackend(app)
 
-    Shadowcraft.Backend.bind("recompute", updateStatWeights)
-    Shadowcraft.Backend.bind("recompute", -> Shadowcraft.Gear )
+    Shadowcraft.Backend.bind("recompute2", updateStatWeights)
+    Shadowcraft.Backend.bind("recompute2", -> Shadowcraft.Gear )
 
     Shadowcraft.Talents.bind "changed", ->
       app.updateStatsWindow()

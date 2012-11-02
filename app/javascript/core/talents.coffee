@@ -8,12 +8,15 @@ class ShadowcraftTalents
     "Stock Assassination":
       talents: "2.10.2"
       glyphs: [45761]
+      spec: "a"
     "Stock Combat":
       talents: "2.10.2"
       glyphs: [42972]
+      spec: "Z"
     "Stock Subtlety":
       talents: "2.10.2"
       glyphs: []
+      spec: "b"
 
   @GetPrimaryTreeName = ->
     CHARACTER_SPEC
@@ -29,13 +32,13 @@ class ShadowcraftTalents
         l = parseInt(c, 10) * 5 + parseInt(sub[i+1] || 0, 10)
         str += talentMap[l]
       str += "Z" unless index == TREE_SIZE.length - 1
-    return str
+    return s
 
   @decodeTalents = (s) ->
     talents = ""
-    for char, index in s.split ''
+    #for char, index in s.split ''
       # Needs to be fleshed out
-    return talents
+    return s
 
   sumDigits = (s) ->
     total = 0
@@ -43,10 +46,10 @@ class ShadowcraftTalents
       total += parseInt(c)
     return total
 
-  getSpecFromString = (s) ->
-    if sumDigits(s.substr(0, TREE_SIZE[0])) >= 31
+  getSpecName = (s) ->
+    if s == "a"
       return "Assassination"
-    else if sumDigits(s.substr(TREE_SIZE[0], TREE_SIZE[1])) >= 31
+    else if s == "Z"
       return "Combat"
     else
       return "Subtlety"
@@ -56,9 +59,10 @@ class ShadowcraftTalents
     talents.each ->
       $this = $(this)
       pos = $.data(this, "position")
+      points = $.data(this, "points")
       tree = $.data(pos.tree, "info")
       icons = $.data(this, "icons")
-      if tree.points < (pos.row) * 5
+      if tree.rowPoints[pos.row] >= 1 and points.cur != 1
         $this.css({backgroundImage: icons.grey}).removeClass("active")
       else
         $this.css({backgroundImage: icons.normal}).addClass("active")
@@ -80,6 +84,7 @@ class ShadowcraftTalents
     }, pos.left, pos.top, 130, -20)
 
   resetTalents = ->
+    data = Shadowcraft.Data
     $("#talentframe .talent").each ->
       points = $.data(this, "points")
       applyTalentToButton(this, -points.cur, true, true)
@@ -88,22 +93,35 @@ class ShadowcraftTalents
 
   setTalents = (str) ->
     data = Shadowcraft.Data
-
     if !str
       updateTalentAvailability(null)
       return
-    ct = 0
     $("#talentframe .talent").each ->
+      position = $.data(this, "position")
       points = $.data(this, "points")
-      applyTalentToButton(this, parseInt(str[ct], 10) - points.cur, true, true)
-      ct++
+      p = 0
+      if str[position.row] != "." and position.col == parseInt(str[position.row], 10)
+        p = 1
+      applyTalentToButton(this, p - points.cur, true, true)
     data.activeTalents = getTalents()
     updateTalentAvailability(null)
 
   getTalents = ->
-    return _.map($("#talentframe .talent"), (t) ->
-      $.data(t, "points").cur || 0
-    ).join("")
+    data = Shadowcraft.Data
+    talent_rows = ['.','.','.','.','.','.']
+    $("#talentframe .talent").each ->
+      position = $.data(this, "position")
+      points = $.data(this, "points")
+      if points.cur == 1
+        talent_rows[position.row] = position.col
+    talent_rows.join('')
+
+  setSpec = (str) ->
+    data = Shadowcraft.Data
+    data.activeSpec = str
+
+  getSpec = -> # this is not working
+    return $("#talentframe .spec")
 
   applyTalentToButton = (button, dir, force, skipUpdate) ->
     data = Shadowcraft.Data
@@ -118,12 +136,7 @@ class ShadowcraftTalents
     else if dir == 1 && points.cur < points.max && talentsSpent < MAX_TALENT_POINTS
       success = true
     else if dir == -1
-      prequal = 0
-      for tier in [0..position.row]
-        prequal += tree.rowPoints[tier]
-      if tree.rowPoints[position.row+1] and tree.rowPoints[position.row+1] > 0
-        return false if prequal <= (position.row+1) * 5
-      success = true if points.cur > 0
+      success = true
 
     if success
       points.cur += dir
@@ -131,7 +144,7 @@ class ShadowcraftTalents
       talentsSpent += dir
       tree.rowPoints[position.row] += dir
 
-      Shadowcraft.Data["tree" + position.treeIndex] = tree.points
+      #Shadowcraft.Data["tree" + position.treeIndex] = tree.points
       $.data(button, "spentButton").text(tree.points)
       $points = $.data(button, "pointsButton")
       $points.get(0).className = "points"
@@ -146,9 +159,10 @@ class ShadowcraftTalents
     return success
 
   updateActiveTalents: ->
-    data = @app.Data
-    if not data.activeTalents
+    data = Shadowcraft.Data
+    if not data.activeSpec
       data.activeTalents = data.talents[data.active].talents
+      data.activeSpec = data.talents[data.active].spec
     setTalents data.activeTalents
 
   initTalentsPane: ->
@@ -159,8 +173,8 @@ class ShadowcraftTalents
     buffer = ""
     for treeIndex, tree of Talents
       buffer += Templates.talentTree({
-        background: parseInt(treeIndex, 10) + 1,
-        talents: tree.talent
+        background: 1,
+        talents: tree
       })
 
     talentframe = $("#talentframe")
@@ -176,9 +190,9 @@ class ShadowcraftTalents
       trees = $this.closest(".tree")
       myTree = trees.get(0)
       tree = talentTrees.index(myTree)
-      talent = TalentLookup[tree + ":" + row + ":" + col]
+      talent = TalentLookup[row + ":" + col]
       $.data(this, "position", {tree: myTree, treeIndex: tree, row: row, col: col})
-      $.data(myTree, "info", {points: 0, rowPoints: [0, 0, 0, 0, 0, 0, 0]})
+      $.data(myTree, "info", {points: 0, rowPoints: [0, 0, 0, 0, 0, 0]})
       $.data(this, "talent", talent)
       $.data(this, "points", {cur: 0, max: talent.maxRank})
       $.data(this, "pointsButton", $this.find(".points"))
@@ -218,16 +232,18 @@ class ShadowcraftTalents
     buffer = ""
     for talent in data.talents
       buffer += Templates.talentSet({
-        talent_string: ShadowcraftTalents.encodeTalents(talent.talents)
-        glyphs: talent.glyphs.join(",")
-        name: "Imported " + getSpecFromString(talent.talents)
+        talent_string: talent.talents,
+        glyphs: talent.glyphs.join(","),
+        name: "Imported " + getSpecName(talent.spec),
+        spec: talent.spec
       })
 
     for talentName, talentSet of DEFAULT_SPECS
       buffer += Templates.talentSet({
-        talent_string: ShadowcraftTalents.encodeTalents(talentSet.talents),
-        glyphs: talentSet.glyphs.join(",")
-        name: talentName
+        talent_string: talentSet.talents,
+        glyphs: talentSet.glyphs.join(","),
+        name: talentName,
+        spec: talentSet.spec
       })
 
     $("#talentsets").get(0).innerHTML = buffer
@@ -248,9 +264,9 @@ class ShadowcraftTalents
     for g, idx in Glyphs
       buffer[g.rank] += Templates.glyphSlot(g)
 
-    $("#prime-glyphs .inner").get(0).innerHTML = buffer[3]
+    $("#prime-glyphs .inner").get(0).innerHTML = buffer[1]
     $("#major-glyphs .inner").get(0).innerHTML = buffer[2]
-    # $("#minor-glyphs .inner").get(0).innerHTML = buffer[1]
+    #$("#minor-glyphs .inner").get(0).innerHTML = buffer[1]
 
     return unless data.glyphs?
     for glyph, i in data.glyphs
@@ -381,12 +397,13 @@ class ShadowcraftTalents
 
     $("#talentsets").click $.delegate({
       ".talent_set": ->
-        talents = ShadowcraftTalents.decodeTalents $(this).data("talents")
-        glyphs = ($(this).data("glyphs") || "").split(",")
+        spec = $(this).data("spec")
+        talents = $(this).data("talents")+""
+        glyphs = ($(this).data("glyphs")+"" || "").split ","
         for glyph, i in glyphs
           glyphs[i] = parseInt(glyph, 10)
         glyphs = _.compact(glyphs)
-
+        setSpec spec
         setTalents talents
         app.setGlyphs glyphs
     })

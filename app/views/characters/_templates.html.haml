@@ -7,7 +7,7 @@
     .sub {{.}}
     {{/submsg}}
 - mustache "talent_set" do
-  %button.talent_set{:"data-talents" => "{{talent_string}}", :"data-glyphs" => "{{glyphs}}"} {{name}}
+  %button.talent_set{:"data-spec" => "{{spec}}", :"data-talents" => "{{talent_string}}", :"data-glyphs" => "{{glyphs}}"} {{name}}
 - mustache "tree" do
   .tree{:style => "background-image: url(http://wow.zamimg.com/images/wow/talents/backgrounds/live/rogue_{{background}}.jpg);"}
     {{#talents}}

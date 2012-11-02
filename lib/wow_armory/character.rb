@@ -56,7 +56,6 @@ module WowArmory
       "trinket2" => 13,
       "mainHand" => 15,
       "offHand" => 16,
-      "ranged" => 17
     }
 
     include Document
@@ -97,7 +96,7 @@ module WowArmory
           glyphs = tree["glyphs"].map do |glyphset, set|
             set.map {|g| g["item"].to_i }
           end.flatten
-          {:talents => tree["build"], :glyphs => glyphs}
+          {:spec => tree["calcSpec"], :talents => tree["calcTalent"], :glyphs => glyphs}
         end
       }
     end
