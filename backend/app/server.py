@@ -441,7 +441,7 @@ class ShadowcraftComputation:
             out["total_dps"] = sum(entry[1] for entry in breakdown.items())
 
             # Glyph ranking is slow
-            #out["glyph_ranking"] = calculator.get_glyphs_ranking(rogue_glyphs.RogueGlyphs.allowed_glyphs)
+            out["glyph_ranking"] = calculator.get_glyphs_ranking(input.get("gly", []))
             
             out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
 

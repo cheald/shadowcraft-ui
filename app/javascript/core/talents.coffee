@@ -258,7 +258,7 @@ class ShadowcraftTalents
     this.initGlyphs()
 
   initGlyphs: ->
-    buffer = [null, "", "", ""]
+    buffer = [null, "", ""]
     Glyphs = Shadowcraft.ServerData.GLYPHS
     data = Shadowcraft.Data
     if not data.glyphs
@@ -267,9 +267,8 @@ class ShadowcraftTalents
     for g, idx in Glyphs
       buffer[g.rank] += Templates.glyphSlot(g)
 
-    $("#prime-glyphs .inner").get(0).innerHTML = buffer[1]
-    $("#major-glyphs .inner").get(0).innerHTML = buffer[2]
-    #$("#minor-glyphs .inner").get(0).innerHTML = buffer[1]
+    $("#major-glyphs .inner").get(0).innerHTML = buffer[1]
+    $("#minor-glyphs .inner").get(0).innerHTML = buffer[2]
 
     return unless data.glyphs?
     for glyph, i in data.glyphs

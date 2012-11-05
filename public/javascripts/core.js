@@ -436,6 +436,16 @@
         }
         talentString += talentArray[key];
       }
+      if (data.activeSpec === "a") {
+        data.options.rotation["opener_name"] = data.options.rotation["opener_name_assassination"];
+        data.options.rotation["opener_use"] = data.options.rotation["opener_use_assassination"];
+      } else if (data.activeSpec === "Z") {
+        data.options.rotation["opener_name"] = data.options.rotation["opener_name_combat"];
+        data.options.rotation["opener_use"] = data.options.rotation["opener_use_combat"];
+      } else if (data.activeSpec === "b") {
+        data.options.rotation["opener_name"] = data.options.rotation["opener_name_subtlety"];
+        data.options.rotation["opener_use"] = data.options.rotation["opener_use_subtlety"];
+      }
       payload = {
         r: data.options.general.race,
         l: data.options.general.level,
@@ -452,6 +462,7 @@
         spec: data.activeSpec,
         t: talentString,
         sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit_rating || 0, statSummary.hit_rating || 0, statSummary.expertise_rating || 0, statSummary.haste_rating || 0, statSummary.mastery_rating || 0],
+        gly: glyph_list,
         pro: professions
       };
       if (mh != null) {
@@ -1451,7 +1462,7 @@
           "default": true,
           datatype: 'bool'
         },
-        opener_name: {
+        opener_name_assassination: {
           type: "select",
           name: "Opener Name",
           options: {
@@ -1462,7 +1473,7 @@
           'default': 'mutilate',
           datatype: 'string'
         },
-        opener_use: {
+        opener_use_assassination: {
           type: "select",
           name: "Opener Usage",
           options: {
@@ -1502,7 +1513,7 @@
           "default": false,
           datatype: 'bool'
         },
-        opener_name: {
+        opener_name_combat: {
           type: "select",
           name: "Opener Name",
           options: {
@@ -1513,7 +1524,7 @@
           'default': 'sinister_strike',
           datatype: 'string'
         },
-        opener_use: {
+        opener_use_combat: {
           type: "select",
           name: "Opener Usage",
           options: {
@@ -1536,7 +1547,7 @@
           'default': 'never',
           datatype: 'string'
         },
-        opener_name: {
+        opener_name_subtlety: {
           type: "select",
           name: "Opener Name",
           options: {
@@ -1546,7 +1557,7 @@
           'default': 'ambush',
           datatype: 'string'
         },
-        opener_use: {
+        opener_use_subtlety: {
           type: "select",
           name: "Opener Usage",
           options: {
@@ -1981,7 +1992,7 @@
     };
     ShadowcraftTalents.prototype.initGlyphs = function() {
       var Glyphs, buffer, data, g, glyph, i, idx, _len, _len2, _ref, _results;
-      buffer = [null, "", "", ""];
+      buffer = [null, "", ""];
       Glyphs = Shadowcraft.ServerData.GLYPHS;
       data = Shadowcraft.Data;
       if (!data.glyphs) {
@@ -1991,8 +2002,8 @@
         g = Glyphs[idx];
         buffer[g.rank] += Templates.glyphSlot(g);
       }
-      $("#prime-glyphs .inner").get(0).innerHTML = buffer[1];
-      $("#major-glyphs .inner").get(0).innerHTML = buffer[2];
+      $("#major-glyphs .inner").get(0).innerHTML = buffer[1];
+      $("#minor-glyphs .inner").get(0).innerHTML = buffer[2];
       if (data.glyphs == null) {
         return;
       }

@@ -62,7 +62,18 @@ class ShadowcraftBackend
       else if val == "2"
         talentArray[key] = "3"
       talentString += talentArray[key]
-    
+
+    # opener
+    if data.activeSpec == "a"
+      data.options.rotation["opener_name"] = data.options.rotation["opener_name_assassination"]
+      data.options.rotation["opener_use"] = data.options.rotation["opener_use_assassination"]
+    else if data.activeSpec == "Z"
+      data.options.rotation["opener_name"] = data.options.rotation["opener_name_combat"]
+      data.options.rotation["opener_use"] = data.options.rotation["opener_use_combat"]
+    else if data.activeSpec == "b"
+      data.options.rotation["opener_name"] = data.options.rotation["opener_name_subtlety"]
+      data.options.rotation["opener_use"] = data.options.rotation["opener_use_subtlety"]
+
     payload =
       r: data.options.general.race
       l: data.options.general.level
@@ -88,7 +99,7 @@ class ShadowcraftBackend
         statSummary.haste_rating || 0,
         statSummary.mastery_rating || 0
       ],
-      #gly: glyph_list, # FIXME glyphs temporary disabled
+      gly: glyph_list,
       pro: professions
 
     if mh?
