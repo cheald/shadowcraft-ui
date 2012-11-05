@@ -327,6 +327,13 @@ class Enchant
          :equip_location => 16
 	})
      Enchant.create({
+         :spell_id => 4424,
+         :stats => {"crit_rating" => 180 },
+         :icon => "inv_misc_enchantedscroll",
+         :item_name => "Enchant Cloak - Superior Critical Strike",
+         :equip_location => 16
+	})
+     Enchant.create({
          :spell_id => 4894,
          :stats => { },
          :icon => "inv_misc_thread_01",
