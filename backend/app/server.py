@@ -262,6 +262,9 @@ class ShadowcraftComputation:
         
         i18n.set_language('local')
 
+        # Base
+        _level = int(input.get("l", 90))
+
         # Buffs
         buff_list = []
         __max = len(self.buffMap)
@@ -269,8 +272,9 @@ class ShadowcraftComputation:
             b = int(b)
             if b >= 0 and b < __max:
                 buff_list.append(self.buffMap[b])
-            
-        _buffs = buffs.Buffs(*buff_list)
+        print buff_list
+
+        _buffs = buffs.Buffs(*buff_list, level=_level)
 
         # ##################################################################################
         # Weapons
@@ -368,7 +372,6 @@ class ShadowcraftComputation:
         # Player stats
         # Need parameter order here
         # str, agi, int, spi, sta, ap, crit, hit, exp, haste, mastery, mh, oh, thrown, procs, gear buffs
-        _level = int(input.get("l", 90))
         raceStr = input.get("r", 'human').lower().replace(" ", "_")
         _race = race.Race(raceStr, 'rogue', _level)
 
