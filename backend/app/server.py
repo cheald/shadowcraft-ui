@@ -323,7 +323,7 @@ class ShadowcraftComputation:
 
         # If engineer
         if "engineering" in professions:
-            buff_list.append('engineer_glove_enchant')
+            buff_list.append('synapse_springs')
 
         for k in self.gearBoosts:
             if k in gear:
