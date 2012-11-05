@@ -1,5 +1,5 @@
 (function() {
-  var $, $doc, NOOP, ShadowcraftApp, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftDpsGraph, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, ShadowcraftTiniReforgeBackend, Templates, checkForWarnings, deepCopy, flash, hideFlash, json_encode, loadingSnapshot, modal, showPopup, tip, titleize, tooltip, wait;
+  var $, $doc, NOOP, ShadowcraftApp, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftDpsGraph, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, ShadowcraftTiniReforgeBackend, Templates, checkForWarnings, deepCopy, flash, formatreforge, hideFlash, json_encode, loadingSnapshot, modal, showPopup, tip, titleize, tooltip, wait;
   $ = window.jQuery;
   ShadowcraftApp = (function() {
     var RATING_CONVERSIONS, _update;
@@ -919,6 +919,21 @@
       word.push(f + r);
     }
     return word.join(' ');
+  };
+  formatreforge = function(str) {
+    var f, i, r, s, sp, word, _len;
+    if (!str) {
+      return "";
+    }
+    sp = str.split(/[ _]/);
+    word = [];
+    for (i = 0, _len = sp.length; i < _len; i++) {
+      s = sp[i];
+      f = s.substring(0, 1).toUpperCase();
+      r = s.substring(1).toLowerCase();
+      word.push(f + r);
+    }
+    return word.join('');
   };
   tip = null;
   $doc = null;
@@ -2240,7 +2255,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, fudgeOffsets, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_REFORGENAME, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, fudgeOffsets, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -2321,6 +2336,24 @@
       13: 12,
       15: "mainhand",
       16: "offhand"
+    };
+    SLOT_REFORGENAME = {
+      0: "Head",
+      1: "Neck",
+      2: "Shoulders",
+      14: "Back",
+      4: "Chest",
+      8: "Wrists",
+      9: "Hands",
+      5: "Waist",
+      6: "Legs",
+      7: "Feet",
+      10: "Ring1",
+      11: "Ring2",
+      12: "Trinket1",
+      13: "Trinket2",
+      15: "MainHand",
+      16: "OffHand"
     };
     EP_PRE_REGEM = null;
     EP_PRE_REFORGE = null;
@@ -3932,6 +3965,39 @@
               reforge.push("Reforged " + item.name + " to -" + amt + " " + (titleize(from)) + " / +" + amt + " " + (titleize(to)));
             } else {
               reforge.push("Removing reforge on " + item.name);
+            }
+          }
+          cols = 40;
+          for (_j = 0, _len2 = reforge.length; _j < _len2; _j++) {
+            s = reforge[_j];
+            if (s.length > cols) {
+              cols = s.length;
+            }
+          }
+        }
+        $("#generalDialog").html("<textarea rows='20' cols='" + cols + "' style='width: auto; height: auto;'>" + (reforge.join('\n')) + "</textarea>");
+        $("#generalDialog").dialog({
+          modal: true,
+          width: 'auto',
+          title: "Reforgerade Import String"
+        });
+        return false;
+      });
+      $("#exportReforging2").click(function() {
+        var ItemLookup, amt, cols, data, from, gear, item, reforge, s, slot, to, _i, _j, _len, _len2;
+        data = Shadowcraft.Data;
+        ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
+        reforge = [];
+        for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
+          slot = SLOT_ORDER[_i];
+          gear = data.gear[slot];
+          if (gear) {
+            item = ItemLookup[gear.item_id];
+            if (gear.reforge) {
+              to = getReforgeTo(gear.reforge);
+              from = getReforgeFrom(gear.reforge);
+              amt = reforgeAmount(item, from);
+              reforge.push("" + SLOT_REFORGENAME[slot] + ": " + (formatreforge(from)) + " -> " + (formatreforge(to)));
             }
           }
           cols = 40;

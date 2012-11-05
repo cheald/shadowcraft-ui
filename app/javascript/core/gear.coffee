@@ -75,6 +75,24 @@ class ShadowcraftGear
       15: "mainhand"
       16: "offhand"
 
+  SLOT_REFORGENAME =
+      0: "Head",
+      1: "Neck",
+      2: "Shoulders",
+      14: "Back",
+      4: "Chest",
+      8: "Wrists",
+      9: "Hands",
+      5: "Waist",
+      6: "Legs",
+      7: "Feet",
+      10: "Ring1",
+      11: "Ring2",
+      12: "Trinket1",
+      13: "Trinket2",
+      15: "MainHand",
+      16: "OffHand"
+
   EP_PRE_REGEM = null
   EP_PRE_REFORGE = null
   EP_TOTAL = null
@@ -1398,6 +1416,27 @@ class ShadowcraftGear
             reforge.push "Reforged #{item.name} to -#{amt} #{titleize(from)} / +#{amt} #{titleize(to)}"
           else
             reforge.push "Removing reforge on #{item.name}"
+
+        cols = 40
+        for s in reforge
+          cols = s.length if s.length > cols
+      $("#generalDialog").html("<textarea rows='20' cols='#{cols}' style='width: auto; height: auto;'>#{reforge.join('\n')}</textarea>")
+      $("#generalDialog").dialog({ modal: true, width: 'auto', title: "Reforgerade Import String"})
+      false
+    
+    $("#exportReforging2").click ->
+      data = Shadowcraft.Data
+      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+      reforge = []
+      for slot in SLOT_ORDER
+        gear = data.gear[slot]
+        if gear
+          item = ItemLookup[gear.item_id]
+          if gear.reforge
+            to = getReforgeTo(gear.reforge)
+            from = getReforgeFrom(gear.reforge)
+            amt = reforgeAmount(item, from)
+            reforge.push "#{SLOT_REFORGENAME[slot]}: #{formatreforge(from)} -> #{formatreforge(to)}"
 
         cols = 40
         for s in reforge
