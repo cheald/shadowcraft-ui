@@ -1,7 +1,8 @@
 class ShadowcraftGear
   MAX_JEWELCRAFTING_GEMS = 2
   MAX_ENGINEERING_GEMS = 1
-  JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye"]
+  MAX_HYDRAULIC_GEMS = 1
+  JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"]
   REFORGE_FACTOR = 0.4
   DEFAULT_BOSS_DODGE = 7.5
 
@@ -431,8 +432,9 @@ class ShadowcraftGear
       return false unless Shadowcraft.Data.options.professions[gem.requires.profession]
       return false if isProfessionalGem(gem, 'jewelcrafting') and getProfessionalGemCount('jewelcrafting', pendingChanges, ignoreSlotIndex) >= MAX_JEWELCRAFTING_GEMS
       return false if isProfessionalGem(gem, 'engineering') and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
-
-    return false if (gemType == "Meta" or gemType == "Cogwheel" or gemType == "Hydraulic") and gem.slot != gemType
+    
+    return false if gemType == "Hydraulic" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
+    return false if (gemType == "Meta" or gemType == "Cogwheel") and gem.slot != gemType
     return false if (gem.slot == "Meta" or gem.slot == "Cogwheel" or gem.slot == "Hydraulic") and gem.slot != gemType
     true
 
