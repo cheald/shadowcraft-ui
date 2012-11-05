@@ -224,10 +224,17 @@ module WowArmory
       end
     end
 
-    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike rating", "hit rating", "expertise rating", "crit rating",
-                       "haste rating", "armor penetration", "mastery rating", "resilience rating", "all stats", "dodge rating", "block rating", "parry rating"
+    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "hit", "expertise",
+                       "haste", "mastery", "pvp resilience", "pvp power", "all stats", "dodge", "block", "parry"
     ]
-    SCAN_OVERRIDE = {"critical strike rating" => "crit rating"}
+    SCAN_OVERRIDE = { "critical strike" => "crit rating", 
+                        "hit" => "hit rating",
+                        "expertise" => "expertise rating",
+                        "haste" => "haste rating",
+                        "mastery" => "mastery rating",
+                        "pvp resilience" => "resilience rating",
+                        "pvp power" => "pvp power rating"
+                      }
 
     def scan_stats
       stats = {}

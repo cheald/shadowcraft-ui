@@ -171,12 +171,15 @@ class ShadowcraftTalents
     data = Shadowcraft.Data
 
     buffer = ""
+    buffer += Templates.talentTier({
+      background: 1,
+      levels: [{tier:"0",level:"15"},{tier:"1",level:"30"},{tier:"2",level:"45"},{tier:"3",level:"60"},{tier:"4",level:"75"},{tier:"5",level:"90"}]
+    })
     for treeIndex, tree of Talents
       buffer += Templates.talentTree({
         background: 1,
         talents: tree
       })
-
     talentframe = $("#talentframe")
     tframe = talentframe.get(0)
     tframe.innerHTML = buffer

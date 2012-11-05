@@ -854,20 +854,23 @@ a.wowhead
     border: 1px solid #333
     background: #050505
     +inline-block
-  .tree
+  .tiers
     +inline-block
     position: relative
-    width: 210px
-    height: 369px
-    background:
-      repeat: no-repeat
-    @for $i from 0 through 6
-      .row-#{$i}
-        top: (50px * $i) + 10px
-    @for $i from 0 through 3
-      .col-#{$i}
-        left: (50px * $i) + 10px
-    .spent
+    width: 100px
+    height: 439px
+    @for $i from 0 through 5
+      .row-level-#{$i}
+        top: (70px * $i) + 10px
+        left: 10px
+    .level
+      border: 0px solid #111
+      background-color: rgba(0,0,0, 0.4)
+      background-position: center center
+      position: relative
+      +border-radius(3px)
+      width: 56px
+      height: 56px
       position: absolute
       bottom: 10px
       right: 10px
@@ -876,10 +879,23 @@ a.wowhead
       background: rgba(0, 0, 0, 0.6)
       +border-radius
       padding: 0.5em
-      width: 25px
-      height: 25px
-      line-height: 25px
+      width: 40px
+      height: 40px
+      line-height: 40px
       text-align: center
+  .tree
+    +inline-block
+    position: relative
+    width: 300px
+    height: 439px
+    background:
+      repeat: no-repeat
+    @for $i from 0 through 6
+      .row-#{$i}
+        top: (70px * $i) + 10px
+    @for $i from 0 through 2
+      .col-#{$i}
+        left: (100px * $i) + 10px
 
     .talent
       cursor: pointer
@@ -902,8 +918,8 @@ a.wowhead
       &.active
         opacity: 1
       +border-radius(3px)
-      width: 36px
-      height: 36px
+      width: 56px
+      height: 56px
       position: absolute
       .points
         position: absolute

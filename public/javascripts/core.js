@@ -342,6 +342,7 @@
       select: Handlebars.compile($("#template-select").html()),
       input: Handlebars.compile($("#template-input").html()),
       talentTree: Handlebars.compile($("#template-tree").html()),
+      talentTier: Handlebars.compile($("#template-tier").html()),
       tooltip: Handlebars.compile($("#template-tooltip").html()),
       talentSet: Handlebars.compile($("#template-talent_set").html()),
       log: Handlebars.compile($("#template-log").html()),
@@ -1436,6 +1437,20 @@
           min: 1,
           max: 5
         },
+        prioritize_rupture_uptime_non_execute: {
+          name: "Prioritize Rupture (>35%)",
+          right: true,
+          desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate",
+          "default": true,
+          datatype: 'bool'
+        },
+        prioritize_rupture_uptime_execute: {
+          name: "Prioritize Rupture (<35%)",
+          right: true,
+          desc: "Prioritize Rupture over Envenom when your CP builder is Dispatch",
+          "default": true,
+          datatype: 'bool'
+        },
         opener_name: {
           type: "select",
           name: "Opener Name",
@@ -1457,20 +1472,6 @@
           },
           'default': 'always',
           datatype: 'string'
-        },
-        prioritize_rupture_uptime_non_execute: {
-          name: "Prioritize Rupture (>35%)",
-          right: true,
-          desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate",
-          "default": true,
-          datatype: 'bool'
-        },
-        prioritize_rupture_uptime_execute: {
-          name: "Prioritize Rupture (<35%)",
-          right: true,
-          desc: "Prioritize Rupture over Envenom when your CP builder is Dispatch",
-          "default": true,
-          datatype: 'bool'
         }
       });
       this.setup("#settings section.combat .settings", "rotation", {
@@ -1500,6 +1501,28 @@
           desc: "Use Blade Flurry",
           "default": false,
           datatype: 'bool'
+        },
+        opener_name: {
+          type: "select",
+          name: "Opener Name",
+          options: {
+            'sinister_strike': "Sinister Strike",
+            'revealing_strike': "Revealing Strike",
+            'ambush': "Ambush"
+          },
+          'default': 'sinister_strike',
+          datatype: 'string'
+        },
+        opener_use: {
+          type: "select",
+          name: "Opener Usage",
+          options: {
+            'always': "Always",
+            'opener': "Start of the Fight",
+            'never': "Never"
+          },
+          'default': 'always',
+          datatype: 'string'
         }
       });
       return this.setup("#settings section.subtlety .settings", "rotation", {
@@ -1511,6 +1534,27 @@
             'always': "Hemorrhage"
           },
           'default': 'never',
+          datatype: 'string'
+        },
+        opener_name: {
+          type: "select",
+          name: "Opener Name",
+          options: {
+            'ambush': "Ambush",
+            'garrote': "Garrote"
+          },
+          'default': 'ambush',
+          datatype: 'string'
+        },
+        opener_use: {
+          type: "select",
+          name: "Opener Usage",
+          options: {
+            'always': "Always",
+            'opener': "Start of the Fight",
+            'never': "Never"
+          },
+          'default': 'always',
           datatype: 'string'
         }
       });
@@ -1796,6 +1840,30 @@
       TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP;
       data = Shadowcraft.Data;
       buffer = "";
+      buffer += Templates.talentTier({
+        background: 1,
+        levels: [
+          {
+            tier: "0",
+            level: "15"
+          }, {
+            tier: "1",
+            level: "30"
+          }, {
+            tier: "2",
+            level: "45"
+          }, {
+            tier: "3",
+            level: "60"
+          }, {
+            tier: "4",
+            level: "75"
+          }, {
+            tier: "5",
+            level: "90"
+          }
+        ]
+      });
       for (treeIndex in Talents) {
         tree = Talents[treeIndex];
         buffer += Templates.talentTree({
@@ -2679,10 +2747,10 @@
           return false;
         }
       }
-      if ((gemType === "Meta" || gemType === "Cogwheel") && gem.slot !== gemType) {
+      if ((gemType === "Meta" || gemType === "Cogwheel" || gemType === "Hydraulic") && gem.slot !== gemType) {
         return false;
       }
-      if ((gem.slot === "Meta" || gem.slot === "Cogwheel") && gem.slot !== gemType) {
+      if ((gem.slot === "Meta" || gem.slot === "Cogwheel" || gem.slot === "Hydraulic") && gem.slot !== gemType) {
         return false;
       }
       return true;

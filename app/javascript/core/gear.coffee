@@ -432,8 +432,8 @@ class ShadowcraftGear
       return false if isProfessionalGem(gem, 'jewelcrafting') and getProfessionalGemCount('jewelcrafting', pendingChanges, ignoreSlotIndex) >= MAX_JEWELCRAFTING_GEMS
       return false if isProfessionalGem(gem, 'engineering') and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
 
-    return false if (gemType == "Meta" or gemType == "Cogwheel") and gem.slot != gemType
-    return false if (gem.slot == "Meta" or gem.slot == "Cogwheel") and gem.slot != gemType
+    return false if (gemType == "Meta" or gemType == "Cogwheel" or gemType == "Hydraulic") and gem.slot != gemType
+    return false if (gem.slot == "Meta" or gem.slot == "Cogwheel" or gem.slot == "Hydraulic") and gem.slot != gemType
     true
 
   # Returns the EP value of a gem.  If it happens to require JC, it'll return

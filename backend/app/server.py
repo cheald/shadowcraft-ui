@@ -168,7 +168,7 @@ class ShadowcraftComputation:
         'agi_flask_mop',
         'food_300_agi'
     ]
-
+    
     if __builtin__.shadowcraft_engine_version == 4.1:
         validCycleKeys = [[
                 'min_envenom_size_mutilate',
@@ -214,7 +214,20 @@ class ShadowcraftComputation:
                 'use_hemorrhage'
             ]
         ]
-
+    
+    validOpenerKeys = [[
+        'mutilate',
+        'ambush',
+        'garrote'
+       ], [
+        'sinister_strike',
+        'revealing_strike',
+        'ambush'
+       ], [
+        'ambush',
+        'garrote'
+       ]
+    ]
 
     def sumstring(self, x):
         total=0
@@ -391,7 +404,12 @@ class ShadowcraftComputation:
             tree = 1
         else:
             tree = 2
-            
+        
+        
+        rotation_keys = input.get("ro", {})
+        print rotation_keys["opener_name"]
+        if not rotation_keys["opener_name"] in self.validOpenerKeys[tree]: 
+          rotation_keys["opener_name"] = ""
         rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
         
         if tree == 0:
@@ -406,7 +424,8 @@ class ShadowcraftComputation:
             duration = duration,
             dmg_poison = _opt.get("dmg_poison", 'dp'),
             utl_poison = _opt.get("utl_poison", 'lp'),
-
+            opener_name = rotation_keys["opener_name"],
+            use_opener = rotation_keys["opener_use"]
         )
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)
         return calculator
