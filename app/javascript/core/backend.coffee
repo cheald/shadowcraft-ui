@@ -87,6 +87,7 @@ class ShadowcraftBackend
         utl_poison: data.options.general.utility_poison if data.options.general.utility_poison != 'n'
         duration: data.options.general.duration
         stormlash: data.options.general.stormlash
+        pvp: data.options.general.pvp
       }
       spec: data.activeSpec,
       t: talentString,
@@ -98,7 +99,9 @@ class ShadowcraftBackend
         statSummary.hit_rating || 0,
         statSummary.expertise_rating || 0,
         statSummary.haste_rating || 0,
-        statSummary.mastery_rating || 0
+        statSummary.mastery_rating || 0,
+        statSummary.resilience_rating || 0,
+        statSummary.pvp_power || 0
       ],
       gly: glyph_list,
       pro: professions

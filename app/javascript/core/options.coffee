@@ -151,7 +151,8 @@ class ShadowcraftOptions
       virmens_bite: {name: "Combat potion (Virmen's Bite)", 'default': true, datatype: 'bool'}
       tricks: {name: "Tricks of the Trade on cooldown", 'default': false, datatype: 'bool'}
       receive_tricks: {name: "Receiving Tricks on cooldown from another rogue", 'default': false, datatype: 'bool'},
-      stormlash: {name: "Stormlash Totem", desc: "10sec / 5min cooldown", 'default': false, datatype: 'bool'}
+      stormlash: {name: "Stormlash Totem", desc: "10sec / 5min cooldown", 'default': false, datatype: 'bool'},
+      pvp: {name: "PvP Mode", desc: "This actives the PvP Mode (Not fully supported)", 'default': false, datatype: 'bool'}
     })
 
     @setup("#settings section.mutilate .settings", "rotation", {

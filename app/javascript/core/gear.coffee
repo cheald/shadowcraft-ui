@@ -52,6 +52,7 @@ class ShadowcraftGear
     mastery_rating: 1.15
     yellow_hit: 1.79
     strength: 1.05
+    pvp_power: 0
 
   getWeights: ->
     Weights
@@ -849,6 +850,7 @@ class ShadowcraftGear
     Weights.haste_rating = source.ep.haste
     Weights.expertise_rating = source.ep.dodge_exp
     Weights.yellow_hit = source.ep.yellow_hit
+    Weights.pvp_power = source.ep.pvp_power
 
     other =
       mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps

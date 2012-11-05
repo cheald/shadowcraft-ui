@@ -458,11 +458,12 @@
           dmg_poison: data.options.general.leathal_poison,
           utl_poison: data.options.general.utility_poison !== 'n' ? data.options.general.utility_poison : void 0,
           duration: data.options.general.duration,
-          stormlash: data.options.general.stormlash
+          stormlash: data.options.general.stormlash,
+          pvp: data.options.general.pvp
         },
         spec: data.activeSpec,
         t: talentString,
-        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit_rating || 0, statSummary.hit_rating || 0, statSummary.expertise_rating || 0, statSummary.haste_rating || 0, statSummary.mastery_rating || 0],
+        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit_rating || 0, statSummary.hit_rating || 0, statSummary.expertise_rating || 0, statSummary.haste_rating || 0, statSummary.mastery_rating || 0, statSummary.resilience_rating || 0, statSummary.pvp_power || 0],
         gly: glyph_list,
         pro: professions
       };
@@ -1432,6 +1433,12 @@
           desc: "10sec / 5min cooldown",
           'default': false,
           datatype: 'bool'
+        },
+        pvp: {
+          name: "PvP Mode",
+          desc: "This actives the PvP Mode (Not fully supported)",
+          'default': false,
+          datatype: 'bool'
         }
       });
       this.setup("#settings section.mutilate .settings", "rotation", {
@@ -2291,7 +2298,8 @@
       haste_rating: 1.44,
       mastery_rating: 1.15,
       yellow_hit: 1.79,
-      strength: 1.05
+      strength: 1.05,
+      pvp_power: 0
     };
     ShadowcraftGear.prototype.getWeights = function() {
       return Weights;
@@ -3294,6 +3302,7 @@
       Weights.haste_rating = source.ep.haste;
       Weights.expertise_rating = source.ep.dodge_exp;
       Weights.yellow_hit = source.ep.yellow_hit;
+      Weights.pvp_power = source.ep.pvp_power;
       other = {
         mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps,
         offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps

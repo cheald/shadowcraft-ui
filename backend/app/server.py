@@ -392,7 +392,9 @@ class ShadowcraftComputation:
             s[5], # Expertise
             s[6], # Haste
             s[7], # Mastery
-            _level)
+            _level,
+            s[9], # PvP Power
+            s[8]) # Resilience Rating
         # ##################################################################################
 
         # Talents
@@ -429,7 +431,8 @@ class ShadowcraftComputation:
             utl_poison = _opt.get("utl_poison", 'lp'),
             opener_name = rotation_keys["opener_name"],
             use_opener = rotation_keys["opener_use"],
-            stormlash = _opt.get("stormlash", False)
+            stormlash = _opt.get("stormlash", False),
+            is_pvp = _opt.get("pvp", False)
         )
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)
         return calculator
