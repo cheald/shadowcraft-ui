@@ -457,7 +457,8 @@
           tricks: data.options.general.tricks,
           dmg_poison: data.options.general.leathal_poison,
           utl_poison: data.options.general.utility_poison !== 'n' ? data.options.general.utility_poison : void 0,
-          duration: data.options.general.duration
+          duration: data.options.general.duration,
+          stormlash: data.options.general.stormlash
         },
         spec: data.activeSpec,
         t: talentString,
@@ -1349,7 +1350,7 @@
           datatype: 'bool'
         },
         short_term_haste_buff: {
-          name: "+30% Haste/45 sec",
+          name: "+30% Haste/40 sec",
           desc: "Heroism/Bloodlust/Time Warp",
           'default': true,
           datatype: 'bool'
@@ -1423,6 +1424,12 @@
         },
         receive_tricks: {
           name: "Receiving Tricks on cooldown from another rogue",
+          'default': false,
+          datatype: 'bool'
+        },
+        stormlash: {
+          name: "Stormlash Totem",
+          desc: "10sec / 5min cooldown",
           'default': false,
           datatype: 'bool'
         }

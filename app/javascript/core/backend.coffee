@@ -86,6 +86,7 @@ class ShadowcraftBackend
         dmg_poison: data.options.general.leathal_poison
         utl_poison: data.options.general.utility_poison if data.options.general.utility_poison != 'n'
         duration: data.options.general.duration
+        stormlash: data.options.general.stormlash
       }
       spec: data.activeSpec,
       t: talentString,
