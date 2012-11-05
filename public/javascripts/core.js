@@ -456,7 +456,7 @@
         settings: {
           tricks: data.options.general.tricks,
           dmg_poison: data.options.general.leathal_poison,
-          utl_poison: data.options.general.utility_poison,
+          utl_poison: data.options.general.utility_poison !== 'n' ? data.options.general.utility_poison : void 0,
           duration: data.options.general.duration
         },
         spec: data.activeSpec,

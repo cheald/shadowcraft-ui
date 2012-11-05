@@ -84,7 +84,7 @@ class ShadowcraftBackend
       settings: {
         tricks: data.options.general.tricks
         dmg_poison: data.options.general.leathal_poison
-        utl_poison: data.options.general.utility_poison
+        utl_poison: data.options.general.utility_poison if data.options.general.utility_poison != 'n'
         duration: data.options.general.duration
       }
       spec: data.activeSpec,

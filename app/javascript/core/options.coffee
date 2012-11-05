@@ -132,7 +132,7 @@ class ShadowcraftOptions
     @setup("#settings #playerBuffs", "buffs", {
       food_300_agi: {name: "Food Buff", desc: "300 Agi Food", 'default': true, datatype: 'bool'},
       agi_flask_mop: {name: "Agility Flask", desc: "Mists Flask", 'default': true, datatype: 'bool'},
-      short_term_haste_buff: {name: "+30% Haste/45 sec", desc: "Heroism/Bloodlust/Time Warp", 'default': true, datatype: 'bool'},
+      short_term_haste_buff: {name: "+30% Haste/40 sec", desc: "Heroism/Bloodlust/Time Warp", 'default': true, datatype: 'bool'},
       stat_multiplier_buff: {name: "5% All Stats", desc: "Blessing of Kings/Mark of the Wild/Legacy of the Emperor", 'default': true, datatype: 'bool'},
       crit_chance_buff: {name: "5% Crit", desc: "Leader of the Pack/Arcane Brilliance/Legacy of the White Tiger", 'default': true, datatype: 'bool'},
       melee_haste_buff: {name: "10% Haste", desc: "Unleashed Rage/Unholy Aura/Swiftblade's Cunning", 'default': true, datatype: 'bool'},

@@ -283,9 +283,9 @@ class ShadowcraftComputation:
         buff_list = []
         buff_list.append('leather_specialization')
         if input.get("pot", 0) == 1:
-            buff_list.append('potion_of_the_tolvir')
+            buff_list.append('virmens_bite')
         if input.get("prepot", 0) == 1:
-            buff_list.append('potion_of_the_tolvir_prepot')
+            buff_list.append('virmens_bite_prepot')
 
         if input.get("mg") == "chaotic":
             buff_list.append('chaotic_metagem')
@@ -407,13 +407,11 @@ class ShadowcraftComputation:
         else:
             tree = 2
         
-        
         rotation_keys = input.get("ro", {})
-        print rotation_keys["opener_name"]
         if not rotation_keys["opener_name"] in self.validOpenerKeys[tree]: 
           rotation_keys["opener_name"] = ""
         rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
-        
+
         if tree == 0:
             _cycle = settings.AssassinationCycle(**rotation_options)
         elif tree == 1:
