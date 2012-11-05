@@ -29,6 +29,7 @@ class ShadowcraftComputation:
         4083: 'hurricane',
         4099: 'landslide',
         4441: 'windsong',
+        4443: 'elemental_force',
         4444: 'dancing_steel',
         0: None
     }
@@ -376,6 +377,7 @@ class ShadowcraftComputation:
         duration = int(_opt.get("duration", 300))
         
         _stats = stats.Stats(
+            _mh, _oh, _procs, _gear_buffs,
             s[0], # Str
             s[1]  + agi_bonus, # AGI
             0,
@@ -387,7 +389,7 @@ class ShadowcraftComputation:
             s[5], # Expertise
             s[6], # Haste
             s[7], # Mastery
-            _mh, _oh, _procs, _gear_buffs)
+            _level)
         # ##################################################################################
 
         # Talents
