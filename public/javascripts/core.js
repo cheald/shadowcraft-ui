@@ -3983,41 +3983,6 @@
               to = getReforgeTo(gear.reforge);
               from = getReforgeFrom(gear.reforge);
               amt = reforgeAmount(item, from);
-              reforge.push("Reforged " + item.name + " to -" + amt + " " + (titleize(from)) + " / +" + amt + " " + (titleize(to)));
-            } else {
-              reforge.push("Removing reforge on " + item.name);
-            }
-          }
-          cols = 40;
-          for (_j = 0, _len2 = reforge.length; _j < _len2; _j++) {
-            s = reforge[_j];
-            if (s.length > cols) {
-              cols = s.length;
-            }
-          }
-        }
-        $("#generalDialog").html("<textarea rows='20' cols='" + cols + "' style='width: auto; height: auto;'>" + (reforge.join('\n')) + "</textarea>");
-        $("#generalDialog").dialog({
-          modal: true,
-          width: 'auto',
-          title: "Reforgerade Import String"
-        });
-        return false;
-      });
-      $("#exportReforging2").click(function() {
-        var ItemLookup, amt, cols, data, from, gear, item, reforge, s, slot, to, _i, _j, _len, _len2;
-        data = Shadowcraft.Data;
-        ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-        reforge = [];
-        for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
-          slot = SLOT_ORDER[_i];
-          gear = data.gear[slot];
-          if (gear) {
-            item = ItemLookup[gear.item_id];
-            if (gear.reforge) {
-              to = getReforgeTo(gear.reforge);
-              from = getReforgeFrom(gear.reforge);
-              amt = reforgeAmount(item, from);
               reforge.push("" + SLOT_REFORGENAME[slot] + ": " + (formatreforge(from)) + " -> " + (formatreforge(to)));
             }
           }
