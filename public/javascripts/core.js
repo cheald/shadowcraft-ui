@@ -1591,9 +1591,10 @@
           name: "CP Builder",
           options: {
             'never': "Backstab",
-            'always': "Hemorrhage"
+            'always': "Hemorrhage",
+            '24': "Use Backstab and apply Hemorrhage every 24sec"
           },
-          'default': 'never',
+          'default': '24',
           datatype: 'string'
         },
         opener_name_subtlety: {

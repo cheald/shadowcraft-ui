@@ -272,7 +272,6 @@ class ShadowcraftComputation:
             b = int(b)
             if b >= 0 and b < __max:
                 buff_list.append(self.buffMap[b])
-        print buff_list
 
         _buffs = buffs.Buffs(*buff_list, level=_level)
 
@@ -436,7 +435,6 @@ class ShadowcraftComputation:
             stormlash = _opt.get("stormlash", False),
             is_pvp = _opt.get("pvp", False)
         )
-        print _settings
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)
         return calculator
         
