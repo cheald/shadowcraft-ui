@@ -73,7 +73,7 @@ class ShadowcraftBackend
     else if data.activeSpec == "b"
       data.options.rotation["opener_name"] = data.options.rotation["opener_name_subtlety"]
       data.options.rotation["opener_use"] = data.options.rotation["opener_use_subtlety"]
-
+    
     payload =
       r: data.options.general.race
       l: data.options.general.level
