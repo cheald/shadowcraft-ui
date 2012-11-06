@@ -159,6 +159,20 @@ class Enchant
   def self.hardcoded_import
     self.destroy_all
     Enchant.create({
+         :spell_id => 4083,
+         :stats => {},
+         :icon => "inv_enchant_formulasuperior_01",
+         :item_name => "Enchant Weapon - Hurricane",
+         :equip_location => 13
+	})
+    Enchant.create({
+         :spell_id => 4099,
+         :stats => {},
+         :icon => "inv_enchant_formulasuperior_01",
+         :item_name => "Enchant Weapon - Landslide",
+         :equip_location => 13
+	})
+    Enchant.create({
          :spell_id => 4444,
          :stats => {},
          :icon => "inv_enchant_formulasuperior_01",
