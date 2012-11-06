@@ -384,7 +384,7 @@
       return this;
     };
     ShadowcraftBackend.prototype.buildPayload = function() {
-      var Gems, GlyphLookup, ItemLookup, Talents, buffList, data, g, gear_ids, glyph, glyph_list, k, key, mh, oh, payload, professions, statSum, statSummary, talentArray, talentString, val, _i, _len, _len2, _ref, _ref2, _ref3;
+      var Gems, GlyphLookup, ItemLookup, Talents, buffList, data, g, gear_ids, glyph, glyph_list, k, key, mh, oh, payload, professions, specName, statSum, statSummary, talentArray, talentString, val, _i, _len, _len2, _ref, _ref2, _ref3;
       data = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       Talents = Shadowcraft.ServerData.TALENTS;
@@ -422,30 +422,27 @@
         }
       }));
       talentArray = data.activeTalents.split("");
-      talentString = "";
       for (key = 0, _len2 = talentArray.length; key < _len2; key++) {
         val = talentArray[key];
-        if (val === ".") {
-          talentArray[key] = "0";
-        } else if (val === "0") {
-          talentArray[key] = "1";
-        } else if (val === "1") {
-          talentArray[key] = "2";
-        } else if (val === "2") {
-          talentArray[key] = "3";
-        }
-        talentString += talentArray[key];
+        talentArray[key] = (function() {
+          switch (val) {
+            case ".":
+              return "0";
+            case "0":
+            case "1":
+            case "2":
+              return parseInt(val, 10) + 1;
+          }
+        })();
       }
-      if (data.activeSpec === "a") {
-        data.options.rotation["opener_name"] = data.options.rotation["opener_name_assassination"];
-        data.options.rotation["opener_use"] = data.options.rotation["opener_use_assassination"];
-      } else if (data.activeSpec === "Z") {
-        data.options.rotation["opener_name"] = data.options.rotation["opener_name_combat"];
-        data.options.rotation["opener_use"] = data.options.rotation["opener_use_combat"];
-      } else if (data.activeSpec === "b") {
-        data.options.rotation["opener_name"] = data.options.rotation["opener_name_subtlety"];
-        data.options.rotation["opener_use"] = data.options.rotation["opener_use_subtlety"];
-      }
+      talentString = talentArray.join('');
+      specName = {
+        a: 'assassination',
+        Z: 'combat',
+        b: 'subtlety'
+      }[data.activeSpec];
+      data.options.rotation['opener_name'] = data.options.rotation["opener_name_" + specName];
+      data.options.rotation['opener_use'] = data.options.rotation["opener_use_" + specName];
       payload = {
         r: data.options.general.race,
         l: data.options.general.level,
@@ -4004,10 +4001,7 @@
         return false;
       });
       Shadowcraft.Options.bind("update", function(opt, val) {
-        if (opt === "professions.blacksmithing") {
-          app.updateDisplay();
-        }
-        if (opt === "professions.enchanting") {
+        if (opt === 'professions.enchanting' || opt === 'professions.blacksmithing') {
           return app.updateDisplay();
         }
       });

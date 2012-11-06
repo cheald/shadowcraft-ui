@@ -49,30 +49,17 @@ class ShadowcraftBackend
 
     professions = _.compact( _.map(data.options.professions, (v, k) -> if v then k else null ) )
     
-    # TODO find a better solution this is very hacky but working
     talentArray = data.activeTalents.split ""
-    talentString = ""
     for val, key in talentArray
-      if val == "."
-        talentArray[key] = "0"
-      else if val == "0"
-        talentArray[key] = "1"
-      else if val == "1"
-        talentArray[key] = "2"
-      else if val == "2"
-        talentArray[key] = "3"
-      talentString += talentArray[key]
+      talentArray[key] = switch val
+        when "." then "0"
+        when "0", "1", "2" then parseInt(val,10)+1
+    talentString = talentArray.join('')
 
     # opener
-    if data.activeSpec == "a"
-      data.options.rotation["opener_name"] = data.options.rotation["opener_name_assassination"]
-      data.options.rotation["opener_use"] = data.options.rotation["opener_use_assassination"]
-    else if data.activeSpec == "Z"
-      data.options.rotation["opener_name"] = data.options.rotation["opener_name_combat"]
-      data.options.rotation["opener_use"] = data.options.rotation["opener_use_combat"]
-    else if data.activeSpec == "b"
-      data.options.rotation["opener_name"] = data.options.rotation["opener_name_subtlety"]
-      data.options.rotation["opener_use"] = data.options.rotation["opener_use_subtlety"]
+    specName = {a: 'assassination', Z: 'combat', b: 'subtlety'}[data.activeSpec]
+    data.options.rotation['opener_name'] = data.options.rotation["opener_name_#{specName}"]
+    data.options.rotation['opener_use'] = data.options.rotation["opener_use_#{specName}"]
     
     payload =
       r: data.options.general.race

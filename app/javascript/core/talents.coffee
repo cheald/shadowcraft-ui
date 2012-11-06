@@ -20,7 +20,8 @@ class ShadowcraftTalents
 
   @GetPrimaryTreeName = ->
     CHARACTER_SPEC
-
+  
+  # not used anymore
   talentMap = "0zMcmVokRsaqbdrfwihuGINALpTjnyxtgevElBCDFHJKOPQSUWXYZ123456789"
   @encodeTalents = (s) ->
     str = ""
@@ -32,7 +33,7 @@ class ShadowcraftTalents
         l = parseInt(c, 10) * 5 + parseInt(sub[i+1] || 0, 10)
         str += talentMap[l]
       str += "Z" unless index == TREE_SIZE.length - 1
-    return s
+    return str
 
   @decodeTalents = (s) ->
     talents = ""

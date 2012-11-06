@@ -1424,9 +1424,7 @@ class ShadowcraftGear
       false
 
     Shadowcraft.Options.bind "update", (opt, val) ->
-      if opt == "professions.blacksmithing"
-        app.updateDisplay()
-      if opt == "professions.enchanting"
+      if opt in ['professions.enchanting', 'professions.blacksmithing']
         app.updateDisplay()
 
     this

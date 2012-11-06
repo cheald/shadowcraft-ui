@@ -311,7 +311,7 @@ class ShadowcraftComputation:
         if len(self.legendary_mainhands & gear) >= 1:
             buff_list.append('rogue_t13_legendary')
 
-	if len(self.tier14IDS & gear) >= 2:
+        if len(self.tier14IDS & gear) >= 2:
             buff_list.append('rogue_t14_2pc')
 
         if len(self.tier14IDS & gear) >= 4:
