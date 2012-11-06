@@ -8,6 +8,16 @@ titleize = (str) ->
     word.push f+r
   word.join(' ')
 
+formatreforge = (str) ->
+  return "" unless str
+  sp = str.split(/[ _]/)
+  word = []
+  for s, i in sp
+    f = s.substring(0,1).toUpperCase()
+    r = s.substring(1).toLowerCase()
+    word.push f+r
+  word.join('')
+
 tip = null
 $doc = null
 tooltip = (data, x, y, ox, oy) ->
@@ -73,6 +83,7 @@ checkForWarnings = (section) ->
       continue if !gear
       item = ItemLookup[gear.item_id];
       continue unless item
+      comsole.log(EnchantLookup)
       enchant = EnchantLookup[gear.enchant]
       enchantable = EnchantSlots[item.equip_location] != undefined
       if (!data.options.professions.enchanting && item.equip_location == 11)

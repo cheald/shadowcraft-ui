@@ -52,6 +52,8 @@ class Character
       end
 
       self.properties = char.as_json
+      #Rails.logger.debug self.properties.inspect
+      #Rails.logger.debug self.properties
 
       if self.properties.nil?
         return
@@ -83,11 +85,12 @@ class Character
   end
 
   def as_json(options = {})
-    Rails.logger.debug Character.encode_random_items(properties["gear"]).inspect
+    #Rails.logger.debug Character.encode_random_items(properties["gear"]).inspect
     {
       :gear   => Character.encode_random_items(properties["gear"]),
       :talents => properties["talents"],
       :active => properties["active_talents"],
+      :active_talents => properties["active_talents"],
       :options => {
         :general => {
           :level => properties["level"],
@@ -140,7 +143,7 @@ class Character
   end
 
   def is_supported_class?
-    Rails.logger.debug properties.inspect
+    #Rails.logger.debug properties.inspect
     unless CLASSES.include? properties["player_class"].downcase
       errors.add :base, "The #{properties["player_class"]} class is not currently supported by Shadowcraft."
       return false

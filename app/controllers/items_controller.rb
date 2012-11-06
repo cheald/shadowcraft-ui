@@ -59,8 +59,8 @@ class ItemsController < ApplicationController
     gems = Item.where(:has_stats => true, :is_gem => true, :item_level.gt => 70).all
     @gems = gems.select {|g| !g.properties["name"].match(/Stormjewel/) }
     @enchants = Enchant.all
-    h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talent-tree.xml")).read
-    @talents = h["page"]["talentTrees"]["tree"].sort {|a, b| a["order"].to_i <=> b["order"].to_i }
+    h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_mop.xml")).read
+    @talents = h["page"]["talents"]
     @glyphs = Glyph.asc(:name).all
   end
 end

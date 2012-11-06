@@ -3,9 +3,9 @@ class ShadowcraftBackend
 
   get_engine = ->
     switch Shadowcraft.Data.options.general.patch
-      when 4201
+      when 50
         port = 8881
-        endpoint = "engine-4.2"
+        endpoint = "engine-5.0"
       else
         port = 8881
         endpoint = "engine-4.1"
@@ -36,7 +36,6 @@ class ShadowcraftBackend
 
     mh = ItemLookup[data.gear[15].item_id] if data.gear[15]
     oh = ItemLookup[data.gear[16].item_id] if data.gear[16]
-    th = ItemLookup[data.gear[17].item_id] if data.gear[17]
     glyph_list = []
 
     for glyph in data.glyphs
@@ -49,25 +48,38 @@ class ShadowcraftBackend
         buffList.push ShadowcraftOptions.buffMap.indexOf(key)
 
     professions = _.compact( _.map(data.options.professions, (v, k) -> if v then k else null ) )
+    
+    talentArray = data.activeTalents.split ""
+    for val, key in talentArray
+      talentArray[key] = switch val
+        when "." then "0"
+        when "0", "1", "2" then parseInt(val,10)+1
+    talentString = talentArray.join('')
 
+    # opener
+    specName = {a: 'assassination', Z: 'combat', b: 'subtlety'}[data.activeSpec]
+    data.options.rotation['opener_name'] = data.options.rotation["opener_name_#{specName}"]
+    data.options.rotation['opener_use'] = data.options.rotation["opener_use_#{specName}"]
+    
     payload =
       r: data.options.general.race
       l: data.options.general.level
-      pot: if data.options.general.potion_of_the_tolvir then 1 else 0
+      pot: if data.options.general.virmens_bite then 1 else 0
       prepot: if data.options.general.prepot then 1 else 0
       b: buffList
       ro: data.options.rotation,
       settings: {
         tricks: data.options.general.tricks
-        mh_poison: data.options.general.mh_poison
-        oh_poison: data.options.general.oh_poison
+        dmg_poison: data.options.general.lethal_poison
+        utl_poison: data.options.general.utility_poison if data.options.general.utility_poison != 'n'
         duration: data.options.general.duration
+        response_time: data.options.general.response_time
+        time_in_execute_range: data.options.general.time_in_execute_range
+        stormlash: data.options.general.stormlash
+        pvp: data.options.general.pvp
       }
-      t: [
-        data.activeTalents.substr(0, Talents[0].talent.length)
-        data.activeTalents.substr(Talents[0].talent.length, Talents[1].talent.length)
-        data.activeTalents.substr(Talents[0].talent.length + Talents[1].talent.length, Talents[2].talent.length)
-      ],
+      spec: data.activeSpec,
+      t: talentString,
       sta: [
         statSummary.strength || 0,
         statSummary.agility || 0,
@@ -76,7 +88,9 @@ class ShadowcraftBackend
         statSummary.hit_rating || 0,
         statSummary.expertise_rating || 0,
         statSummary.haste_rating || 0,
-        statSummary.mastery_rating || 0
+        statSummary.mastery_rating || 0,
+        statSummary.resilience_rating || 0,
+        statSummary.pvp_power || 0
       ],
       gly: glyph_list,
       pro: professions
@@ -94,13 +108,6 @@ class ShadowcraftBackend
         oh.dps * oh.speed,
         data.gear[16].enchant,
         oh.subclass
-      ]
-    if th?
-      payload.th = [
-        th.speed,
-        th.dps * th.speed,
-        data.gear[17].enchant,
-        th.subclass
       ]
 
     gear_ids = []
@@ -123,6 +130,7 @@ class ShadowcraftBackend
     if Shadowcraft.Data.options.general.receive_tricks
       data.total_dps *= 1.03
     @app.lastCalculation = data
+    this.trigger("recompute2", data)
     this.trigger("recompute", data)
 
   recompute: (payload = null, forcePost = false) ->

@@ -39,14 +39,26 @@ module WowArmory
       :hit_avoidance_rating             => 33
     }
 
+    WOWHEAD_MAP = {
+      "hitrtng" => "hit_rating",
+      "hastertng" => "haste_rating",
+      "critstrkrtng" => "crit_rating",
+      "mastrtng" => "mastery_rating",
+      "exprtng" => "expertise_rating",
+      "agi" => "agility",
+      "sta" => "stamina",
+      "pvppower" => "pvp_power_rating",
+      "resirtng" => "resilience_rating"
+    }
+
     SOCKET_MAP = {
       1 => "Meta",
       2 => "Red",
       8 => "Blue",
       4 => "Yellow",
       14 => "Prismatic",
-      32 => "Cogwheel",
-      64 => "Hydraulic"
+      16 => "Hydraulic",
+      32 => "Cogwheel"
     }
 
     EQUIP_LOCATIONS = {
@@ -151,6 +163,31 @@ module WowArmory
       end
     end
 
+    def get_item_stats
+      stats = {}
+      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @id).read
+      eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
+      stats1 = JSON::load("{%s}" % doc.css("json").text)
+      eqstats.each do |stat, val|
+        stat2 = WOWHEAD_MAP[stat]
+        unless stat2.nil?
+          stats[stat2] = val
+        end
+      end
+      stats
+    end
+
+    def is_hydraulic_gem
+      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @id).read
+      eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
+      stats1 = JSON::load("{%s}" % doc.css("json").text)
+      ret = false
+      if stats1["classs"] == 3 and stats1["subclass"] == 9
+        ret = true
+      end
+      ret
+    end
+
     def populate_stats
       self.name ||= value("h3")
       lis = @document.css(".item-specs li")
@@ -166,9 +203,11 @@ module WowArmory
       self.is_heroic = value(".color-tooltip-green").try(:strip) == "Heroic"
       self.gem_slot = fix_gem_colors lis.map {|t| t.text.match(/Matches a ([a-z ]+) socket/i).try(:[], 1) }.compact.first
       self.gem_slot ||= lis.map {|t| t.text.match(/Only fits in a (Cogwheel|Meta) (socket|gem slot)/i).try(:[], 1) }.compact.first.try(:humanize)
+      self.gem_slot = "Hydraulic" if is_hydraulic_gem
+  
       self.armor_class ||= lis.map {|t| t.text.strip.match(/(^|\s)(Plate|Mail|Leather|Cloth)($|\s)/).try(:[], 2) }.compact.first
 
-      self.stats = scan_stats
+      self.stats = get_item_stats
       if weapon_type = lis.text.map {|e| e.strip.match(/^(Dagger|Mace|Axe|Thrown|Wand|Bow|Gun|Crossbow|Fist Weapon|Sword)$/)}.compact.first
         populate_weapon_stats!
       end
@@ -185,10 +224,17 @@ module WowArmory
       end
     end
 
-    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike rating", "hit rating", "expertise rating", "crit rating",
-                       "haste rating", "armor penetration", "mastery rating", "resilience rating", "all stats", "dodge rating", "block rating", "parry rating"
+    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "hit", "expertise",
+                       "haste", "mastery", "pvp resilience", "pvp power", "all stats", "dodge", "block", "parry"
     ]
-    SCAN_OVERRIDE = {"critical strike rating" => "crit rating"}
+    SCAN_OVERRIDE = { "critical strike" => "crit rating", 
+                        "hit" => "hit rating",
+                        "expertise" => "expertise rating",
+                        "haste" => "haste rating",
+                        "mastery" => "mastery rating",
+                        "pvp resilience" => "resilience rating",
+                        "pvp power" => "pvp power rating"
+                      }
 
     def scan_stats
       stats = {}
