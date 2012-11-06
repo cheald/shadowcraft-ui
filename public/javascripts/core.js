@@ -1731,7 +1731,7 @@
           str += "Z";
         }
       }
-      return s;
+      return str;
     };
     ShadowcraftTalents.decodeTalents = function(s) {
       var talents;
@@ -2825,7 +2825,7 @@
           return false;
         }
       }
-      if (gemType === "Hydraulic" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS) {
+      if (gem.slot === "Hydraulic" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS) {
         return false;
       }
       if ((gemType === "Meta" || gemType === "Cogwheel") && gem.slot !== gemType) {
