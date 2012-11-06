@@ -7,15 +7,19 @@
     .sub {{.}}
     {{/submsg}}
 - mustache "talent_set" do
-  %button.talent_set{:"data-talents" => "{{talent_string}}", :"data-glyphs" => "{{glyphs}}"} {{name}}
+  %button.talent_set{:"data-spec" => "{{spec}}", :"data-talents" => "{{talent_string}}", :"data-glyphs" => "{{glyphs}}"} {{name}}
 - mustache "tree" do
-  .tree{:style => "background-image: url(http://wow.zamimg.com/images/wow/talents/backgrounds/live/rogue_{{background}}.jpg);"}
+  .tree
     {{#talents}}
-    .talent{:class => "row-{{tier}} col-{{column}}", :style => "background-image: url(http://static.wowhead.com/images/wow/icons/medium/{{icon}}.jpg);"}
+    .talent{:class => "row-{{tier}} col-{{column}}", :style => "background-image: url(http://static.wowhead.com/images/wow/icons/large/{{icon}}.jpg);"}
       .grey
       .points 0/{{maxRank}}
     {{/talents}}
-    .spent
+- mustache "tier" do
+  .tiers
+    {{#levels}}
+    .level{:class => "row-level-{{tier}}"} {{level}}
+    {{/levels}}
 - mustache "tooltip" do
   {{#title}}
   .title {{.}}
@@ -137,8 +141,8 @@
     {{/percent}}
 
 - mustache("checkbox") do
-  %label.label_check
-    <input type="checkbox" class="optionCheck" name="{{key}}" id="opt-{{namespace}}-{{key}}" data-ns="{{namespace}}" />
+  %label.label_check(for="opt-{{namespace}}-{{key}}")
+    %input.optionCheck(type="checkbox" name="{{key}}" id="opt-{{namespace}}-{{key}}" data-ns="{{namespace}}")
     {{label}}<span>{{desc}}</span>
 
 - mustache("input") do

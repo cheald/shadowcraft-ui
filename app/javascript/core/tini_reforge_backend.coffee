@@ -74,14 +74,14 @@ class ShadowcraftTiniReforgeBackend
           return true
       return false
 
-
     caps = @gear.getCaps()
     for k, v of caps
       caps[k] = Math.ceil(v)
-
+    
+    ep = @gear.getWeights()
     req =
       items: items
-      ep: @gear.getWeights()
+      ep: ep
       cap: caps
       ratings: stats
     @request(req).then ->

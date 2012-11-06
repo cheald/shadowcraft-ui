@@ -13,15 +13,24 @@ from time import clock
 from vendor.WebSocket import *
 
 from shadowcraft.calcs.rogue.Aldriana import AldrianasRogueDamageCalculator, settings, InputNotModeledException
-from shadowcraft.objects import buffs, race, stats, procs
-from shadowcraft.objects.talents import InvalidTalentException
-from shadowcraft.objects.rogue import rogue_talents, rogue_glyphs
+
+from shadowcraft.objects import buffs
+from shadowcraft.objects import race
+from shadowcraft.objects import stats
+from shadowcraft.objects import procs
+from shadowcraft.objects import proc_data
+from shadowcraft.objects import talents
+from shadowcraft.objects import glyphs
+
 from shadowcraft.core import i18n
 
 class ShadowcraftComputation:
     enchantMap = {
         4083: 'hurricane',
         4099: 'landslide',
+        4441: 'windsong',
+        4443: 'elemental_force',
+        4444: 'dancing_steel',
         0: None
     }
 
@@ -71,7 +80,25 @@ class ShadowcraftComputation:
         77188: 'nokaled_the_elements_of_death',
         78472: 'heroic_nokaled_the_elements_of_death',
 
-        72897: 'arrow_of_time'
+        72897: 'arrow_of_time',
+
+        # 5.0
+        81125: "windswept_pages",
+        89082: "hawkmasters_talon",
+        79328: "relic_of_xuen",
+        87495: "gerps_perfect_arrow",
+        86332: "terror_in_the_mists",
+        87167: "heroic_terror_in_the_mists",
+        86890: "lfr_terror_in_the_mists",
+        86132: "bottle_of_infinite_stars",
+        87057: "heroic_bottle_of_infinite_stars",
+        86791: "lfr_bottle_of_infinite_stars",
+        81265: "flashing_steel_talisman",
+        81267: "searing_words",
+        87574: "corens_cold_chromium_coaster",
+        84072: "braid_of_ten_songs",
+        75274: "zen_alchemist_stone"
+
     }
     
     gearBoosts = {
@@ -86,7 +113,12 @@ class ShadowcraftComputation:
         70144: 'rickets_magnetic_fireball',
         77113: 'kiroptyric_sigil',
         78004: 'heroic_kiroptyric_sigil',
-        77974: 'lfr_kiroptyric_sigil'
+        77974: 'lfr_kiroptyric_sigil',
+        
+        #5.0
+        87079: "heroic_jade_bandit_figurine",
+        86043: "jade_bandit_figurine",
+        86772: "lfr_jade_bandit_figurine"
     }
     
     trinketMap = dict(gearProcs, **gearBoosts)
@@ -95,6 +127,8 @@ class ShadowcraftComputation:
     tier11IDS = frozenset([60298, 65240, 60299, 65241, 60300, 65242, 60302, 65243, 60301, 65239])
     tier12IDS = frozenset([71046, 71538, 71047, 71539, 71048, 71540, 71049, 71541, 71045, 71537])
     tier13IDS = frozenset([78664, 78679, 78699, 78708, 78738, 77023, 77024, 77025, 77026, 77027, 78759, 78774, 78794, 78803, 78833])
+    tier14IDS = frozenset([85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128]);
+
     
     legendary_tier_1 = frozenset([77945, 77946])
     legendary_tier_2 = frozenset([77947, 77948])
@@ -126,19 +160,16 @@ class ShadowcraftComputation:
         'short_term_haste_buff',
         'stat_multiplier_buff',
         'crit_chance_buff',
-        'all_damage_buff',
+        'mastery_buff',
         'melee_haste_buff',
         'attack_power_buff',
-        'str_and_agi_buff',
         'armor_debuff',
         'physical_vulnerability_debuff',
         'spell_damage_debuff',
-        'spell_crit_debuff',
-        'bleed_damage_debuff',
-        'agi_flask',
-        'guild_feast'
+        'agi_flask_mop',
+        'food_300_agi'
     ]
-
+    
     if __builtin__.shadowcraft_engine_version == 4.1:
         validCycleKeys = [[
                 'min_envenom_size_mutilate',
@@ -168,7 +199,36 @@ class ShadowcraftComputation:
                 'use_hemorrhage'
             ]
         ]
-
+    elif __builtin__.shadowcraft_engine_version == 5.0: # FIXME what options are avaibly??
+        validCycleKeys = [[
+                'min_envenom_size_non_execute',
+                'min_envenom_size_execute',
+                'prioritize_rupture_uptime_non_execute',
+                'prioritize_rupture_uptime_execute'
+            ], [
+                'use_rupture',
+                'use_revealing_strike',
+                'ksp_immediately',
+                'blade_flurry'
+            ], [
+                'clip_recuperate',
+                'use_hemorrhage'
+            ]
+        ]
+    
+    validOpenerKeys = [[
+        'mutilate',
+        'ambush',
+        'garrote'
+       ], [
+        'sinister_strike',
+        'revealing_strike',
+        'ambush'
+       ], [
+        'ambush',
+        'garrote'
+       ]
+    ]
 
     def sumstring(self, x):
         total=0
@@ -202,6 +262,9 @@ class ShadowcraftComputation:
         
         i18n.set_language('local')
 
+        # Base
+        _level = int(input.get("l", 90))
+
         # Buffs
         buff_list = []
         __max = len(self.buffMap)
@@ -209,14 +272,13 @@ class ShadowcraftComputation:
             b = int(b)
             if b >= 0 and b < __max:
                 buff_list.append(self.buffMap[b])
-            
-        _buffs = buffs.Buffs(*buff_list)
+
+        _buffs = buffs.Buffs(*buff_list, level=_level)
 
         # ##################################################################################
         # Weapons
         _mh = self.weapon(input, 'mh')
         _oh = self.weapon(input, 'oh')
-        _th = self.weapon(input, 'th')
         # ##################################################################################
 
         # ##################################################################################
@@ -224,9 +286,9 @@ class ShadowcraftComputation:
         buff_list = []
         buff_list.append('leather_specialization')
         if input.get("pot", 0) == 1:
-            buff_list.append('potion_of_the_tolvir')
+            buff_list.append('virmens_bite')
         if input.get("prepot", 0) == 1:
-            buff_list.append('potion_of_the_tolvir_prepot')
+            buff_list.append('virmens_bite_prepot')
 
         if input.get("mg") == "chaotic":
             buff_list.append('chaotic_metagem')
@@ -248,6 +310,12 @@ class ShadowcraftComputation:
 
         if len(self.legendary_mainhands & gear) >= 1:
             buff_list.append('rogue_t13_legendary')
+
+        if len(self.tier14IDS & gear) >= 2:
+            buff_list.append('rogue_t14_2pc')
+
+        if len(self.tier14IDS & gear) >= 4:
+            buff_list.append('rogue_t14_4pc')
     
         agi_bonus = 0
         if len(self.arenaSeason9SetIds & gear) >= 2:
@@ -258,7 +326,7 @@ class ShadowcraftComputation:
 
         # If engineer
         if "engineering" in professions:
-            buff_list.append('engineer_glove_enchant')
+            buff_list.append('synapse_springs')
 
         for k in self.gearBoosts:
             if k in gear:
@@ -302,8 +370,7 @@ class ShadowcraftComputation:
         # ##################################################################################
         # Player stats
         # Need parameter order here
-        # str, agi, ap, crit, hit, exp, haste, mastery, mh, oh, thrown, procs, gear buffs
-        _level = int(input.get("l", 85))
+        # str, agi, int, spi, sta, ap, crit, hit, exp, haste, mastery, mh, oh, thrown, procs, gear buffs
         raceStr = input.get("r", 'human').lower().replace(" ", "_")
         _race = race.Race(raceStr, 'rogue', _level)
 
@@ -312,48 +379,62 @@ class ShadowcraftComputation:
         duration = int(_opt.get("duration", 300))
         
         _stats = stats.Stats(
+            _mh, _oh, _procs, _gear_buffs,
             s[0], # Str
             s[1]  + agi_bonus, # AGI
+            0,
+            0,
+            0,
             s[2], # AP
             s[3], # Crit
             s[4], # Hit
             s[5], # Expertise
             s[6], # Haste
             s[7], # Mastery
-            _mh, _oh, _th, _procs, _gear_buffs)
+            _level,
+            s[9], # PvP Power
+            s[8]) # Resilience Rating
         # ##################################################################################
 
         # Talents
-        t = input.get("t", ['', '', ''])
-        _talents = rogue_talents.RogueTalents(t[0], t[1], t[2])
+        t = input.get("t", '') 	
+        _talents = talents.Talents(t , "rogue", _level)
 
         # Glyphs
-        _glyphs = rogue_glyphs.RogueGlyphs(*input.get("gly", []))
-
-        if self.sumstring(t[0]) >= 31:
+        _glyphs = glyphs.Glyphs("rogue", *input.get("gly", []))
+	
+	_spec = input.get("spec", 'a')
+        if _spec == "a":
             tree = 0
-        elif self.sumstring(t[1]) >= 31:
+        elif _spec == "Z":
             tree = 1
         else:
             tree = 2
-            
-        rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
         
+        rotation_keys = input.get("ro", {})
+        if not rotation_keys["opener_name"] in self.validOpenerKeys[tree]: 
+          rotation_keys["opener_name"] = ""
+        rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
+
         if tree == 0:
             _cycle = settings.AssassinationCycle(**rotation_options)
         elif tree == 1:
             _cycle = settings.CombatCycle(**rotation_options)
         else:
             _cycle = settings.SubtletyCycle(5, **rotation_options)
-
+        # test_settings = settings.Settings(test_cycle, response_time=.5, duration=360, dmg_poison='dp', utl_poison='lp', is_pvp=charInfo['pvp'],stormlash=charInfo['stormlash'], shiv_interval=charInfo['shiv'])
         _settings = settings.Settings(_cycle,
-            response_time = 0.5,
-            tricks_on_cooldown = _opt.get("tricks", True),
-            mh_poison = _opt.get("mh_poison", 'ip'),
-            oh_poison = _opt.get("oh_poison", 'dp'),
+            time_in_execute_range = _opt.get("time_in_execute_range", 0.35),
+            tricks_on_cooldown = _opt.get("tricks", False),
+            response_time = _opt.get("response_time", 0.5),
             duration = duration,
+            dmg_poison = _opt.get("dmg_poison", 'dp'),
+            utl_poison = _opt.get("utl_poison", None),
+            opener_name = rotation_keys["opener_name"],
+            use_opener = rotation_keys["opener_use"],
+            stormlash = _opt.get("stormlash", False),
+            is_pvp = _opt.get("pvp", False)
         )
-
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)
         return calculator
         
@@ -368,7 +449,7 @@ class ShadowcraftComputation:
             out["total_dps"] = sum(entry[1] for entry in breakdown.items())
 
             # Glyph ranking is slow
-            out["glyph_ranking"] = calculator.get_glyphs_ranking(rogue_glyphs.RogueGlyphs.allowed_glyphs)
+            out["glyph_ranking"] = calculator.get_glyphs_ranking(input.get("gly", []))
             
             out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
 
@@ -387,10 +468,10 @@ class ShadowcraftComputation:
             out["mh_speed_ep"], out["oh_speed_ep"] = calculator.get_weapon_ep([2.9, 2.7, 2.6, 1.8, 1.4, 1.3])
 
             # Talent ranking is slow. This is done last per a note from nextormento.
-            out["talent_ranking_main"], out["talent_ranking_off"] = calculator.get_talents_ranking()      
+            out["talent_ranking_main"] = calculator.get_talents_ranking()      
 
             return out
-        except (InvalidTalentException, InputNotModeledException) as e:
+        except (InputNotModeledException) as e:
             out["error"] = e.error_msg
             return out
 

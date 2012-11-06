@@ -48,6 +48,7 @@ class Glyph
         else
           0
         end
+        rank = json["glyph"]
         Glyph.create :glyph_id => id, :spell_id => matches[1], :name => json["sourcemore"][0]["n"], :icon => icon, :rank => rank
       end
     end

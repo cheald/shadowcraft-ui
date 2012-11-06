@@ -171,11 +171,12 @@ class ShadowcraftHistory
   utilPoisonMap = [ "lp", "n" ]
   raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"]
   rotationOptionsMap = [
-    "min_envenom_size_mutilate", "min_envenom_size_backstab", "prioritize_rupture_uptime_mutilate", "prioritize_rupture_uptime_backstab", "opener_name", "opener_use"
-    "use_rupture", "ksp_immediately", "use_revealing_strike"
-    "clip_recuperate", "use_hemorrhage"
+    "min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute",
+    "use_rupture", "ksp_immediately", "revealing_strike_pooling", "blade_flurry",
+    "clip_recuperate", "use_hemorrhage",
+    "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"
   ]
-  rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, true, false, 'true', 'false', 'never', 'always', 'sometimes', 'pool', 'garrote', 'ambush', 'mutilate']
+  rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'sometimes', 'pool', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike']
 
   map = (value, m) ->
     m.indexOf(value)
@@ -197,7 +198,9 @@ class ShadowcraftHistory
         gearSet.push gear.g1 || 0
         gearSet.push gear.g2 || 0
       ret.push base36Encode(gearSet)
-      ret.push ShadowcraftTalents.encodeTalents(data.activeTalents)
+      ret.push data.active
+      ret.push data.activeSpec
+      ret.push data.activeTalents
       ret.push base36Encode(data.glyphs)
 
       # Options
@@ -212,9 +215,9 @@ class ShadowcraftHistory
         data.options.general.level
         map(data.options.general.race, raceMap)
         data.options.general.duration
-        map(data.options.general.mh_poison, poisonMap)
-        map(data.options.general.oh_poison, poisonMap)
-        if data.options.general.potion_of_the_tolvir then 1 else 0
+        map(data.options.general.lethal_poison, poisonMap)
+        map(data.options.general.utility_poison, utilPoisonMap)
+        if data.options.general.virmens_bite then 1 else 0
         data.options.general.max_ilvl
         if data.options.general.tricks then 1 else 0
         if data.options.general.receive_tricks then 1 else 0
@@ -246,11 +249,12 @@ class ShadowcraftHistory
     "1": (data) ->
       d =
         gear: {}
-        activeTalents: ShadowcraftTalents.decodeTalents(data[2])
-        glyphs: base36Decode(data[3])
+        active: data[2]
+        activeSpec: data[3]
+        activeTalents: data[4]
+        glyphs: base36Decode(data[5])
         options: {}
         talents: []
-        active: data[6]
 
       gear = base36Decode data[1]
       for id, index in gear by 6
@@ -265,7 +269,7 @@ class ShadowcraftHistory
         for k, v of d.gear[slot]
           delete d.gear[slot][k] if v == 0
 
-      options = data[4]
+      options = data[6]
       d.options.professions = {}
       for v, i in options[0]
         d.options.professions[unmap(v, professionMap)] = true
@@ -282,8 +286,8 @@ class ShadowcraftHistory
         tricks:               general[7] != 0
         receive_tricks:       general[8] != 0
         prepot:               general[9] != 0
-        patch:                general[10] || 43
-        min_ilvl:             general[11] || 333
+        patch:                general[10] || 50
+        min_ilvl:             general[11] || 430
         epic_gems:            general[12] || 0
 
       d.options.buffs = {}

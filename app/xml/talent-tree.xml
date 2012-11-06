@@ -2,75 +2,45 @@
 <page globalSearch="1" lang="en_us" requestUrl="/talent-tree.xml">
   <talentTrees>
     <tree bgImage="RogueCombat" description="A swashbuckler who uses agility and guile to stand toe-to-toe with enemies." dps="1" healer="0" icon="ability_backstab" key="Combat" name="Combat" order="1" tank="0">
-      <primarySpells>
-        <spell castTime="0" cooldown="120000" description="While active, the rogue's attacks strike an additional nearby opponent, but energy regeneration is reduced by 20%.  Lasts 15 sec." icon="ability_warrior_punishingblow" name="Blade Flurry">
-          <power cost="25" type="energy"/>
-        </spell>
-        <spell description="Increases the damage done by your off hand and thrown weapons by 75%." icon="ability_dualwield" name="Ambidexterity"/>
-        <spell description="Increases your Energy regeneration rate by 25% and your Attack Power by 15%." icon="ability_warrior_revenge" name="Vitality"/>
-      </primarySpells>
-      <masterySpells>
-        <spell description="Your main hand attacks have a 10% chance to grant you an extra off hand attack.  Each point of Mastery increases the chance by an additional 1.25%." icon="inv_weapon_shortblade_15" name="Main Gauche"/>
-      </masterySpells>
       <talent column="0" icon="ability_rogue_improvedrecuperate" key="6395" name="Improved Recuperate" tier="0">
         <rank description="Causes your Recuperate ability to restore an additional 1% of your maximum health and reduces all damage taken by 3% while your Recuperate ability is active." lvl="1"/>
-        <rank description="Causes your Recuperate ability to restore an additional 2% of your maximum health and reduces all damage taken by 6% while your Recuperate ability is active." lvl="2"/>
       </talent>
       <talent column="1" icon="spell_shadow_ritualofsacrifice" key="201" name="Improved Sinister Strike" tier="0">
         <rank description="Increases the damage dealt by your Sinister Strike ability by 10% and reduces its Energy cost by 2." lvl="1"/>
-        <rank description="Increases the damage dealt by your Sinister Strike ability by 20% and reduces its Energy cost by 4." lvl="2"/>
-        <rank description="Increases the damage dealt by your Sinister Strike ability by 30% and reduces its Energy cost by 6." lvl="3"/>
       </talent>
       <talent column="2" icon="ability_marksmanship" key="181" name="Precision" tier="0">
         <rank description="Increases your chance to hit with weapon and poison attacks by 2%." lvl="1"/>
-        <rank description="Increases your chance to hit with weapon and poison attacks by 4%." lvl="2"/>
-        <rank description="Increases your chance to hit with weapon and poison attacks by 6%." lvl="3"/>
       </talent>
       <talent column="0" icon="ability_rogue_slicedice" key="1827" name="Improved Slice and Dice" tier="1">
         <rank description="Increases the duration of your Slice and Dice ability by 25%." lvl="1"/>
-        <rank description="Increases the duration of your Slice and Dice ability by 50%." lvl="2"/>
       </talent>
       <talent column="1" icon="ability_rogue_sprint" key="222" name="Improved Sprint" tier="1">
         <rank description="Gives a 50% chance to remove all movement-impairing effects when you activate your Sprint ability." lvl="1"/>
-        <rank description="Gives a 100% chance to remove all movement-impairing effects when you activate your Sprint ability." lvl="2"/>
       </talent>
       <talent column="2" icon="ability_racial_avatar" key="1122" name="Aggression" tier="1">
         <rank description="Increases the damage of your Sinister Strike, Backstab, and Eviscerate abilities by 5%." lvl="1"/>
         <rank description="Increases the damage of your Sinister Strike, Backstab, and Eviscerate abilities by 10%." lvl="2"/>
-        <rank description="Increases the damage of your Sinister Strike, Backstab, and Eviscerate abilities by 15%." lvl="3"/>
-      </talent>
-      <talent column="3" icon="ability_kick" key="206" name="Improved Kick" tier="1">
-        <rank description="Causes your Kick ability to also silence the target for 1.50 sec." lvl="1"/>
-        <rank description="Causes your Kick ability to silence the target for 3 sec." lvl="2"/>
       </talent>
       <talent column="0" icon="spell_nature_invisibilty" key="186" name="Lightning Reflexes" tier="2">
         <rank description="Increases your chance to dodge enemy attacks by 3% and your attack speed by 2%." lvl="1"/>
-        <rank description="Increases your chance to dodge enemy attacks by 6% and your attack speed by 4%." lvl="2"/>
-        <rank description="Increases your chance to dodge enemy attacks by 9% and your attack speed by 6%." lvl="3"/>
       </talent>
       <talent column="1" icon="inv_sword_97" key="11171" name="Revealing Strike" tier="2">
         <rank description="An instant strike that causes 125% of your normal weapon damage and increases the effectiveness of your next offensive finishing move on that target by 20% for 15 sec.  Awards 1 combo point." lvl="1"/>
       </talent>
       <talent column="2" icon="ability_rogue_reinforcedleather" key="6511" name="Reinforced Leather" tier="2">
         <rank description="Increases your armor contribution from cloth and leather items by 25%." lvl="1"/>
-        <rank description="Increases your armor contribution from cloth and leather items by 50%." lvl="2"/>
       </talent>
       <talent column="3" icon="ability_gouge" key="203" name="Improved Gouge" tier="2">
         <rank description="Increases the effect duration of your Gouge ability by 1 sec and reduces its energy cost by 15." lvl="1"/>
-        <rank description="Increases the effect duration of your Gouge ability by 2 sec and reduces its energy cost by 30." lvl="2"/>
       </talent>
       <talent column="1" icon="inv_weapon_shortblade_38" key="1825" name="Combat Potency" tier="3">
         <rank description="Gives your successful off-hand melee attacks a 20% chance to generate 5 Energy." lvl="1"/>
-        <rank description="Gives your successful off-hand melee attacks a 20% chance to generate 10 Energy." lvl="2"/>
-        <rank description="Gives your successful off-hand melee attacks a 20% chance to generate 15 Energy." lvl="3"/>
       </talent>
       <talent column="2" icon="ability_rogue_bladetwisting" key="1706" name="Blade Twisting" tier="3">
         <rank description="Gives your damaging melee attacks a 20% chance to daze the target, reducing movement speed by 70% for 4 sec." lvl="1"/>
-        <rank description="Gives your damaging melee attacks a 40% chance to daze the target, reducing movement speed by 70% for 8 sec." lvl="2"/>
       </talent>
       <talent column="0" icon="ability_rogue_throwingspecialization" key="2072" name="Throwing Specialization" tier="4">
         <rank description="Increases the range of Throw and Deadly Throw by 5 yards and gives your Deadly Throw a 50% chance to interrupt the target for 3 sec." lvl="1"/>
-        <rank description="Increases the range of Throw and Deadly Throw by 10 yards and gives your Deadly Throw a 100% chance to interrupt the target for 3 sec." lvl="2"/>
       </talent>
       <talent column="1" icon="spell_shadow_shadowworddominate" key="205" name="Adrenaline Rush" tier="4">
         <rank description="Increases your Energy regeneration rate by 100% and your melee attack speed by 20% for 15 sec." lvl="1"/>
@@ -78,16 +48,12 @@
       </talent>
       <talent column="2" icon="ability_creature_disease_03" key="2074" name="Savage Combat" tier="4">
         <rank description="Increases your total attack power by 2% and all physical damage caused to enemies you have poisoned is increased by 2%." lvl="1"/>
-        <rank description="Increases your total attack power by 4% and all physical damage caused to enemies you have poisoned is increased by 4%." lvl="2"/>
       </talent>
       <talent column="0" icon="ability_rogue_preyontheweak" key="11174" name="Bandit's Guile" tier="5">
         <rank description="Your Sinister Strike and Revealing Strike abilities have a 33% chance to grant you an evolving insight into an opponent's defenses, increasing damage to that target by up to 15%.  Opponents can adapt over time, negating this benefit, and Striking a different opponent will begin the cycle anew." lvl="1"/>
-        <rank description="Your Sinister Strike and Revealing Strike abilities have a 67% chance to grant you an evolving insight into an opponent's defenses, increasing damage to that target by up to 15%.  Opponents can adapt over time, negating this benefit, and Striking a different opponent will begin the cycle anew." lvl="2"/>
-        <rank description="Your Sinister Strike and Revealing Strike abilities have a 100% chance to grant you an evolving insight into an opponent's defenses, increasing damage to that target by up to 15%.  Opponents will adapt their defenses once this maximum is reached, or if you Strike a different opponent, and the cycle will begin anew." lvl="3"/>
       </talent>
       <talent column="2" icon="ability_rogue_restlessblades" key="6513" name="Restless Blades" tier="5">
         <rank description="Your damaging finishing moves reduce the cooldown of your Adrenaline Rush, Killing Spree, and Sprint abilities by 1 sec per combo point." lvl="1"/>
-        <rank description="Your damaging finishing moves reduce the cooldown of your Adrenaline Rush, Killing Spree, and Sprint abilities by 2 sec per combo point." lvl="2"/>
       </talent>
       <talent column="1" icon="ability_rogue_murderspree" key="2076" name="Killing Spree" requires="205" tier="6">
         <rank description="Step through the shadows from enemy to enemy within 10 yards, attacking an enemy every .5 secs with both weapons until 5 assaults are made, and increasing all damage done by 20% for the duration.  Can hit the same target multiple times.  Cannot hit invisible or stealthed targets." lvl="1"/>
@@ -95,29 +61,15 @@
       </talent>
     </tree>
     <tree bgImage="RogueSubtlety" description="A dark stalker who leaps from the shadows to ambush his unsuspecting prey." dps="1" healer="0" icon="ability_stealth" key="Subtlety" name="Subtlety" order="2" tank="0">
-      <primarySpells>
-        <spell castTime="0" cooldown="30000" description="Causes you to step through the shadows and appear behind an enemy target.  Your next Ambush or Garrote delivered within 10 sec will deal 30% additional damage, and your movement speed is increased by 70% for 3 sec." icon="ability_rogue_shadowstep" maxRange="25" name="Shadowstep">
-          <power cost="10" type="energy"/>
-        </spell>
-        <spell description="Attacks made while stealthed and for 6 seconds after breaking stealth cause an additional 10% damage." icon="ability_rogue_masterofsubtlety" name="Master of Subtlety"/>
-        <spell description="Increases your total Agility by 25% and increases the percentage damage bonus of Backstab and Hemorrhage by an additional 25%." icon="ability_rogue_sinistercalling" name="Sinister Calling"/>
-      </primarySpells>
-      <masterySpells>
-        <spell description="Increases the damage done by all your finishing moves by 20%.  Each point of Mastery increases damage by an additional 2.5%." icon="inv_axe_06" name="Executioner"/>
-      </masterySpells>
       <talent column="0" icon="ability_stealth" key="244" name="Nightstalker" tier="0">
         <rank description="Increases your speed while stealthed by 7% and reduces the cooldown of your Stealth ability by 3 sec." lvl="1"/>
         <rank description="Increases your speed while stealthed by 15% and reduces the cooldown of your Stealth ability by 6 sec." lvl="2"/>
       </talent>
       <talent column="1" icon="ability_rogue_ambush" key="263" name="Improved Ambush" tier="0">
         <rank description="Increases the critical strike chance of your Ambush ability by 20% and its damage by 5%." lvl="1"/>
-        <rank description="Increases the critical strike chance of your Ambush ability by 40% and its damage by 10%." lvl="2"/>
-        <rank description="Increases the critical strike chance of your Ambush ability by 60% and its damage by 15%." lvl="3"/>
       </talent>
       <talent column="2" icon="ability_warrior_decisivestrike" key="2244" name="Relentless Strikes" tier="0">
         <rank description="Your finishing moves have a 7% chance per combo point to restore 25 energy." lvl="1"/>
-        <rank description="Your finishing moves have a 14% chance per combo point to restore 25 energy." lvl="2"/>
-        <rank description="Your finishing moves have a 20% chance per combo point to restore 25 energy." lvl="3"/>
       </talent>
       <talent column="0" icon="spell_magic_lesserinvisibilty" key="247" name="Elusiveness" tier="1">
         <rank description="Reduces the cooldown of your Vanish and Blind abilities by 30 sec and your Cloak of Shadows ability by 15 sec." lvl="1"/>
