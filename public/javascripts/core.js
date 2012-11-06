@@ -455,9 +455,11 @@
         ro: data.options.rotation,
         settings: {
           tricks: data.options.general.tricks,
-          dmg_poison: data.options.general.leathal_poison,
+          dmg_poison: data.options.general.lethal_poison,
           utl_poison: data.options.general.utility_poison !== 'n' ? data.options.general.utility_poison : void 0,
           duration: data.options.general.duration,
+          response_time: data.options.general.response_time,
+          time_in_execute_range: data.options.general.time_in_execute_range,
           stormlash: data.options.general.stormlash,
           pvp: data.options.general.pvp
         },
@@ -774,7 +776,7 @@
     poisonMap = ["dp", "wp"];
     utilPoisonMap = ["lp", "n"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"];
-    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "use_rupture", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "clip_recuperate", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety"];
+    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "use_rupture", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "clip_recuperate", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"];
     rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, true, false, 'true', 'false', 'never', 'always', 'sometimes', 'pool', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike'];
     map = function(value, m) {
       return m.indexOf(value);
@@ -1249,6 +1251,23 @@
           min: 15,
           max: 1200
         },
+        response_time: {
+          type: "input",
+          name: "Response Time",
+          'default': 0.5,
+          datatype: 'float',
+          min: 0.1,
+          max: 5
+        },
+        time_in_execute_range: {
+          type: "input",
+          name: "Time in Execute Range",
+          desc: "Only working with Assassination",
+          'default': 0.35,
+          datatype: 'float',
+          min: 0,
+          max: 1
+        },
         lethal_poison: {
           name: "Lethal Poison",
           type: 'select',
@@ -1533,7 +1552,8 @@
         revealing_strike_pooling: {
           name: "Pool for Revealing Strike",
           right: true,
-          "default": true
+          "default": true,
+          datatype: 'bool'
         },
         blade_flurry: {
           name: "Blade Flurry",
@@ -1599,7 +1619,7 @@
         }
       });
     };
-    changeOption = function(elem, val) {
+    changeOption = function(elem, inputType, val) {
       var $this, data, dtype, max, min, name, ns, t0, _base;
       $this = $(elem);
       data = Shadowcraft.Data;
@@ -1624,14 +1644,14 @@
     changeCheck = function() {
       var $this;
       $this = $(this);
-      changeOption($this, $this.is(":checked"));
+      changeOption($this, "check", $this.is(":checked"));
       return Shadowcraft.setupLabels("#settings");
     };
     changeSelect = function() {
-      return changeOption(this);
+      return changeOption(this, "select");
     };
     changeInput = function() {
-      return changeOption(this);
+      return changeOption(this, "input");
     };
     ShadowcraftOptions.prototype.boot = function() {
       var app;

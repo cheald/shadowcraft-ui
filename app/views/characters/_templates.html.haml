@@ -141,8 +141,8 @@
     {{/percent}}
 
 - mustache("checkbox") do
-  %label.label_check
-    <input type="checkbox" class="optionCheck" name="{{key}}" id="opt-{{namespace}}-{{key}}" data-ns="{{namespace}}" />
+  %label.label_check(for="opt-{{namespace}}-{{key}}")
+    %input.optionCheck(type="checkbox" name="{{key}}" id="opt-{{namespace}}-{{key}}" data-ns="{{namespace}}")
     {{label}}<span>{{desc}}</span>
 
 - mustache("input") do

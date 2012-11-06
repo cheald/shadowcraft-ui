@@ -108,6 +108,8 @@ class ShadowcraftOptions
       level: {type: "input", name: "Level", 'default': 90, datatype: 'integer', min: 85, max: 90},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
+      response_time: {type: "input", name: "Response Time", 'default': 0.5, datatype: 'float', min: 0.1, max: 5}
+      time_in_execute_range: {type: "input", name: "Time in Execute Range", desc: "Only working with Assassination", 'default': 0.35, datatype: 'float', min: 0, max: 1}
       lethal_poison: {name: "Lethal Poison", type: 'select', options: {'dp': 'Deadly Poison', 'wp': 'Wound Poison'}, 'default': 'dp'}
       utility_poison: {name: "Utility Poison", type: 'select', options: {'lp': 'Leeching Poison', 'n': 'Other/None'}, 'default': 'lp'}
       max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this ilevel in gear lists", 'default': 600, datatype: 'integer', min: 15, max: 600}
@@ -167,7 +169,7 @@ class ShadowcraftOptions
     @setup("#settings section.combat .settings", "rotation", {
       use_rupture: {name: "Use Rupture?", right: true, default: true}
       ksp_immediately: {type: "select", name: "Killing Spree", options: {'true': "Killing Spree on cooldown", 'false': "Wait for Bandit's Guile before using Killing Spree"}, 'default': 'true', datatype: 'string'}
-      revealing_strike_pooling: {name: "Pool for Revealing Strike", right: true, default: true}
+      revealing_strike_pooling: {name: "Pool for Revealing Strike", right: true, default: true, datatype: 'bool'}
       blade_flurry: {name: "Blade Flurry", right: true, desc: "Use Blade Flurry", default: false, datatype: 'bool'}
       opener_name_combat: {type: "select", name: "Opener Name", options: {'sinister_strike': "Sinister Strike", 'revealing_strike': "Revealing Strike", 'ambush': "Ambush"}, 'default': 'sinister_strike', datatype: 'string'}
       opener_use_combat: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
@@ -179,7 +181,7 @@ class ShadowcraftOptions
       opener_use_subtlety: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })
 
-  changeOption = (elem, val) ->
+  changeOption = (elem, inputType, val) ->
     $this = $(elem)
     data = Shadowcraft.Data
     ns = elem.attr("data-ns") || "root"
@@ -201,14 +203,14 @@ class ShadowcraftOptions
 
   changeCheck = ->
     $this = $(this)
-    changeOption($this, $this.is(":checked"))
+    changeOption($this, "check", $this.is(":checked"))
     Shadowcraft.setupLabels("#settings")
 
   changeSelect = ->
-    changeOption(this)
+    changeOption(this, "select")
 
   changeInput = ->
-    changeOption(this)
+    changeOption(this, "input")
 
   boot: ->
     app = this

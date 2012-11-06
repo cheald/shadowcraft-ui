@@ -425,15 +425,18 @@ class ShadowcraftComputation:
             _cycle = settings.SubtletyCycle(5, **rotation_options)
         # test_settings = settings.Settings(test_cycle, response_time=.5, duration=360, dmg_poison='dp', utl_poison='lp', is_pvp=charInfo['pvp'],stormlash=charInfo['stormlash'], shiv_interval=charInfo['shiv'])
         _settings = settings.Settings(_cycle,
-            response_time = 0.5,
+            time_in_execute_range = _opt.get("time_in_execute_range", 0.35),
+            tricks_on_cooldown = _opt.get("tricks", False),
+            response_time = _opt.get("response_time", 0.5),
             duration = duration,
             dmg_poison = _opt.get("dmg_poison", 'dp'),
-            utl_poison = _opt.get("utl_poison", 'lp'),
+            utl_poison = _opt.get("utl_poison", None),
             opener_name = rotation_keys["opener_name"],
             use_opener = rotation_keys["opener_use"],
             stormlash = _opt.get("stormlash", False),
             is_pvp = _opt.get("pvp", False)
         )
+        print _settings
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)
         return calculator
         
