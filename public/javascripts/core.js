@@ -3199,6 +3199,7 @@
             enchantable = EnchantSlots[item.equip_location] != null;
             if ((!data.options.professions.enchanting && item.equip_location === 11) || item.equip_location === "ranged") {
               enchantable = false;
+              delete gear.enchant;
             }
             allSlotsMatch = item.sockets && item.sockets.length > 0;
             _ref = item.sockets;
@@ -4038,6 +4039,9 @@
       });
       Shadowcraft.Options.bind("update", function(opt, val) {
         if (opt === "professions.blacksmithing") {
+          app.updateDisplay();
+        }
+        if (opt === "professions.enchanting") {
           return app.updateDisplay();
         }
       });

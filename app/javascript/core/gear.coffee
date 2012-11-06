@@ -738,6 +738,7 @@ class ShadowcraftGear
           enchantable = EnchantSlots[item.equip_location]?
           if (!data.options.professions.enchanting && item.equip_location == 11) || item.equip_location == "ranged"
             enchantable = false
+            delete gear.enchant
           allSlotsMatch = item.sockets && item.sockets.length > 0
           for socket in item.sockets
             gem = Gems[gear["g" + gems.length]]
@@ -1447,6 +1448,8 @@ class ShadowcraftGear
 
     Shadowcraft.Options.bind "update", (opt, val) ->
       if opt == "professions.blacksmithing"
+        app.updateDisplay()
+      if opt == "professions.enchanting"
         app.updateDisplay()
 
     this
