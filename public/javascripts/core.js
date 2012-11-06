@@ -3006,7 +3006,7 @@
       use_epic_gems = Shadowcraft.Data.options.general.epic_gems === 1;
       for (_i = 0, _len = copy.length; _i < _len; _i++) {
         gem = copy[_i];
-        if (gem.quality >= 4 && gem.requires === void 0 && !use_epic_gems) {
+        if (gem.quality === 4 && gem.requires === void 0 && !use_epic_gems) {
           continue;
         }
         gem.normal_ep = getRegularGemEpValue(gem);

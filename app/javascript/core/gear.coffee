@@ -584,7 +584,7 @@ class ShadowcraftGear
     list = []
     use_epic_gems = Shadowcraft.Data.options.general.epic_gems == 1
     for gem in copy
-      continue if gem.quality >= 4 and gem.requires == undefined and not use_epic_gems
+      continue if gem.quality == 4 and gem.requires == undefined and not use_epic_gems
       gem.normal_ep = getRegularGemEpValue(gem)
       if gem.normal_ep and gem.normal_ep > 1
         list.push gem
