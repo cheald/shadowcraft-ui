@@ -38,6 +38,7 @@ class ShadowcraftGear
     4441: "windsong"
     4443: "elemental_force"
     4444: "dancing_steel"
+    4894: "swordguard_embroidery"
 
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
 
@@ -173,12 +174,16 @@ class ShadowcraftGear
         total += c.meta.chaotic_metagem
       else if PROC_ENCHANTS[item.id]
         switch slot
+          when 14
+            pre = ""
           when 15
             pre = "mh_"
           when 16
             pre = "oh_"
         enchant = PROC_ENCHANTS[item.id]
-        if pre and enchant
+        if !pre and enchant
+          total += c["other_ep"][enchant]
+        else if pre and enchant
           total += c[pre + "ep"][pre + enchant]
 
       if c.trinket_ranking[item.id]

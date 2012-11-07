@@ -116,6 +116,8 @@ class ShadowcraftBackend
       if k == "0" && g.g0 && Gems[g.g0] && Gems[g.g0].Meta
         if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(g.g0) != -1
           payload.mg = "chaotic"
+      if k == "14" && g.enchant && g.enchant == 4894
+        payload.se = "swordguard_embroidery"
 
     payload.g = gear_ids
     payload

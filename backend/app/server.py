@@ -85,16 +85,13 @@ class ShadowcraftComputation:
 
         # 5.0
         81125: "windswept_pages",
-        89082: "hawkmasters_talon",
         79328: "relic_of_xuen",
-        87495: "gerps_perfect_arrow",
         86332: "terror_in_the_mists",
         87167: "heroic_terror_in_the_mists",
         86890: "lfr_terror_in_the_mists",
         86132: "bottle_of_infinite_stars",
         87057: "heroic_bottle_of_infinite_stars",
         86791: "lfr_bottle_of_infinite_stars",
-        81265: "flashing_steel_talisman",
         81267: "searing_words",
         87574: "corens_cold_chromium_coaster",
         84072: "braid_of_ten_songs",
@@ -117,6 +114,9 @@ class ShadowcraftComputation:
         77974: 'lfr_kiroptyric_sigil',
         
         #5.0
+        87495: "gerps_perfect_arrow",
+        81265: "flashing_steel_talisman",
+        89082: "hawkmasters_talon",
         87079: "heroic_jade_bandit_figurine",
         86043: "jade_bandit_figurine",
         86772: "lfr_jade_bandit_figurine"
@@ -366,6 +366,10 @@ class ShadowcraftComputation:
         if len(self.legendary_tier_3 & gear) >= 2:
             proclist.append('fangs_of_the_father')
 
+        # if tailor
+        if "tailoring" in professions and input.get("se") == 'swordguard_embroidery':
+            proclist.append('swordguard_embroidery')
+
         _procs = procs.ProcsList(*proclist)
 
         # ##################################################################################
@@ -453,6 +457,7 @@ class ShadowcraftComputation:
             out["glyph_ranking"] = calculator.get_glyphs_ranking(input.get("gly", []))
             
             out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
+            out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery'])
 
             trinket_rankings = calculator.get_other_ep(self.trinkets)
             out["trinket_ranking"] = {}

@@ -482,6 +482,9 @@
             payload.mg = "chaotic";
           }
         }
+        if (k === "14" && g.enchant && g.enchant === 4894) {
+          payload.se = "swordguard_embroidery";
+        }
       }
       payload.g = gear_ids;
       return payload;
@@ -2318,7 +2321,8 @@
       4083: "hurricane",
       4441: "windsong",
       4443: "elemental_force",
-      4444: "dancing_steel"
+      4444: "dancing_steel",
+      4894: "swordguard_embroidery"
     };
     ShadowcraftGear.CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886];
     Weights = {
@@ -2461,6 +2465,9 @@
           total += c.meta.chaotic_metagem;
         } else if (PROC_ENCHANTS[item.id]) {
           switch (slot) {
+            case 14:
+              pre = "";
+              break;
             case 15:
               pre = "mh_";
               break;
@@ -2468,7 +2475,9 @@
               pre = "oh_";
           }
           enchant = PROC_ENCHANTS[item.id];
-          if (pre && enchant) {
+          if (!pre && enchant) {
+            total += c["other_ep"][enchant];
+          } else if (pre && enchant) {
             total += c[pre + "ep"][pre + enchant];
           }
         }
