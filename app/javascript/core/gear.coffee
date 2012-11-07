@@ -487,6 +487,14 @@ class ShadowcraftGear
       else if !blacksmith and last == "Prismatic"
         item.sockets.pop()
 
+  # Check if the gems have equal stats to pretend that optimize gems 
+  # not change gems to stat equal gems
+  equalGemStats = (from_gem,to_gem) ->
+    for stat of from_gem["stats"]
+      if !to_gem["stats"][stat]? or from_gem["stats"][stat] != to_gem["stats"][stat]
+        return false
+    return true
+
   # Assumes gem_list is already sorted preferred order.  Also, normalizes
   # JC-only gem EP to their non-JC-only values to prevent the algorithm from
   # picking up those gems over the socket bonus.
@@ -556,10 +564,10 @@ class ShadowcraftGear
         for gem, gemIndex in rec.gems
           from_gem = Gems[gear["g#{gemIndex}"]]
           to_gem = Gems[gem]
-
           if gear["g#{gemIndex}"] != gem
             if from_gem && to_gem
               continue if from_gem.name == to_gem.name
+              continue if equalGemStats(from_gem, to_gem)
               Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} from #{from_gem.name} to #{to_gem.name}"
             else
               Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} to #{to_gem.name}"

@@ -2273,7 +2273,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_REFORGENAME, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, fudgeOffsets, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, MH_EXPERTISE_FACTOR, OH_EXPERTISE_FACTOR, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_REFORGENAME, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -2879,6 +2879,15 @@
         }
       }
     };
+    equalGemStats = function(from_gem, to_gem) {
+      var stat;
+      for (stat in from_gem["stats"]) {
+        if (!(to_gem["stats"][stat] != null) || from_gem["stats"][stat] !== to_gem["stats"][stat]) {
+          return false;
+        }
+      }
+      return true;
+    };
     getGemmingRecommendation = function(gem_list, item, returnFull, ignoreSlotIndex, offset) {
       var bonus, data, epValue, gem, gemType, gems, mGems, matchedGemEP, sGems, straightGemEP, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref, _ref2;
       data = Shadowcraft.Data;
@@ -2978,6 +2987,9 @@
             if (gear["g" + gemIndex] !== gem) {
               if (from_gem && to_gem) {
                 if (from_gem.name === to_gem.name) {
+                  continue;
+                }
+                if (equalGemStats(from_gem, to_gem)) {
                   continue;
                 }
                 Shadowcraft.Console.log("Regemming " + item.name + " socket " + (gemIndex + 1) + " from " + from_gem.name + " to " + to_gem.name);
