@@ -12,6 +12,7 @@ from time import clock
 
 from vendor.WebSocket import *
 
+from shadowcraft.core import exceptions
 from shadowcraft.calcs.rogue.Aldriana import AldrianasRogueDamageCalculator, settings, InputNotModeledException
 
 from shadowcraft.objects import buffs
@@ -470,11 +471,12 @@ class ShadowcraftComputation:
             # Talent ranking is slow. This is done last per a note from nextormento.
             out["talent_ranking_main"] = calculator.get_talents_ranking()      
 
-            # oh weapon modifier
-            out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
+            # oh weapon modifier, pull only for combat spec
+            if input.get("spec", 'a') == "Z":
+              out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
 
             return out
-        except (InputNotModeledException) as e:
+        except (InputNotModeledException, exceptions.InvalidInputException) as e:
             out["error"] = e.error_msg
             return out
 
