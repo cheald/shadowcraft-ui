@@ -140,6 +140,7 @@ class Enchant
           x ||= {}
           puts "Adding #{name}..."
           slot = get_slots(slots[index].to_i)
+          next if slot == 1 # do not import head enchants
           Enchant.create({
             :spell_id => k.to_i,
             :stats => Hash[*x.map {|rk| [JSON_TO_INTERNAL[rk], i["jsonequip"][rk].to_i] }.flatten],
