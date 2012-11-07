@@ -119,10 +119,11 @@ class ShadowcraftTalents
 
   setSpec = (str) ->
     data = Shadowcraft.Data
+    $("#specactive").html(getSpecName(str)) #TODO working but is html the right function?
     data.activeSpec = str
 
-  getSpec = -> # this is not working
-    return $("#talentframe .spec")
+  getSpec = ->
+    return data.activeSpec
 
   applyTalentToButton = (button, dir, force, skipUpdate) ->
     data = Shadowcraft.Data
@@ -164,6 +165,7 @@ class ShadowcraftTalents
     if not data.activeTalents
       data.activeTalents = data.talents[data.active].talents
       data.activeSpec = data.talents[data.active].spec
+    setSpec data.activeSpec
     setTalents data.activeTalents
 
   initTalentsPane: ->

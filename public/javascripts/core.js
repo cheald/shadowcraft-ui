@@ -1846,10 +1846,11 @@
     setSpec = function(str) {
       var data;
       data = Shadowcraft.Data;
+      $("#specactive").html(getSpecName(str));
       return data.activeSpec = str;
     };
     getSpec = function() {
-      return $("#talentframe .spec");
+      return data.activeSpec;
     };
     applyTalentToButton = function(button, dir, force, skipUpdate) {
       var $points, data, points, position, success, tree;
@@ -1893,6 +1894,7 @@
         data.activeTalents = data.talents[data.active].talents;
         data.activeSpec = data.talents[data.active].spec;
       }
+      setSpec(data.activeSpec);
       return setTalents(data.activeTalents);
     };
     ShadowcraftTalents.prototype.initTalentsPane = function() {
