@@ -6,15 +6,15 @@ class ShadowcraftTalents
   CHARACTER_SPEC = ""
   DEFAULT_SPECS =
     "Stock Assassination":
-      talents: "2.10.2"
+      talents: "221102"
       glyphs: [45761]
       spec: "a"
     "Stock Combat":
-      talents: "2.10.2"
+      talents: "221102"
       glyphs: [42972]
       spec: "Z"
     "Stock Subtlety":
-      talents: "2.10.2"
+      talents: "221002"
       glyphs: []
       spec: "b"
 
