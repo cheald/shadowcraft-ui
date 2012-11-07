@@ -127,7 +127,7 @@ class ShadowcraftComputation:
     tier11IDS = frozenset([60298, 65240, 60299, 65241, 60300, 65242, 60302, 65243, 60301, 65239])
     tier12IDS = frozenset([71046, 71538, 71047, 71539, 71048, 71540, 71049, 71541, 71045, 71537])
     tier13IDS = frozenset([78664, 78679, 78699, 78708, 78738, 77023, 77024, 77025, 77026, 77027, 78759, 78774, 78794, 78803, 78833])
-    tier14IDS = frozenset([85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128]);
+    tier14IDS = frozenset([85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128])
 
     
     legendary_tier_1 = frozenset([77945, 77946])
@@ -469,6 +469,9 @@ class ShadowcraftComputation:
 
             # Talent ranking is slow. This is done last per a note from nextormento.
             out["talent_ranking_main"] = calculator.get_talents_ranking()      
+
+            # oh weapon modifier
+            out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
 
             return out
         except (InputNotModeledException) as e:
