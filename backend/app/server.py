@@ -208,7 +208,7 @@ class ShadowcraftComputation:
                 'prioritize_rupture_uptime_execute'
             ], [
                 'use_rupture',
-                'use_revealing_strike',
+                'revealing_strike_pooling',
                 'ksp_immediately',
                 'blade_flurry'
             ], [
@@ -224,7 +224,8 @@ class ShadowcraftComputation:
        ], [
         'sinister_strike',
         'revealing_strike',
-        'ambush'
+        'ambush',
+        'garrote'
        ], [
         'ambush',
         'garrote'

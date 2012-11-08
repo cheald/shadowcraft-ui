@@ -602,9 +602,9 @@
           open: function(event, ui) {
             var d, sn, t;
             sn = $("#snapshotName");
-            t = ShadowcraftTalents.GetPrimaryTreeName();
+            t = "";
             d = new Date();
-            t += " " + (d.getFullYear()) + "-" + (d.getMonth()) + "-" + (d.getDate());
+            t += " " + (d.getFullYear()) + "-" + (d.getMonth() + 1) + "-" + (d.getDate());
             return sn.val(t);
           }
         });
