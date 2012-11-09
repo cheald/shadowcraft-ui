@@ -223,8 +223,10 @@ class ShadowcraftHistory
         if data.options.general.receive_tricks then 1 else 0
         if data.options.general.prepot then 1 else 0
         data.options.general.patch,
-        data.options.general.min_ilvl,
-        data.options.general.epic_gems
+        data.options.general.min_ilvl
+        if data.options.general.epic_gems then 1 else 0
+        if data.options.general.stormlash then 1 else 0
+        if data.options.general.pvp then 1 else 0
       ]
       options.push base36Encode(general)
 
@@ -289,6 +291,8 @@ class ShadowcraftHistory
         patch:                general[10] || 50
         min_ilvl:             general[11] || 430
         epic_gems:            general[12] || 0
+        stormlash:            general[13] || 0
+        pvp:                 general[14] || 0
 
       d.options.buffs = {}
       for v, i in options[2]
