@@ -786,7 +786,7 @@
     };
     compress_handlers = {
       "1": function(data) {
-        var buff, buffs, gear, gearSet, general, index, k, options, profession, professions, ret, rotationOptions, slot, v, val, _len, _ref, _ref2, _ref3;
+        var buff, buffs, gear, gearSet, general, index, k, options, profession, professions, ret, rotationOptions, set, slot, talent, talentSet, v, val, _i, _len, _len2, _ref, _ref2, _ref3, _ref4;
         ret = [DATA_VERSION];
         gearSet = [];
         for (slot = 0; slot <= 17; slot++) {
@@ -803,11 +803,21 @@
         ret.push(data.activeSpec);
         ret.push(data.activeTalents);
         ret.push(base36Encode(data.glyphs));
+        talentSet = [];
+        _ref = [0, 1];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          set = _ref[_i];
+          talent = data.talents[set];
+          talentSet.push(talent.spec);
+          talentSet.push(talent.talents);
+          talentSet.push(base36Encode(talent.glyphs));
+        }
+        ret.push(talentSet);
         options = [];
         professions = [];
-        _ref = data.options.professions;
-        for (profession in _ref) {
-          val = _ref[profession];
+        _ref2 = data.options.professions;
+        for (profession in _ref2) {
+          val = _ref2[profession];
           if (val) {
             professions.push(map(profession, professionMap));
           }
@@ -816,17 +826,17 @@
         general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.virmens_bite ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.stormlash ? 1 : 0, data.options.general.pvp ? 1 : 0];
         options.push(base36Encode(general));
         buffs = [];
-        _ref2 = ShadowcraftOptions.buffMap;
-        for (index = 0, _len = _ref2.length; index < _len; index++) {
-          buff = _ref2[index];
+        _ref3 = ShadowcraftOptions.buffMap;
+        for (index = 0, _len2 = _ref3.length; index < _len2; index++) {
+          buff = _ref3[index];
           v = data.options.buffs[buff];
           buffs.push(v ? 1 : 0);
         }
         options.push(buffs);
         rotationOptions = [];
-        _ref3 = data.options["rotation"];
-        for (k in _ref3) {
-          v = _ref3[k];
+        _ref4 = data.options["rotation"];
+        for (k in _ref4) {
+          v = _ref4[k];
           rotationOptions.push(map(k, rotationOptionsMap));
           rotationOptions.push(map(v, rotationValueMap));
         }
@@ -837,7 +847,7 @@
     };
     decompress_handlers = {
       "1": function(data) {
-        var d, gear, general, i, id, index, k, options, rotation, slot, v, _len, _len2, _len3, _len4, _ref, _ref2, _ref3, _step, _step2;
+        var d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _ref, _ref2, _ref3, _step, _step2, _step3;
         d = {
           gear: {},
           active: data[2],
@@ -847,8 +857,18 @@
           options: {},
           talents: []
         };
+        talentSets = data[6];
+        for (index = 0, _len = talentSets.length, _step = 3; index < _len; index += _step) {
+          id = talentSets[index];
+          set = (index / 3).toString();
+          d.talents[set] = {
+            spec: talentSets[index],
+            talents: talentSets[index + 1],
+            glyphs: base36Decode(talentSets[index + 2])
+          };
+        }
         gear = base36Decode(data[1]);
-        for (index = 0, _len = gear.length, _step = 6; index < _len; index += _step) {
+        for (index = 0, _len2 = gear.length, _step2 = 6; index < _len2; index += _step2) {
           id = gear[index];
           slot = (index / 6).toString();
           d.gear[slot] = {
@@ -867,10 +887,10 @@
             }
           }
         }
-        options = data[6];
+        options = data[7];
         d.options.professions = {};
         _ref2 = options[0];
-        for (i = 0, _len2 = _ref2.length; i < _len2; i++) {
+        for (i = 0, _len3 = _ref2.length; i < _len3; i++) {
           v = _ref2[i];
           d.options.professions[unmap(v, professionMap)] = true;
         }
@@ -894,13 +914,13 @@
         };
         d.options.buffs = {};
         _ref3 = options[2];
-        for (i = 0, _len3 = _ref3.length; i < _len3; i++) {
+        for (i = 0, _len4 = _ref3.length; i < _len4; i++) {
           v = _ref3[i];
           d.options.buffs[ShadowcraftOptions.buffMap[i]] = v === 1;
         }
         rotation = base36Decode(options[3]);
         d.options.rotation = {};
-        for (i = 0, _len4 = rotation.length, _step2 = 2; i < _len4; i += _step2) {
+        for (i = 0, _len5 = rotation.length, _step3 = 2; i < _len5; i += _step3) {
           v = rotation[i];
           d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i + 1], rotationValueMap);
         }
@@ -3624,7 +3644,7 @@
       return false;
     };
     clickSlotGem = function() {
-      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemCt, gemSlot, gemType, item, max, selected_id, slot, socketEPBonus, usedNames, _i, _j, _len, _len2;
+      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemCt, gemSlot, gemType, item, max, selected_id, slot, socketEPBonus, socketlength, usedNames, _i, _j, _len, _len2;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       GemList = Shadowcraft.ServerData.GEMS;
       data = Shadowcraft.Data;
@@ -3632,7 +3652,11 @@
       $slot = buf[0];
       slot = buf[1];
       item = ItemLookup[parseInt($slot.attr("id"), 10)];
-      socketEPBonus = (item.socketbonus ? get_ep(item, "socketbonus") : 0) / item.sockets.length;
+      socketlength = item.sockets.length;
+      if (item.socketbonus && item.sockets[item.sockets.length - 1] === "Prismatic") {
+        socketlength--;
+      }
+      socketEPBonus = (item.socketbonus ? get_ep(item, "socketbonus") : 0) / socketlength;
       gemSlot = $slot.find(".gem").index(this);
       $.data(document.body, "gem-slot", gemSlot);
       gemType = item.sockets[gemSlot];
@@ -4040,7 +4064,7 @@
   ShadowcraftTiniReforgeBackend = (function() {
     var ENGINE, ENGINES, REFORGABLE, deferred;
     ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"];
-    ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
+    ENGINE = "http://localhost:8888/calc";
     REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"];
     deferred = null;
     function ShadowcraftTiniReforgeBackend(gear) {
@@ -4091,8 +4115,7 @@
         error: function(xhr, textStatus, error) {
           return flash(textStatus);
         },
-        dataType: "json",
-        contentType: "application/json"
+        dataType: "json"
       });
     };
     ShadowcraftTiniReforgeBackend.prototype.buildRequest = function() {

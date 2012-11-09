@@ -1094,7 +1094,11 @@ class ShadowcraftGear
     slot = buf[1]
 
     item = ItemLookup[parseInt($slot.attr("id"), 10)]
-    socketEPBonus = (if item.socketbonus then get_ep(item, "socketbonus") else 0) / item.sockets.length
+    # prismatic sockets should not devalue gems who contribute to the socketbonus
+    socketlength = item.sockets.length;
+    if item.socketbonus and item.sockets[item.sockets.length-1] == "Prismatic"
+      socketlength--
+    socketEPBonus = (if item.socketbonus then get_ep(item, "socketbonus") else 0) / socketlength
     gemSlot = $slot.find(".gem").index(this)
     $.data(document.body, "gem-slot", gemSlot)
     gemType = item.sockets[gemSlot]
