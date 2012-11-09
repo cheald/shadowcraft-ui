@@ -485,6 +485,9 @@ class ShadowcraftComputation:
         except (InputNotModeledException, exceptions.InvalidInputException) as e:
             out["error"] = e.error_msg
             return out
+        except (KeyError) as e:
+            out["error"] = "Error: " + e.message
+            return out
 
 engine = ShadowcraftComputation()
 reactor.suggestThreadPoolSize(16)

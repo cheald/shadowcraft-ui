@@ -277,7 +277,7 @@ module WowArmory
         return "Orange"
       when "Red or Blue"
         return "Purple"
-      when "Blue or Yellow"
+      when "Blue or Yellow", "Yellow or Blue"
         return "Green"
       else
         color
