@@ -13,7 +13,6 @@ class Item
   field :requires, :type => Hash
   field :is_gem, :type => Boolean, :index => true
   field :is_glyph, :type => Boolean, :index => true
-  field :scaling, :type => Integer
 
   referenced_in :loadout
 
@@ -30,7 +29,7 @@ class Item
     return if remote_id == 0
     if self.properties.nil?
       Rails.logger.debug "Loading item #{remote_id}"
-      item = WowArmory::Item.new(remote_id, random_suffix, scaling, item_name_override)
+      item = WowArmory::Item.new(remote_id, random_suffix, item_name_override)
       # return false if item.stats.empty?
       self.properties = item.as_json.with_indifferent_access
       self.equip_location = self.properties["equip_location"]
@@ -118,6 +117,7 @@ class Item
   end
 
   def self.populate_gear(prefix = "www")
+    populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;ub=4;cr=124;crs=0;crv=zephyr" # base items with random properties
     populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0;eb=1"
     populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=501;maxle=550;ub=4;cr=21;crs=1;crv=0;eb=1"
     populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0;eb=1"

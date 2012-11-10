@@ -68,14 +68,6 @@ class Character
         i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i, :random_suffix => item["suffix"])
         if i.new_record?
           unless item["suffix"].blank?
-
-            # This is a hack to work around some items not having the proper seeds
-            scaling = item["scaling"]
-            if scaling.blank?
-              scaling = Item.where(:remote_id => item["item_id"].to_i, :scaling.ne => nil).first.scaling
-            end
-
-            i.scaling = scaling
             i.item_name_override = item["name"]
           end
           i.save
@@ -90,7 +82,6 @@ class Character
       :gear   => Character.encode_random_items(properties["gear"]),
       :talents => properties["talents"],
       :active => properties["active_talents"],
-      :active_talents => properties["active_talents"],
       :options => {
         :general => {
           :level => properties["level"],
@@ -105,7 +96,6 @@ class Character
     items.clone.tap do |copy|
       copy.each do |key, item|
         if r = item.delete("suffix")
-          item.delete "scaling"
           item["item_id"] = item["item_id"] * 1000 + r.to_i.abs
         end
       end

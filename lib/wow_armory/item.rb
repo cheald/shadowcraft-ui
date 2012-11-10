@@ -4,6 +4,7 @@ module WowArmory
 
     @random_suffix_csv = nil
     @item_enchants = nil
+    @rand_prop_points = nil
 
     # STATS = Hash[*STAT_MAP.split(/\n/).map {|line| x = line.strip.split(" ", 2); [x.last.downcase.gsub(" ", "_").to_sym, x.first.to_i]}.flatten]
     STAT_INDEX = {
@@ -90,13 +91,12 @@ module WowArmory
     STAT_LOOKUP = Hash[*STAT_INDEX.map {|k, v| [v, k]}.flatten]
 
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :is_heroic, :socket_bonus, :sockets, :gem_slot, :speed, :subclass, :dps, :armor_class, :random_suffix, :scalar
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :is_heroic, :socket_bonus, :sockets, :gem_slot, :speed, :subclass, :dps, :armor_class, :random_suffix
     attr_accessor *ACCESSORS
-    def initialize(id, random_suffix = nil, scalar = nil, name = nil)
+    def initialize(id, random_suffix = nil, name = nil)
       self.stats = {}
       self.random_suffix = random_suffix
       self.random_suffix = nil if self.random_suffix == 0
-      self.scalar = scalar > 5000 ? scalar & 65535 : scalar unless scalar.nil?
       self.name = name
 
       if id == :empty or id == 0 or id.nil?
@@ -106,10 +106,6 @@ module WowArmory
         @id = id.to_i
       end
 
-      Rails.logger.debug "Populating with random suffix: #{random_suffix.inspect}, scalar: #{scalar.inspect}"
-      unless random_suffix.nil? or scalar.nil?
-        populate_random_suffix_item
-      end
       fetch "us", "item/%d/tooltip" % id
       populate_stats
     end
@@ -124,15 +120,30 @@ module WowArmory
 
     def populate_random_suffix_item
       row = random_suffixes[random_suffix.abs.to_s]
-      
+      Rails.logger.debug row.inspect
+      base = rand_prop_points[self.ilevel.to_s]
+      Rails.logger.debug base.inspect
+
       self.stats = {}
       4.times do |i|
-        enchant = row[3+i]
-        scal = row[8+i].to_f / 10000.0
-        if enchant != "0"
-          stat = item_enchants[enchant][11].to_i
-          self.stats[STAT_LOOKUP[stat]] = (scal * self.scalar).floor
+        #enchant = row[3+i]
+        #scal = row[8+i].to_f / 10000.0
+        #if enchant != "0"
+        #  stat = item_enchants[enchant][11].to_i
+        #  self.stats[STAT_LOOKUP[stat]] = (scal * self.scalar).floor
+        #end
+        enchantid = row[3+i]
+        multiplier = row[8+i].to_f / 10000.0
+        Rails.logger.debug slot_index(equip_location).inspect
+        basevalue = base[1+quality_index(self.quality)*5+slot_index(equip_location)]
+        Rails.logger.debug basevalue.inspect
+        if enchantid != "0"
+          Rails.logger.debug item_enchants[enchantid].inspect
+          stat = item_enchants[enchantid][8].to_i
+          Rails.logger.debug stat
+          self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).floor
         end
+        Rails.logger.debug self.stats.inspect
       end
     end
 
@@ -147,6 +158,14 @@ module WowArmory
     def item_enchants
       @@item_enchants ||= Hash.new.tap do |hash|
         FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantment.dbc.csv")) do |row|
+          hash[row[0].to_s] = row
+        end
+      end
+    end
+
+    def rand_prop_points
+      @@rand_prop_points ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "RandPropPoints.dbc.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -206,21 +225,18 @@ module WowArmory
       self.gem_slot = "Hydraulic" if is_hydraulic_gem
   
       self.armor_class ||= lis.map {|t| t.text.strip.match(/(^|\s)(Plate|Mail|Leather|Cloth)($|\s)/).try(:[], 2) }.compact.first
-
-      self.stats = get_item_stats
+      
       if weapon_type = lis.text.map {|e| e.strip.match(/^(Dagger|Mace|Axe|Thrown|Wand|Bow|Gun|Crossbow|Fist Weapon|Sword)$/)}.compact.first
         populate_weapon_stats!
       end
 
+      Rails.logger.debug "Populating with random suffix: #{random_suffix.inspect}"
+      unless self.random_suffix.nil?
+        populate_random_suffix_item
+      end
+
       if self.stats.nil? or self.stats.blank?
-        nodes("ul.item-specs li").each do |spec|
-          id = spec.attr("id")
-          next if id.nil?
-          if attr_type = id.match(/stat-(\d+)/)
-            stat = STAT_LOOKUP[attr_type[1].to_i]
-            self.stats[stat] = value("span", spec).to_i
-          end
-        end
+        self.stats = get_item_stats
       end
     end
 
@@ -281,6 +297,36 @@ module WowArmory
         return "Green"
       else
         color
+      end
+    end
+
+    def quality_index(quality)
+      case quality
+      when 2
+        return 2
+      when 3
+        return 1
+      when 4
+        return 0
+      else
+        return 0
+      end
+    end
+
+    def slot_index(slot)
+      case slot
+      when 1, 5, 7 # missing twohander id
+        return 0
+      when 3, 10, 6, 8
+        return 1
+      when 9, 2, 16, 11 # missing offhand id
+        return 2
+      when 13 # mainhand id missing
+        return 3
+      when 15
+        return 4
+      else
+        return 2
       end
     end
   end
