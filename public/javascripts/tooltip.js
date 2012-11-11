@@ -100,10 +100,14 @@ var ttlib = {
     if(!ttlib.jstooltip) { return; }
     var $this = $(this);
     var id = $this.data("tooltip-id");
+    var rand = $this.data("tooltip-rand");
     if(!id) { return; }
 
     var t = $this.data("tooltip-type") || "item";
     var url = "http://www.wowhead.com/" + t + "=" + id + "&power";
+    if(rand && rand != "0") {
+      url += "&rand=" + rand;
+    }
 
     ttlib.currentMouseover = url;
     ttlib.jstooltip.style.width = null;

@@ -787,6 +787,7 @@ class ShadowcraftGear
             opt.ttid = Math.floor(item.id / 1000)
           else
             opt.ttid = item.id
+        opt.ttrand = item.suffix
         opt.ep = if item then get_ep(item, null, i).toFixed(1) else 0
         opt.slot = i + ''
         opt.gems = gems

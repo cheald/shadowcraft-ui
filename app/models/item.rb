@@ -100,6 +100,9 @@ class Item
       json[:dps] = properties["dps"]
       json[:subclass] = properties["subclass"]
     end
+    if properties["random_suffix"]
+      json[:suffix] = properties["random_suffix"]
+    end
 
     json
   end

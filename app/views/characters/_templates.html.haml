@@ -87,7 +87,7 @@
       {{/item}}
 
       %span.ilvl {{item/ilvl}}
-    .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}"}
+    .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}", :"data-tooltip-rand" => "{{ttrand}}"}
       {{item/name}}
       %em.heroic {{item/heroic}}
       {{#item/id}}
