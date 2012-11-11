@@ -3491,7 +3491,7 @@
       }
     };
     clickSlotName = function() {
-      var $slot, GemList, buf, buffer, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, maxIEP, minIEP, rec, reforge_offset, requireDagger, selected_id, slot, ttid, _i, _j, _k, _len, _len2, _len3;
+      var $slot, GemList, buf, buffer, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, maxIEP, minIEP, rec, reforge_offset, requireDagger, selected_id, slot, ttid, ttrand, _i, _j, _k, _len, _len2, _len3;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -3580,11 +3580,17 @@
         } else {
           ttid = l.id;
         }
+        if (l.suffix !== void 0) {
+          ttrand = l.suffix;
+        } else {
+          ttrand = "";
+        }
         buffer += Templates.itemSlot({
           item: l,
           gear: {},
           gems: [],
           ttid: ttid,
+          ttrand: ttrand,
           desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : ""),
           search: l.name,
           percent: (iEP - minIEP) / maxIEP * 100,

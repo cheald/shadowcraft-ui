@@ -1023,12 +1023,17 @@ class ShadowcraftGear
         ttid = Math.floor(l.id / 1000)
       else
         ttid = l.id
-
+      if l.suffix != undefined 
+        ttrand = l.suffix
+      else
+        ttrand = ""
+       
       buffer += Templates.itemSlot(
         item: l
         gear: {}
         gems: []
         ttid: ttid
+        ttrand: ttrand
         desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" }"
         search: l.name
         percent: (iEP - minIEP) / maxIEP * 100
