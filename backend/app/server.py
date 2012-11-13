@@ -460,7 +460,7 @@ class ShadowcraftComputation:
             out["glyph_ranking"] = calculator.get_glyphs_ranking(input.get("gly", []))
             
             out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
-            out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t12_2pc','rogue_t12_4pc'])
+            out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc'])
 
             trinket_rankings = calculator.get_other_ep(self.trinkets)
             out["trinket_ranking"] = {}
