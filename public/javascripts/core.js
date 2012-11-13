@@ -2600,13 +2600,13 @@
       }
       race = Shadowcraft.Data.options.general.race;
       if (race === "Human" && (mh_type === 7 || mh_type === 4)) {
-        return Shadowcraft._R("expertise_rating") * 3;
+        return Shadowcraft._R("expertise_rating");
       } else if (race === "Gnome" && (mh_type === 7 || mh_type === 15)) {
-        return Shadowcraft._R("expertise_rating") * 3;
+        return Shadowcraft._R("expertise_rating");
       } else if (race === "Dwarf" && (mh_type === 4)) {
-        return Shadowcraft._R("expertise_rating") * 3;
+        return Shadowcraft._R("expertise_rating");
       } else if (race === "Orc" && (mh_type === 0 || mh_type === 13)) {
-        return Shadowcraft._R("expertise_rating") * 3;
+        return Shadowcraft._R("expertise_rating");
       } else {
         return 0;
       }
@@ -2838,7 +2838,8 @@
       if (pendingChanges != null) {
         for (_j = 0, _len2 = pendingChanges.length; _j < _len2; _j++) {
           g = pendingChanges[_j];
-          if (isProfessionalGem(g, profession)) {
+          gem = Gems[g];
+          if (isProfessionalGem(gem, profession)) {
             count++;
           }
         }
@@ -2854,9 +2855,9 @@
         if (isProfessionalGem(gem, 'jewelcrafting') && getProfessionalGemCount('jewelcrafting', pendingChanges, ignoreSlotIndex) >= MAX_JEWELCRAFTING_GEMS) {
           return false;
         }
-        if (isProfessionalGem(gem, 'engineering') && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS) {
-          return false;
-        }
+      }
+      if (gem.slot === "Cogwheel" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS) {
+        return false;
       }
       if (gem.slot === "Hydraulic" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS) {
         return false;
@@ -2885,7 +2886,7 @@
           _ref2 = Shadowcraft.ServerData.GEMS;
           for (j in _ref2) {
             reg = _ref2[j];
-            if (reg.item_id !== gem.item_id && !(((_ref3 = reg.requires) != null ? _ref3.profession : void 0) != null) && reg.name.indexOf(prefix) === 0 && reg.ilvl === gem.ilvl) {
+            if (reg.item_id !== gem.item_id && !(((_ref3 = reg.requires) != null ? _ref3.profession : void 0) != null) && reg.name.indexOf(prefix) === 0 && reg.ilvl === gem.ilvl && reg.slot !== "Cogwheel") {
               equiv_ep = reg.__ep || get_ep(reg, offset);
               equiv_ep;
               gem.__reg_ep = equiv_ep += 0.0001;
@@ -3052,6 +3053,9 @@
       for (_i = 0, _len = copy.length; _i < _len; _i++) {
         gem = copy[_i];
         if (gem.quality === 4 && gem.requires === void 0 && !use_epic_gems) {
+          continue;
+        }
+        if (gem.stats["expertise_rating"] > 0) {
           continue;
         }
         gem.normal_ep = getRegularGemEpValue(gem);

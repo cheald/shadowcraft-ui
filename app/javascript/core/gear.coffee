@@ -260,13 +260,13 @@ class ShadowcraftGear
     race = Shadowcraft.Data.options.general.race
 
     if(race == "Human" && (mh_type == 7 || mh_type == 4))
-      Shadowcraft._R("expertise_rating") * 3
+      Shadowcraft._R("expertise_rating")
     else if(race == "Gnome" && (mh_type == 7 || mh_type == 15))
-      Shadowcraft._R("expertise_rating") * 3
+      Shadowcraft._R("expertise_rating")
     else if(race == "Dwarf" && (mh_type == 4))
-      Shadowcraft._R("expertise_rating") * 3
+      Shadowcraft._R("expertise_rating")
     else if(race == "Orc" && (mh_type == 0 || mh_type == 13))
-      Shadowcraft._R("expertise_rating") * 3
+      Shadowcraft._R("expertise_rating")
     else
       0
 
@@ -447,15 +447,16 @@ class ShadowcraftGear
 
     if pendingChanges?
       for g in pendingChanges
-        count++ if isProfessionalGem(g, profession)
-
+        gem = Gems[g]
+        count++ if isProfessionalGem(gem, profession)
     return count
 
   canUseGem = (gem, gemType, pendingChanges, ignoreSlotIndex) ->
     if gem.requires?.profession?
       return false unless Shadowcraft.Data.options.professions[gem.requires.profession]
       return false if isProfessionalGem(gem, 'jewelcrafting') and getProfessionalGemCount('jewelcrafting', pendingChanges, ignoreSlotIndex) >= MAX_JEWELCRAFTING_GEMS
-      return false if isProfessionalGem(gem, 'engineering') and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
+    
+    return false if gem.slot == "Cogwheel" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
     
     return false if gem.slot == "Hydraulic" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
     return false if (gemType == "Meta" or gemType == "Cogwheel") and gem.slot != gemType
@@ -474,7 +475,7 @@ class ShadowcraftGear
       if gem.name.indexOf(name) >= 0
         prefix = gem.name.replace(name, "")
         for j, reg of Shadowcraft.ServerData.GEMS
-          if reg.item_id != gem.item_id and !reg.requires?.profession? and reg.name.indexOf(prefix) == 0 and reg.ilvl == gem.ilvl
+          if reg.item_id != gem.item_id and !reg.requires?.profession? and reg.name.indexOf(prefix) == 0 and reg.ilvl == gem.ilvl and reg.slot != "Cogwheel"
             equiv_ep = reg.__ep || get_ep(reg, offset)
             equiv_ep
             gem.__reg_ep = equiv_ep += 0.0001
@@ -598,6 +599,7 @@ class ShadowcraftGear
     use_epic_gems = Shadowcraft.Data.options.general.epic_gems == 1
     for gem in copy
       continue if gem.quality == 4 and gem.requires == undefined and not use_epic_gems
+      continue if gem.stats["expertise_rating"] > 0
       gem.normal_ep = getRegularGemEpValue(gem)
       if gem.normal_ep and gem.normal_ep > 1
         list.push gem
