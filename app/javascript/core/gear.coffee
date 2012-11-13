@@ -15,10 +15,6 @@ class ShadowcraftGear
   }
   @FACETS = FACETS
 
-  # Relative value of expertise per hand; both should add up to 1.
-  MH_EXPERTISE_FACTOR = 0.63
-  OH_EXPERTISE_FACTOR = 1 - MH_EXPERTISE_FACTOR
-
   REFORGE_STATS = [
     # {key: "spirit", val: "Spirit"}
     {key: "expertise_rating", val: "Expertise"}
@@ -168,10 +164,10 @@ class ShadowcraftGear
       if item.dps
         if slot == 15
           total += (item.dps * c.mh_ep.mh_dps) + (item.speed * c.mh_speed_ep["mh_" + item.speed])
-          total += racialExpertiseBonus(item) * Weights.expertise_rating
+          total += racialExpertiseBonus(item) * Weights.mh_expertise_rating
         else if slot == 16
           total += (item.dps * c.oh_ep.oh_dps) + (item.speed * c.oh_speed_ep["oh_" + item.speed])
-          total += racialExpertiseBonus(item) * Weights.expertise_rating
+          total += racialExpertiseBonus(item) * Weights.oh_expertise_rating
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem
       else if PROC_ENCHANTS[item.id]
@@ -371,11 +367,11 @@ class ShadowcraftGear
         if mhCap > exist
           usable = mhCap - exist
           usable = num if usable > num
-          total += usable * Weights.expertise_rating * MH_EXPERTISE_FACTOR
+          total += usable * Weights.mh_expertise_rating
         if ohCap > exist
           usable = ohCap - exist
           usable = num if usable > num
-          total += usable * Weights.expertise_rating * OH_EXPERTISE_FACTOR
+          total += usable * Weights.oh_expertise_rating
 
         return total * neg
       when "hit_rating"
