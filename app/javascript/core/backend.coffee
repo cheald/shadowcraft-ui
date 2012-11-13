@@ -90,7 +90,7 @@ class ShadowcraftBackend
         statSummary.haste_rating || 0,
         statSummary.mastery_rating || 0,
         statSummary.resilience_rating || 0,
-        statSummary.pvp_power || 0
+        statSummary.pvp_power_rating || 0
       ],
       gly: glyph_list,
       pro: professions

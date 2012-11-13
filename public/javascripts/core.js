@@ -468,7 +468,7 @@
         },
         spec: data.activeSpec,
         t: talentString,
-        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit_rating || 0, statSummary.hit_rating || 0, statSummary.expertise_rating || 0, statSummary.haste_rating || 0, statSummary.mastery_rating || 0, statSummary.resilience_rating || 0, statSummary.pvp_power || 0],
+        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit_rating || 0, statSummary.hit_rating || 0, statSummary.expertise_rating || 0, statSummary.haste_rating || 0, statSummary.mastery_rating || 0, statSummary.resilience_rating || 0, statSummary.pvp_power_rating || 0],
         gly: glyph_list,
         pro: professions
       };
@@ -2367,7 +2367,7 @@
       mastery_rating: 1.15,
       yellow_hit: 1.79,
       strength: 1.05,
-      pvp_power: 0
+      pvp_power_rating: 0
     };
     ShadowcraftGear.prototype.getWeights = function() {
       return Weights;
@@ -3435,7 +3435,7 @@
       Weights.mh_expertise_rating = source.ep.mh_dodge_exp;
       Weights.oh_expertise_rating = source.ep.oh_dodge_exp;
       Weights.yellow_hit = source.ep.yellow_hit;
-      Weights.pvp_power = source.ep.pvp_power;
+      Weights.pvp_power_rating = source.ep.pvp_power;
       other = {
         mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps,
         offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps
@@ -3622,8 +3622,6 @@
         } else {
           ttrand = "";
         }
-        console.log(iEP + " " + minIEP + " " + maxIEP);
-        console.log((iEP - minIEP) / maxIEP * 100);
         buffer += Templates.itemSlot({
           item: l,
           gear: {},
