@@ -2306,7 +2306,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_REFORGENAME, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_REFORGENAME, TIER14_IDS, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -2353,7 +2353,7 @@
       4894: "swordguard_embroidery"
     };
     ShadowcraftGear.CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886];
-    ShadowcraftGear.TIER14_IDS = [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128];
+    TIER14_IDS = [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128];
     Weights = {
       attack_power: 1,
       agility: 2.66,
@@ -2494,8 +2494,8 @@
           }
         } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
           total += c.meta.chaotic_metagem;
-        } else if (ShadowcraftGear.TIER14_IDS.indexOf(item.id) >= 0) {
-          count = getEquippedSetCount(ShadowcraftGear.TIER14_IDS, item.equip_location);
+        } else if (TIER14_IDS.indexOf(item.id) >= 0) {
+          count = getEquippedSetCount(TIER14_IDS, item.equip_location);
           if (count === 3) {
             total += c["other_ep"]["rogue_t14_4pc"];
           } else if (count === 1) {
@@ -3611,7 +3611,7 @@
         if (l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)) {
           continue;
         }
-        iEP = l.__ep.toFixed(1);
+        iEP = l.__ep;
         if (l.id > 100000) {
           ttid = Math.floor(l.id / 1000);
         } else {
@@ -3622,6 +3622,8 @@
         } else {
           ttrand = "";
         }
+        console.log(iEP + " " + minIEP + " " + maxIEP);
+        console.log((iEP - minIEP) / maxIEP * 100);
         buffer += Templates.itemSlot({
           item: l,
           gear: {},
@@ -3630,8 +3632,8 @@
           ttrand: ttrand,
           desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : ""),
           search: l.name,
-          percent: (iEP - minIEP) / maxIEP * 100,
-          ep: iEP
+          percent: Math.max((iEP - minIEP) / maxIEP * 100, 0.01),
+          ep: iEP.toFixed(1)
         });
       }
       buffer += Templates.itemSlot({

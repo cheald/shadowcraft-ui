@@ -37,7 +37,7 @@ class ShadowcraftGear
     4894: "swordguard_embroidery"
 
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
-  @TIER14_IDS = [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128]
+  TIER14_IDS = [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128]
 
   Weights =
     attack_power: 1
@@ -171,8 +171,8 @@ class ShadowcraftGear
           total += racialExpertiseBonus(item) * Weights.oh_expertise_rating
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem
-      else if ShadowcraftGear.TIER14_IDS.indexOf(item.id) >= 0
-        count = getEquippedSetCount(ShadowcraftGear.TIER14_IDS, item.equip_location)
+      else if TIER14_IDS.indexOf(item.id) >= 0
+        count = getEquippedSetCount(TIER14_IDS, item.equip_location)
         if count == 3
           total += c["other_ep"]["rogue_t14_4pc"]
         else if count == 1
@@ -1037,7 +1037,7 @@ class ShadowcraftGear
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
 
-      iEP = l.__ep.toFixed(1)
+      iEP = l.__ep
 
       if l.id > 100000 # It has a random component
         ttid = Math.floor(l.id / 1000)
@@ -1047,7 +1047,8 @@ class ShadowcraftGear
         ttrand = l.suffix
       else
         ttrand = ""
-       
+      console.log(iEP + " " + minIEP + " " + maxIEP)
+      console.log((iEP - minIEP) / maxIEP * 100)
       buffer += Templates.itemSlot(
         item: l
         gear: {}
@@ -1056,8 +1057,8 @@ class ShadowcraftGear
         ttrand: ttrand
         desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" }"
         search: l.name
-        percent: (iEP - minIEP) / maxIEP * 100
-        ep: iEP
+        percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01
+        ep: iEP.toFixed(1)
       )
 
     buffer += Templates.itemSlot(
