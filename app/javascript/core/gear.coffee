@@ -1047,8 +1047,6 @@ class ShadowcraftGear
         ttrand = l.suffix
       else
         ttrand = ""
-      console.log(iEP + " " + minIEP + " " + maxIEP)
-      console.log((iEP - minIEP) / maxIEP * 100)
       buffer += Templates.itemSlot(
         item: l
         gear: {}
