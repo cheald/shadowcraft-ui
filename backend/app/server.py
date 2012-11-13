@@ -448,7 +448,9 @@ class ShadowcraftComputation:
         out = {}
         try:
             calculator = self.setup(input)
-            out["ep"] = calculator.get_ep()
+            default_ep_stats = ['white_hit', 'yellow_hit', 'str', 'agi', 'haste',
+                'crit', 'mastery', 'dodge_exp', 'spell_hit', 'spell_exp', 'pvp_power', 'ap', 'mh_dodge_exp', 'oh_dodge_exp']
+            out["ep"] = calculator.get_ep(default_ep_stats)
 
             # Compute DPS Breakdown.
             breakdown = calculator.get_dps_breakdown()

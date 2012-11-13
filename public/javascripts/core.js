@@ -2356,6 +2356,8 @@
       spell_hit: 1.3,
       hit_rating: 1.02,
       expertise_rating: 1.51,
+      mh_expertise_rating: 1.0,
+      oh_expertise_rating: 0.51,
       haste_rating: 1.44,
       mastery_rating: 1.15,
       yellow_hit: 1.79,
@@ -3403,6 +3405,8 @@
       Weights.mastery_rating = source.ep.mastery;
       Weights.haste_rating = source.ep.haste;
       Weights.expertise_rating = source.ep.dodge_exp;
+      Weights.mh_expertise_rating = source.ep.mh_dodge_exp;
+      Weights.oh_expertise_rating = source.ep.oh_dodge_exp;
       Weights.yellow_hit = source.ep.yellow_hit;
       Weights.pvp_power = source.ep.pvp_power;
       other = {
@@ -3416,13 +3420,15 @@
         weight = all[key];
         exist = $(".stat#weight_" + key);
         if (exist.length > 0) {
-          exist.find("val").text(weight.toFixed(2));
+          exist.find("val").text(weight.toFixed(3));
         } else {
-          e = $weights.append("<div class='stat' id='weight_" + key + "'><span class='key'>" + (titleize(key)) + "</span><span class='val'>" + (Weights[key].toFixed(2)) + "</span></div>");
+          e = $weights.append("<div class='stat' id='weight_" + key + "'><span class='key'>" + (titleize(key)) + "</span><span class='val'>" + (Weights[key].toFixed(3)) + "</span></div>");
           exist = $(".stat#weight_" + key);
           $.data(exist.get(0), "sortkey", 0);
           if (key === "mainhand_dps" || key === "offhand_dps") {
             $.data(exist.get(0), "sortkey", 1);
+          } else if (key === "mh_expertise_rating" || key === "oh_expertise_rating") {
+            $.data(exist.get(0), "sortkey", 2);
           }
         }
         $.data(exist.get(0), "weight", weight);
