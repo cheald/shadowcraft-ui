@@ -37,6 +37,7 @@ class ShadowcraftGear
     4894: "swordguard_embroidery"
 
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
+  @TIER14_IDS = [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128]
 
   Weights =
     attack_power: 1
@@ -170,6 +171,12 @@ class ShadowcraftGear
           total += racialExpertiseBonus(item) * Weights.oh_expertise_rating
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem
+      else if ShadowcraftGear.TIER14_IDS.indexOf(item.id) >= 0
+        count = getEquippedSetCount(ShadowcraftGear.TIER14_IDS, item.equip_location)
+        if count == 3
+          total += c["other_ep"]["rogue_t14_4pc"]
+        else if count == 1
+          total += c["other_ep"]["rogue_t14_2pc"]
       else if PROC_ENCHANTS[item.id]
         switch slot
           when 14
@@ -414,6 +421,15 @@ class ShadowcraftGear
 
   needsDagger = ->
     Shadowcraft.Data.activeSpec == "a" || Shadowcraft.Data.activeSpec == "b"
+
+  getEquippedSetCount = (setIds, ignoreSlotIndex) ->
+    count = 0
+    for slot in SLOT_ORDER
+      continue if SLOT_INVTYPES[slot] == ignoreSlotIndex
+      gear = Shadowcraft.Data.gear[slot]
+      if gear.item_id in setIds
+        count++
+    return count
 
   isProfessionalGem = (gem, profession) ->
     gem.requires?.profession? and gem.requires.profession == profession

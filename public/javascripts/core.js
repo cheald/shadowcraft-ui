@@ -1,5 +1,11 @@
 (function() {
   var $, $doc, NOOP, ShadowcraftApp, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftDpsGraph, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, ShadowcraftTiniReforgeBackend, Templates, checkForWarnings, deepCopy, flash, formatreforge, hideFlash, json_encode, loadingSnapshot, modal, showPopup, tip, titleize, tooltip, wait;
+  var __indexOf = Array.prototype.indexOf || function(item) {
+    for (var i = 0, l = this.length; i < l; i++) {
+      if (this[i] === item) return i;
+    }
+    return -1;
+  };
   $ = window.jQuery;
   ShadowcraftApp = (function() {
     var RATING_CONVERSIONS, _update;
@@ -2300,7 +2306,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_REFORGENAME, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getEquippedGemCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_REFORGENAME, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -2347,6 +2353,7 @@
       4894: "swordguard_embroidery"
     };
     ShadowcraftGear.CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886];
+    ShadowcraftGear.TIER14_IDS = [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128];
     Weights = {
       attack_power: 1,
       agility: 2.66,
@@ -2463,7 +2470,7 @@
       return null;
     };
     get_ep = function(item, key, slot, ignore) {
-      var c, data, enchant, pre, stat, stats, total, value, weight, weights;
+      var c, count, data, enchant, pre, stat, stats, total, value, weight, weights;
       data = Shadowcraft.Data;
       weights = Weights;
       stats = {};
@@ -2487,6 +2494,13 @@
           }
         } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
           total += c.meta.chaotic_metagem;
+        } else if (ShadowcraftGear.TIER14_IDS.indexOf(item.id) >= 0) {
+          count = getEquippedSetCount(ShadowcraftGear.TIER14_IDS, item.equip_location);
+          if (count === 3) {
+            total += c["other_ep"]["rogue_t14_4pc"];
+          } else if (count === 1) {
+            total += c["other_ep"]["rogue_t14_2pc"];
+          }
         } else if (PROC_ENCHANTS[item.id]) {
           switch (slot) {
             case 14:
@@ -2787,6 +2801,21 @@
     };
     needsDagger = function() {
       return Shadowcraft.Data.activeSpec === "a" || Shadowcraft.Data.activeSpec === "b";
+    };
+    getEquippedSetCount = function(setIds, ignoreSlotIndex) {
+      var count, gear, slot, _i, _len, _ref;
+      count = 0;
+      for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
+        slot = SLOT_ORDER[_i];
+        if (SLOT_INVTYPES[slot] === ignoreSlotIndex) {
+          continue;
+        }
+        gear = Shadowcraft.Data.gear[slot];
+        if (_ref = gear.item_id, __indexOf.call(setIds, _ref) >= 0) {
+          count++;
+        }
+      }
+      return count;
     };
     isProfessionalGem = function(gem, profession) {
       var _ref;
