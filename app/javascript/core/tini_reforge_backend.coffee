@@ -8,6 +8,7 @@ class ShadowcraftTiniReforgeBackend
   #  ENGINE = "http://#{window.location.hostname}/calc"
   ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"]
   ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)]
+  ENGINE_TEST = "http://testreforge.appspot.com/calc" # ONLY FOR TESTING WILL BE REMOVED AGAIN LATER
   REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"]
 
   deferred = null
@@ -16,6 +17,8 @@ class ShadowcraftTiniReforgeBackend
   request: (req) ->
     deferred = $.Deferred()
     wait('Optimizing reforges...')
+    if myip in ['81.170.253.23','81.170.176.12'] # testing only will be removed later
+      ENGINE = ENGINE_TEST
     Shadowcraft.Console.log "Starting reforge optimization...", "gold underline"
     if $.browser.msie and window.XDomainRequest
       @request_via_xdr req

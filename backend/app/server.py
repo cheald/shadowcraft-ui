@@ -399,7 +399,8 @@ class ShadowcraftComputation:
             s[7], # Mastery
             _level,
             s[9], # PvP Power
-            s[8]) # Resilience Rating
+            s[8], # Resilience Rating
+            pvp_target_armor = _opt.get("pvp_target_armor", 10000))
         # ##################################################################################
 
         # Talents

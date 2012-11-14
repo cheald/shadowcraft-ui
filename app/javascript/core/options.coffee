@@ -78,6 +78,7 @@ class ShadowcraftOptions
               options: templateOptions
           when "input"
             template = Templates.input
+            options = {}
         if template
           s.append template($.extend({
             key: key
@@ -149,12 +150,13 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #raidOther", "general", {
-      prepot: {name: "Pre-pot (Virmen's Bite)", 'default': false, datatype: 'bool'}
-      virmens_bite: {name: "Combat potion (Virmen's Bite)", 'default': true, datatype: 'bool'}
-      tricks: {name: "Tricks of the Trade on cooldown", 'default': false, datatype: 'bool'}
-      receive_tricks: {name: "Receiving Tricks on cooldown from another rogue", 'default': false, datatype: 'bool'},
-      stormlash: {name: "Stormlash Totem", desc: "10sec / 5min cooldown", 'default': false, datatype: 'bool'},
-      pvp: {name: "PvP Mode", desc: "This actives the PvP Mode (Not fully supported)", 'default': false, datatype: 'bool'}
+      prepot: {type: "check", name: "Pre-pot (Virmen's Bite)", 'default': false, datatype: 'bool'},
+      virmens_bite: {type: "check", name: "Combat potion (Virmen's Bite)", 'default': true, datatype: 'bool'},
+      tricks: {type: "check", name: "Tricks of the Trade on cooldown", 'default': false, datatype: 'bool'},
+      receive_tricks: {type: "check", name: "Receiving Tricks on cooldown from another rogue", 'default': false, datatype: 'bool'},
+      stormlash: {type: "check", name: "Stormlash Totem", desc: "10sec / 5min cooldown", 'default': false, datatype: 'bool'},
+      pvp: {type: "check", name: "PvP Mode", desc: "This actives the PvP Mode (Not fully supported)", 'default': false, datatype: 'bool'},
+      #pvp_target_armor: {type: "input", name: "bla", desc: "blllaaa", 'default': 10000, datatype: 'integer', min: 3000, max: 99000},
     })
 
     @setup("#settings section.mutilate .settings", "rotation", {

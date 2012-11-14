@@ -1218,6 +1218,7 @@
               break;
             case "input":
               template = Templates.input;
+              options = {};
           }
           if (template) {
             s.append(template($.extend({
@@ -1471,32 +1472,38 @@
       });
       this.setup("#settings #raidOther", "general", {
         prepot: {
+          type: "check",
           name: "Pre-pot (Virmen's Bite)",
           'default': false,
           datatype: 'bool'
         },
         virmens_bite: {
+          type: "check",
           name: "Combat potion (Virmen's Bite)",
           'default': true,
           datatype: 'bool'
         },
         tricks: {
+          type: "check",
           name: "Tricks of the Trade on cooldown",
           'default': false,
           datatype: 'bool'
         },
         receive_tricks: {
+          type: "check",
           name: "Receiving Tricks on cooldown from another rogue",
           'default': false,
           datatype: 'bool'
         },
         stormlash: {
+          type: "check",
           name: "Stormlash Totem",
           desc: "10sec / 5min cooldown",
           'default': false,
           datatype: 'bool'
         },
         pvp: {
+          type: "check",
           name: "PvP Mode",
           desc: "This actives the PvP Mode (Not fully supported)",
           'default': false,
@@ -4106,9 +4113,10 @@
     return ShadowcraftGear;
   })();
   ShadowcraftTiniReforgeBackend = (function() {
-    var ENGINE, ENGINES, REFORGABLE, deferred;
+    var ENGINE, ENGINES, ENGINE_TEST, REFORGABLE, deferred;
     ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"];
     ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
+    ENGINE_TEST = "http://testreforge.appspot.com/calc";
     REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"];
     deferred = null;
     function ShadowcraftTiniReforgeBackend(gear) {
@@ -4117,6 +4125,9 @@
     ShadowcraftTiniReforgeBackend.prototype.request = function(req) {
       deferred = $.Deferred();
       wait('Optimizing reforges...');
+      if (myip === '81.170.253.23' || myip === '81.170.176.12') {
+        ENGINE = ENGINE_TEST;
+      }
       Shadowcraft.Console.log("Starting reforge optimization...", "gold underline");
       if ($.browser.msie && window.XDomainRequest) {
         this.request_via_xdr(req);
