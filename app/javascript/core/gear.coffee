@@ -694,8 +694,10 @@ class ShadowcraftGear
           break
       if gear and gear.reforge != reforge
         item = ItemLookup[gear.item_id]
+        console.log(gear.reforge)
         if reforge == null
-          Shadowcraft.Console.log "Removed reforge from #{item.name}"
+          if gear.reforge
+            Shadowcraft.Console.log "Removed reforge from #{item.name}"
           delete gear.reforge
         else
           from = getReforgeFrom(reforge)
