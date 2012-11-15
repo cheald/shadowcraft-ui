@@ -3178,12 +3178,13 @@
       return gain + loss;
     };
     ShadowcraftGear.prototype.setReforges = function(reforges) {
-      var ItemLookup, amt, from, g, gear, id, item, model, reforge, slot, to, _i, _len;
+      var ItemLookup, amt, from, g, gear, id, item, model, reforge, s, slot, to, _i, _len, _ref;
       model = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       for (id in reforges) {
         reforge = reforges[id];
         gear = null;
+        _ref = id.split("-"), id = _ref[0], s = _ref[1];
         id = parseInt(id, 10);
         reforge = parseInt(reforge, 10);
         if (reforge === 0) {
@@ -3192,7 +3193,7 @@
         for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
           slot = SLOT_ORDER[_i];
           g = model.gear[slot];
-          if (g.item_id === id) {
+          if (g.item_id === id && slot === s) {
             gear = g;
             break;
           }
@@ -4113,10 +4114,9 @@
     return ShadowcraftGear;
   })();
   ShadowcraftTiniReforgeBackend = (function() {
-    var ENGINE, ENGINES, ENGINE_TEST, REFORGABLE, deferred;
+    var ENGINE, ENGINES, REFORGABLE, deferred;
     ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"];
     ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
-    ENGINE_TEST = "http://testreforge.appspot.com/calc";
     REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"];
     deferred = null;
     function ShadowcraftTiniReforgeBackend(gear) {
@@ -4125,9 +4125,6 @@
     ShadowcraftTiniReforgeBackend.prototype.request = function(req) {
       deferred = $.Deferred();
       wait('Optimizing reforges...');
-      if (myip === '81.170.253.23' || myip === '81.170.176.12') {
-        ENGINE = ENGINE_TEST;
-      }
       Shadowcraft.Console.log("Starting reforge optimization...", "gold underline");
       if ($.browser.msie && window.XDomainRequest) {
         this.request_via_xdr(req);
@@ -4179,10 +4176,10 @@
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       f = ShadowcraftGear.FACETS;
       stats = this.gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT);
-      items = _.map(Shadowcraft.Data.gear, function(e) {
+      items = _.map(Shadowcraft.Data.gear, function(e, k) {
         var key, r, val, _ref;
         r = {
-          id: e.item_id
+          id: e.item_id + "-" + k
         };
         if (ItemLookup[e.item_id]) {
           _ref = ItemLookup[e.item_id].stats;

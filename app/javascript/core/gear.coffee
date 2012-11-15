@@ -683,12 +683,13 @@ class ShadowcraftGear
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     for id, reforge of reforges
       gear = null
+      [id, s] = id.split "-"
       id = parseInt(id, 10)
       reforge = parseInt(reforge, 10)
       reforge = null if reforge == 0
       for slot in SLOT_ORDER
         g = model.gear[slot]
-        if g.item_id == id
+        if g.item_id == id and slot == s
           gear = g
           break
       if gear and gear.reforge != reforge
