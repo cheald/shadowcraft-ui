@@ -238,6 +238,9 @@ module WowArmory
       if self.stats.nil? or self.stats.blank?
         self.stats = get_item_stats
       end
+      if self.stats.nil? or self.stats.blank? # wowhead found nothing use armory tooltip
+        self.stats = scan_stats
+      end
     end
 
     SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "hit", "expertise",
@@ -268,6 +271,7 @@ module WowArmory
           end
         end
       end
+      puts stats.inspect
       stats
     end
 
