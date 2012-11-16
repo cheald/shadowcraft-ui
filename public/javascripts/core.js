@@ -2898,7 +2898,7 @@
       if (gem.slot === "Hydraulic" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS) {
         return false;
       }
-      if ((gemType === "Meta" || gemType === "Cogwheel") && gem.slot !== gemType) {
+      if ((gemType === "Meta" || gemType === "Cogwheel" || gemType === "Hydraulic") && gem.slot !== gemType) {
         return false;
       }
       if ((gem.slot === "Meta" || gem.slot === "Cogwheel" || gem.slot === "Hydraulic") && gem.slot !== gemType) {
