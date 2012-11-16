@@ -265,11 +265,11 @@ module WowArmory
           end
         end
 
-        li.text.strip.split(" and ").each do |chunk|
-          scan_str(chunk.strip).each do |stat, val|
-            stats[stat] ||= val
-          end
-        end
+        #li.text.strip.split(" and ").each do |chunk|
+        #  scan_str(chunk.strip).each do |stat, val|
+        #    stats[stat] ||= val
+        #  end
+        #end
       end
       puts stats.inspect
       stats
