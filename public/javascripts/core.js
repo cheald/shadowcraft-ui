@@ -3338,7 +3338,7 @@
               opt.ttid = item.id;
             }
           }
-          opt.ttrand = item.suffix;
+          opt.ttrand = item ? item.suffix : null;
           opt.ep = item ? get_ep(item, null, i).toFixed(1) : 0;
           opt.slot = i + '';
           opt.gems = gems;
