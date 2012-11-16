@@ -145,10 +145,10 @@ class Item
     populate_from_wowhead "http://www.wowhead.com/items=16.4", :is_glyph => true
   end
 
-  def self.single_import(id)
+  def self.single_import(id, random_suffix = nil)
     options = {}
     begin
-      Item.find_or_create_by options.merge(:remote_id => id)
+      Item.find_or_create_by options.merge(:remote_id => id, :random_suffix => random_suffix)
     rescue WowArmory::MissingDocument => e
       puts id
       puts e.message
