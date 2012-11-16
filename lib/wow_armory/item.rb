@@ -120,30 +120,17 @@ module WowArmory
 
     def populate_random_suffix_item
       row = random_suffixes[random_suffix.abs.to_s]
-      Rails.logger.debug row.inspect
       base = rand_prop_points[self.ilevel.to_s]
-      Rails.logger.debug base.inspect
 
       self.stats = {}
       4.times do |i|
-        #enchant = row[3+i]
-        #scal = row[8+i].to_f / 10000.0
-        #if enchant != "0"
-        #  stat = item_enchants[enchant][11].to_i
-        #  self.stats[STAT_LOOKUP[stat]] = (scal * self.scalar).floor
-        #end
         enchantid = row[3+i]
         multiplier = row[8+i].to_f / 10000.0
-        Rails.logger.debug slot_index(equip_location).inspect
         basevalue = base[1+quality_index(self.quality)*5+slot_index(equip_location)]
-        Rails.logger.debug basevalue.inspect
         if enchantid != "0"
-          Rails.logger.debug item_enchants[enchantid].inspect
           stat = item_enchants[enchantid][8].to_i
-          Rails.logger.debug stat
           self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).floor
         end
-        Rails.logger.debug self.stats.inspect
       end
     end
 
@@ -230,15 +217,17 @@ module WowArmory
         populate_weapon_stats!
       end
 
-      Rails.logger.debug "Populating with random suffix: #{random_suffix.inspect}"
+      #Rails.logger.debug "Populating with random suffix: #{random_suffix.inspect}"
       unless self.random_suffix.nil?
+        #puts "populate random items"
+        #puts self.random_suffix
         populate_random_suffix_item
       end
-
+      
       if self.stats.nil? or self.stats.blank?
         self.stats = get_item_stats
       end
-      if self.stats.nil? or self.stats.blank? # wowhead found nothing use armory tooltip
+      if self.stats.nil? or self.stats.blank? # wowhead found nothing, try armory tooltip
         self.stats = scan_stats
       end
     end
@@ -265,13 +254,12 @@ module WowArmory
           end
         end
 
-        #li.text.strip.split(" and ").each do |chunk|
-        #  scan_str(chunk.strip).each do |stat, val|
-        #    stats[stat] ||= val
-        #  end
-        #end
+        li.text.strip.split(" and ").each do |chunk|
+          scan_str(chunk.strip).each do |stat, val|
+            stats[stat] ||= val
+          end
+        end
       end
-      puts stats.inspect
       stats
     end
 
@@ -319,13 +307,13 @@ module WowArmory
 
     def slot_index(slot)
       case slot
-      when 1, 5, 7 # missing twohander id
+      when 1, 5, 7
         return 0
-      when 3, 10, 6, 8
+      when 3, 6, 8, 10
         return 1
-      when 9, 2, 16, 11 # missing offhand id
-        return 2
-      when 13 # mainhand id missing
+      when 2, 9, 11, 16, 22
+        return 2   
+      when 21
         return 3
       when 15
         return 4

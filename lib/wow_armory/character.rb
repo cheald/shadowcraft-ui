@@ -75,7 +75,6 @@ module WowArmory
       end
 
       self.professions = @json["professions"]["primary"].map do |prof|
-        puts prof.inspect
         PROF_MAP[prof["id"]]
       end
     end
