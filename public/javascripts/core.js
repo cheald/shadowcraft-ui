@@ -3200,7 +3200,6 @@
         }
         if (gear && gear.reforge !== reforge) {
           item = ItemLookup[gear.item_id];
-          console.log(gear.reforge);
           if (reforge === null) {
             if (gear.reforge) {
               Shadowcraft.Console.log("Removed reforge from " + item.name);
@@ -3330,6 +3329,7 @@
           if (enchant && enchant.desc === "") {
             enchant.desc = enchant.name;
           }
+          opt = {};
           opt.item = item;
           if (item) {
             if (item.id > 100000) {

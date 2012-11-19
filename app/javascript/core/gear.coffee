@@ -799,6 +799,7 @@ class ShadowcraftGear
         if enchant and enchant.desc == ""
           enchant.desc = enchant.name
 
+        opt = {}
         opt.item = item
         if item
           if item.id > 100000 # It has a random component
