@@ -608,7 +608,7 @@
           open: function(event, ui) {
             var d, sn, t;
             sn = $("#snapshotName");
-            t = "";
+            t = ShadowcraftTalents.GetActiveSpecName();
             d = new Date();
             t += " " + (d.getFullYear()) + "-" + (d.getMonth() + 1) + "-" + (d.getDate());
             return sn.val(t);
@@ -1748,8 +1748,13 @@
         spec: "b"
       }
     };
-    ShadowcraftTalents.GetPrimaryTreeName = function() {
-      return CHARACTER_SPEC;
+    ShadowcraftTalents.GetActiveSpecName = function() {
+      var activeSpec;
+      activeSpec = getSpec();
+      if (activeSpec) {
+        return getSpecName(activeSpec);
+      }
+      return "";
     };
     talentMap = "0zMcmVokRsaqbdrfwihuGINALpTjnyxtgevElBCDFHJKOPQSUWXYZ123456789";
     ShadowcraftTalents.encodeTalents = function(s) {
@@ -1885,6 +1890,8 @@
       return data.activeSpec = str;
     };
     getSpec = function() {
+      var data;
+      data = Shadowcraft.Data;
       return data.activeSpec;
     };
     applyTalentToButton = function(button, dir, force, skipUpdate) {

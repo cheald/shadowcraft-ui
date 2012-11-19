@@ -18,8 +18,11 @@ class ShadowcraftTalents
       glyphs: []
       spec: "b"
 
-  @GetPrimaryTreeName = ->
-    CHARACTER_SPEC
+  @GetActiveSpecName = ->
+    activeSpec = getSpec()
+    if activeSpec
+      return getSpecName(activeSpec)
+    return ""
   
   # not used anymore
   talentMap = "0zMcmVokRsaqbdrfwihuGINALpTjnyxtgevElBCDFHJKOPQSUWXYZ123456789"
@@ -123,6 +126,7 @@ class ShadowcraftTalents
     data.activeSpec = str
 
   getSpec = ->
+    data = Shadowcraft.Data
     return data.activeSpec
 
   applyTalentToButton = (button, dir, force, skipUpdate) ->

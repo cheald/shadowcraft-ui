@@ -27,7 +27,7 @@ class ShadowcraftHistory
         buttons: buttons,
         open: (event, ui) ->
           sn = $("#snapshotName")
-          t = ""
+          t = ShadowcraftTalents.GetActiveSpecName()
           d = new Date()
           t += " #{d.getFullYear()}-#{d.getMonth()+1}-#{d.getDate()}"
           sn.val(t)
