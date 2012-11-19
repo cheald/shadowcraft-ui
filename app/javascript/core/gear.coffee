@@ -171,12 +171,6 @@ class ShadowcraftGear
           total += racialExpertiseBonus(item) * Weights.oh_expertise_rating
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem
-      else if TIER14_IDS.indexOf(item.id) >= 0
-        count = getEquippedSetCount(TIER14_IDS, item.equip_location)
-        if count == 3
-          total += c["other_ep"]["rogue_t14_4pc"]
-        else if count == 1
-          total += c["other_ep"]["rogue_t14_2pc"]
       else if PROC_ENCHANTS[item.id]
         switch slot
           when 14
@@ -421,6 +415,16 @@ class ShadowcraftGear
 
   needsDagger = ->
     Shadowcraft.Data.activeSpec == "a" || Shadowcraft.Data.activeSpec == "b"
+
+  setBonusEP = (count) ->
+    c = Shadowcraft.lastCalculation
+    total = 0
+    if c
+      if count == 3
+        total += c["other_ep"]["rogue_t14_4pc"]
+      else if count == 1
+        total += c["other_ep"]["rogue_t14_2pc"]
+    total
 
   getEquippedSetCount = (setIds, ignoreSlotIndex) ->
     count = 0
@@ -1001,6 +1005,11 @@ class ShadowcraftGear
     fudgeOffsets(reforge_offset)
 
     epSort(GemList) # Needed for gemming recommendations
+
+    # set bonus
+    # TODO make this universal so other sets can be used in same fashion
+    setCount = getEquippedSetCount(TIER14_IDS, equip_location)
+    setBonEP = setBonusEP(setCount)
     for l in loc
       l.__gemRec = getGemmingRecommendation(GemList, l, true, null, gem_offset)
       rec = recommendReforge(l, reforge_offset)
@@ -1008,10 +1017,14 @@ class ShadowcraftGear
         l.__reforgeEP = reforgeEp(rec, l, reforge_offset)
       else
         l.__reforgeEP = 0
+      if TIER14_IDS.indexOf(l.id) >= 0
+        l.__setBonusEP = setBonEP
+      else
+        l.__setBonusEP = 0
 
       l.__gearEP = get_ep(l, null, slot, gear_offset)
       l.__gearEP = 0 if isNaN l.__gearEP
-      l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP
+      l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP + l.__setBonusEP
 
     loc.sort(__epSort)
     maxIEP = 1
@@ -1056,7 +1069,7 @@ class ShadowcraftGear
         gems: []
         ttid: ttid
         ttrand: ttrand
-        desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" }"
+        desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" } #{if l.__setBonusEP != 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
         search: l.name
         percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01
         ep: iEP.toFixed(1)

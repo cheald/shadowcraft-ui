@@ -2313,7 +2313,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_REFORGENAME, TIER14_IDS, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_REFORGENAME, TIER14_IDS, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -2477,7 +2477,7 @@
       return null;
     };
     get_ep = function(item, key, slot, ignore) {
-      var c, count, data, enchant, pre, stat, stats, total, value, weight, weights;
+      var c, data, enchant, pre, stat, stats, total, value, weight, weights;
       data = Shadowcraft.Data;
       weights = Weights;
       stats = {};
@@ -2501,13 +2501,6 @@
           }
         } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
           total += c.meta.chaotic_metagem;
-        } else if (TIER14_IDS.indexOf(item.id) >= 0) {
-          count = getEquippedSetCount(TIER14_IDS, item.equip_location);
-          if (count === 3) {
-            total += c["other_ep"]["rogue_t14_4pc"];
-          } else if (count === 1) {
-            total += c["other_ep"]["rogue_t14_2pc"];
-          }
         } else if (PROC_ENCHANTS[item.id]) {
           switch (slot) {
             case 14:
@@ -2808,6 +2801,19 @@
     };
     needsDagger = function() {
       return Shadowcraft.Data.activeSpec === "a" || Shadowcraft.Data.activeSpec === "b";
+    };
+    setBonusEP = function(count) {
+      var c, total;
+      c = Shadowcraft.lastCalculation;
+      total = 0;
+      if (c) {
+        if (count === 3) {
+          total += c["other_ep"]["rogue_t14_4pc"];
+        } else if (count === 1) {
+          total += c["other_ep"]["rogue_t14_2pc"];
+        }
+      }
+      return total;
     };
     getEquippedSetCount = function(setIds, ignoreSlotIndex) {
       var count, gear, slot, _i, _len, _ref;
@@ -3539,7 +3545,7 @@
       }
     };
     clickSlotName = function() {
-      var $slot, GemList, buf, buffer, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, maxIEP, minIEP, rec, reforge_offset, requireDagger, selected_id, slot, ttid, ttrand, _i, _j, _k, _len, _len2, _len3;
+      var $slot, GemList, buf, buffer, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, maxIEP, minIEP, rec, reforge_offset, requireDagger, selected_id, setBonEP, setCount, slot, ttid, ttrand, _i, _j, _k, _len, _len2, _len3;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -3554,6 +3560,8 @@
       gem_offset = statOffset(gear[slot], FACETS.GEMS);
       fudgeOffsets(reforge_offset);
       epSort(GemList);
+      setCount = getEquippedSetCount(TIER14_IDS, equip_location);
+      setBonEP = setBonusEP(setCount);
       for (_i = 0, _len = loc.length; _i < _len; _i++) {
         l = loc[_i];
         l.__gemRec = getGemmingRecommendation(GemList, l, true, null, gem_offset);
@@ -3563,11 +3571,16 @@
         } else {
           l.__reforgeEP = 0;
         }
+        if (TIER14_IDS.indexOf(l.id) >= 0) {
+          l.__setBonusEP = setBonEP;
+        } else {
+          l.__setBonusEP = 0;
+        }
         l.__gearEP = get_ep(l, null, slot, gear_offset);
         if (isNaN(l.__gearEP)) {
           l.__gearEP = 0;
         }
-        l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP;
+        l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP + l.__setBonusEP;
       }
       loc.sort(__epSort);
       maxIEP = 1;
@@ -3639,7 +3652,7 @@
           gems: [],
           ttid: ttid,
           ttrand: ttrand,
-          desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : ""),
+          desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : "") + " " + (l.__setBonusEP !== 0 ? "/ " + l.__setBonusEP.toFixed(1) + " set" : "") + " ",
           search: l.name,
           percent: Math.max((iEP - minIEP) / maxIEP * 100, 0.01),
           ep: iEP.toFixed(1)
