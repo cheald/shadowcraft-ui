@@ -3681,6 +3681,9 @@
         if (enchant && !enchant.desc) {
           enchant.desc = statsToDesc(enchant);
         }
+        if (enchant && enchant.desc === "") {
+          enchant.desc = enchant.name;
+        }
         eEP = enchant.__ep;
         if (eEP < 1) {
           continue;

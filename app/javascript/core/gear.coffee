@@ -1096,6 +1096,7 @@ class ShadowcraftGear
 
     for enchant in enchants
       enchant.desc = statsToDesc(enchant) if enchant && !enchant.desc
+      enchant.desc = enchant.name if enchant and enchant.desc == ""
       eEP = enchant.__ep
       continue if eEP < 1
       buffer += Templates.itemSlot(
