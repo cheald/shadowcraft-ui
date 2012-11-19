@@ -694,7 +694,6 @@ class ShadowcraftGear
           break
       if gear and gear.reforge != reforge
         item = ItemLookup[gear.item_id]
-        console.log(gear.reforge)
         if reforge == null
           if gear.reforge
             Shadowcraft.Console.log "Removed reforge from #{item.name}"
@@ -1168,6 +1167,13 @@ class ShadowcraftGear
         search: gem.name + " " + statsToDesc(gem) + " " + gem.slot
         percent: gEP / max * 100
         desc: desc
+    
+    buffer += Templates.itemSlot(
+      item: {name: "[No gem]"}
+      desc: "Clear this gem"
+      percent: 0
+      ep: 0
+    )
 
     $altslots.get(0).innerHTML = buffer
     $altslots.find(".slot[id='" + selected_id + "']").addClass("active")
@@ -1345,8 +1351,12 @@ class ShadowcraftGear
 
         else if update == "gem"
           item_id = parseInt($this.attr("id"), 10)
+          item_id = if not isNaN(item_id) then item_id else null
           gem_id = $.data(document.body, "gem-slot")
-          Shadowcraft.Console.log("Regemming " + ItemLookup[data.gear[slot].item_id].name + " socket " + (gem_id + 1) + " to " + Gems[item_id].name)
+          if item_id?
+            Shadowcraft.Console.log("Regemming " + ItemLookup[data.gear[slot].item_id].name + " socket " + (gem_id + 1) + " to " + Gems[item_id].name)
+          else
+            Shadowcraft.Console.log("Removing Gem from " + ItemLookup[data.gear[slot].item_id].name + " socket " + (gem_id + 1))
           data.gear[slot]["g" + gem_id] = item_id
         Shadowcraft.update()
         app.updateDisplay()

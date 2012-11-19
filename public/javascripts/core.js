@@ -3760,6 +3760,14 @@
           desc: desc
         });
       }
+      buffer += Templates.itemSlot({
+        item: {
+          name: "[No gem]"
+        },
+        desc: "Clear this gem",
+        percent: 0,
+        ep: 0
+      });
       $altslots.get(0).innerHTML = buffer;
       $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
       showPopup($popup);
@@ -3942,8 +3950,13 @@
             }
           } else if (update === "gem") {
             item_id = parseInt($this.attr("id"), 10);
+            item_id = !isNaN(item_id) ? item_id : null;
             gem_id = $.data(document.body, "gem-slot");
-            Shadowcraft.Console.log("Regemming " + ItemLookup[data.gear[slot].item_id].name + " socket " + (gem_id + 1) + " to " + Gems[item_id].name);
+            if (item_id != null) {
+              Shadowcraft.Console.log("Regemming " + ItemLookup[data.gear[slot].item_id].name + " socket " + (gem_id + 1) + " to " + Gems[item_id].name);
+            } else {
+              Shadowcraft.Console.log("Removing Gem from " + ItemLookup[data.gear[slot].item_id].name + " socket " + (gem_id + 1));
+            }
             data.gear[slot]["g" + gem_id] = item_id;
           }
           Shadowcraft.update();
