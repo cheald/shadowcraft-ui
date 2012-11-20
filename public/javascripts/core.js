@@ -63,10 +63,30 @@
     ShadowcraftApp.prototype.setupLabels = function(selector) {
       selector || (selector = document);
       selector = $(selector);
-      selector.find('.label_check').removeClass('c_on');
-      selector.find('.label_check input:checked').parent().addClass('c_on');
-      selector.find('.label_radio').removeClass('r_on');
-      return selector.find('.label_radio input:checked').parent().addClass('r_on');
+      selector.find('.label_check input:checkbox').each(function() {
+        if ($(this).is(":checked")) {
+          $(this).parent().addClass('c_on');
+        } else {
+          $(this).parent().removeClass('c_on');
+        }
+        if ($(this).val() === "true") {
+          return $(this).parent().addClass('c_on');
+        } else {
+          return $(this).parent().removeClass('c_on');
+        }
+      });
+      return selector.find('.label_radio input:checkbox').each(function() {
+        if ($(this).is(":checked")) {
+          $(this).parent().addClass('c_on');
+        } else {
+          $(this).parent().removeClass('c_on');
+        }
+        if ($(this).val() === "true") {
+          return $(this).parent().addClass('c_on');
+        } else {
+          return $(this).parent().removeClass('c_on');
+        }
+      });
     };
     ShadowcraftApp.prototype.commonInit = function() {
       $("button, input:submit, .button").button();
@@ -1236,6 +1256,10 @@
         }
         switch (inputType) {
           case "check":
+            exist.val(val);
+            if (!val) {
+              val === "";
+            }
             exist.attr("checked", val);
             break;
           case "select":
@@ -1532,6 +1556,7 @@
           max: 5
         },
         prioritize_rupture_uptime_non_execute: {
+          type: "check",
           name: "Prioritize Rupture (>35%)",
           right: true,
           desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate",
@@ -1539,6 +1564,7 @@
           datatype: 'bool'
         },
         prioritize_rupture_uptime_execute: {
+          type: "check",
           name: "Prioritize Rupture (<35%)",
           right: true,
           desc: "Prioritize Rupture over Envenom when your CP builder is Dispatch",
@@ -1570,6 +1596,7 @@
       });
       this.setup("#settings section.combat .settings", "rotation", {
         use_rupture: {
+          type: "check",
           name: "Use Rupture?",
           right: true,
           "default": true
@@ -1585,12 +1612,14 @@
           datatype: 'string'
         },
         revealing_strike_pooling: {
+          type: "check",
           name: "Pool for Revealing Strike",
           right: true,
           "default": true,
           datatype: 'bool'
         },
         blade_flurry: {
+          type: "check",
           name: "Blade Flurry",
           right: true,
           desc: "Use Blade Flurry",
@@ -1603,7 +1632,8 @@
           options: {
             'sinister_strike': "Sinister Strike",
             'revealing_strike': "Revealing Strike",
-            'ambush': "Ambush"
+            'ambush': "Ambush",
+            'garrote': "Garrote"
           },
           'default': 'sinister_strike',
           datatype: 'string'

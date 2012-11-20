@@ -95,6 +95,9 @@ class ShadowcraftOptions
 
       switch inputType
         when "check"
+          exist.val(val)
+          if not val 
+            val == "" 
           exist.attr("checked", val)
         when "select", "input"
           exist.val(val)
@@ -162,17 +165,17 @@ class ShadowcraftOptions
     @setup("#settings section.mutilate .settings", "rotation", {
       min_envenom_size_non_execute: {type: "select", name: "Min CP/Envenom > 35%", options: [5,4,3,2,1], 'default': 4, desc: "CP for Envenom when using Mutilate", datatype: 'integer', min: 1, max: 5}
       min_envenom_size_execute: {type: "select", name: "Min CP/Envenom < 35%", options: [5,4,3,2,1], 'default': 5, desc: "CP for Envenom when using Dispatch", datatype: 'integer', min: 1, max: 5}
-      prioritize_rupture_uptime_non_execute: {name: "Prioritize Rupture (>35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate", default: true, datatype: 'bool'}
-      prioritize_rupture_uptime_execute: {name: "Prioritize Rupture (<35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Dispatch", default: true, datatype: 'bool'}
+      prioritize_rupture_uptime_non_execute: {type: "check", name: "Prioritize Rupture (>35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate", default: true, datatype: 'bool'}
+      prioritize_rupture_uptime_execute: {type: "check", name: "Prioritize Rupture (<35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Dispatch", default: true, datatype: 'bool'}
       opener_name_assassination: {type: "select", name: "Opener Name", options: {'mutilate': "Mutilate", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'mutilate', datatype: 'string'}
       opener_use_assassination: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })
 
     @setup("#settings section.combat .settings", "rotation", {
-      use_rupture: {name: "Use Rupture?", right: true, default: true}
+      use_rupture: {type: "check", name: "Use Rupture?", right: true, default: true}
       ksp_immediately: {type: "select", name: "Killing Spree", options: {'true': "Killing Spree on cooldown", 'false': "Wait for Bandit's Guile before using Killing Spree"}, 'default': 'true', datatype: 'string'}
-      revealing_strike_pooling: {name: "Pool for Revealing Strike", right: true, default: true, datatype: 'bool'}
-      blade_flurry: {name: "Blade Flurry", right: true, desc: "Use Blade Flurry", default: false, datatype: 'bool'}
+      revealing_strike_pooling: {type: "check", name: "Pool for Revealing Strike", right: true, default: true, datatype: 'bool'}
+      blade_flurry: {type: "check", name: "Blade Flurry", right: true, desc: "Use Blade Flurry", default: false, datatype: 'bool'}
       opener_name_combat: {type: "select", name: "Opener Name", options: {'sinister_strike': "Sinister Strike", 'revealing_strike': "Revealing Strike", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'sinister_strike', datatype: 'string'}
       opener_use_combat: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })
