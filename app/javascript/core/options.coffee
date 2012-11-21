@@ -96,8 +96,8 @@ class ShadowcraftOptions
       switch inputType
         when "check"
           exist.val(val)
-          if not val 
-            val == "" 
+          if not val
+            val == ""
           exist.attr("checked", val)
         when "select", "input"
           exist.val(val)
@@ -201,6 +201,10 @@ class ShadowcraftOptions
     val = enforceBounds(cast(val, dtype), min, max)
     if $this.val() != val
       $this.val(val)
+    if inputType == "check"
+      if not val
+        val == ""
+      $this.attr("checked", val)
 
     data.options[ns][name] = val
     Shadowcraft.Options.trigger("update", ns + "." + name, val)
@@ -208,7 +212,7 @@ class ShadowcraftOptions
 
   changeCheck = ->
     $this = $(this)
-    changeOption($this, "check", $this.is(":checked"))
+    changeOption($this, "check", this.is(":checked"))
     Shadowcraft.setupLabels("#settings")
 
   changeSelect = ->
