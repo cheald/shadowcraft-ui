@@ -285,7 +285,7 @@ class ShadowcraftGear
       expertise += racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
     else if (hand == "off") and data.gear[16] and data.gear[16].item_id
       expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id])
-    return DEFAULT_BOSS_DODGE - (expertise / Shadowcraft._R("expertise_rating") * 0.25)
+    return DEFAULT_BOSS_DODGE - expertise / Shadowcraft._R("expertise_rating")
 
   getHitEP = ->
     yellowHitCap = Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating")

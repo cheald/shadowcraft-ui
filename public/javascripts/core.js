@@ -2667,7 +2667,7 @@
       } else if ((hand === "off") && data.gear[16] && data.gear[16].item_id) {
         expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id]);
       }
-      return DEFAULT_BOSS_DODGE - (expertise / Shadowcraft._R("expertise_rating") * 0.25);
+      return DEFAULT_BOSS_DODGE - expertise / Shadowcraft._R("expertise_rating");
     };
     getHitEP = function() {
       var exist, spellHitCap, whiteHitCap, yellowHitCap;
