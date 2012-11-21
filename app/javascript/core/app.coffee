@@ -47,24 +47,10 @@ class ShadowcraftApp
     selector ||= document
     selector = $(selector)
     selector.find('.label_check input:checkbox').each ->
-      if $(this).is(":checked")
-        $(this).parent().addClass 'c_on'
-      else
-        $(this).parent().removeClass 'c_on'
-      if $(this).val() == "true"
-        $(this).parent().addClass 'c_on'
-      else
-         $(this).parent().removeClass 'c_on'
-    # label_radio is untested because never used
-    selector.find('.label_radio input:checkbox').each ->
-      if $(this).is(":checked")
-        $(this).parent().addClass 'c_on'
-      else
-        $(this).parent().removeClass 'c_on'
-      if $(this).val() == "true"
-        $(this).parent().addClass 'c_on'
-      else
-         $(this).parent().removeClass 'c_on'
+      $(this).parent()[(if $(this).val() == "true" or $(this).is(":checked") then "add" else "remove")+"Class"] 'c_on'
+    selector.find('.label_radio').removeClass 'r_on'
+    selector.find('.label_radio input:checked').parent().addClass 'r_on'
+
 
 
   commonInit: ->

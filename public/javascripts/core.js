@@ -64,29 +64,10 @@
       selector || (selector = document);
       selector = $(selector);
       selector.find('.label_check input:checkbox').each(function() {
-        if ($(this).is(":checked")) {
-          $(this).parent().addClass('c_on');
-        } else {
-          $(this).parent().removeClass('c_on');
-        }
-        if ($(this).val() === "true") {
-          return $(this).parent().addClass('c_on');
-        } else {
-          return $(this).parent().removeClass('c_on');
-        }
+        return $(this).parent()[($(this).val() === "true" || $(this).is(":checked") ? "add" : "remove") + "Class"]('c_on');
       });
-      return selector.find('.label_radio input:checkbox').each(function() {
-        if ($(this).is(":checked")) {
-          $(this).parent().addClass('c_on');
-        } else {
-          $(this).parent().removeClass('c_on');
-        }
-        if ($(this).val() === "true") {
-          return $(this).parent().addClass('c_on');
-        } else {
-          return $(this).parent().removeClass('c_on');
-        }
-      });
+      selector.find('.label_radio').removeClass('r_on');
+      return selector.find('.label_radio input:checked').parent().addClass('r_on');
     };
     ShadowcraftApp.prototype.commonInit = function() {
       $("button, input:submit, .button").button();
