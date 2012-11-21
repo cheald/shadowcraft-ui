@@ -92,13 +92,11 @@ class ShadowcraftOptions
         $.data(e0, "datatype", opt.datatype)
         $.data(e0, "min", opt.min)
         $.data(e0, "max", opt.max)
-
+      
       switch inputType
         when "check"
-          exist.val(val)
-          if not val
-            val == ""
           exist.attr("checked", val)
+          exist.val(val)
         when "select", "input"
           exist.val(val)
 
@@ -202,8 +200,6 @@ class ShadowcraftOptions
     if $this.val() != val
       $this.val(val)
     if inputType == "check"
-      if not val
-        val == ""
       $this.attr("checked", val)
 
     data.options[ns][name] = val
@@ -212,7 +208,7 @@ class ShadowcraftOptions
 
   changeCheck = ->
     $this = $(this)
-    changeOption($this, "check", this.is(":checked"))
+    changeOption($this, "check", not $this.attr("checked")?)
     Shadowcraft.setupLabels("#settings")
 
   changeSelect = ->

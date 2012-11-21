@@ -64,16 +64,7 @@
       selector || (selector = document);
       selector = $(selector);
       selector.find('.label_check input:checkbox').each(function() {
-        if ($(this).is(":checked")) {
-          $(this).parent().addClass('c_on');
-        } else {
-          $(this).parent().removeClass('c_on');
-        }
-        if ($(this).val() === "true") {
-          return $(this).parent().addClass('c_on');
-        } else {
-          return $(this).parent().removeClass('c_on');
-        }
+        return $(this).parent()[(($(this).attr("checked") != null) || $(this).val() === "true" ? "add" : "remove") + "Class"]('c_on');
       });
       selector.find('.label_radio').removeClass('r_on');
       return selector.find('.label_radio input:checked').parent().addClass('r_on');
@@ -1246,11 +1237,8 @@
         }
         switch (inputType) {
           case "check":
-            exist.val(val);
-            if (!val) {
-              val === "";
-            }
             exist.attr("checked", val);
+            exist.val(val);
             break;
           case "select":
           case "input":
@@ -1694,9 +1682,6 @@
         $this.val(val);
       }
       if (inputType === "check") {
-        if (!val) {
-          val === "";
-        }
         $this.attr("checked", val);
       }
       data.options[ns][name] = val;
@@ -1706,7 +1691,7 @@
     changeCheck = function() {
       var $this;
       $this = $(this);
-      changeOption($this, "check", this.is(":checked"));
+      changeOption($this, "check", !($this.attr("checked") != null));
       return Shadowcraft.setupLabels("#settings");
     };
     changeSelect = function() {
