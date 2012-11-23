@@ -3995,7 +3995,7 @@
           val = scale[weight];
           stats.push("" + weight + "=" + val);
         }
-        name = "Rogue: " + ShadowcraftTalents.GetPrimaryTreeName();
+        name = "Rogue: " + ShadowcraftTalents.GetActiveSpecName();
         pawnstr = "(Pawn:v1:\"" + name + "\":" + (stats.join(",")) + ")";
         $("#generalDialog").html("<textarea style='width: 450px; height: 300px;'>" + pawnstr + "</textarea>");
         $("#generalDialog").dialog({

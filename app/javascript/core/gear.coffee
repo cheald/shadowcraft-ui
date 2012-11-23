@@ -1375,7 +1375,7 @@ class ShadowcraftGear
       stats = []
       for weight, val of scale
         stats.push "#{weight}=#{val}"
-      name = "Rogue: " + ShadowcraftTalents.GetPrimaryTreeName()
+      name = "Rogue: " + ShadowcraftTalents.GetActiveSpecName()
       pawnstr = "(Pawn:v1:\"#{name}\":#{stats.join(",")})"
       $("#generalDialog").html("<textarea style='width: 450px; height: 300px;'>#{pawnstr}</textarea>")
       $("#generalDialog").dialog({ modal: true, width: 500, title: "Pawn Import String" })
