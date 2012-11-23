@@ -63,7 +63,8 @@
       for(var i = 0; i < R.GEMS.length; i++) {
         var g = R.GEMS[i];
         expandItem(g, gStatMap);
-        g.Prismatic = true;
+        if(g.slot != "Meta" && g.slot != "Hydraulic" && g.slot != "Cogwheel")
+            g.Prismatic = true;
         switch(g.slot) {
           case "Blue":
             g.Blue = true; break;
@@ -80,7 +81,9 @@
           case "Prismatic":
             g.Red = true; g.Blue = true; g.Yellow = true; break;
           case "Cogwheel":
-            g.Red = true; g.Blue = true; g.Yellow = true; break;
+            g.Cogwheel = true; break;
+          case "Hydraulic":
+            g.Hydraulic = true; break;
           case "Meta":
             g.Meta = true; break;
         }

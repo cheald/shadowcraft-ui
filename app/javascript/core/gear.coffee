@@ -27,6 +27,7 @@ class ShadowcraftGear
   @REFORGABLE = REFORGABLE
   REFORGE_CONST = 112
   SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"]
+  SLOT_ORDER_OPTIMIZE_GEMS = ["0", "1", "2", "14", "4", "6", "7", "10", "11", "12", "13", "15", "16", "5", "8", "9"]
   SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13"]]
   PROC_ENCHANTS =
     4099: "landslide"
@@ -489,15 +490,21 @@ class ShadowcraftGear
     return equiv_ep unless gem.requires?.profession?
     return gem.__reg_ep if gem.__reg_ep
 
+    bestGem = getBestNormalGem()
+    console.log bestGem
     for name in JC_ONLY_GEMS
       if gem.name.indexOf(name) >= 0
-        prefix = gem.name.replace(name, "")
-        for j, reg of Shadowcraft.ServerData.GEMS
-          if reg.item_id != gem.item_id and !reg.requires?.profession? and reg.name.indexOf(prefix) == 0 and reg.ilvl == gem.ilvl and reg.slot != "Cogwheel"
-            equiv_ep = reg.__ep || get_ep(reg, offset)
-            equiv_ep
-            gem.__reg_ep = equiv_ep += 0.0001
-            break
+        if bestGem
+          equiv_ep = bestGem.__color_ep || get_ep(bestGem, offset)
+          equiv_ep
+          gem.__reg_ep = equiv_ep += 0.0001
+        #prefix = gem.name.replace(name, "")
+        #for j, reg of Shadowcraft.ServerData.GEMS
+        #  if reg.item_id != gem.item_id and !reg.requires?.profession? and reg.name.indexOf(prefix) == 0 and reg.ilvl == gem.ilvl and reg.slot != "Cogwheel"
+        #    equiv_ep = reg.__ep || get_ep(reg, offset)
+        #    equiv_ep
+        #    gem.__reg_ep = equiv_ep += 0.0001
+        #    break
         break if gem.__reg_ep
     return gem.__reg_ep
 
@@ -577,7 +584,7 @@ class ShadowcraftGear
     madeChanges = false
     gem_list = getGemRecommendationList()
 
-    for slotIndex in SLOT_ORDER
+    for slotIndex in SLOT_ORDER_OPTIMIZE_GEMS
       gear = data.gear[slotIndex]
       continue unless gear
 
@@ -606,6 +613,34 @@ class ShadowcraftGear
     else
       this.optimizeGems depth + 1
 
+  getBestJewelcrafterGem = ->
+    Gems = Shadowcraft.ServerData.GEMS
+    copy = $.extend(true, [], Gems)
+    list = []
+    for gem in copy
+      continue unless gem.requires? or gem.requires?.profession == "jewelcrafter"
+      gem.__color_ep = gem.__color_ep || get_ep(gem)
+      if gem.__color_ep and gem.__color_ep > 1
+        list.push gem
+
+    list.sort (a, b) ->
+      b.__color_ep - a.__color_ep
+    list[0]
+
+  getBestNormalGem = ->
+    Gems = Shadowcraft.ServerData.GEMS
+    copy = $.extend(true, [], Gems)
+    list = []
+    for gem in copy
+      continue if gem.requires? or gem.requires?.profession?
+      gem.__color_ep = gem.__color_ep || get_ep(gem)
+      if (gem["Red"] or gem["Yellow"] or gem["Blue"]) and gem.__color_ep and gem.__color_ep > 1
+        list.push gem
+
+    list.sort (a, b) ->
+      b.__color_ep - a.__color_ep
+    list[0]
+
   # Returns an EP-sorted list of gems with the twist that the
   # JC-only gems are sorted at the same EP-value as regular gems.
   # This prevents the automatic picking algorithm from choosing
@@ -615,9 +650,11 @@ class ShadowcraftGear
     copy = $.extend(true, [], Gems)
     list = []
     use_epic_gems = Shadowcraft.Data.options.general.epic_gems == 1
+    bestJewelcrafterGem = getBestJewelcrafterGem()
     for gem in copy
       continue if gem.quality == 4 and gem.requires == undefined and not use_epic_gems
       continue if gem.stats["expertise_rating"] > 0
+      continue if gem.requires?.profession == "jewelcrafting" and gem.id != bestJewelcrafterGem.id
       gem.normal_ep = getRegularGemEpValue(gem)
       if gem.normal_ep and gem.normal_ep > 1
         list.push gem

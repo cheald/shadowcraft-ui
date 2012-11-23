@@ -2331,7 +2331,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_REFORGENAME, TIER14_IDS, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, TIER14_IDS, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -2368,6 +2368,7 @@
     ShadowcraftGear.REFORGABLE = REFORGABLE;
     REFORGE_CONST = 112;
     SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"];
+    SLOT_ORDER_OPTIMIZE_GEMS = ["0", "1", "2", "14", "4", "6", "7", "10", "11", "12", "13", "15", "16", "5", "8", "9"];
     SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13"]];
     PROC_ENCHANTS = {
       4099: "landslide",
@@ -2931,7 +2932,7 @@
       return true;
     };
     getRegularGemEpValue = function(gem, offset) {
-      var equiv_ep, j, name, prefix, reg, _i, _len, _ref, _ref2, _ref3;
+      var bestGem, equiv_ep, name, _i, _len, _ref;
       equiv_ep = gem.__ep || get_ep(gem, offset);
       if (((_ref = gem.requires) != null ? _ref.profession : void 0) == null) {
         return equiv_ep;
@@ -2939,19 +2940,15 @@
       if (gem.__reg_ep) {
         return gem.__reg_ep;
       }
+      bestGem = getBestNormalGem();
+      console.log(bestGem);
       for (_i = 0, _len = JC_ONLY_GEMS.length; _i < _len; _i++) {
         name = JC_ONLY_GEMS[_i];
         if (gem.name.indexOf(name) >= 0) {
-          prefix = gem.name.replace(name, "");
-          _ref2 = Shadowcraft.ServerData.GEMS;
-          for (j in _ref2) {
-            reg = _ref2[j];
-            if (reg.item_id !== gem.item_id && !(((_ref3 = reg.requires) != null ? _ref3.profession : void 0) != null) && reg.name.indexOf(prefix) === 0 && reg.ilvl === gem.ilvl && reg.slot !== "Cogwheel") {
-              equiv_ep = reg.__ep || get_ep(reg, offset);
-              equiv_ep;
-              gem.__reg_ep = equiv_ep += 0.0001;
-              break;
-            }
+          if (bestGem) {
+            equiv_ep = bestGem.__color_ep || get_ep(bestGem, offset);
+            equiv_ep;
+            gem.__reg_ep = equiv_ep += 0.0001;
           }
           if (gem.__reg_ep) {
             break;
@@ -3064,8 +3061,8 @@
       }
       madeChanges = false;
       gem_list = getGemRecommendationList();
-      for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
-        slotIndex = SLOT_ORDER[_i];
+      for (_i = 0, _len = SLOT_ORDER_OPTIMIZE_GEMS.length; _i < _len; _i++) {
+        slotIndex = SLOT_ORDER_OPTIMIZE_GEMS[_i];
         gear = data.gear[slotIndex];
         if (!gear) {
           continue;
@@ -3104,18 +3101,62 @@
         return this.optimizeGems(depth + 1);
       }
     };
+    getBestJewelcrafterGem = function() {
+      var Gems, copy, gem, list, _i, _len, _ref;
+      Gems = Shadowcraft.ServerData.GEMS;
+      copy = $.extend(true, [], Gems);
+      list = [];
+      for (_i = 0, _len = copy.length; _i < _len; _i++) {
+        gem = copy[_i];
+        if (!((gem.requires != null) || ((_ref = gem.requires) != null ? _ref.profession : void 0) === "jewelcrafter")) {
+          continue;
+        }
+        gem.__color_ep = gem.__color_ep || get_ep(gem);
+        if (gem.__color_ep && gem.__color_ep > 1) {
+          list.push(gem);
+        }
+      }
+      list.sort(function(a, b) {
+        return b.__color_ep - a.__color_ep;
+      });
+      return list[0];
+    };
+    getBestNormalGem = function() {
+      var Gems, copy, gem, list, _i, _len, _ref;
+      Gems = Shadowcraft.ServerData.GEMS;
+      copy = $.extend(true, [], Gems);
+      list = [];
+      for (_i = 0, _len = copy.length; _i < _len; _i++) {
+        gem = copy[_i];
+        if ((gem.requires != null) || (((_ref = gem.requires) != null ? _ref.profession : void 0) != null)) {
+          continue;
+        }
+        gem.__color_ep = gem.__color_ep || get_ep(gem);
+        if ((gem["Red"] || gem["Yellow"] || gem["Blue"]) && gem.__color_ep && gem.__color_ep > 1) {
+          list.push(gem);
+        }
+      }
+      list.sort(function(a, b) {
+        return b.__color_ep - a.__color_ep;
+      });
+      return list[0];
+    };
     getGemRecommendationList = function() {
-      var Gems, copy, gem, list, use_epic_gems, _i, _len;
+      var Gems, bestJewelcrafterGem, copy, gem, list, use_epic_gems, _i, _len, _ref;
       Gems = Shadowcraft.ServerData.GEMS;
       copy = $.extend(true, [], Gems);
       list = [];
       use_epic_gems = Shadowcraft.Data.options.general.epic_gems === 1;
+      bestJewelcrafterGem = getBestJewelcrafterGem();
       for (_i = 0, _len = copy.length; _i < _len; _i++) {
         gem = copy[_i];
         if (gem.quality === 4 && gem.requires === void 0 && !use_epic_gems) {
           continue;
         }
         if (gem.stats["expertise_rating"] > 0) {
+          continue;
+        }
+        if (((_ref = gem.requires) != null ? _ref.profession : void 0) === "jewelcrafting" && gem.id !== bestJewelcrafterGem.id) {
           continue;
         }
         gem.normal_ep = getRegularGemEpValue(gem);
