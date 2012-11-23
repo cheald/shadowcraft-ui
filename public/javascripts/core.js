@@ -2941,7 +2941,6 @@
         return gem.__reg_ep;
       }
       bestGem = getBestNormalGem();
-      console.log(bestGem);
       for (_i = 0, _len = JC_ONLY_GEMS.length; _i < _len; _i++) {
         name = JC_ONLY_GEMS[_i];
         if (gem.name.indexOf(name) >= 0) {
