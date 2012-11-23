@@ -491,7 +491,6 @@ class ShadowcraftGear
     return gem.__reg_ep if gem.__reg_ep
 
     bestGem = getBestNormalGem()
-    console.log bestGem
     for name in JC_ONLY_GEMS
       if gem.name.indexOf(name) >= 0
         if bestGem
