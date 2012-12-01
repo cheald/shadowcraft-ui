@@ -97,6 +97,7 @@ class ShadowcraftHistory
     if hash and hash.match(/^#!/)
       frag = hash.substring(3)
       inflated = RawDeflate.inflate($.base64Decode(frag))
+      console.log inflated
       snapshot = null
       try
         snapshot = $.parseJSON(inflated)
@@ -161,7 +162,9 @@ class ShadowcraftHistory
 
   decompress = (data) ->
     version = data[0].toString()
+    console.log version
     unless decompress_handlers[version]?
+      console.log "data version mismatch"
       throw "Data version mismatch"
 
     decompress_handlers[version](data)
@@ -345,8 +348,8 @@ class ShadowcraftHistory
           glyphs: base36Decode(talentSets[index + 2])
 
       gear = base36Decode data[1]
-      for id, index in gear by 7
-        slot = (index / 7).toString()
+      for id, index in gear by 6
+        slot = (index / 6).toString()
         d.gear[slot] =
           item_id: gear[index]
           enchant: gear[index + 1]

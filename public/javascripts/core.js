@@ -694,6 +694,7 @@
       if (hash && hash.match(/^#!/)) {
         frag = hash.substring(3);
         inflated = RawDeflate.inflate($.base64Decode(frag));
+        console.log(inflated);
         snapshot = null;
         try {
           snapshot = $.parseJSON(inflated);
@@ -774,7 +775,9 @@
     decompress = function(data) {
       var version;
       version = data[0].toString();
+      console.log(version);
       if (decompress_handlers[version] == null) {
+        console.log("data version mismatch");
         throw "Data version mismatch";
       }
       return decompress_handlers[version](data);
@@ -935,9 +938,9 @@
           };
         }
         gear = base36Decode(data[1]);
-        for (index = 0, _len2 = gear.length, _step2 = 7; index < _len2; index += _step2) {
+        for (index = 0, _len2 = gear.length, _step2 = 6; index < _len2; index += _step2) {
           id = gear[index];
-          slot = (index / 7).toString();
+          slot = (index / 6).toString();
           d.gear[slot] = {
             item_id: gear[index],
             enchant: gear[index + 1],
