@@ -3432,8 +3432,8 @@
             }
           }
           if ((i === "12" || i === "13") && item.upgradeable) {
-            console.log(i);
-            if ((gear.upgrade_level != null) && ((_ref3 = gear.upgrade_level) === 1 || _ref3 === 2)) {
+            console.log(item.name.indexOf("[UPDATED PROC MISSING]"));
+            if ((gear.upgrade_level != null) && ((_ref3 = gear.upgrade_level) === 1 || _ref3 === 2) && !/UPDATED PROC MISSING/.test(item.name)) {
               item.name = "[UPDATED PROC MISSING] " + item.name;
             }
           }

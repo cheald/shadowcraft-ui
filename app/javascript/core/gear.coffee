@@ -846,8 +846,8 @@ class ShadowcraftGear
               curr_level: curr_level
               max_level: max_level
         if i in ["12","13"] and item.upgradeable
-          console.log i
-          if gear.upgrade_level? and gear.upgrade_level in [1,2]
+          console.log item.name.indexOf "[UPDATED PROC MISSING]"
+          if gear.upgrade_level? and gear.upgrade_level in [1,2] and not /UPDATED PROC MISSING/.test(item.name)
             item.name = "[UPDATED PROC MISSING] " + item.name
         if enchant and enchant.desc == ""
           enchant.desc = enchant.name
