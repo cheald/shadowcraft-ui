@@ -185,7 +185,7 @@ class ShadowcraftHistory
     m[value]
 
   compress_handlers =
-    "1": (data) ->
+    "2": (data) ->
       ret = [DATA_VERSION]
 
       gearSet = []
@@ -258,7 +258,7 @@ class ShadowcraftHistory
       return ret
 
   decompress_handlers =
-    "1": (data) ->
+    "2": (data) ->
       d =
         gear: {}
         active: data[2]
