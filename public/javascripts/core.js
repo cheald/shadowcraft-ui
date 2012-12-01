@@ -793,6 +793,65 @@
       return m[value];
     };
     compress_handlers = {
+      "1": function(data) {
+        var buff, buffs, gear, gearSet, general, index, k, options, profession, professions, ret, rotationOptions, set, slot, talent, talentSet, v, val, _i, _len, _len2, _ref, _ref2, _ref3, _ref4;
+        ret = [1];
+        gearSet = [];
+        for (slot = 0; slot <= 17; slot++) {
+          gear = data.gear[slot] || {};
+          gearSet.push(gear.item_id || 0);
+          gearSet.push(gear.enchant || 0);
+          gearSet.push(gear.reforge || 0);
+          gearSet.push(gear.g0 || 0);
+          gearSet.push(gear.g1 || 0);
+          gearSet.push(gear.g2 || 0);
+        }
+        ret.push(base36Encode(gearSet));
+        ret.push(data.active);
+        ret.push(data.activeSpec);
+        ret.push(data.activeTalents);
+        ret.push(base36Encode(data.glyphs));
+        talentSet = [];
+        _ref = [0, 1];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          set = _ref[_i];
+          talent = data.talents[set];
+          talentSet.push(talent.spec);
+          talentSet.push(talent.talents);
+          talentSet.push(base36Encode(talent.glyphs));
+        }
+        ret.push(talentSet);
+        options = [];
+        professions = [];
+        _ref2 = data.options.professions;
+        for (profession in _ref2) {
+          val = _ref2[profession];
+          if (val) {
+            professions.push(map(profession, professionMap));
+          }
+        }
+        options.push(professions);
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.virmens_bite ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.stormlash ? 1 : 0, data.options.general.pvp ? 1 : 0];
+        options.push(base36Encode(general));
+        buffs = [];
+        _ref3 = ShadowcraftOptions.buffMap;
+        for (index = 0, _len2 = _ref3.length; index < _len2; index++) {
+          buff = _ref3[index];
+          v = data.options.buffs[buff];
+          buffs.push(v ? 1 : 0);
+        }
+        options.push(buffs);
+        rotationOptions = [];
+        _ref4 = data.options["rotation"];
+        for (k in _ref4) {
+          v = _ref4[k];
+          rotationOptions.push(map(k, rotationOptionsMap));
+          rotationOptions.push(map(v, rotationValueMap));
+        }
+        options.push(base36Encode(rotationOptions));
+        ret.push(options);
+        return ret;
+      },
       "2": function(data) {
         var buff, buffs, gear, gearSet, general, index, k, options, profession, professions, ret, rotationOptions, set, slot, talent, talentSet, v, val, _i, _len, _len2, _ref, _ref2, _ref3, _ref4;
         ret = [DATA_VERSION];
@@ -855,6 +914,86 @@
       }
     };
     decompress_handlers = {
+      "1": function(data) {
+        var d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _ref, _ref2, _ref3, _step, _step2, _step3;
+        d = {
+          gear: {},
+          active: data[2],
+          activeSpec: data[3],
+          activeTalents: data[4],
+          glyphs: base36Decode(data[5]),
+          options: {},
+          talents: []
+        };
+        talentSets = data[6];
+        for (index = 0, _len = talentSets.length, _step = 3; index < _len; index += _step) {
+          id = talentSets[index];
+          set = (index / 3).toString();
+          d.talents[set] = {
+            spec: talentSets[index],
+            talents: talentSets[index + 1],
+            glyphs: base36Decode(talentSets[index + 2])
+          };
+        }
+        gear = base36Decode(data[1]);
+        for (index = 0, _len2 = gear.length, _step2 = 7; index < _len2; index += _step2) {
+          id = gear[index];
+          slot = (index / 7).toString();
+          d.gear[slot] = {
+            item_id: gear[index],
+            enchant: gear[index + 1],
+            reforge: gear[index + 2],
+            g0: gear[index + 3],
+            g1: gear[index + 4],
+            g2: gear[index + 5]
+          };
+          _ref = d.gear[slot];
+          for (k in _ref) {
+            v = _ref[k];
+            if (v === 0) {
+              delete d.gear[slot][k];
+            }
+          }
+        }
+        options = data[7];
+        d.options.professions = {};
+        _ref2 = options[0];
+        for (i = 0, _len3 = _ref2.length; i < _len3; i++) {
+          v = _ref2[i];
+          d.options.professions[unmap(v, professionMap)] = true;
+        }
+        general = base36Decode(options[1]);
+        d.options.general = {
+          level: general[0],
+          race: unmap(general[1], raceMap),
+          duration: general[2],
+          lethal_poison: unmap(general[3], poisonMap),
+          utility_poison: unmap(general[4], utilPoisonMap),
+          virmens_bite: general[5] !== 0,
+          max_ilvl: general[6] || 600,
+          tricks: general[7] !== 0,
+          receive_tricks: general[8] !== 0,
+          prepot: general[9] !== 0,
+          patch: general[10] || 50,
+          min_ilvl: general[11] || 430,
+          epic_gems: general[12] || 0,
+          stormlash: general[13] || 0,
+          pvp: general[14] || 0
+        };
+        d.options.buffs = {};
+        _ref3 = options[2];
+        for (i = 0, _len4 = _ref3.length; i < _len4; i++) {
+          v = _ref3[i];
+          d.options.buffs[ShadowcraftOptions.buffMap[i]] = v === 1;
+        }
+        rotation = base36Decode(options[3]);
+        d.options.rotation = {};
+        for (i = 0, _len5 = rotation.length, _step3 = 2; i < _len5; i += _step3) {
+          v = rotation[i];
+          d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i + 1], rotationValueMap);
+        }
+        return d;
+      },
       "2": function(data) {
         var d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _ref, _ref2, _ref3, _step, _step2, _step3;
         d = {
