@@ -3351,7 +3351,7 @@
       # View helpers
       */
     ShadowcraftGear.prototype.updateDisplay = function(skipUpdate) {
-      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, curr_level, data, enchant, enchantable, from, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, restid, slotIndex, slotSet, socket, ssi, stat, to, upgrade, upgradeable, _base, _i, _len, _len2, _len3, _ref, _ref2;
+      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, curr_level, data, enchant, enchantable, from, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, restid, slotIndex, slotSet, socket, ssi, stat, to, upgrade, upgradeable, _base, _i, _len, _len2, _len3, _ref, _ref2, _ref3;
       this.updateStatsWindow();
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
@@ -3429,6 +3429,12 @@
                 curr_level: curr_level,
                 max_level: max_level
               };
+            }
+          }
+          if ((i === "12" || i === "13") && item.upgradeable) {
+            console.log(i);
+            if ((gear.upgrade_level != null) && ((_ref3 = gear.upgrade_level) === 1 || _ref3 === 2)) {
+              item.name = "[UPDATED PROC MISSING] " + item.name;
             }
           }
           if (enchant && enchant.desc === "") {
