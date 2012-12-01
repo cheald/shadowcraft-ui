@@ -574,7 +574,7 @@
   loadingSnapshot = false;
   ShadowcraftHistory = (function() {
     var DATA_VERSION, base10, base36Decode, base36Encode, base77, compress, compress_handlers, decompress, decompress_handlers, map, poisonMap, professionMap, raceMap, rotationOptionsMap, rotationValueMap, unmap, utilPoisonMap;
-    DATA_VERSION = 2;
+    DATA_VERSION = 3;
     function ShadowcraftHistory(app) {
       this.app = app;
       this.app.History = this;
