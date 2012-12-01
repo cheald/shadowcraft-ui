@@ -197,6 +197,7 @@ class ShadowcraftHistory
         gearSet.push gear.g0 || 0
         gearSet.push gear.g1 || 0
         gearSet.push gear.g2 || 0
+        gearSet.push gear.upgrade_level || 0
       ret.push base36Encode(gearSet)
       ret.push data.active
       ret.push data.activeSpec
@@ -234,6 +235,8 @@ class ShadowcraftHistory
         if data.options.general.epic_gems then 1 else 0
         if data.options.general.stormlash then 1 else 0
         if data.options.general.pvp then 1 else 0
+        if data.options.general.show_upgrades then 1 else 0
+        if data.options.general.show_random_items then 1 else 0
       ]
       options.push base36Encode(general)
 
@@ -274,8 +277,8 @@ class ShadowcraftHistory
           glyphs: base36Decode(talentSets[index + 2])
 
       gear = base36Decode data[1]
-      for id, index in gear by 6
-        slot = (index / 6).toString()
+      for id, index in gear by 7
+        slot = (index / 7).toString()
         d.gear[slot] =
           item_id: gear[index]
           enchant: gear[index + 1]
@@ -283,6 +286,7 @@ class ShadowcraftHistory
           g0: gear[index + 3]
           g1: gear[index + 4]
           g2: gear[index + 5]
+          upgrade_level: gear[index + 6]
         for k, v of d.gear[slot]
           delete d.gear[slot][k] if v == 0
 
@@ -308,6 +312,8 @@ class ShadowcraftHistory
         epic_gems:            general[12] || 0
         stormlash:            general[13] || 0
         pvp:                 general[14] || 0
+        show_upgrades:        general[15] || 0
+        show_random_items:    general[16] || 0
 
       d.options.buffs = {}
       for v, i in options[2]

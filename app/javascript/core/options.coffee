@@ -117,6 +117,8 @@ class ShadowcraftOptions
       max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this ilevel in gear lists", 'default': 600, datatype: 'integer', min: 15, max: 600}
       min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this ilevel in gear lists", 'default': 430, datatype: 'integer', min: 15, max: 600},
       epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
+      show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items on ranking", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
+      show_random_items: {name: "Show Random Items", desc: "Show all items with random stats on ranking (Scenario Loot)", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
     })
 
     @setup("#settings #professions", "professions", {

@@ -87,9 +87,15 @@
       {{/item}}
 
       %span.ilvl {{item/ilvl}}
-    .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}", :"data-tooltip-rand" => "{{ttrand}}"}
+    .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}", :"data-tooltip-rand" => "{{ttrand}}", :"data-tooltip-upgd" => "{{ttupgd}}"}
       {{item/name}}
-      %em.heroic {{item/heroic}}
+      -#%em.heroic {{item/heroic}}
+      {{#upgradeable}}
+      {{#upgrade}}
+      %em.upgrade {{curr_level}}/{{max_level}}
+      %img.upgrade{:src => "/images/up_arrow.png"}
+      {{/upgrade}}
+      {{/upgradeable}}
       -#{{#item/id}}
       %a.wowhead{:href => "http://www.wowhead.com/item={{ttid}}", :target => "_blank"} Wowhead
       -#{{/item/id}}

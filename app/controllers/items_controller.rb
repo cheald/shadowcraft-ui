@@ -55,6 +55,8 @@ class ItemsController < ApplicationController
     @alt_items.reject! {|item| bad_classes.include? item.properties['armor_class'] }
     @alt_items.reject! {|item| item.properties['armor_class'] == "Cloth" && item.equip_location != 16 }
     @alt_items.reject! {|item| item.properties['name'].match(/DONTUSE/) }
+    @alt_items.reject! {|item| !item.properties['upgradeable'] and [1,2].include? item.properties['upgrade_level'] } # reject items which are upgrades but are not allowed
+    @alt_items.reject! {|item| item.properties['quality'] == 3 and item.properties['upgrade_level'] == 2 } # reject blue items with upgrade_level 2
 
     gems = Item.where(:has_stats => true, :is_gem => true, :item_level.gt => 70).all
     @gems = gems.select {|g| !g.properties["name"].match(/Stormjewel/) }

@@ -101,12 +101,16 @@ var ttlib = {
     var $this = $(this);
     var id = $this.data("tooltip-id");
     var rand = $this.data("tooltip-rand");
+    var upgd = $this.data("tooltip-upgd");
     if(!id) { return; }
 
     var t = $this.data("tooltip-type") || "item";
     var url = "http://www.wowhead.com/" + t + "=" + id + "&power";
     if(rand && rand != "0") {
       url += "&rand=" + rand;
+    }
+    if(upgd && upgd != "0") {
+      url += "&upgd=" + upgd;
     }
 
     ttlib.currentMouseover = url;

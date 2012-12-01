@@ -4,6 +4,8 @@ class Item
 
   field :remote_id, :type => Integer, :index => true
   field :random_suffix, :type => Integer
+  field :upgrade_level, :type => Integer
+  field :upgradeable, :type => Boolean, :index => true
   field :equip_location, :type => Integer, :index => true
   field :item_level, :type => Integer
   field :properties, :type => Hash
@@ -29,7 +31,7 @@ class Item
     return if remote_id == 0
     if self.properties.nil?
       Rails.logger.debug "Loading item #{remote_id}"
-      item = WowArmory::Item.new(remote_id, random_suffix, item_name_override)
+      item = WowArmory::Item.new(remote_id, random_suffix, upgrade_level, item_name_override)
       # return false if item.stats.empty?
       self.properties = item.as_json.with_indifferent_access
       self.equip_location = self.properties["equip_location"]
@@ -39,11 +41,20 @@ class Item
   end
 
   def uid
+    # a bit silly
+    uid = remote_id
     if random_suffix?
-      remote_id * 1000 + random_suffix.abs
+      uid = remote_id * 1000 + random_suffix.abs
+      if not properties["upgrade_level"].nil?
+        uid = uid * 1000 + properties["upgrade_level"].to_i
+      end
     else
-      remote_id
+      uid = remote_id
+      if not properties["upgrade_level"].nil?
+        uid = uid * 1000000 + properties["upgrade_level"].to_i
+      end
     end
+    uid
   end
 
   def icon(size = 51)
@@ -103,6 +114,12 @@ class Item
     if properties["random_suffix"]
       json[:suffix] = properties["random_suffix"]
     end
+    if properties["upgrade_level"]
+      json[:upgrade_level] = properties["upgrade_level"]
+    end
+    if properties["upgradeable"]
+      json[:upgradeable] = properties["upgradeable"]
+    end
 
     json
   end
@@ -120,16 +137,36 @@ class Item
   end
 
   def self.populate_gear(prefix = "www")
-    populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;ub=4;cr=124;crs=0;crv=zephyr" # base items with random properties
-    populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0;eb=1"
-    populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=501;maxle=550;ub=4;cr=21;crs=1;crv=0;eb=1"
-    populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0;eb=1"
-    populate_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=501;maxle=550;ub=4;cr=21;crs=1;crv=0;eb=1"
-
-    extra_items = [ 87057, 86132, 86791, 87574, 81265, 81267, 75274, 87495, 77534, 77530 ]
+    suffixes = (-137..-133).to_a
+    random_item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;ub=4;cr=124;crs=0;crv=zephyr"
+    random_item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4?filter=na=hozen-speed"
+    random_item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4?filter=na=Stormcrier"
     
-    extra_items.each do |id|
+    random_item_ids += (93049..93056).to_a
+    puts "importing now #{random_item_ids.length} random items"
+    random_item_ids.each do |id|
       single_import id
+      suffixes.each do |suffix|
+        single_import id,suffix
+        single_import id,suffix,1
+        single_import id,suffix,2
+      end
+    end
+    
+    item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0;eb=1"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=501;maxle=550;ub=4;cr=21;crs=1;crv=0;eb=1"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0;eb=1"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=501;maxle=550;ub=4;cr=21;crs=1;crv=0;eb=1"
+
+    item_ids += [ 87057, 86132, 86791, 87574, 81265, 81267, 75274, 87495, 77534, 77530 ] # some extra_items
+    puts "importing now #{item_ids.length} items"
+    pos = 0
+    item_ids.each do |id|
+      pos = pos + 1
+      puts "test #{pos} item"
+      single_import id
+      single_import id,nil,1
+      single_import id,nil,2
     end
     true
   end
@@ -145,14 +182,21 @@ class Item
     populate_from_wowhead "http://www.wowhead.com/items=16.4", :is_glyph => true
   end
 
-  def self.single_import(id, random_suffix = nil)
+  def self.single_import(id, random_suffix = nil, upgrade_level = nil, dont_use_local_db = false)
+    puts id
     options = {}
     begin
-      Item.find_or_create_by options.merge(:remote_id => id, :random_suffix => random_suffix)
+      Item.find_or_create_by options.merge(:remote_id => id, :random_suffix => random_suffix, :upgrade_level => upgrade_level, :dont_use_local_db => dont_use_local_db)
     rescue WowArmory::MissingDocument => e
       puts id
       puts e.message
     end
+  end
+
+  def self.get_ids_from_wowhead(url)
+    doc = open(url).read
+    ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i
+    ids
   end
 
   def self.populate_from_wowhead(url, options = {})

@@ -5,6 +5,9 @@ module WowArmory
     @random_suffix_csv = nil
     @item_enchants = nil
     @rand_prop_points = nil
+    @item_data = nil
+    @ruleset_item_upgrade = nil
+    @item_damage_one_hand = nil
 
     # STATS = Hash[*STAT_MAP.split(/\n/).map {|line| x = line.strip.split(" ", 2); [x.last.downcase.gsub(" ", "_").to_sym, x.first.to_i]}.flatten]
     STAT_INDEX = {
@@ -52,6 +55,16 @@ module WowArmory
       "resirtng" => "resilience_rating"
     }
 
+    SUFFIX_NAME_MAP = {
+      133 => "of the Stormblast",
+      134 => "of the Galeburst",
+      135 => "of the Windflurry",
+      136 => "of the Zephyr",
+      137 => "of the Windstorm"
+    }
+
+    ITEM_SOCKET_COST = 160.0 # TODO 160 is for every item from mop but add the socket cost database
+
     SOCKET_MAP = {
       1 => "Meta",
       2 => "Red",
@@ -91,13 +104,16 @@ module WowArmory
     STAT_LOOKUP = Hash[*STAT_INDEX.map {|k, v| [v, k]}.flatten]
 
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :is_heroic, :socket_bonus, :sockets, :gem_slot, :speed, :subclass, :dps, :armor_class, :random_suffix
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ori_ilevel, :ilevel, :quality, :requirement, :is_heroic, :socket_bonus, :sockets, :gem_slot, :speed, :subclass, :dps, :armor_class, :random_suffix, :upgradeable, :upgrade_level, :dont_use_local_db
     attr_accessor *ACCESSORS
-    def initialize(id, random_suffix = nil, name = nil)
+    def initialize(id, random_suffix = nil, upgrade_level = nil, name = nil, dont_use_local_db = false)
       self.stats = {}
       self.random_suffix = random_suffix
       self.random_suffix = nil if self.random_suffix == 0
+      self.upgrade_level = upgrade_level
+      self.upgrade_level = nil if self.upgrade_level == 0
       self.name = name
+      self.dont_use_local_db = dont_use_local_db
 
       if id == :empty or id == 0 or id.nil?
         @id = :empty
@@ -115,8 +131,97 @@ module WowArmory
         ACCESSORS.map {|key| r[key] = self.send(key) }
       end
     end
+    
+    def is_upgradeable
+      row = ruleset_item_upgrade[self.id.to_s]
+      if row.nil?
+        puts "item not upgradeable #{self.id}"
+        return false
+      end
+      true
+    end
 
     private
+
+    def populate_item_upgrade_level_with_random_suffix
+      row = random_suffixes[random_suffix.abs.to_s]
+      if row.nil?
+        puts "suffix not found in db"
+        return
+      end
+      base = rand_prop_points[self.ilevel.to_s]
+
+      self.stats = {}
+      4.times do |i|
+        enchantid = row[3+i]
+        multiplier = row[8+i].to_f / 10000.0
+        basevalue = base[1+quality_index(self.quality)*5+slot_index(equip_location)]
+        if enchantid != "0"
+          stat = item_enchants[enchantid][8].to_i
+          self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).round # round think its correct
+        end
+      end
+      # if weapon update dps
+      row2 = item_damage_one_hand[self.ilevel.to_s]
+      if not self.speed.nil? and not self.speed.blank?
+        self.dps = row2[1+self.quality].to_f # TODO validate if we are accessing the correct column
+      end
+    end
+
+    def populate_item_upgrade_level
+      row = item_data[self.id.to_s]
+      if row.nil?
+        puts "no item data found"
+        return
+      end
+      base = rand_prop_points[self.ilevel.to_s]
+      ori_base = rand_prop_points[self.ori_ilevel.to_s]
+
+      self.stats = {}
+      10.times do |i|
+        break if row[17+i] == "-1"
+        enchantid = row[17+i]
+        multiplier = row[37+i].to_f
+        socket_mult = row[47+i].to_f
+        #puts socket_mult
+        #puts multiplier
+        #puts slot_index(equip_location)
+        basevalue = base[1+quality_index(self.quality)*5+slot_index(equip_location)]
+        ori_basevalue = ori_base[1+quality_index(self.quality)*5+slot_index(equip_location)]
+        #puts basevalue
+        #puts ori_basevalue
+        if enchantid != "0"
+          stat = enchantid.to_i
+          value = (multiplier/10000.0) * basevalue.to_f - socket_mult * ITEM_SOCKET_COST * ( basevalue.to_f / ori_basevalue.to_f )
+          puts value
+          self.stats[STAT_LOOKUP[stat]] = value.round
+          puts STAT_LOOKUP[stat]
+          puts self.stats[STAT_LOOKUP[stat]]
+        end
+      end
+      # if weapon update dps
+      row2 = item_damage_one_hand[self.ilevel.to_s]
+      if not self.speed.nil? and not self.speed.blank?
+        self.dps = row2[1+self.quality].to_f # TODO validate if we are accessing the correct column
+      end
+    end
+
+    def populate_item_upgrade_level2
+      ori_base = rand_prop_points[self.ori_ilevel.to_s]
+      base = rand_prop_points[self.ilevel.to_s]
+      ori_basevalue = ori_base[1+quality_index(self.quality)*5+slot_index(equip_location)]
+      basevalue = base[1+quality_index(self.quality)*5+slot_index(equip_location)]
+      self.stats.each do |stat, val|
+        socket_mult = row[47+i].to_f
+        new_val = (val * basevalue.to_f) / ori_basevalue.to_f - socket_mult * ITEM_SOCKET_COST * ( basevalue.to_f / ori_basevalue.to_f )
+        self.stats[stat] = new_val.round
+      end
+      # if weapon update dps
+      row2 = item_damage_one_hand[self.ilevel.to_s]
+      if not self.speed.nil? and not self.speed.blank?
+        self.dps = row2[1+self.quality].to_f # TODO validate if we are accessing the correct column
+      end
+    end
 
     def populate_random_suffix_item
       row = random_suffixes[random_suffix.abs.to_s]
@@ -129,7 +234,7 @@ module WowArmory
         basevalue = base[1+quality_index(self.quality)*5+slot_index(equip_location)]
         if enchantid != "0"
           stat = item_enchants[enchantid][8].to_i
-          self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).floor
+          self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).round # round think its correct
         end
       end
     end
@@ -153,6 +258,30 @@ module WowArmory
     def rand_prop_points
       @@rand_prop_points ||= Hash.new.tap do |hash|
         FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "RandPropPoints.dbc.csv")) do |row|
+          hash[row[0].to_s] = row
+        end
+      end
+    end
+
+    def item_data
+      @@item_data ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "item_data.csv")) do |row|
+          hash[row[0].to_s] = row
+        end
+      end
+    end
+
+    def ruleset_item_upgrade
+      @@ruleset_item_upgrade ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "RulesetItemUpgrade.db2.csv")) do |row|
+          hash[row[3].to_s] = row
+        end
+      end
+    end
+
+    def item_damage_one_hand
+      @@item_damage_one_hand ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "ItemDamageOneHand.dbc.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -217,18 +346,55 @@ module WowArmory
         populate_weapon_stats!
       end
 
-      #Rails.logger.debug "Populating with random suffix: #{random_suffix.inspect}"
+      # this is probably a bit overkill but working quite good
+      # 1. if random_suffix found populate stats from random suffix db
+      # 2. else load item stats from item_data.csv
+      # 3. if nothing found in item_data.csv try wowhead
+      # 4. if nothing found on wowhead try battle.net tooltip
+      # 5. if upgrade_level and have stats
+      # 6.  - if item is upgradeable TODO
+      # 7.  - set new ilevel
+      # 8.  - if step#2 found nothing use alternative stat calculation which has rounding issues (FIXME need all items in item_data.csv from item-sparse file)
+      # 
+      self.ori_ilevel = self.ilevel
       unless self.random_suffix.nil?
-        #puts "populate random items"
-        #puts self.random_suffix
+        puts "populate random items"
+        puts self.random_suffix
         populate_random_suffix_item
+        puts self.stats.inspect
+        if !self.name.include? 'of the'
+          self.name += " #{SUFFIX_NAME_MAP[self.random_suffix.abs]}"
+        end
+      else 
+        if not self.dont_use_local_db
+          populate_item_upgrade_level
+        end
       end
-      
+      found_in_item_data = true
       if self.stats.nil? or self.stats.blank?
-        self.stats = get_item_stats
+        found_in_item_data = false
+        self.stats = get_item_stats # wowhead
       end
-      if self.stats.nil? or self.stats.blank? # wowhead found nothing, try armory tooltip
-        self.stats = scan_stats
+      if self.stats.nil? or self.stats.blank?
+        self.stats = scan_stats # battle.net tooltip
+      end
+      self.upgradeable = self.is_upgradeable
+      if not self.upgrade_level.nil? and not self.stats.blank? and self.upgradeable
+        if self.quality == 4
+          upgrade_levels = 4
+        else
+          upgrade_levels = 8
+        end
+        self.ilevel = self.ilevel + self.upgrade_level * upgrade_levels
+        if found_in_item_data and self.random_suffix.nil?
+          populate_item_upgrade_level
+        elsif found_in_item_data and not self.random_suffix.nil?
+          populate_item_upgrade_level_with_random_suffix
+          puts self.stats.inspect
+        else
+          puts "have to use not accurate method for itemid #{self.id}"
+          populate_item_upgrade_level2 # FIXME not accurate due to rounding issues, need to get rid of this option
+        end
       end
     end
 
@@ -309,7 +475,7 @@ module WowArmory
       case slot
       when 1, 5, 7
         return 0
-      when 3, 6, 8, 10
+      when 3, 6, 8, 10, 12
         return 1
       when 2, 9, 11, 16, 22
         return 2   

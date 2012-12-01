@@ -172,7 +172,7 @@ class ShadowcraftGear
           total += racialExpertiseBonus(item) * Weights.oh_expertise_rating
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem
-      else if PROC_ENCHANTS[item.id]
+      else if PROC_ENCHANTS[get_item_id(item)]
         switch slot
           when 14
             pre = ""
@@ -180,14 +180,14 @@ class ShadowcraftGear
             pre = "mh_"
           when 16
             pre = "oh_"
-        enchant = PROC_ENCHANTS[item.id]
+        enchant = PROC_ENCHANTS[get_item_id(item)]
         if !pre and enchant
           total += c["other_ep"][enchant]
         else if pre and enchant
           total += c[pre + "ep"][pre + enchant]
 
-      if c.trinket_ranking[item.id]
-        total += c.trinket_ranking[item.id]
+      if c.trinket_ranking[get_item_id(item)]
+        total += c.trinket_ranking[get_item_id(item)] #TODO add support for upgraded procs when engine is ready
 
     total
 
@@ -432,7 +432,8 @@ class ShadowcraftGear
     for slot in SLOT_ORDER
       continue if SLOT_INVTYPES[slot] == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
-      if gear.item_id in setIds
+      _item_id = if gear.upgrade_level then Math.floor( gear.item_id / 1000000 ) else gear.item_id
+      if _item_id in setIds
         count++
     return count
 
@@ -802,8 +803,10 @@ class ShadowcraftGear
         gems = []
         bonuses = null
         enchant = EnchantLookup[gear.enchant]
+        enchantable = null
         reforge = null
         reforgable = null
+        upgradeable = null
         if item
           addTradeskillBonuses(item)
           enchantable = EnchantSlots[item.equip_location]?
@@ -835,18 +838,30 @@ class ShadowcraftGear
               from: titleize(from)
               to: titleize(to)
             }
-
+          if item.upgradeable
+            curr_level = "0"
+            curr_level = gear.upgrade_level if gear.upgrade_level?
+            max_level = if item.quality == 3 then 1 else 2
+            upgrade = 
+              curr_level: curr_level
+              max_level: max_level
+        
         if enchant and enchant.desc == ""
           enchant.desc = enchant.name
 
         opt = {}
         opt.item = item
         if item
-          if item.id > 100000 # It has a random component
-            opt.ttid = Math.floor(item.id / 1000)
+          restid = item.id
+          if item.id > 100000000 # it is an upgraded item
+            opt.ttid = Math.floor(item.id / 1000000)
+            restid = Math.floor(item.id / 1000)
+          if restid > 100000 # It has a random component
+            opt.ttid = Math.floor(restid / 1000)
           else
             opt.ttid = item.id
         opt.ttrand = if item then item.suffix else null
+        opt.ttupgd = if item then item.upgrade_level else null
         opt.ep = if item then get_ep(item, null, i).toFixed(1) else 0
         opt.slot = i + ''
         opt.gems = gems
@@ -856,6 +871,8 @@ class ShadowcraftGear
         opt.sockets = if item then item.sockets else null
         opt.enchantable = enchantable
         opt.enchant = enchant
+        opt.upgradeable = if item then item.upgradeable else false
+        opt.upgrade = upgrade
 
         buffer += Templates.itemSlot(opt)
       $slots.get(ssi).innerHTML = buffer
@@ -1020,6 +1037,13 @@ class ShadowcraftGear
       else
         500
 
+  get_item_id = (item) ->
+    if item.upgrade_level
+      return Math.floor(item.id / 1000000)
+    if item.suffix
+      return Math.floor(item.id / 1000)
+    item.id
+
   # Click a name in a slot, for binding to event delegation
   clickSlotName = ->
     buf = clickSlot(this, "item_id")
@@ -1053,7 +1077,7 @@ class ShadowcraftGear
         l.__reforgeEP = reforgeEp(rec, l, reforge_offset)
       else
         l.__reforgeEP = 0
-      if TIER14_IDS.indexOf(l.id) >= 0
+      if TIER14_IDS.indexOf(get_item_id(l)) >= 0
         l.__setBonusEP = setBonEP
       else
         l.__setBonusEP = 0
@@ -1075,6 +1099,8 @@ class ShadowcraftGear
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
+      continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and l.id != selected_id
+      continue if l.suffix and not Shadowcraft.Data.options.general.show_random_items and l.id != selected_id
       unless isNaN l.__ep
         maxIEP = l.__ep if maxIEP <= 1
         minIEP = l.__ep
@@ -1088,23 +1114,43 @@ class ShadowcraftGear
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
-
+      continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and l.id != selected_id
+      continue if l.suffix and not Shadowcraft.Data.options.general.show_random_items and l.id != selected_id
       iEP = l.__ep
 
-      if l.id > 100000 # It has a random component
-        ttid = Math.floor(l.id / 1000)
+      restid = l.id
+      if l.id > 100000000 # it is an upgraded item
+        ttid = Math.floor(l.id / 1000000)
+        restid = Math.floor(l.id / 1000)
+      if restid > 100000 # It has a random component
+        ttid = Math.floor(restid / 1000)
       else
         ttid = l.id
       if l.suffix != undefined 
         ttrand = l.suffix
       else
         ttrand = ""
+      if l.upgrade_level != undefined
+        ttupgd = l.upgrade_level
+      else
+        ttupgd = ""
+      upgrade = []
+      if l.upgradeable
+        curr_level = "0"
+        curr_level = l.upgrade_level if l.upgrade_level?
+        max_level = if l.quality == 3 then 1 else 2
+        upgrade = 
+          curr_level: curr_level
+          max_level: max_level
       buffer += Templates.itemSlot(
         item: l
         gear: {}
         gems: []
+        upgradeable: l.upgradeable
+        upgrade: upgrade
         ttid: ttid
         ttrand: ttrand
+        ttupgd: ttupgd
         desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" } #{if l.__setBonusEP != 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
         search: l.name
         percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01
@@ -1275,6 +1321,44 @@ class ShadowcraftGear
     e.stopPropagation()
     true
 
+  clickItemUpgrade = (e) ->
+    e.stopPropagation()
+    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+    buf = clickSlot(this, "item_id")
+    $slot = buf[0]
+    slot = buf[1]
+    selected_id = parseInt $slot.attr("id"), 10
+    equip_location = SLOT_INVTYPES[slot]
+
+    data = Shadowcraft.Data
+    loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
+
+    #slot = parseInt($(this).parent().data("slot"), 10)
+
+    gear = data.gear[slot]
+    item = ItemLookup[gear.item_id]
+    new_item_id = gear.item_id
+    if gear.upgrade_level
+      new_item_id = Math.floor(new_item_id / 1000000)
+      max = if item.quality == 3 then 1 else 2
+      gear.upgrade_level += 1
+      if gear.upgrade_level > max
+        delete gear.upgrade_level
+    else
+      if item.suffix
+        new_item_id = Math.floor(new_item_id / 1000)
+      gear.upgrade_level = 1
+    if gear.upgrade_level
+      new_item_id = new_item_id * 1000000 + gear.upgrade_level
+      if item.suffix
+        new_item_id += Math.abs(item.suffix) * 1000
+    else if item.suffix
+      new_item_id = new_item_id * 1000 + Math.abs(item.suffix)
+    data.gear[slot]["item_id"] = new_item_id
+    Shadowcraft.update()
+    Shadowcraft.Gear.updateDisplay()
+    true
+
   boot: ->
     app = this
     $slots = $(".slots")
@@ -1309,6 +1393,7 @@ class ShadowcraftGear
 
     #  Change out an item
     $slots.click $.delegate
+      ".upgrade" : clickItemUpgrade
       ".wowhead" : clickWowhead
       ".name"    : clickSlotName
       ".enchant" : clickSlotEnchant
@@ -1397,6 +1482,11 @@ class ShadowcraftGear
           data.gear[slot][update] = if val != 0 then val else null
           if update == "item_id"
             data.gear[slot].reforge = null
+            if data.gear[slot].item_id and ItemLookup[data.gear[slot].item_id].upgrade_level
+              data.gear[slot].upgrade_level = ItemLookup[data.gear[slot].item_id].upgrade_level
+            else
+              data.gear[slot].upgrade_level = null
+              
           else
             Shadowcraft.Console.log("Changing " + ItemLookup[data.gear[slot].item_id].name + " enchant to " + EnchantLookup[val].name)
 
