@@ -95,7 +95,7 @@ class ShadowcraftApp
           data.options = Object.deepExtend(@Data.options, data.options)
           @Data = _.extend(@Data, data)
 
-          @Data.activeTalents = null
+          #@Data.activeTalents = null
       catch TypeError
         @Data = data
     @Data ||= data
