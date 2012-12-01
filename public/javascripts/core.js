@@ -575,7 +575,7 @@
   loadingSnapshot = false;
   ShadowcraftHistory = (function() {
     var DATA_VERSION, base10, base36Decode, base36Encode, base77, compress, compress_handlers, decompress, decompress_handlers, map, poisonMap, professionMap, raceMap, rotationOptionsMap, rotationValueMap, unmap, utilPoisonMap;
-    DATA_VERSION = 1;
+    DATA_VERSION = 2;
     function ShadowcraftHistory(app) {
       this.app = app;
       this.app.History = this;
@@ -793,7 +793,7 @@
       return m[value];
     };
     compress_handlers = {
-      "1": function(data) {
+      "2": function(data) {
         var buff, buffs, gear, gearSet, general, index, k, options, profession, professions, ret, rotationOptions, set, slot, talent, talentSet, v, val, _i, _len, _len2, _ref, _ref2, _ref3, _ref4;
         ret = [DATA_VERSION];
         gearSet = [];
@@ -855,7 +855,7 @@
       }
     };
     decompress_handlers = {
-      "1": function(data) {
+      "2": function(data) {
         var d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _ref, _ref2, _ref3, _step, _step2, _step3;
         d = {
           gear: {},

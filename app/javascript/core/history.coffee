@@ -1,5 +1,5 @@
 class ShadowcraftHistory
-  DATA_VERSION = 1
+  DATA_VERSION = 2
   constructor: (@app) ->
     @app.History = this
     Shadowcraft.Reset = @reset
