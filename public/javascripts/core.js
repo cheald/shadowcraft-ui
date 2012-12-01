@@ -116,7 +116,6 @@
           if (patch) {
             data.options = Object.deepExtend(this.Data.options, data.options);
             this.Data = _.extend(this.Data, data);
-            this.Data.activeTalents = null;
           }
         } catch (TypeError) {
           this.Data = data;
