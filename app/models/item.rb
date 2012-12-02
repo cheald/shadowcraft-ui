@@ -147,9 +147,9 @@ class Item
     random_item_ids.each do |id|
       single_import id
       suffixes.each do |suffix|
-        single_import id,suffix
-        single_import id,suffix,1
-        single_import id,suffix,2
+        single_import id,{:random_suffix => suffix}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 1}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 2}
       end
     end
     
@@ -166,8 +166,8 @@ class Item
       pos = pos + 1
       puts "test #{pos} item"
       single_import id
-      single_import id,nil,1
-      single_import id,nil,2
+      single_import id,{:upgrade_level => 1}
+      single_import id,{:upgrade_level => 2}
     end
     true
   end
@@ -183,11 +183,10 @@ class Item
     populate_from_wowhead "http://www.wowhead.com/items=16.4", :is_glyph => true
   end
 
-  def self.single_import(id, random_suffix = nil, upgrade_level = nil, dont_use_local_db = false)
+  def self.single_import(id,  options = {})
     puts id
-    options = {}
     begin
-      Item.find_or_create_by options.merge(:remote_id => id, :random_suffix => random_suffix, :upgrade_level => upgrade_level, :dont_use_local_db => dont_use_local_db)
+      Item.find_or_create_by options.merge(:remote_id => id)
     rescue WowArmory::MissingDocument => e
       puts id
       puts e.message

@@ -104,16 +104,15 @@ module WowArmory
     STAT_LOOKUP = Hash[*STAT_INDEX.map {|k, v| [v, k]}.flatten]
 
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ori_ilevel, :ilevel, :quality, :requirement, :is_heroic, :socket_bonus, :sockets, :gem_slot, :speed, :subclass, :dps, :armor_class, :random_suffix, :upgradeable, :upgrade_level, :dont_use_local_db
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ori_ilevel, :ilevel, :quality, :requirement, :is_heroic, :socket_bonus, :sockets, :gem_slot, :speed, :subclass, :dps, :armor_class, :random_suffix, :upgradeable, :upgrade_level
     attr_accessor *ACCESSORS
-    def initialize(id, random_suffix = nil, upgrade_level = nil, name = nil, dont_use_local_db = false)
+    def initialize(id, random_suffix = nil, upgrade_level = nil, name = nil)
       self.stats = {}
       self.random_suffix = random_suffix
       self.random_suffix = nil if self.random_suffix == 0
       self.upgrade_level = upgrade_level
       self.upgrade_level = nil if self.upgrade_level == 0
       self.name = name
-      self.dont_use_local_db = dont_use_local_db
 
       if id == :empty or id == 0 or id.nil?
         @id = :empty
@@ -366,9 +365,7 @@ module WowArmory
           self.name += " #{SUFFIX_NAME_MAP[self.random_suffix.abs]}"
         end
       else 
-        if not self.dont_use_local_db
-          populate_item_upgrade_level
-        end
+        populate_item_upgrade_level
       end
       found_in_item_data = true
       if self.stats.nil? or self.stats.blank?
