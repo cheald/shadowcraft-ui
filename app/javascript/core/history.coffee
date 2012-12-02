@@ -1,5 +1,5 @@
 class ShadowcraftHistory
-  DATA_VERSION = 3
+  DATA_VERSION = 1
   constructor: (@app) ->
     @app.History = this
     Shadowcraft.Reset = @reset
@@ -97,7 +97,6 @@ class ShadowcraftHistory
     if hash and hash.match(/^#!/)
       frag = hash.substring(3)
       inflated = RawDeflate.inflate($.base64Decode(frag))
-      console.log inflated
       snapshot = null
       try
         snapshot = $.parseJSON(inflated)
@@ -162,9 +161,7 @@ class ShadowcraftHistory
 
   decompress = (data) ->
     version = data[0].toString()
-    console.log version
     unless decompress_handlers[version]?
-      console.log "data version mismatch"
       throw "Data version mismatch"
 
     decompress_handlers[version](data)
@@ -189,142 +186,6 @@ class ShadowcraftHistory
 
   compress_handlers =
     "1": (data) ->
-      ret = [1]
-
-      gearSet = []
-      for slot in [0..17]
-        gear = data.gear[slot] || {}
-        gearSet.push gear.item_id || 0
-        gearSet.push gear.enchant || 0
-        gearSet.push gear.reforge || 0
-        gearSet.push gear.g0 || 0
-        gearSet.push gear.g1 || 0
-        gearSet.push gear.g2 || 0
-      ret.push base36Encode(gearSet)
-      ret.push data.active
-      ret.push data.activeSpec
-      ret.push data.activeTalents
-      ret.push base36Encode(data.glyphs)
-      talentSet = []
-      for set in [0,1]
-        talent = data.talents[set]
-        talentSet.push talent.spec
-        talentSet.push talent.talents
-        talentSet.push base36Encode(talent.glyphs)
-      ret.push talentSet
-
-      # Options
-      options = []
-      professions = []
-      for profession, val of data.options.professions
-        professions.push map(profession, professionMap) if val
-      options.push professions
-
-      # General options
-      general = [
-        data.options.general.level
-        map(data.options.general.race, raceMap)
-        data.options.general.duration
-        map(data.options.general.lethal_poison, poisonMap)
-        map(data.options.general.utility_poison, utilPoisonMap)
-        if data.options.general.virmens_bite then 1 else 0
-        data.options.general.max_ilvl
-        if data.options.general.tricks then 1 else 0
-        if data.options.general.receive_tricks then 1 else 0
-        if data.options.general.prepot then 1 else 0
-        data.options.general.patch,
-        data.options.general.min_ilvl
-        if data.options.general.epic_gems then 1 else 0
-        if data.options.general.stormlash then 1 else 0
-        if data.options.general.pvp then 1 else 0
-      ]
-      options.push base36Encode(general)
-
-      # Buff options
-      buffs = []
-      for buff, index in ShadowcraftOptions.buffMap
-        v = data.options.buffs[buff]
-        buffs.push if v then 1 else 0
-      options.push buffs
-
-      # Rotation options
-      rotationOptions = []
-      for k, v of data.options["rotation"]
-        rotationOptions.push map(k, rotationOptionsMap)
-        rotationOptions.push map(v, rotationValueMap)
-      options.push base36Encode(rotationOptions)
-
-      ret.push options
-      return ret
-    "2": (data) ->
-      ret = [2]
-
-      gearSet = []
-      for slot in [0..17]
-        gear = data.gear[slot] || {}
-        gearSet.push gear.item_id || 0
-        gearSet.push gear.enchant || 0
-        gearSet.push gear.reforge || 0
-        gearSet.push gear.g0 || 0
-        gearSet.push gear.g1 || 0
-        gearSet.push gear.g2 || 0
-      ret.push base36Encode(gearSet)
-      ret.push data.active
-      ret.push data.activeSpec
-      ret.push data.activeTalents
-      ret.push base36Encode(data.glyphs)
-      talentSet = []
-      for set in [0,1]
-        talent = data.talents[set]
-        talentSet.push talent.spec
-        talentSet.push talent.talents
-        talentSet.push base36Encode(talent.glyphs)
-      ret.push talentSet
-
-      # Options
-      options = []
-      professions = []
-      for profession, val of data.options.professions
-        professions.push map(profession, professionMap) if val
-      options.push professions
-
-      # General options
-      general = [
-        data.options.general.level
-        map(data.options.general.race, raceMap)
-        data.options.general.duration
-        map(data.options.general.lethal_poison, poisonMap)
-        map(data.options.general.utility_poison, utilPoisonMap)
-        if data.options.general.virmens_bite then 1 else 0
-        data.options.general.max_ilvl
-        if data.options.general.tricks then 1 else 0
-        if data.options.general.receive_tricks then 1 else 0
-        if data.options.general.prepot then 1 else 0
-        data.options.general.patch,
-        data.options.general.min_ilvl
-        if data.options.general.epic_gems then 1 else 0
-        if data.options.general.stormlash then 1 else 0
-        if data.options.general.pvp then 1 else 0
-      ]
-      options.push base36Encode(general)
-
-      # Buff options
-      buffs = []
-      for buff, index in ShadowcraftOptions.buffMap
-        v = data.options.buffs[buff]
-        buffs.push if v then 1 else 0
-      options.push buffs
-
-      # Rotation options
-      rotationOptions = []
-      for k, v of data.options["rotation"]
-        rotationOptions.push map(k, rotationOptionsMap)
-        rotationOptions.push map(v, rotationValueMap)
-      options.push base36Encode(rotationOptions)
-
-      ret.push options
-      return ret
-    "3": (data) ->
       ret = [DATA_VERSION]
 
       gearSet = []
@@ -398,134 +259,6 @@ class ShadowcraftHistory
 
   decompress_handlers =
     "1": (data) ->
-      d =
-        gear: {}
-        active: data[2]
-        activeSpec: data[3]
-        activeTalents: data[4]
-        glyphs: base36Decode(data[5])
-        options: {}
-        talents: []
-
-      talentSets = data[6]
-      for id, index in talentSets by 3
-        set = (index / 3).toString()
-        d.talents[set] = 
-          spec: talentSets[index]
-          talents: talentSets[index + 1]
-          glyphs: base36Decode(talentSets[index + 2])
-
-      gear = base36Decode data[1]
-      for id, index in gear by 6
-        slot = (index / 6).toString()
-        d.gear[slot] =
-          item_id: gear[index]
-          enchant: gear[index + 1]
-          reforge: gear[index + 2]
-          g0: gear[index + 3]
-          g1: gear[index + 4]
-          g2: gear[index + 5]
-        for k, v of d.gear[slot]
-          delete d.gear[slot][k] if v == 0
-
-      options = data[7]
-      d.options.professions = {}
-      for v, i in options[0]
-        d.options.professions[unmap(v, professionMap)] = true
-
-      general = base36Decode options[1]
-      d.options.general =
-        level:                general[0]
-        race:                 unmap(general[1], raceMap)
-        duration:             general[2]
-        lethal_poison:        unmap(general[3], poisonMap)
-        utility_poison:       unmap(general[4], utilPoisonMap)
-        virmens_bite:         general[5] != 0
-        max_ilvl:             general[6] || 600
-        tricks:               general[7] != 0
-        receive_tricks:       general[8] != 0
-        prepot:               general[9] != 0
-        patch:                general[10] || 50
-        min_ilvl:             general[11] || 430
-        epic_gems:            general[12] || 0
-        stormlash:            general[13] || 0
-        pvp:                 general[14] || 0
-
-      d.options.buffs = {}
-      for v, i in options[2]
-        d.options.buffs[ShadowcraftOptions.buffMap[i]] = v == 1
-
-      rotation = base36Decode options[3]
-      d.options.rotation = {}
-      for v, i in rotation by 2
-        d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i+1], rotationValueMap)
-
-      return d
-    "2": (data) ->
-      d =
-        gear: {}
-        active: data[2]
-        activeSpec: data[3]
-        activeTalents: data[4]
-        glyphs: base36Decode(data[5])
-        options: {}
-        talents: []
-
-      talentSets = data[6]
-      for id, index in talentSets by 3
-        set = (index / 3).toString()
-        d.talents[set] = 
-          spec: talentSets[index]
-          talents: talentSets[index + 1]
-          glyphs: base36Decode(talentSets[index + 2])
-
-      gear = base36Decode data[1]
-      for id, index in gear by 6
-        slot = (index / 6).toString()
-        d.gear[slot] =
-          item_id: gear[index]
-          enchant: gear[index + 1]
-          reforge: gear[index + 2]
-          g0: gear[index + 3]
-          g1: gear[index + 4]
-          g2: gear[index + 5]
-        for k, v of d.gear[slot]
-          delete d.gear[slot][k] if v == 0
-
-      options = data[7]
-      d.options.professions = {}
-      for v, i in options[0]
-        d.options.professions[unmap(v, professionMap)] = true
-
-      general = base36Decode options[1]
-      d.options.general =
-        level:                general[0]
-        race:                 unmap(general[1], raceMap)
-        duration:             general[2]
-        lethal_poison:        unmap(general[3], poisonMap)
-        utility_poison:       unmap(general[4], utilPoisonMap)
-        virmens_bite:         general[5] != 0
-        max_ilvl:             general[6] || 600
-        tricks:               general[7] != 0
-        receive_tricks:       general[8] != 0
-        prepot:               general[9] != 0
-        patch:                general[10] || 50
-        min_ilvl:             general[11] || 430
-        epic_gems:            general[12] || 0
-        stormlash:            general[13] || 0
-        pvp:                 general[14] || 0
-
-      d.options.buffs = {}
-      for v, i in options[2]
-        d.options.buffs[ShadowcraftOptions.buffMap[i]] = v == 1
-
-      rotation = base36Decode options[3]
-      d.options.rotation = {}
-      for v, i in rotation by 2
-        d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i+1], rotationValueMap)
-
-      return d
-    "3": (data) ->
       d =
         gear: {}
         active: data[2]
