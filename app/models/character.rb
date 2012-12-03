@@ -65,12 +65,15 @@ class Character
       self.portrait = char.portrait
 
       properties["gear"].each do |slot, item|
-        i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i, :random_suffix => item["suffix"], :upgrade_level => item["upgrade_level"])
-        if i.new_record?
-          unless item["suffix"].blank?
-            i.item_name_override = item["name"]
+        upgrade_levels = [nil, 1, 2]
+        upgrade_levels.each do |level|
+          i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i, :random_suffix => item["suffix"], :upgrade_level => level)
+          if i.new_record?
+            unless item["suffix"].blank?
+              i.item_name_override = item["name"]
+            end
+            i.save
           end
-          i.save
         end
       end
     end
