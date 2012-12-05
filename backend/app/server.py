@@ -95,7 +95,11 @@ class ShadowcraftComputation:
         81267: "searing_words",
         87574: "corens_cold_chromium_coaster",
         84072: "braid_of_ten_songs",
-        75274: "zen_alchemist_stone"
+        75274: "zen_alchemist_stone",
+
+        # 5.1
+        #93253: "woundripper_medallion",
+        #93258: "woundripper_medallion"
 
     }
     
@@ -259,7 +263,8 @@ class ShadowcraftComputation:
         return dict
 
     def setup(self, input):
-        gear = frozenset(input.get("g", []))
+        gear_data = input.get("g", [])
+        gear = frozenset([x[0] for x in gear_data])
         professions = input.get("pro", {})
         
         i18n.set_language('local')

@@ -390,7 +390,7 @@
       return this;
     };
     ShadowcraftBackend.prototype.buildPayload = function() {
-      var Gems, GlyphLookup, ItemLookup, Talents, buffList, data, g, gear_ids, glyph, glyph_list, k, key, mh, oh, payload, professions, specName, statSum, statSummary, talentArray, talentString, val, _i, _item_id, _len, _len2, _ref, _ref2, _ref3;
+      var Gems, GlyphLookup, ItemLookup, Talents, buffList, data, g, gear_ids, glyph, glyph_list, item, k, key, mh, oh, payload, professions, specName, statSum, statSummary, talentArray, talentString, val, _i, _item_id, _len, _len2, _ref, _ref2, _ref3;
       data = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       Talents = Shadowcraft.ServerData.TALENTS;
@@ -483,7 +483,10 @@
       for (k in _ref3) {
         g = _ref3[k];
         _item_id = g.upgrade_level ? Math.floor(g.item_id / 1000000) : g.item_id;
-        gear_ids.push(_item_id);
+        item = [_item_id, g.upgrade_level ? g.upgrade_level : 0];
+        if (_item_id) {
+          gear_ids.push(item);
+        }
         if (k === "0" && g.g0 && Gems[g.g0] && Gems[g.g0].Meta) {
           if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(g.g0) !== -1) {
             payload.mg = "chaotic";
