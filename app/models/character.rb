@@ -82,7 +82,7 @@ class Character
   def as_json(options = {})
     #Rails.logger.debug Character.encode_random_items(properties["gear"]).inspect
     {
-      :gear   => Character.encode_random_items(properties["gear"]),
+      :gear   => Character.encode_items(properties["gear"]),
       :talents => properties["talents"],
       :active => properties["active_talents"],
       :options => {
@@ -95,11 +95,18 @@ class Character
     }
   end
 
-  def self.encode_random_items(items)
+  def self.encode_items(items)
     items.clone.tap do |copy|
       copy.each do |key, item|
-        if r = item.delete("suffix")
-          item["item_id"] = item["item_id"] * 1000 + r.to_i.abs
+        suffix = item.delete("suffix")
+        upgrade_level = item.delete("upgrade_level")
+        if suffix
+          item["item_id"] = item["item_id"] * 1000 + suffix.to_i.abs
+          if upgrade_level
+            item["item_id"] = item["item_id"] * 1000 + upgrade_level.to_i.abs
+          end
+        elsif upgrade_level
+          item["item_id"] = item["item_id"] * 1000000 + upgrade_level.to_i.abs
         end
       end
     end
