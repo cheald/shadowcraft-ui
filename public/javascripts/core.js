@@ -1264,7 +1264,7 @@
           'default': 50,
           datatype: 'integer',
           options: {
-            50: '5.0.5'
+            50: '5.1'
           }
         },
         level: {
@@ -1547,7 +1547,7 @@
           name: "Min CP/Envenom > 35%",
           options: [5, 4, 3, 2, 1],
           'default': 4,
-          desc: "CP for Envenom when using Mutilate",
+          desc: "CP for Envenom when using Mutilate, no effect with Anticipation",
           datatype: 'integer',
           min: 1,
           max: 5
@@ -1557,7 +1557,7 @@
           name: "Min CP/Envenom < 35%",
           options: [5, 4, 3, 2, 1],
           'default': 5,
-          desc: "CP for Envenom when using Dispatch",
+          desc: "CP for Envenom when using Dispatch, no effect with Anticipation",
           datatype: 'integer',
           min: 1,
           max: 5
@@ -2525,7 +2525,7 @@
       return null;
     };
     get_ep = function(item, key, slot, ignore) {
-      var c, data, enchant, pre, stat, stats, total, value, weight, weights;
+      var c, data, enchant, pre, stat, stats, total, upgrade_level, value, weight, weights;
       data = Shadowcraft.Data;
       weights = Weights;
       stats = {};
@@ -2567,8 +2567,9 @@
             total += c[pre + "ep"][pre + enchant];
           }
         }
+        upgrade_level = item.upgrade_level != null ? item.upgrade_level : 0;
         if (c.trinket_ranking[get_item_id(item)]) {
-          total += c.trinket_ranking[get_item_id(item)];
+          total += c.trinket_ranking[get_item_id(item)][upgrade_level];
         }
       }
       return total;
@@ -3353,7 +3354,7 @@
       # View helpers
       */
     ShadowcraftGear.prototype.updateDisplay = function(skipUpdate) {
-      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, curr_level, data, enchant, enchantable, from, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, restid, slotIndex, slotSet, socket, ssi, stat, to, upgrade, upgradeable, _base, _i, _len, _len2, _len3, _ref, _ref2, _ref3;
+      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, curr_level, data, enchant, enchantable, from, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, restid, slotIndex, slotSet, socket, ssi, stat, to, upgrade, upgradeable, _base, _i, _len, _len2, _len3, _ref, _ref2;
       this.updateStatsWindow();
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
@@ -3431,11 +3432,6 @@
                 curr_level: curr_level,
                 max_level: max_level
               };
-            }
-            if ((i === "12" || i === "13") && item.upgradeable) {
-              if ((gear.upgrade_level != null) && ((_ref3 = gear.upgrade_level) === 1 || _ref3 === 2) && !/UPDATED PROC MISSING/.test(item.name)) {
-                item.name = "[UPDATED PROC MISSING] " + item.name;
-              }
             }
           }
           if (enchant && enchant.desc === "") {

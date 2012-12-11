@@ -36,52 +36,52 @@ class ShadowcraftComputation:
     }
 
     gearProcs = {
-        58181: 'fluid_death',
-        56295: 'heroic_grace_of_the_herald',
-        55266: 'grace_of_the_herald',
-        56328: 'heroic_key_to_the_endless_chamber',
-        56427: 'heroic_left_eye_of_rajh',
-        65026: 'heroic_prestors_talisman_of_machination',
-        56394: 'heroic_tias_grace',
-        62049: 'darkmoon_card_hurricane',
-        62051: 'darkmoon_card_hurricane',
-        59473: 'essence_of_the_cyclone',
-        65140: 'heroic_essence_of_the_cyclone',
-        66969: 'heart_of_the_vile',
-        55795: 'key_to_the_endless_chamber',
-        56102: 'left_eye_of_rajh',
-        59441: 'prestors_talisman_of_machination',
-        68163: 'the_twilight_blade',
-        55874: 'tias_grace',
-        59520: 'unheeded_warning',
-        71633: 'aellas_bottle',
-        68994: 'matrix_restabilizer',
-        69150: 'heroic_matrix_restabilizer',
-        71335: 'corens_chilled_chromium_coaster',
-        66969: 'heart_of_the_vile',
-        65805: 'schnottz_medallion_of_command',
-        68927: 'the_hungerer',
-        69112: 'heroic_the_hungerer',
-        70144: 'rickets_magnetic_fireball_proc',
+        #58181: 'fluid_death',
+        #56295: 'heroic_grace_of_the_herald',
+        #55266: 'grace_of_the_herald',
+        #56328: 'heroic_key_to_the_endless_chamber',
+        #56427: 'heroic_left_eye_of_rajh',
+        #65026: 'heroic_prestors_talisman_of_machination',
+        #56394: 'heroic_tias_grace',
+        #62049: 'darkmoon_card_hurricane',
+        #62051: 'darkmoon_card_hurricane',
+        #59473: 'essence_of_the_cyclone',
+        #65140: 'heroic_essence_of_the_cyclone',
+        #66969: 'heart_of_the_vile',
+        #55795: 'key_to_the_endless_chamber',
+        #56102: 'left_eye_of_rajh',
+        #59441: 'prestors_talisman_of_machination',
+        #68163: 'the_twilight_blade',
+        #55874: 'tias_grace',
+        #59520: 'unheeded_warning',
+        #71633: 'aellas_bottle',
+        #68994: 'matrix_restabilizer',
+        #69150: 'heroic_matrix_restabilizer',
+        #71335: 'corens_chilled_chromium_coaster',
+        #66969: 'heart_of_the_vile',
+        #65805: 'schnottz_medallion_of_command',
+        #68927: 'the_hungerer',
+        #69112: 'heroic_the_hungerer',
+        #70144: 'rickets_magnetic_fireball_proc',
 
         # 4.3
-        77979: 'lfr_vial_of_shadows',
-        77207: 'vial_of_shadows',
-        77999: 'heroic_vial_of_shadows',
+        #77979: 'lfr_vial_of_shadows',
+        #77207: 'vial_of_shadows',
+        #77999: 'heroic_vial_of_shadows',
 
-        77974: 'lfr_wrath_of_unchaining',
-        77197: 'wrath_of_unchaining',
-        77994: 'heroic_wrath_of_unchaining',
+        #77974: 'lfr_wrath_of_unchaining',
+        #77197: 'wrath_of_unchaining',
+        #77994: 'heroic_wrath_of_unchaining',
 
-        77993: 'heroic_starcatcher_compass',
-        77973: 'lfr_starcatcher_compass',
-        77202: 'starcatcher_compass',
+        #77993: 'heroic_starcatcher_compass',
+        #77973: 'lfr_starcatcher_compass',
+        #77202: 'starcatcher_compass',
 
-        78481 : 'lfr_nokaled_the_elements_of_death',
-        77188: 'nokaled_the_elements_of_death',
-        78472: 'heroic_nokaled_the_elements_of_death',
+        #78481 : 'lfr_nokaled_the_elements_of_death',
+        #77188: 'nokaled_the_elements_of_death',
+        #78472: 'heroic_nokaled_the_elements_of_death',
 
-        72897: 'arrow_of_time',
+        #72897: 'arrow_of_time',
 
         # 5.0
         81125: "windswept_pages",
@@ -95,27 +95,22 @@ class ShadowcraftComputation:
         81267: "searing_words",
         87574: "corens_cold_chromium_coaster",
         84072: "braid_of_ten_songs",
-        75274: "zen_alchemist_stone",
-
-        # 5.1
-        #93253: "woundripper_medallion",
-        #93258: "woundripper_medallion"
-
+        75274: "zen_alchemist_stone"
     }
     
     gearBoosts = {
-        56115: 'skardyns_grace',
-        56440: 'heroic_skardyns_grace',
-        68709: 'unsolvable_riddle',
-        62468: 'unsolvable_riddle',
-        62463: 'unsolvable_riddle',
-        52199: 'demon_panther',
-        69199: 'heroic_ancient_petrified_seed',
-        69001: 'ancient_petrified_seed',
-        70144: 'rickets_magnetic_fireball',
-        77113: 'kiroptyric_sigil',
-        78004: 'heroic_kiroptyric_sigil',
-        77974: 'lfr_kiroptyric_sigil',
+        #56115: 'skardyns_grace',
+        #56440: 'heroic_skardyns_grace',
+        #68709: 'unsolvable_riddle',
+        #62468: 'unsolvable_riddle',
+        #62463: 'unsolvable_riddle',
+        #52199: 'demon_panther',
+        #69199: 'heroic_ancient_petrified_seed',
+        #69001: 'ancient_petrified_seed',
+        #70144: 'rickets_magnetic_fireball',
+        #77113: 'kiroptyric_sigil',
+        #78004: 'heroic_kiroptyric_sigil',
+        #77974: 'lfr_kiroptyric_sigil',
         
         #5.0
         87495: "gerps_perfect_arrow",
@@ -123,7 +118,11 @@ class ShadowcraftComputation:
         89082: "hawkmasters_talon",
         87079: "heroic_jade_bandit_figurine",
         86043: "jade_bandit_figurine",
-        86772: "lfr_jade_bandit_figurine"
+        86772: "lfr_jade_bandit_figurine",
+        
+        # 5.1
+        93253: "woundripper_medallion",
+        93258: "woundripper_medallion"
     }
     
     trinketMap = dict(gearProcs, **gearBoosts)
@@ -358,7 +357,10 @@ class ShadowcraftComputation:
         proclist = []
         for k in self.gearProcs:
             if k in gear:
-                proclist.append(self.gearProcs[k])
+                for gd in gear_data:
+                    if gd[0] == k:
+                        proclist.append((self.gearProcs[k],gd[1]))
+                        break
         
         if len(self.tier11IDS & gear) >= 4:
             proclist.append('rogue_t11_4pc')
@@ -468,13 +470,15 @@ class ShadowcraftComputation:
             out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
             out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc'])
 
-            trinket_rankings = calculator.get_other_ep(self.trinkets)
+            trinket_rankings = calculator.get_upgrades_ep(self.trinkets)
+            #print trinket_rankings
             out["trinket_ranking"] = {}
             for k in trinket_rankings:
                 for id in self.trinketMap:
                     if self.trinketMap[id] == k:
                         try:
-                            out["trinket_ranking"][id] = floor(float(trinket_rankings[k]) * 10) / 10      
+                            #out["trinket_ranking"][id] = floor(float(trinket_rankings[k]) * 10) / 10 #[floor(float(x) * 10) / 10 for x in trinket_rankings[k]]
+                            out["trinket_ranking"][id] = [floor(float(x) * 10) / 10 for x in trinket_rankings[k]]
                         except ValueError:
                             pass
             
