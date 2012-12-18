@@ -2372,7 +2372,6 @@
       GEMS: 2,
       ENCHANT: 4,
       REFORGE: 8,
-      SOCKETBONUS: 16,
       ALL: 255
     };
     ShadowcraftGear.FACETS = FACETS;
@@ -2620,9 +2619,6 @@
         if (matchesAllSockets) {
           sumItem(out, item, "socketbonus");
         }
-      }
-      if ((facets & FACETS.SOCKETBONUS) === FACETS.SOCKETBONUS) {
-        sumItem(out, item, "socketbonus");
       }
       if ((facets & FACETS.REFORGE) === FACETS.REFORGE && gear.reforge) {
         sumReforge(out, item, gear.reforge);

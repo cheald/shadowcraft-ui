@@ -11,7 +11,6 @@ class ShadowcraftGear
     GEMS: 2
     ENCHANT: 4
     REFORGE: 8,
-    SOCKETBONUS: 16,
     ALL: 255
   }
   @FACETS = FACETS
@@ -228,9 +227,6 @@ class ShadowcraftGear
 
       if matchesAllSockets
         sumItem(out, item, "socketbonus")
-    
-    if (facets & FACETS.SOCKETBONUS) == FACETS.SOCKETBONUS
-      sumItem(out, item, "socketbonus")
 
     if (facets & FACETS.REFORGE) == FACETS.REFORGE and gear.reforge
       sumReforge(out, item, gear.reforge)
