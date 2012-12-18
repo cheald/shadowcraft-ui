@@ -99,14 +99,14 @@ class Character
     items.clone.tap do |copy|
       copy.each do |key, item|
         suffix = item.delete("suffix")
-        upgrade_level = item.delete("upgrade_level")
+        upgrade_level = item.include?("upgrade_level")
         if suffix
           item["item_id"] = item["item_id"] * 1000 + suffix.to_i.abs
-          if upgrade_level
-            item["item_id"] = item["item_id"] * 1000 + upgrade_level.to_i.abs
+          if upgrade_level and item["upgrade_level"] > 0
+            item["item_id"] = item["item_id"] * 1000 + item["upgrade_level"].to_i.abs
           end
-        elsif upgrade_level
-          item["item_id"] = item["item_id"] * 1000000 + upgrade_level.to_i.abs
+        elsif upgrade_level and item["upgrade_level"] > 0
+          item["item_id"] = item["item_id"] * 1000000 + item["upgrade_level"].to_i.abs
         end
       end
     end

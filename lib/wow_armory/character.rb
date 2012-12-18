@@ -133,9 +133,9 @@ module WowArmory
           "slot" => SLOT_MAP[k]
         }
         info["suffix"] = tooltip["suffix"].to_i unless tooltip["suffix"].blank?
-        unless tooltip["upgrade"].blank?
+        unless tooltip["upgrade"].nil?
           upgrade = tooltip["upgrade"]
-          info["upgrade_level"] = upgrade["current"]
+          info["upgrade_level"] = upgrade["current"] if upgrade["current"] > 0
         end
         @gear[info["slot"].to_s] = info
       end
