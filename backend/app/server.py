@@ -471,13 +471,11 @@ class ShadowcraftComputation:
             out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc'])
 
             trinket_rankings = calculator.get_upgrades_ep(self.trinkets)
-            #print trinket_rankings
             out["trinket_ranking"] = {}
             for k in trinket_rankings:
                 for id in self.trinketMap:
                     if self.trinketMap[id] == k:
                         try:
-                            #out["trinket_ranking"][id] = floor(float(trinket_rankings[k]) * 10) / 10 #[floor(float(x) * 10) / 10 for x in trinket_rankings[k]]
                             out["trinket_ranking"][id] = [floor(float(x) * 10) / 10 for x in trinket_rankings[k]]
                         except ValueError:
                             pass

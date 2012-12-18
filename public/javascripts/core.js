@@ -2372,6 +2372,7 @@
       GEMS: 2,
       ENCHANT: 4,
       REFORGE: 8,
+      SOCKETBONUS: 16,
       ALL: 255
     };
     ShadowcraftGear.FACETS = FACETS;
@@ -2619,6 +2620,9 @@
         if (matchesAllSockets) {
           sumItem(out, item, "socketbonus");
         }
+      }
+      if ((facets & FACETS.SOCKETBONUS) === FACETS.SOCKETBONUS) {
+        sumItem(out, item, "socketbonus");
       }
       if ((facets & FACETS.REFORGE) === FACETS.REFORGE && gear.reforge) {
         sumReforge(out, item, gear.reforge);
@@ -2964,7 +2968,7 @@
     };
     getRegularGemEpValue = function(gem, offset) {
       var bestGem, equiv_ep, name, _i, _len, _ref;
-      equiv_ep = gem.__ep || get_ep(gem, offset);
+      equiv_ep = get_ep(gem, false, null, offset);
       if (((_ref = gem.requires) != null ? _ref.profession : void 0) == null) {
         return equiv_ep;
       }
@@ -2976,7 +2980,7 @@
         name = JC_ONLY_GEMS[_i];
         if (gem.name.indexOf(name) >= 0) {
           if (bestGem) {
-            equiv_ep = bestGem.__color_ep || get_ep(bestGem, offset);
+            equiv_ep = bestGem.__color_ep || get_ep(bestGem, false, null, offset);
             equiv_ep;
             gem.__reg_ep = equiv_ep += 0.0001;
           }
@@ -3080,7 +3084,7 @@
       }
     };
     ShadowcraftGear.prototype.optimizeGems = function(depth) {
-      var Gems, ItemLookup, data, from_gem, gear, gem, gemIndex, gem_list, item, madeChanges, rec, slotIndex, to_gem, _i, _len, _len2, _ref;
+      var Gems, ItemLookup, data, from_gem, gear, gem, gemIndex, gem_list, gem_offset, item, madeChanges, rec, slotIndex, to_gem, _i, _len, _len2, _ref;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       data = Shadowcraft.Data;
@@ -3098,8 +3102,10 @@
           continue;
         }
         item = ItemLookup[gear.item_id];
+        gem_offset = statOffset(gear, FACETS.GEMS);
+        fudgeOffsets(gem_offset);
         if (item) {
-          rec = getGemmingRecommendation(gem_list, item, true, slotIndex);
+          rec = getGemmingRecommendation(gem_list, item, true, slotIndex, gem_offset);
           _ref = rec.gems;
           for (gemIndex = 0, _len2 = _ref.length; gemIndex < _len2; gemIndex++) {
             gem = _ref[gemIndex];
@@ -3641,7 +3647,7 @@
         offsets.hit_rating += stats.hit_rating - caps.yellow_hit - 1;
       }
       lowest_exp = caps.mh_exp < caps.oh_exp ? caps.mh_exp : caps.oh_exp;
-      if (stats.expertise_rating > (lowest_exp * 0.9)) {
+      if (stats.expertise_rating > (lowest_exp * 0.8)) {
         offsets.expertise_rating += lowest_exp;
       }
       return offsets;

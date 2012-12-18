@@ -11,6 +11,7 @@ class ShadowcraftGear
     GEMS: 2
     ENCHANT: 4
     REFORGE: 8,
+    SOCKETBONUS: 16,
     ALL: 255
   }
   @FACETS = FACETS
@@ -227,6 +228,9 @@ class ShadowcraftGear
 
       if matchesAllSockets
         sumItem(out, item, "socketbonus")
+    
+    if (facets & FACETS.SOCKETBONUS) == FACETS.SOCKETBONUS
+      sumItem(out, item, "socketbonus")
 
     if (facets & FACETS.REFORGE) == FACETS.REFORGE and gear.reforge
       sumReforge(out, item, gear.reforge)
@@ -488,7 +492,7 @@ class ShadowcraftGear
   # Returns the EP value of a gem.  If it happens to require JC, it'll return
   # the regular EP value for the same quality gem, if found.
   getRegularGemEpValue = (gem, offset) ->
-    equiv_ep = gem.__ep || get_ep(gem, offset)
+    equiv_ep = get_ep(gem, false, null, offset)
 
     return equiv_ep unless gem.requires?.profession?
     return gem.__reg_ep if gem.__reg_ep
@@ -497,7 +501,7 @@ class ShadowcraftGear
     for name in JC_ONLY_GEMS
       if gem.name.indexOf(name) >= 0
         if bestGem
-          equiv_ep = bestGem.__color_ep || get_ep(bestGem, offset)
+          equiv_ep = bestGem.__color_ep || get_ep(bestGem, false, null, offset)
           equiv_ep
           gem.__reg_ep = equiv_ep += 0.0001
         #prefix = gem.name.replace(name, "")
@@ -591,9 +595,11 @@ class ShadowcraftGear
       continue unless gear
 
       item = ItemLookup[gear.item_id]
+      gem_offset = statOffset(gear, FACETS.GEMS)
+      fudgeOffsets(gem_offset)
 
       if item
-        rec = getGemmingRecommendation(gem_list, item, true, slotIndex)
+        rec = getGemmingRecommendation(gem_list, item, true, slotIndex, gem_offset)
         for gem, gemIndex in rec.gems
           from_gem = Gems[gear["g#{gemIndex}"]]
           to_gem = Gems[gem]
@@ -1026,7 +1032,7 @@ class ShadowcraftGear
       offsets.hit_rating += stats.hit_rating - caps.yellow_hit - 1
 
     lowest_exp = if caps.mh_exp < caps.oh_exp then caps.mh_exp else caps.oh_exp
-    if stats.expertise_rating > (lowest_exp * 0.9)
+    if stats.expertise_rating > (lowest_exp * 0.8)
       offsets.expertise_rating += lowest_exp
 
     offsets
