@@ -1026,15 +1026,14 @@ class ShadowcraftGear
     stats = Shadowcraft.Gear.sumStats()
     offsets.hit_rating ||= 0
     offsets.expertise_rating ||= 0
-    if stats.hit_rating > (caps.white_hit * 0.9) and stats.hit_rating < (caps.white_hit * 1.1)
-      offsets.hit_rating += stats.hit_rating - caps.spell_hit - 1
-    else if stats.hit_rating > (caps.spell_hit * 0.9) and stats.hit_rating < (caps.spell_hit * 1.1)
-      offsets.hit_rating += stats.hit_rating - caps.yellow_hit - 1
+    if stats.hit_rating > (caps.whiteHitCap * 0.9) and stats.hit_rating < (caps.whiteHitCap * 1.1)
+      offsets.hit_rating += stats.hit_rating - caps.yellowHitCap - 1
+    else if stats.hit_rating > (caps.yellowHitCap * 0.9) and stats.hit_rating < (caps.yellowHitCap * 1.1)
+      offsets.hit_rating += stats.hit_rating - caps.yellowHitCap - 1
 
     lowest_exp = if caps.mh_exp < caps.oh_exp then caps.mh_exp else caps.oh_exp
     if stats.expertise_rating > (lowest_exp * 0.8)
       offsets.expertise_rating += lowest_exp
-
     offsets
 
   patch_max_ilevel = (patch) ->
@@ -1068,9 +1067,7 @@ class ShadowcraftGear
     reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
     gear_offset = statOffset(gear[slot], FACETS.ITEM)
     gem_offset = statOffset(gear[slot], FACETS.GEMS)
-
     fudgeOffsets(reforge_offset)
-
     epSort(GemList) # Needed for gemming recommendations
 
     # set bonus
