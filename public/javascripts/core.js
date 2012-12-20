@@ -3567,7 +3567,9 @@
       Weights.pvp_power_rating = source.ep.pvp_power;
       other = {
         mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps,
-        offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps
+        offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps,
+        t14_2pc: source.other_ep.rogue_t14_2pc,
+        t14_4pc: source.other_ep.rogue_t14_4pc
       };
       all = _.extend(Weights, other);
       $weights = $("#weights .inner");
@@ -3585,6 +3587,10 @@
             $.data(exist.get(0), "sortkey", 1);
           } else if (key === "mh_expertise_rating" || key === "oh_expertise_rating") {
             $.data(exist.get(0), "sortkey", 2);
+          } else if (key === "t14_2pc") {
+            $.data(exist.get(0), "sortkey", 3);
+          } else if (key === "t14_4pc") {
+            $.data(exist.get(0), "sortkey", 4);
           }
         }
         $.data(exist.get(0), "weight", weight);
