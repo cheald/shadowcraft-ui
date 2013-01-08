@@ -420,7 +420,7 @@ class ShadowcraftGear
     list.sort(__epSort) unless skipSort
 
   needsDagger = ->
-    Shadowcraft.Data.activeSpec == "a" || Shadowcraft.Data.activeSpec == "b"
+    Shadowcraft.Data.activeSpec == "a"
   
   setBonusEP = (set, count) ->
     return 0 unless c = Shadowcraft.lastCalculation
@@ -1102,11 +1102,12 @@ class ShadowcraftGear
     minIEP = 0
     buffer = ""
     requireDagger = needsDagger()
+    combatSpec = Shadowcraft.Data.activeSpec == "Z"
 
     for l in loc
       continue if l.__ep < 1
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
-      continue if (slot == 15) && !requireDagger && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
+      continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
@@ -1121,7 +1122,7 @@ class ShadowcraftGear
     for l in loc
       continue if l.__ep < 1
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
-      continue if (slot == 15) && !requireDagger && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
+      continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
@@ -1637,7 +1638,7 @@ class ShadowcraftGear
       false
 
     Shadowcraft.Options.bind "update", (opt, val) ->
-      if opt in ['professions.enchanting', 'professions.blacksmithing']
+      if opt in ['professions.enchanting', 'professions.blacksmithing','rotation.use_hemorrhage']
         app.updateDisplay()
 
     this

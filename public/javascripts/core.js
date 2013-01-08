@@ -2857,7 +2857,7 @@
       }
     };
     needsDagger = function() {
-      return Shadowcraft.Data.activeSpec === "a" || Shadowcraft.Data.activeSpec === "b";
+      return Shadowcraft.Data.activeSpec === "a";
     };
     setBonusEP = function(set, count) {
       var bonus_name, c, p, total, _ref;
@@ -3682,7 +3682,7 @@
       return item.id;
     };
     clickSlotName = function() {
-      var $slot, GemList, buf, buffer, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, maxIEP, max_level, minIEP, rec, reforge_offset, requireDagger, restid, selected_id, set, setBonEP, setCount, set_name, slot, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _len, _len2, _len3;
+      var $slot, GemList, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, maxIEP, max_level, minIEP, rec, reforge_offset, requireDagger, restid, selected_id, set, setBonEP, setCount, set_name, slot, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _len, _len2, _len3;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -3731,6 +3731,7 @@
       minIEP = 0;
       buffer = "";
       requireDagger = needsDagger();
+      combatSpec = Shadowcraft.Data.activeSpec === "Z";
       for (_j = 0, _len2 = loc.length; _j < _len2; _j++) {
         l = loc[_j];
         if (l.__ep < 1) {
@@ -3739,7 +3740,7 @@
         if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
           continue;
         }
-        if ((slot === 15) && !requireDagger && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
+        if ((slot === 15) && combatSpec && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
           continue;
         }
         if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
@@ -3773,7 +3774,7 @@
         if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
           continue;
         }
-        if ((slot === 15) && !requireDagger && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
+        if ((slot === 15) && combatSpec && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
           continue;
         }
         if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
@@ -4373,7 +4374,7 @@
         return false;
       });
       Shadowcraft.Options.bind("update", function(opt, val) {
-        if (opt === 'professions.enchanting' || opt === 'professions.blacksmithing') {
+        if (opt === 'professions.enchanting' || opt === 'professions.blacksmithing' || opt === 'rotation.use_hemorrhage') {
           return app.updateDisplay();
         }
       });
