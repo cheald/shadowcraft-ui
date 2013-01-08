@@ -1491,7 +1491,13 @@ class ShadowcraftGear
               data.gear[slot].upgrade_level = ItemLookup[data.gear[slot].item_id].upgrade_level
             else
               data.gear[slot].upgrade_level = null
-              
+            if ItemLookup[data.gear[slot].item_id].sockets
+              socketlength = ItemLookup[data.gear[slot].item_id].sockets.length
+              for i in [0..2]
+                if i >= socketlength
+                  data.gear[slot]["g" + i] = null
+            else
+              data.gear[slot]["g" + i] = null for i in [0..2]
           else
             Shadowcraft.Console.log("Changing " + ItemLookup[data.gear[slot].item_id].name + " enchant to " + EnchantLookup[val].name)
 

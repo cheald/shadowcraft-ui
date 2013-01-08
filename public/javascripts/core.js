@@ -4153,7 +4153,7 @@
       });
       $altslots.click($.delegate({
         ".slot": function(e) {
-          var $this, EnchantLookup, Gems, ItemLookup, data, gem_id, item_id, slot, update, val;
+          var $this, EnchantLookup, Gems, ItemLookup, data, gem_id, i, item_id, slot, socketlength, update, val;
           ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
           EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
           Gems = Shadowcraft.ServerData.GEM_LOOKUP;
@@ -4170,6 +4170,18 @@
                 data.gear[slot].upgrade_level = ItemLookup[data.gear[slot].item_id].upgrade_level;
               } else {
                 data.gear[slot].upgrade_level = null;
+              }
+              if (ItemLookup[data.gear[slot].item_id].sockets) {
+                socketlength = ItemLookup[data.gear[slot].item_id].sockets.length;
+                for (i = 0; i <= 2; i++) {
+                  if (i >= socketlength) {
+                    data.gear[slot]["g" + i] = null;
+                  }
+                }
+              } else {
+                for (i = 0; i <= 2; i++) {
+                  data.gear[slot]["g" + i] = null;
+                }
               }
             } else {
               Shadowcraft.Console.log("Changing " + ItemLookup[data.gear[slot].item_id].name + " enchant to " + EnchantLookup[val].name);
