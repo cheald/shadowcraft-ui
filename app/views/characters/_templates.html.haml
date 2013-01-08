@@ -89,7 +89,7 @@
       %span.ilvl {{item/ilvl}}
     .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}", :"data-tooltip-rand" => "{{ttrand}}", :"data-tooltip-upgd" => "{{ttupgd}}"}
       {{item/name}}
-      -#%em.heroic {{item/heroic}}
+      %em.heroic {{item/heroic}}
       {{#upgradeable}}
       {{#upgrade}}
       %em.upgrade {{curr_level}}/{{max_level}}
