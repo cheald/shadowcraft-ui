@@ -38,7 +38,11 @@ class ShadowcraftGear
     4894: "swordguard_embroidery"
 
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
-  TIER14_IDS = [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128]
+
+  Sets =
+    T14:
+      ids: [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128]
+      bonuses: {4: "rogue_t14_4pc", 2: "rogue_t14_2pc"}
 
   Weights =
     attack_power: 1
@@ -417,16 +421,16 @@ class ShadowcraftGear
 
   needsDagger = ->
     Shadowcraft.Data.activeSpec == "a" || Shadowcraft.Data.activeSpec == "b"
-
-  setBonusEP = (count) ->
-    c = Shadowcraft.lastCalculation
+  
+  setBonusEP = (set, count) ->
+    return 0 unless c = Shadowcraft.lastCalculation
+  
     total = 0
-    if c
-      if count == 3
-        total += c["other_ep"]["rogue_t14_4pc"]
-      else if count == 1
-        total += c["other_ep"]["rogue_t14_2pc"]
-    total
+    for p, bonus_name of set.bonuses
+      if count == (p-1)
+        total += c["other_ep"][bonus_name]
+
+    return total
 
   getEquippedSetCount = (setIds, ignoreSlotIndex) ->
     count = 0
@@ -1072,9 +1076,11 @@ class ShadowcraftGear
     epSort(GemList) # Needed for gemming recommendations
 
     # set bonus
-    # TODO make this universal so other sets can be used in same fashion
-    setCount = getEquippedSetCount(TIER14_IDS, equip_location)
-    setBonEP = setBonusEP(setCount)
+    setBonEP = {}
+    for set_name, set of Sets
+      setCount = getEquippedSetCount(set.ids, equip_location)
+      setBonEP[set_name] ||= 0
+      setBonEP[set_name] += setBonusEP(set, setCount)
     for l in loc
       l.__gemRec = getGemmingRecommendation(GemList, l, true, null, gem_offset)
       rec = recommendReforge(l, reforge_offset)
@@ -1082,10 +1088,10 @@ class ShadowcraftGear
         l.__reforgeEP = reforgeEp(rec, l, reforge_offset)
       else
         l.__reforgeEP = 0
-      if TIER14_IDS.indexOf(get_item_id(l)) >= 0
-        l.__setBonusEP = setBonEP
-      else
-        l.__setBonusEP = 0
+      l.__setBonusEP = 0
+      for set_name, set of Sets
+        if set.ids.indexOf(get_item_id(l)) >= 0
+          l.__setBonusEP += setBonEP[set_name]
 
       l.__gearEP = get_ep(l, null, slot, gear_offset)
       l.__gearEP = 0 if isNaN l.__gearEP
@@ -1491,7 +1497,7 @@ class ShadowcraftGear
               data.gear[slot].upgrade_level = ItemLookup[data.gear[slot].item_id].upgrade_level
             else
               data.gear[slot].upgrade_level = null
-            if ItemLookup[data.gear[slot].item_id].sockets
+            if ItemLookup[data.gear[slot].item_id] and ItemLookup[data.gear[slot].item_id].sockets
               socketlength = ItemLookup[data.gear[slot].item_id].sockets.length
               for i in [0..2]
                 if i >= socketlength

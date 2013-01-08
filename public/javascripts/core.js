@@ -2360,7 +2360,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, TIER14_IDS, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, get_item_id, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, get_item_id, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -2408,7 +2408,15 @@
       4894: "swordguard_embroidery"
     };
     ShadowcraftGear.CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886];
-    TIER14_IDS = [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128];
+    Sets = {
+      T14: {
+        ids: [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128],
+        bonuses: {
+          4: "rogue_t14_4pc",
+          2: "rogue_t14_2pc"
+        }
+      }
+    };
     Weights = {
       attack_power: 1,
       agility: 2.66,
@@ -2851,15 +2859,17 @@
     needsDagger = function() {
       return Shadowcraft.Data.activeSpec === "a" || Shadowcraft.Data.activeSpec === "b";
     };
-    setBonusEP = function(count) {
-      var c, total;
-      c = Shadowcraft.lastCalculation;
+    setBonusEP = function(set, count) {
+      var bonus_name, c, p, total, _ref;
+      if (!(c = Shadowcraft.lastCalculation)) {
+        return 0;
+      }
       total = 0;
-      if (c) {
-        if (count === 3) {
-          total += c["other_ep"]["rogue_t14_4pc"];
-        } else if (count === 1) {
-          total += c["other_ep"]["rogue_t14_2pc"];
+      _ref = set.bonuses;
+      for (p in _ref) {
+        bonus_name = _ref[p];
+        if (count === (p - 1)) {
+          total += c["other_ep"][bonus_name];
         }
       }
       return total;
@@ -3672,7 +3682,7 @@
       return item.id;
     };
     clickSlotName = function() {
-      var $slot, GemList, buf, buffer, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, maxIEP, max_level, minIEP, rec, reforge_offset, requireDagger, restid, selected_id, setBonEP, setCount, slot, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _len, _len2, _len3;
+      var $slot, GemList, buf, buffer, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, maxIEP, max_level, minIEP, rec, reforge_offset, requireDagger, restid, selected_id, set, setBonEP, setCount, set_name, slot, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _len, _len2, _len3;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -3687,8 +3697,13 @@
       gem_offset = statOffset(gear[slot], FACETS.GEMS);
       fudgeOffsets(reforge_offset);
       epSort(GemList);
-      setCount = getEquippedSetCount(TIER14_IDS, equip_location);
-      setBonEP = setBonusEP(setCount);
+      setBonEP = {};
+      for (set_name in Sets) {
+        set = Sets[set_name];
+        setCount = getEquippedSetCount(set.ids, equip_location);
+        setBonEP[set_name] || (setBonEP[set_name] = 0);
+        setBonEP[set_name] += setBonusEP(set, setCount);
+      }
       for (_i = 0, _len = loc.length; _i < _len; _i++) {
         l = loc[_i];
         l.__gemRec = getGemmingRecommendation(GemList, l, true, null, gem_offset);
@@ -3698,10 +3713,12 @@
         } else {
           l.__reforgeEP = 0;
         }
-        if (TIER14_IDS.indexOf(get_item_id(l)) >= 0) {
-          l.__setBonusEP = setBonEP;
-        } else {
-          l.__setBonusEP = 0;
+        l.__setBonusEP = 0;
+        for (set_name in Sets) {
+          set = Sets[set_name];
+          if (set.ids.indexOf(get_item_id(l)) >= 0) {
+            l.__setBonusEP += setBonEP[set_name];
+          }
         }
         l.__gearEP = get_ep(l, null, slot, gear_offset);
         if (isNaN(l.__gearEP)) {
@@ -4171,7 +4188,7 @@
               } else {
                 data.gear[slot].upgrade_level = null;
               }
-              if (ItemLookup[data.gear[slot].item_id].sockets) {
+              if (ItemLookup[data.gear[slot].item_id] && ItemLookup[data.gear[slot].item_id].sockets) {
                 socketlength = ItemLookup[data.gear[slot].item_id].sockets.length;
                 for (i = 0; i <= 2; i++) {
                   if (i >= socketlength) {
