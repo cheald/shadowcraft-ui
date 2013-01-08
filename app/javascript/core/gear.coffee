@@ -1110,7 +1110,7 @@ class ShadowcraftGear
       continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
-      continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
+      #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
       continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and l.id != selected_id
       continue if l.suffix and not Shadowcraft.Data.options.general.show_random_items and l.id != selected_id
       unless isNaN l.__ep
@@ -1125,7 +1125,7 @@ class ShadowcraftGear
       continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
-      continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
+      #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
       continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and l.id != selected_id
       continue if l.suffix and not Shadowcraft.Data.options.general.show_random_items and l.id != selected_id
       iEP = l.__ep
