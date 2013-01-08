@@ -112,7 +112,7 @@
           item.sockets[item.sockets.length] = "Prismatic";
         }
 
-        if(item.equip_location == 21) {
+        if(item.equip_location == 21 || item.equip_location == 13) {
           R.SLOT_CHOICES.offhand[R.SLOT_CHOICES.offhand.length] = item;   // Dual-hand items get added to offhands, too.
         }
         item.equip_location = getRealSlot(item.equip_location, true);

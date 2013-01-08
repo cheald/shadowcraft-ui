@@ -55,6 +55,28 @@ module WowArmory
       "resirtng" => "resilience_rating"
     }
 
+    # redundant to character.rb
+    PROF_MAP = {
+      755 => "jewelcrafting",
+      164 => "blacksmithing",
+      165 => "leatherworking",
+      333 => "enchanting",
+      202 => "engineering",
+      171 => "alchemy",
+      197 => "tailoring",
+      773 => "inscription",
+      182 => "herbalism",
+      186 => "mining",
+      393 => "skinning"
+    }
+
+    ARMOR_CLASS = {
+      1 => "Cloth",
+      2 => "Leather",
+      3 => "Mail",
+      4 => "Plate"
+    }
+
     SUFFIX_NAME_MAP = {
       133 => "of the Stormblast",
       134 => "of the Galeburst",
@@ -122,6 +144,7 @@ module WowArmory
       end
 
       fetch "us", "item/%d/tooltip" % id
+      fetch "us", "api/wow/item/%d" % id, :json
       populate_stats
     end
 
@@ -132,12 +155,18 @@ module WowArmory
     end
     
     def is_upgradeable
-      row = ruleset_item_upgrade[self.id.to_s]
-      if row.nil?
-        puts "item not upgradeable #{self.id}"
+      puts "upgradable"
+      puts @json["upgradable"]
+      if @json["upgradable"].nil?
         return false
       end
-      true
+      return @json["upgradable"]
+      #row = ruleset_item_upgrade[self.id.to_s]
+      #if row.nil?
+      #  puts "item not upgradeable #{self.id}"
+      #  return false
+      #end
+      #true
     end
 
     private
@@ -311,6 +340,22 @@ module WowArmory
       stats
     end
 
+    def get_item_stats_api
+      stats = {}
+      if @json["bonusStats"].nil?
+        return stats
+      end
+      eqstats = @json["bonusStats"]
+      puts eqstats.inspect
+      eqstats.each do |stat|
+        stat2 = STAT_LOOKUP[stat["stat"]]
+        unless stat2.nil?
+          stats[stat2] = stat["amount"]
+        end
+      end
+      stats
+    end
+
     def is_hydraulic_gem
       doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @id).read
       eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
@@ -323,27 +368,58 @@ module WowArmory
     end
 
     def populate_stats
-      self.name ||= value("h3")
+      #self.name ||= value("h3")
+      self.name ||= @json["name"]
       lis = @document.css(".item-specs li")
-      self.quality = attr("h3", "class").match(/color-q(\d)/).try(:[], 1).try(:to_i)
-      self.equip_location = lis.text.map {|e| EQUIP_LOCATIONS[e.strip.downcase] }.compact.first
-      self.ilevel = lis.text.map {|e| e.match(/Item Level (\d+)/).try(:[], 1) }.compact.first.try(:to_i)
-      self.icon = attr("span.icon-frame", "style").match(/(http.*)"/)[1]
-      if bonus = @document.css("li.color-d4").text.detect {|li| li.match(/Socket Bonus:/) }.try(:strip)
-        self.socket_bonus = scan_str(bonus)
+      #self.quality = attr("h3", "class").match(/color-q(\d)/).try(:[], 1).try(:to_i)
+      self.quality = @json["quality"]
+      #self.equip_location = lis.text.map {|e| EQUIP_LOCATIONS[e.strip.downcase] }.compact.first
+      self.equip_location = @json["inventoryType"]
+      #self.ilevel = lis.text.map {|e| e.match(/Item Level (\d+)/).try(:[], 1) }.compact.first.try(:to_i)
+      self.ilevel = @json["itemLevel"]
+      #self.icon = attr("span.icon-frame", "style").match(/(http.*)"/)[1]
+      self.icon = @json["icon"]
+      #if bonus = @document.css("li.color-d4").text.detect {|li| li.match(/Socket Bonus:/) }.try(:strip)
+      #  self.socket_bonus = scan_str(bonus)
+      #end
+      #self.sockets = @document.css(".icon-socket").map {|span| span.attr("class").match(/socket-(\d+)/).try(:[], 1).try(:to_i) }.compact.map {|s| SOCKET_MAP[s] }
+      if @json["hasSockets"]
+        self.sockets = []
+        sockets = @json["socketInfo"]["sockets"]
+        sockets.each do |socket|
+            self.sockets.push socket["type"].capitalize
+        end
+        unless @json["socketInfo"]["socketBonus"].nil?
+          self.socket_bonus = scan_str(@json["socketInfo"]["socketBonus"])
+        end
       end
-      self.sockets = @document.css(".icon-socket").map {|span| span.attr("class").match(/socket-(\d+)/).try(:[], 1).try(:to_i) }.compact.map {|s| SOCKET_MAP[s] }
-      self.requirement = lis.map {|li| li.text.match(/Requires ([a-z]+) \(/i) }.compact.first.try(:[], 1)
-      self.is_heroic = value(".color-tooltip-green").try(:strip) == "Heroic"
-      self.gem_slot = fix_gem_colors lis.map {|t| t.text.match(/Matches a ([a-z ]+) socket/i).try(:[], 1) }.compact.first
-      self.gem_slot ||= lis.map {|t| t.text.match(/Only fits in a (Cogwheel|Meta) (socket|gem slot)/i).try(:[], 1) }.compact.first.try(:humanize)
-      self.gem_slot = "Hydraulic" if is_hydraulic_gem
+      unless @json["requiredSkill"].nil?
+        self.requirement = PROF_MAP[@json["requiredSkill"]]
+      end
+      #self.requirement = lis.map {|li| li.text.match(/Requires ([a-z]+) \(/i) }.compact.first.try(:[], 1)
+      #self.is_heroic = value(".color-tooltip-green").try(:strip) == "Heroic"
+      self.is_heroic = @json["nameDescription"] == "Heroic"
+      unless @json["gemInfo"].nil?
+        self.gem_slot = @json["gemInfo"]["type"]["type"].capitalize
+        puts gem_slot
+      end
+      #self.gem_slot = fix_gem_colors lis.map {|t| t.text.match(/Matches a ([a-z ]+) socket/i).try(:[], 1) }.compact.first
+      #self.gem_slot ||= lis.map {|t| t.text.match(/Only fits in a (Cogwheel|Meta) (socket|gem slot)/i).try(:[], 1) }.compact.first.try(:humanize)
+      #self.gem_slot = "Hydraulic" if is_hydraulic_gem
   
-      self.armor_class ||= lis.map {|t| t.text.strip.match(/(^|\s)(Plate|Mail|Leather|Cloth)($|\s)/).try(:[], 2) }.compact.first
-      
-      if weapon_type = lis.text.map {|e| e.strip.match(/^(Dagger|Mace|Axe|Thrown|Wand|Bow|Gun|Crossbow|Fist Weapon|Sword)$/)}.compact.first
-        populate_weapon_stats!
+      #self.armor_class ||= lis.map {|t| t.text.strip.match(/(^|\s)(Plate|Mail|Leather|Cloth)($|\s)/).try(:[], 2) }.compact.first
+      if @json["itemClass"] == 4
+        self.armor_class ||= ARMOR_CLASS[@json["itemSubClass"]]
       end
+
+      unless @json["weaponInfo"].nil?
+        self.speed = @json["weaponInfo"]["weaponSpeed"].to_f
+        self.dps = @json["weaponInfo"]["dps"].to_f
+        self.subclass = @json["itemSubClass"]
+      end
+      #if weapon_type = lis.text.map {|e| e.strip.match(/^(Dagger|Mace|Axe|Thrown|Wand|Bow|Gun|Crossbow|Fist Weapon|Sword)$/)}.compact.first
+      #  populate_weapon_stats!
+      #end
 
       # this is probably a bit overkill but working quite good
       # 1. if random_suffix found populate stats from random suffix db
@@ -370,9 +446,14 @@ module WowArmory
       found_in_item_data = true
       if self.stats.nil? or self.stats.blank?
         found_in_item_data = false
+        self.stats = get_item_stats_api # battle.net community api
+      end
+      if self.stats.nil? or self.stats.blank?
+        found_in_item_data = false
         self.stats = get_item_stats # wowhead
       end
       if self.stats.nil? or self.stats.blank?
+        found_in_item_data = false
         self.stats = scan_stats # battle.net tooltip
       end
       self.upgradeable = self.is_upgradeable
@@ -476,7 +557,7 @@ module WowArmory
         return 1
       when 2, 9, 11, 16, 22
         return 2   
-      when 21
+      when 13, 21
         return 3
       when 15
         return 4

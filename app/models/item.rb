@@ -144,6 +144,8 @@ class Item
     
     random_item_ids += (93049..93056).to_a
     puts "importing now #{random_item_ids.length} random items"
+
+    '''
     random_item_ids.each do |id|
       single_import id
       suffixes.each do |suffix|
@@ -152,6 +154,7 @@ class Item
         single_import id,{:random_suffix => suffix, :upgrade_level => 2}
       end
     end
+    '''
     
     item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=483;ub=4;cr=21;crs=1;crv=0"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=484;maxle=500;ub=4;cr=21;crs=1;crv=0"
