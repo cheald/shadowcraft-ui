@@ -75,6 +75,14 @@ class Character
             i.save
           end
         end
+        [item["g0"],item["g1"],item["g2"]].each do |gemid|
+          unless gemid.nil?
+            i = Item.find_or_initialize_by(:remote_id => gemid.to_i)
+            if i.new_record?
+              i.save
+            end
+          end
+        end
       end
     end
   end
