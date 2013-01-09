@@ -2360,7 +2360,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, get_item_id, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, get_item_id, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -2948,6 +2948,37 @@
       }
       return count;
     };
+    getGemTypeCount = function(gemType, pendingChanges, ignoreSlotIndex) {
+      var Gems, count, g, gear, gem, i, slot, _i, _j, _len, _len2;
+      count = 0;
+      Gems = Shadowcraft.ServerData.GEM_LOOKUP;
+      for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
+        slot = SLOT_ORDER[_i];
+        if (slot === ignoreSlotIndex) {
+          continue;
+        }
+        gear = Shadowcraft.Data.gear[slot];
+        for (i = 0; i <= 2; i++) {
+          gem = (gear["g" + i] != null) && Gems[gear["g" + i]];
+          if (!gem) {
+            continue;
+          }
+          if (gem.slot === gemType) {
+            count++;
+          }
+        }
+      }
+      if (pendingChanges != null) {
+        for (_j = 0, _len2 = pendingChanges.length; _j < _len2; _j++) {
+          g = pendingChanges[_j];
+          gem = Gems[g];
+          if (gem.slot === gemType) {
+            count++;
+          }
+        }
+      }
+      return count;
+    };
     canUseGem = function(gem, gemType, pendingChanges, ignoreSlotIndex) {
       var _ref;
       if (((_ref = gem.requires) != null ? _ref.profession : void 0) != null) {
@@ -2961,7 +2992,7 @@
       if (gem.slot === "Cogwheel" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS) {
         return false;
       }
-      if (gem.slot === "Hydraulic" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS) {
+      if (gem.slot === "Hydraulic" && getGemTypeCount("Hydraulic", pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS) {
         return false;
       }
       if ((gemType === "Meta" || gemType === "Cogwheel" || gemType === "Hydraulic") && gem.slot !== gemType) {
@@ -3749,9 +3780,6 @@
         if (l.ilvl < Shadowcraft.Data.options.general.min_ilvl) {
           continue;
         }
-        if (l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)) {
-          continue;
-        }
         if (l.upgrade_level && !Shadowcraft.Data.options.general.show_upgrades && l.id !== selected_id) {
           continue;
         }
@@ -3781,9 +3809,6 @@
           continue;
         }
         if (l.ilvl < Shadowcraft.Data.options.general.min_ilvl) {
-          continue;
-        }
-        if (l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)) {
           continue;
         }
         if (l.upgrade_level && !Shadowcraft.Data.options.general.show_upgrades && l.id !== selected_id) {
