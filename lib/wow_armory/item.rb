@@ -234,14 +234,13 @@ module WowArmory
       end
     end
 
-    def populate_item_upgrade_level2
+    def populate_item_upgrade_level2      
       ori_base = rand_prop_points[self.ori_ilevel.to_s]
       base = rand_prop_points[self.ilevel.to_s]
       ori_basevalue = ori_base[1+quality_index(self.quality)*5+slot_index(equip_location)]
       basevalue = base[1+quality_index(self.quality)*5+slot_index(equip_location)]
       self.stats.each do |stat, val|
-        socket_mult = row[47+i].to_f
-        new_val = (val * basevalue.to_f) / ori_basevalue.to_f - socket_mult * ITEM_SOCKET_COST * ( basevalue.to_f / ori_basevalue.to_f )
+        new_val = (val * basevalue.to_f) / ori_basevalue.to_f
         self.stats[stat] = new_val.round
       end
       # if weapon update dps
