@@ -476,6 +476,25 @@ class ShadowcraftGear
         count++ if isProfessionalGem(gem, profession)
     return count
 
+  getGemTypeCount = (gemType, pendingChanges, ignoreSlotIndex) ->
+    count = 0
+    Gems = Shadowcraft.ServerData.GEM_LOOKUP
+
+    for slot in SLOT_ORDER
+      continue if slot == ignoreSlotIndex
+      gear = Shadowcraft.Data.gear[slot]
+      for i in [0..2]
+        gem = gear["g" + i]? and Gems[gear["g" + i]]
+        continue unless gem
+        if gem.slot == gemType
+          count++
+
+    if pendingChanges?
+      for g in pendingChanges
+        gem = Gems[g]
+        count++ if gem.slot == gemType
+    return count
+
   canUseGem = (gem, gemType, pendingChanges, ignoreSlotIndex) ->
     if gem.requires?.profession?
       return false unless Shadowcraft.Data.options.professions[gem.requires.profession]
@@ -483,7 +502,7 @@ class ShadowcraftGear
     
     return false if gem.slot == "Cogwheel" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
     
-    return false if gem.slot == "Hydraulic" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
+    return false if gem.slot == "Hydraulic" and getGemTypeCount("Hydraulic", pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
     return false if (gemType == "Meta" or gemType == "Cogwheel" or gemType == "Hydraulic") and gem.slot != gemType
     return false if (gem.slot == "Meta" or gem.slot == "Cogwheel" or gem.slot == "Hydraulic") and gem.slot != gemType
     true

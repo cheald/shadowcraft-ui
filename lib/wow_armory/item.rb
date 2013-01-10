@@ -143,7 +143,7 @@ module WowArmory
         @id = id.to_i
       end
 
-      fetch "us", "item/%d/tooltip" % id
+      #fetch "us", "item/%d/tooltip" % id
       fetch "us", "api/wow/item/%d" % id, :json
       populate_stats
     end
@@ -370,7 +370,7 @@ module WowArmory
     def populate_stats
       #self.name ||= value("h3")
       self.name ||= @json["name"]
-      lis = @document.css(".item-specs li")
+      #lis = @document.css(".item-specs li")
       #self.quality = attr("h3", "class").match(/color-q(\d)/).try(:[], 1).try(:to_i)
       self.quality = @json["quality"]
       #self.equip_location = lis.text.map {|e| EQUIP_LOCATIONS[e.strip.downcase] }.compact.first
@@ -452,10 +452,10 @@ module WowArmory
         found_in_item_data = false
         self.stats = get_item_stats # wowhead
       end
-      if self.stats.nil? or self.stats.blank?
-        found_in_item_data = false
-        self.stats = scan_stats # battle.net tooltip
-      end
+      #if self.stats.nil? or self.stats.blank?
+      #  found_in_item_data = false
+      #  self.stats = scan_stats # battle.net tooltip
+      #end
       self.upgradeable = self.is_upgradeable
       if not self.upgrade_level.nil? and not self.stats.blank? and self.upgradeable
         if self.quality == 4
