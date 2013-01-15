@@ -81,7 +81,6 @@ module WowArmory
       end
 
       self.achievements = @json["achievements"]["achievementsCompleted"].find_all{|id| ACHIEVEMENTS.include? id }
-      puts self.achievements
     end
 
     def gear

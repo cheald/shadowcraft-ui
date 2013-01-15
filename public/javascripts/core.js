@@ -2936,7 +2936,7 @@
       count = 0;
       for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
         slot = SLOT_ORDER[_i];
-        if (slot === ignoreSlotIndex) {
+        if (parseInt(slot) === ignoreSlotIndex) {
           continue;
         }
         gear = Shadowcraft.Data.gear[slot];
@@ -2960,7 +2960,7 @@
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
         slot = SLOT_ORDER[_i];
-        if (slot === ignoreSlotIndex) {
+        if (parseInt(slot) === ignoreSlotIndex) {
           continue;
         }
         gear = Shadowcraft.Data.gear[slot];
@@ -2991,7 +2991,7 @@
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
         slot = SLOT_ORDER[_i];
-        if (slot === ignoreSlotIndex) {
+        if (parseInt(slot) === ignoreSlotIndex) {
           continue;
         }
         gear = Shadowcraft.Data.gear[slot];
@@ -3029,7 +3029,7 @@
       if (gem.slot === "Cogwheel" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS) {
         return false;
       }
-      if (gem.slot === "Hydraulic" && getGemTypeCount("Hydraulic", pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS) {
+      if (gem.slot === "Hydraulic" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS) {
         return false;
       }
       if ((gemType === "Meta" || gemType === "Cogwheel" || gemType === "Hydraulic") && gem.slot !== gemType) {
@@ -3081,8 +3081,8 @@
     addAchievementBonuses = function(item) {
       var chapter2, last, _ref;
       item.sockets || (item.sockets = []);
-      chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS);
       if ((_ref = item.equip_location) === "mainhand" || _ref === "offhand") {
+        chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS);
         last = item.sockets[item.sockets.length - 1];
         if (last !== "Prismatic" && last === "Hydraulic" && chapter2) {
           return item.sockets.push("Prismatic");
@@ -3198,6 +3198,7 @@
       gem_list = getGemRecommendationList();
       for (_i = 0, _len = SLOT_ORDER_OPTIMIZE_GEMS.length; _i < _len; _i++) {
         slotIndex = SLOT_ORDER_OPTIMIZE_GEMS[_i];
+        slotIndex = parseInt(slotIndex);
         gear = data.gear[slotIndex];
         if (!gear) {
           continue;
@@ -3395,7 +3396,7 @@
         for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
           slot = SLOT_ORDER[_i];
           g = model.gear[slot];
-          if (g.item_id === id && slot === s) {
+          if (g.item_id === id && parseInt(slot) === s) {
             gear = g;
             break;
           }
@@ -3755,7 +3756,7 @@
         offsets.hit_rating += stats.hit_rating - caps.yellowHitCap - 1;
       }
       lowest_exp = caps.mh_exp < caps.oh_exp ? caps.mh_exp : caps.oh_exp;
-      if (stats.expertise_rating > (lowest_exp * 0.8)) {
+      if (stats.expertise_rating > (lowest_exp * 0.9)) {
         offsets.expertise_rating += lowest_exp;
       }
       return offsets;
@@ -3787,7 +3788,6 @@
       GemList = Shadowcraft.ServerData.GEMS;
       gear = Shadowcraft.Data.gear;
       loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
-      slot = parseInt($(this).parent().data("slot"), 10);
       reforge_offset = statOffset(gear[slot], FACETS.REFORGE);
       gear_offset = statOffset(gear[slot], FACETS.ITEM);
       gem_offset = statOffset(gear[slot], FACETS.GEMS);
@@ -3802,7 +3802,8 @@
       }
       for (_i = 0, _len = loc.length; _i < _len; _i++) {
         l = loc[_i];
-        l.__gemRec = getGemmingRecommendation(GemList, l, true, null, gem_offset);
+        addAchievementBonuses(l);
+        l.__gemRec = getGemmingRecommendation(GemList, l, true, slot, gem_offset);
         rec = recommendReforge(l, reforge_offset);
         if (rec) {
           l.__reforgeEP = reforgeEp(rec, l, reforge_offset);

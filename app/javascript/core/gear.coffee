@@ -449,7 +449,7 @@ class ShadowcraftGear
   getEquippedGemCount = (gem, pendingChanges, ignoreSlotIndex) ->
     count = 0
     for slot in SLOT_ORDER
-      continue if slot == ignoreSlotIndex
+      continue if parseInt(slot) == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
       if gem.id == gear.g0 or gem.id == gear.g1 or gem.id == gear.g2
         count++
@@ -463,7 +463,7 @@ class ShadowcraftGear
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
 
     for slot in SLOT_ORDER
-      continue if slot == ignoreSlotIndex
+      continue if parseInt(slot) == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
       for i in [0..2]
         gem = gear["g" + i]? and Gems[gear["g" + i]]
@@ -482,7 +482,7 @@ class ShadowcraftGear
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
 
     for slot in SLOT_ORDER
-      continue if slot == ignoreSlotIndex
+      continue if parseInt(slot) == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
       for i in [0..2]
         gem = gear["g" + i]? and Gems[gear["g" + i]]
@@ -502,8 +502,7 @@ class ShadowcraftGear
       return false if isProfessionalGem(gem, 'jewelcrafting') and getProfessionalGemCount('jewelcrafting', pendingChanges, ignoreSlotIndex) >= MAX_JEWELCRAFTING_GEMS
     
     return false if gem.slot == "Cogwheel" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
-    
-    return false if gem.slot == "Hydraulic" and getGemTypeCount("Hydraulic", pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
+    return false if gem.slot == "Hydraulic" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
     return false if (gemType == "Meta" or gemType == "Cogwheel" or gemType == "Hydraulic") and gem.slot != gemType
     return false if (gem.slot == "Meta" or gem.slot == "Cogwheel" or gem.slot == "Hydraulic") and gem.slot != gemType
     true
@@ -545,8 +544,8 @@ class ShadowcraftGear
 
   addAchievementBonuses = (item) ->
     item.sockets ||= []
-    chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS)
     if item.equip_location in ["mainhand","offhand"]
+      chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS)
       last = item.sockets[item.sockets.length - 1]
       if last != "Prismatic" and last == "Hydraulic" and chapter2
         item.sockets.push "Prismatic"
@@ -584,7 +583,6 @@ class ShadowcraftGear
     if returnFull
       sGems = []
       mGems = []
-
     for gemType in item.sockets
       for gem in gem_list
         continue unless canUseGem gem, gemType, sGems, ignoreSlotIndex
@@ -627,6 +625,7 @@ class ShadowcraftGear
     gem_list = getGemRecommendationList()
 
     for slotIndex in SLOT_ORDER_OPTIMIZE_GEMS
+      slotIndex = parseInt(slotIndex)
       gear = data.gear[slotIndex]
       continue unless gear
 
@@ -774,7 +773,7 @@ class ShadowcraftGear
       reforge = null if reforge == 0
       for slot in SLOT_ORDER
         g = model.gear[slot]
-        if g.item_id == id and slot == s
+        if g.item_id == id and parseInt(slot) == s
           gear = g
           break
       if gear and gear.reforge != reforge
@@ -1075,7 +1074,7 @@ class ShadowcraftGear
       offsets.hit_rating += stats.hit_rating - caps.yellowHitCap - 1
 
     lowest_exp = if caps.mh_exp < caps.oh_exp then caps.mh_exp else caps.oh_exp
-    if stats.expertise_rating > (lowest_exp * 0.8)
+    if stats.expertise_rating > (lowest_exp * 0.9)
       offsets.expertise_rating += lowest_exp
     offsets
 
@@ -1105,7 +1104,7 @@ class ShadowcraftGear
     gear = Shadowcraft.Data.gear
     loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
 
-    slot = parseInt($(this).parent().data("slot"), 10)
+    #slot = parseInt($(this).parent().data("slot"), 10)
 
     reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
     gear_offset = statOffset(gear[slot], FACETS.ITEM)
@@ -1120,7 +1119,8 @@ class ShadowcraftGear
       setBonEP[set_name] ||= 0
       setBonEP[set_name] += setBonusEP(set, setCount)
     for l in loc
-      l.__gemRec = getGemmingRecommendation(GemList, l, true, null, gem_offset)
+      addAchievementBonuses(l)
+      l.__gemRec = getGemmingRecommendation(GemList, l, true, slot, gem_offset)
       rec = recommendReforge(l, reforge_offset)
       if rec
         l.__reforgeEP = reforgeEp(rec, l, reforge_offset)
