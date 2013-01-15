@@ -107,7 +107,8 @@ class Character
           :race => properties["race"]
         },
         :professions => Hash[*properties["professions"].map {|p| [p, true]}.flatten]
-      }
+      },
+      :achievements => properties["achievements"]
     }
   end
 

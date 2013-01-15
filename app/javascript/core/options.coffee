@@ -186,6 +186,11 @@ class ShadowcraftOptions
       opener_use_subtlety: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })
 
+    @setup("#advanced #advancedReforge", "advanced", {
+      mh_expertise_rating_override: {name: "MH Exp Rating Override", type: "input", desc: "Override MH expertise rating EP value", 'default': 0.7, datatype: 'float', min: 0.1, max: 5.0}
+      oh_expertise_rating_override: {name: "OH Exp Rating Override", type: "input", desc: "Override OH expertise rating EP value", 'default': 0.3, datatype: 'float', min: 0.1, max: 5.0}
+    })
+
   changeOption = (elem, inputType, val) ->
     $this = $(elem)
     data = Shadowcraft.Data
@@ -211,7 +216,7 @@ class ShadowcraftOptions
   changeCheck = ->
     $this = $(this)
     changeOption($this, "check", not $this.attr("checked")?)
-    Shadowcraft.setupLabels("#settings")
+    Shadowcraft.setupLabels("#settings,#advanced")
 
   changeSelect = ->
     changeOption(this, "select")
@@ -225,8 +230,8 @@ class ShadowcraftOptions
 
     Shadowcraft.bind "loadData", ->
       app.initOptions()
-      Shadowcraft.setupLabels("#settings")
-      $("#settings select").change()
+      Shadowcraft.setupLabels("#settings,#advanced")
+      $("#settings,#advanced select").change()
 
     Shadowcraft.Talents.bind "changed", ->
       $("#settings section.mutilate, #settings section.combat, #settings section.subtlety").hide()
@@ -240,7 +245,7 @@ class ShadowcraftOptions
     this
 
   constructor: ->
-    $("#settings").bind "change", $.delegate({ ".optionCheck": changeCheck })
-    $("#settings").bind "change", $.delegate({ ".optionSelect": changeSelect })
-    $("#settings").bind "change", $.delegate({ ".optionInput": changeInput })
+    $("#settings,#advanced").bind "change", $.delegate({ ".optionCheck": changeCheck })
+    $("#settings,#advanced").bind "change", $.delegate({ ".optionSelect": changeSelect })
+    $("#settings,#advanced").bind "change", $.delegate({ ".optionInput": changeInput })
     _.extend(this, Backbone.Events)

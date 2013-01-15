@@ -3,6 +3,7 @@ class ShadowcraftGear
   MAX_ENGINEERING_GEMS = 1
   MAX_HYDRAULIC_GEMS = 1
   JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"]
+  CHAPTER_2_ACHIEVEMENTS = [7534, 8008]
   REFORGE_FACTOR = 0.4
   DEFAULT_BOSS_DODGE = 7.5
 
@@ -542,6 +543,23 @@ class ShadowcraftGear
       else if !blacksmith and last == "Prismatic"
         item.sockets.pop()
 
+  addAchievementBonuses = (item) ->
+    item.sockets ||= []
+    chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS)
+    if item.equip_location in ["mainhand","offhand"]
+      last = item.sockets[item.sockets.length - 1]
+      if last != "Prismatic" and last == "Hydraulic" and chapter2
+        item.sockets.push "Prismatic"
+      else if !chapter2 and last == "Prismatic"
+        item.sockets.pop()
+
+  hasAchievement = (achievements) ->
+    return false unless Shadowcraft.Data.achievements
+    for id in Shadowcraft.Data.achievements
+      if id in achievements
+        return true
+    return false
+
   # Check if the gems have equal stats to pretend that optimize gems 
   # not change gems to stat equal gems
   equalGemStats = (from_gem,to_gem) ->
@@ -835,6 +853,7 @@ class ShadowcraftGear
         upgradeable = null
         if item
           addTradeskillBonuses(item)
+          addAchievementBonuses(item)
           enchantable = EnchantSlots[item.equip_location]?
           if (!data.options.professions.enchanting && item.equip_location == 11) || item.equip_location == "ranged"
             enchantable = false
@@ -1411,6 +1430,11 @@ class ShadowcraftGear
       # Shadowcraft.Gear.reforgeAll()
       window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
       TiniReforger.buildRequest()
+
+    $("#reforgeAllExp").click ->
+      # Shadowcraft.Gear.reforgeAll()
+      window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
+      TiniReforger.buildRequest(override = true)
 
     $("#optimizeGems").click ->
       window._gaq.push ['_trackEvent', "Character", "Optimize Gems"] if window._gaq

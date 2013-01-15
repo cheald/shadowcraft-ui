@@ -796,7 +796,7 @@
     };
     compress_handlers = {
       "1": function(data) {
-        var buff, buffs, gear, gearSet, general, index, k, options, profession, professions, ret, rotationOptions, set, slot, talent, talentSet, v, val, _i, _len, _len2, _ref, _ref2, _ref3, _ref4;
+        var advancedOptions, buff, buffs, gear, gearSet, general, index, k, options, profession, professions, ret, rotationOptions, set, slot, talent, talentSet, v, val, _i, _len, _len2, _ref, _ref2, _ref3, _ref4, _ref5;
         ret = [DATA_VERSION];
         gearSet = [];
         for (slot = 0; slot <= 17; slot++) {
@@ -852,13 +852,22 @@
           rotationOptions.push(map(v, rotationValueMap));
         }
         options.push(base36Encode(rotationOptions));
+        advancedOptions = [];
+        _ref5 = data.options["advanced"];
+        for (k in _ref5) {
+          v = _ref5[k];
+          advancedOptions.push(k);
+          advancedOptions.push(v);
+        }
+        options.push(advancedOptions);
         ret.push(options);
+        ret.push(base36Encode(data.achievements));
         return ret;
       }
     };
     decompress_handlers = {
       "1": function(data) {
-        var d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _ref, _ref2, _ref3, _step, _step2, _step3;
+        var advanced, d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _len6, _ref, _ref2, _ref3, _step, _step2, _step3, _step4;
         d = {
           gear: {},
           active: data[2],
@@ -866,7 +875,8 @@
           activeTalents: data[4],
           glyphs: base36Decode(data[5]),
           options: {},
-          talents: []
+          talents: [],
+          achievements: base36Decode(data[8])
         };
         talentSets = data[6];
         for (index = 0, _len = talentSets.length, _step = 3; index < _len; index += _step) {
@@ -937,6 +947,12 @@
         for (i = 0, _len5 = rotation.length, _step3 = 2; i < _len5; i += _step3) {
           v = rotation[i];
           d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i + 1], rotationValueMap);
+        }
+        advanced = options[4];
+        d.options.advanced = {};
+        for (i = 0, _len6 = advanced.length, _step4 = 2; i < _len6; i += _step4) {
+          v = advanced[i];
+          d.options.advanced[v] = advanced[i + 1];
         }
         return d;
       }
@@ -1657,7 +1673,7 @@
           datatype: 'string'
         }
       });
-      return this.setup("#settings section.subtlety .settings", "rotation", {
+      this.setup("#settings section.subtlety .settings", "rotation", {
         use_hemorrhage: {
           type: "select",
           name: "CP Builder",
@@ -1691,6 +1707,26 @@
           datatype: 'string'
         }
       });
+      return this.setup("#advanced #advancedReforge", "advanced", {
+        mh_expertise_rating_override: {
+          name: "MH Exp Rating Override",
+          type: "input",
+          desc: "Override MH expertise rating EP value",
+          'default': 0.7,
+          datatype: 'float',
+          min: 0.1,
+          max: 5.0
+        },
+        oh_expertise_rating_override: {
+          name: "OH Exp Rating Override",
+          type: "input",
+          desc: "Override OH expertise rating EP value",
+          'default': 0.3,
+          datatype: 'float',
+          min: 0.1,
+          max: 5.0
+        }
+      });
     };
     changeOption = function(elem, inputType, val) {
       var $this, data, dtype, max, min, name, ns, t0, _base;
@@ -1721,7 +1757,7 @@
       var $this;
       $this = $(this);
       changeOption($this, "check", !($this.attr("checked") != null));
-      return Shadowcraft.setupLabels("#settings");
+      return Shadowcraft.setupLabels("#settings,#advanced");
     };
     changeSelect = function() {
       return changeOption(this, "select");
@@ -1735,8 +1771,8 @@
       this.initOptions();
       Shadowcraft.bind("loadData", function() {
         app.initOptions();
-        Shadowcraft.setupLabels("#settings");
-        return $("#settings select").change();
+        Shadowcraft.setupLabels("#settings,#advanced");
+        return $("#settings,#advanced select").change();
       });
       Shadowcraft.Talents.bind("changed", function() {
         $("#settings section.mutilate, #settings section.combat, #settings section.subtlety").hide();
@@ -1751,13 +1787,13 @@
       return this;
     };
     function ShadowcraftOptions() {
-      $("#settings").bind("change", $.delegate({
+      $("#settings,#advanced").bind("change", $.delegate({
         ".optionCheck": changeCheck
       }));
-      $("#settings").bind("change", $.delegate({
+      $("#settings,#advanced").bind("change", $.delegate({
         ".optionSelect": changeSelect
       }));
-      $("#settings").bind("change", $.delegate({
+      $("#settings,#advanced").bind("change", $.delegate({
         ".optionInput": changeInput
       }));
       _.extend(this, Backbone.Events);
@@ -2360,11 +2396,12 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, get_item_id, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, get_item_id, greenWhite, hasAchievement, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
+    CHAPTER_2_ACHIEVEMENTS = [7534, 8008];
     REFORGE_FACTOR = 0.4;
     DEFAULT_BOSS_DODGE = 7.5;
     FACETS = {
@@ -3041,6 +3078,33 @@
         }
       }
     };
+    addAchievementBonuses = function(item) {
+      var chapter2, last, _ref;
+      item.sockets || (item.sockets = []);
+      chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS);
+      if ((_ref = item.equip_location) === "mainhand" || _ref === "offhand") {
+        last = item.sockets[item.sockets.length - 1];
+        if (last !== "Prismatic" && last === "Hydraulic" && chapter2) {
+          return item.sockets.push("Prismatic");
+        } else if (!chapter2 && last === "Prismatic") {
+          return item.sockets.pop();
+        }
+      }
+    };
+    hasAchievement = function(achievements) {
+      var id, _i, _len, _ref;
+      if (!Shadowcraft.Data.achievements) {
+        return false;
+      }
+      _ref = Shadowcraft.Data.achievements;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        id = _ref[_i];
+        if (__indexOf.call(achievements, id) >= 0) {
+          return true;
+        }
+      }
+      return false;
+    };
     equalGemStats = function(from_gem, to_gem) {
       var stat;
       for (stat in from_gem["stats"]) {
@@ -3422,6 +3486,7 @@
           upgradeable = null;
           if (item) {
             addTradeskillBonuses(item);
+            addAchievementBonuses(item);
             enchantable = EnchantSlots[item.equip_location] != null;
             if ((!data.options.professions.enchanting && item.equip_location === 11) || item.equip_location === "ranged") {
               enchantable = false;
@@ -4102,6 +4167,13 @@
         }
         return TiniReforger.buildRequest();
       });
+      $("#reforgeAllExp").click(function() {
+        var override;
+        if (window._gaq) {
+          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
+        }
+        return TiniReforger.buildRequest(override = true);
+      });
       $("#optimizeGems").click(function() {
         if (window._gaq) {
           window._gaq.push(['_trackEvent', "Character", "Optimize Gems"]);
@@ -4468,8 +4540,11 @@
         contentType: "application/json"
       });
     };
-    ShadowcraftTiniReforgeBackend.prototype.buildRequest = function() {
+    ShadowcraftTiniReforgeBackend.prototype.buildRequest = function(override) {
       var ItemLookup, caps, ep, f, items, k, req, stats, v;
+      if (override == null) {
+        override = false;
+      }
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       f = ShadowcraftGear.FACETS;
       stats = this.gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT);
@@ -4505,6 +4580,11 @@
         caps[k] = Math.ceil(v);
       }
       ep = this.gear.getWeights();
+      if (override) {
+        ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override;
+        ep.oh_expertise_rating = Shadowcraft.Data.options.advanced.oh_expertise_rating_override;
+        ep.expertise_rating = ep.mh_expertise_rating + ep.mh_expertise_rating;
+      }
       req = {
         items: items,
         ep: ep,
