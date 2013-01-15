@@ -2570,7 +2570,7 @@
       return null;
     };
     get_ep = function(item, key, slot, ignore) {
-      var c, data, enchant, pre, stat, stats, total, upgrade_level, value, weight, weights;
+      var c, data, enchant, mod, pre, stat, stats, total, upgrade_level, value, weapon_type, weight, weights, _i, _len, _ref;
       data = Shadowcraft.Data;
       weights = Weights;
       stats = {};
@@ -2586,10 +2586,27 @@
       if (c) {
         if (item.dps) {
           if (slot === 15) {
-            total += (item.dps * c.mh_ep.mh_dps) + (item.speed * c.mh_speed_ep["mh_" + item.speed]);
+            total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed];
             total += racialExpertiseBonus(item) * Weights.mh_expertise_rating;
           } else if (slot === 16) {
-            total += (item.dps * c.oh_ep.oh_dps) + (item.speed * c.oh_speed_ep["oh_" + item.speed]);
+            if (Shadowcraft.Data.activeSpec === "Z") {
+              mod = 1;
+              if (item.subclass === 15) {
+                mod = c.oh_weapon_modifier["oh_" + item.speed + "_dagger"];
+              } else {
+                _ref = ["one-hander", "fist", "axe", "sword", "mace"];
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                  weapon_type = _ref[_i];
+                  if (c.oh_weapon_modifier["oh_" + item.speed + "_" + weapon_type]) {
+                    mod = c.oh_weapon_modifier["oh_" + item.speed + "_" + weapon_type];
+                    break;
+                  }
+                }
+                total += (item.dps * c.oh_ep.oh_dps) * mod;
+              }
+            } else {
+              total += c.oh_speed_ep["oh_" + item.speed];
+            }
             total += racialExpertiseBonus(item) * Weights.oh_expertise_rating;
           }
         } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
@@ -2929,6 +2946,9 @@
     };
     isProfessionalGem = function(gem, profession) {
       var _ref;
+      if (gem == null) {
+        return false;
+      }
       return (((_ref = gem.requires) != null ? _ref.profession : void 0) != null) && gem.requires.profession === profession;
     };
     getEquippedGemCount = function(gem, pendingChanges, ignoreSlotIndex) {
@@ -3147,6 +3167,9 @@
           }
           break;
         }
+        if (returnFull) {
+          sGems.push(null);
+        }
       }
       _ref2 = item.sockets;
       for (_k = 0, _len3 = _ref2.length; _k < _len3; _k++) {
@@ -3163,6 +3186,9 @@
             }
             break;
           }
+        }
+        if (returnFull) {
+          mGems.push(null);
         }
       }
       bonus = false;
@@ -3213,6 +3239,9 @@
             gem = _ref[gemIndex];
             from_gem = Gems[gear["g" + gemIndex]];
             to_gem = Gems[gem];
+            if (to_gem == null) {
+              continue;
+            }
             if (gear["g" + gemIndex] !== gem) {
               if (from_gem && to_gem) {
                 if (from_gem.name === to_gem.name) {

@@ -170,10 +170,21 @@ class ShadowcraftGear
     if c
       if item.dps
         if slot == 15
-          total += (item.dps * c.mh_ep.mh_dps) + (item.speed * c.mh_speed_ep["mh_" + item.speed])
+          total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed]
           total += racialExpertiseBonus(item) * Weights.mh_expertise_rating
         else if slot == 16
-          total += (item.dps * c.oh_ep.oh_dps) + (item.speed * c.oh_speed_ep["oh_" + item.speed])
+          if Shadowcraft.Data.activeSpec == "Z"
+            mod = 1
+            if item.subclass == 15
+              mod = c.oh_weapon_modifier["oh_"+item.speed+"_dagger"]
+            else
+              for weapon_type in ["one-hander","fist","axe","sword","mace"]
+                if c.oh_weapon_modifier["oh_"+item.speed+"_"+weapon_type]
+                  mod = c.oh_weapon_modifier["oh_"+item.speed+"_"+weapon_type]
+                  break
+              total += (item.dps * c.oh_ep.oh_dps) * mod
+          else
+            total += c.oh_speed_ep["oh_" + item.speed]
           total += racialExpertiseBonus(item) * Weights.oh_expertise_rating
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem
@@ -444,6 +455,7 @@ class ShadowcraftGear
     return count
 
   isProfessionalGem = (gem, profession) ->
+    return false unless gem?
     gem.requires?.profession? and gem.requires.profession == profession
 
   getEquippedGemCount = (gem, pendingChanges, ignoreSlotIndex) ->
@@ -589,6 +601,7 @@ class ShadowcraftGear
         straightGemEP += getRegularGemEpValue(gem, offset)
         sGems.push gem.id if returnFull
         break
+      sGems.push null if returnFull
 
     for gemType in item.sockets
       for gem in gem_list
@@ -597,6 +610,7 @@ class ShadowcraftGear
           matchedGemEP += getRegularGemEpValue(gem, offset)
           mGems.push gem.id if returnFull
           break
+      mGems.push null if returnFull
 
     bonus = false
     if matchedGemEP > straightGemEP
@@ -638,6 +652,7 @@ class ShadowcraftGear
         for gem, gemIndex in rec.gems
           from_gem = Gems[gear["g#{gemIndex}"]]
           to_gem = Gems[gem]
+          continue unless to_gem?
           if gear["g#{gemIndex}"] != gem
             if from_gem && to_gem
               continue if from_gem.name == to_gem.name
