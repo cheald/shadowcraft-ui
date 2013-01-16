@@ -2008,12 +2008,12 @@
     ShadowcraftTalents.prototype.updateActiveTalents = function() {
       var data;
       data = Shadowcraft.Data;
-      if (!data.activeTalents) {
-        data.activeTalents = data.talents[data.active].talents;
-        data.activeSpec = data.talents[data.active].spec;
-      }
+      data.activeTalents = data.talents[data.active].talents;
+      data.activeSpec = data.talents[data.active].spec;
+      data.glyphs = data.talents[data.active].glyphs;
       setSpec(data.activeSpec);
-      return setTalents(data.activeTalents);
+      setTalents(data.activeTalents);
+      return this.setGlyphs(data.glyphs);
     };
     ShadowcraftTalents.prototype.initTalentsPane = function() {
       var TalentLookup, Talents, buffer, data, initTalentsPane, talent, talentName, talentSet, talentTrees, talentframe, tframe, tree, treeIndex, _i, _len, _ref;
@@ -3135,7 +3135,7 @@
       return true;
     };
     getGemmingRecommendation = function(gem_list, item, returnFull, ignoreSlotIndex, offset) {
-      var bonus, data, epValue, gem, gemType, gems, mGems, matchedGemEP, sGems, straightGemEP, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref, _ref2;
+      var bonus, broke, data, epValue, gem, gemType, gems, mGems, matchedGemEP, sGems, straightGemEP, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref, _ref2;
       data = Shadowcraft.Data;
       if (!item.sockets || item.sockets.length === 0) {
         if (returnFull) {
@@ -3156,6 +3156,7 @@
       _ref = item.sockets;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         gemType = _ref[_i];
+        broke = false;
         for (_j = 0, _len2 = gem_list.length; _j < _len2; _j++) {
           gem = gem_list[_j];
           if (!canUseGem(gem, gemType, sGems, ignoreSlotIndex)) {
@@ -3165,15 +3166,17 @@
           if (returnFull) {
             sGems.push(gem.id);
           }
+          broke = true;
           break;
         }
-        if (returnFull) {
+        if (!broke && returnFull) {
           sGems.push(null);
         }
       }
       _ref2 = item.sockets;
       for (_k = 0, _len3 = _ref2.length; _k < _len3; _k++) {
         gemType = _ref2[_k];
+        broke = false;
         for (_l = 0, _len4 = gem_list.length; _l < _len4; _l++) {
           gem = gem_list[_l];
           if (!canUseGem(gem, gemType, mGems, ignoreSlotIndex)) {
@@ -3184,10 +3187,11 @@
             if (returnFull) {
               mGems.push(gem.id);
             }
+            broke = true;
             break;
           }
         }
-        if (returnFull) {
+        if (!broke && returnFull) {
           mGems.push(null);
         }
       }
@@ -3785,7 +3789,7 @@
         offsets.hit_rating += stats.hit_rating - caps.yellowHitCap - 1;
       }
       lowest_exp = caps.mh_exp < caps.oh_exp ? caps.mh_exp : caps.oh_exp;
-      if (stats.expertise_rating > (lowest_exp * 0.9)) {
+      if (stats.expertise_rating > (lowest_exp * 0.8)) {
         offsets.expertise_rating += lowest_exp;
       }
       return offsets;

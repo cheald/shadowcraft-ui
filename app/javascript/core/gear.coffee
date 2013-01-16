@@ -596,21 +596,25 @@ class ShadowcraftGear
       sGems = []
       mGems = []
     for gemType in item.sockets
+      broke = false
       for gem in gem_list
         continue unless canUseGem gem, gemType, sGems, ignoreSlotIndex
         straightGemEP += getRegularGemEpValue(gem, offset)
         sGems.push gem.id if returnFull
+        broke = true
         break
-      sGems.push null if returnFull
+      sGems.push null if !broke and returnFull
 
     for gemType in item.sockets
+      broke = false
       for gem in gem_list
         continue unless canUseGem gem, gemType, mGems, ignoreSlotIndex
         if gem[gemType]
           matchedGemEP += getRegularGemEpValue(gem, offset)
           mGems.push gem.id if returnFull
+          broke = true
           break
-      mGems.push null if returnFull
+      mGems.push null if !broke and returnFull
 
     bonus = false
     if matchedGemEP > straightGemEP
@@ -1089,7 +1093,7 @@ class ShadowcraftGear
       offsets.hit_rating += stats.hit_rating - caps.yellowHitCap - 1
 
     lowest_exp = if caps.mh_exp < caps.oh_exp then caps.mh_exp else caps.oh_exp
-    if stats.expertise_rating > (lowest_exp * 0.9)
+    if stats.expertise_rating > (lowest_exp * 0.8)
       offsets.expertise_rating += lowest_exp
     offsets
 
