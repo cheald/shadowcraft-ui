@@ -488,8 +488,8 @@ class ShadowcraftComputation:
             out["talent_ranking_main"] = calculator.get_talents_ranking()      
 
             # oh weapon modifier, pull only for combat spec
-            if input.get("spec", 'a') == "Z":
-              out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
+            #if input.get("spec", 'a') == "Z":
+            #  out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
 
             return out
         except (InputNotModeledException, exceptions.InvalidInputException) as e:
