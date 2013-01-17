@@ -2573,7 +2573,7 @@
       return null;
     };
     get_ep = function(item, key, slot, ignore) {
-      var c, data, enchant, mod, pre, stat, stats, total, upgrade_level, value, weapon_type, weight, weights, _i, _len, _ref;
+      var c, data, enchant, pre, stat, stats, total, upgrade_level, value, weight, weights;
       data = Shadowcraft.Data;
       weights = Weights;
       stats = {};
@@ -2592,24 +2592,8 @@
             total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed];
             total += racialExpertiseBonus(item) * Weights.mh_expertise_rating;
           } else if (slot === 16) {
-            if (Shadowcraft.Data.activeSpec === "Z") {
-              mod = 1;
-              if (item.subclass === 15) {
-                mod = c.oh_weapon_modifier["oh_" + item.speed + "_dagger"];
-              } else {
-                _ref = ["one-hander", "fist", "axe", "sword", "mace"];
-                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                  weapon_type = _ref[_i];
-                  if (c.oh_weapon_modifier["oh_" + item.speed + "_" + weapon_type]) {
-                    mod = c.oh_weapon_modifier["oh_" + item.speed + "_" + weapon_type];
-                    break;
-                  }
-                }
-                total += (item.dps * c.oh_ep.oh_dps) * mod;
-              }
-            } else {
-              total += c.oh_speed_ep["oh_" + item.speed];
-            }
+            total += item.dps * c.oh_ep.oh_dps;
+            total += c.oh_speed_ep["oh_" + item.speed];
             total += racialExpertiseBonus(item) * Weights.oh_expertise_rating;
           }
         } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
