@@ -124,12 +124,12 @@
       /* %section#upgraderankings */
       /* %h3 Upgrade Rankings */
       /* .inner */
-      .panel-content
-        %section.cluster
-          .option-list
-            %h3 Override Expertise Rating Stat Weights
-            #advancedReforge
-            %button#reforgeAllExp Auto-Reforge All Exp
+      /* .panel-content */
+      %section.cluster
+        .option-list
+          %h3 Override Expertise Rating Stat Weights
+          #advancedReforge
+          %button#reforgeAllExp Auto-Reforge All Exp
 
     #console-footer
       %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :class => @character.properties['race'].downcase.gsub(/ /, "_")}
