@@ -2008,7 +2008,7 @@
     ShadowcraftTalents.prototype.updateActiveTalents = function() {
       var data;
       data = Shadowcraft.Data;
-      if (!data.activeSpec) {
+      if (!data.activeTalents) {
         data.activeTalents = data.talents[data.active].talents;
         data.activeSpec = data.talents[data.active].spec;
         data.glyphs = data.talents[data.active].glyphs;
@@ -2378,7 +2378,6 @@
       }));
       $("#reset_talents").click(resetTalents);
       Shadowcraft.bind("loadData", function() {
-        console.log("loadData executed");
         app.updateActiveTalents();
         return app.initGlyphs();
       });
@@ -2943,7 +2942,7 @@
       count = 0;
       for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
         slot = SLOT_ORDER[_i];
-        if (parseInt(slot) === ignoreSlotIndex) {
+        if (parseInt(slot, 10) === ignoreSlotIndex) {
           continue;
         }
         gear = Shadowcraft.Data.gear[slot];
@@ -2967,7 +2966,7 @@
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
         slot = SLOT_ORDER[_i];
-        if (parseInt(slot) === ignoreSlotIndex) {
+        if (parseInt(slot, 10) === ignoreSlotIndex) {
           continue;
         }
         gear = Shadowcraft.Data.gear[slot];
@@ -2998,7 +2997,7 @@
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
         slot = SLOT_ORDER[_i];
-        if (parseInt(slot) === ignoreSlotIndex) {
+        if (parseInt(slot, 10) === ignoreSlotIndex) {
           continue;
         }
         gear = Shadowcraft.Data.gear[slot];
@@ -3215,7 +3214,7 @@
       gem_list = getGemRecommendationList();
       for (_i = 0, _len = SLOT_ORDER_OPTIMIZE_GEMS.length; _i < _len; _i++) {
         slotIndex = SLOT_ORDER_OPTIMIZE_GEMS[_i];
-        slotIndex = parseInt(slotIndex);
+        slotIndex = parseInt(slotIndex, 10);
         gear = data.gear[slotIndex];
         if (!gear) {
           continue;
