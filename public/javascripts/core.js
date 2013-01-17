@@ -2008,9 +2008,11 @@
     ShadowcraftTalents.prototype.updateActiveTalents = function() {
       var data;
       data = Shadowcraft.Data;
-      data.activeTalents = data.talents[data.active].talents;
-      data.activeSpec = data.talents[data.active].spec;
-      data.glyphs = data.talents[data.active].glyphs;
+      if (!data.activeSpec) {
+        data.activeTalents = data.talents[data.active].talents;
+        data.activeSpec = data.talents[data.active].spec;
+        data.glyphs = data.talents[data.active].glyphs;
+      }
       setSpec(data.activeSpec);
       setTalents(data.activeTalents);
       return this.setGlyphs(data.glyphs);
@@ -2376,6 +2378,7 @@
       }));
       $("#reset_talents").click(resetTalents);
       Shadowcraft.bind("loadData", function() {
+        console.log("loadData executed");
         app.updateActiveTalents();
         return app.initGlyphs();
       });
@@ -2396,7 +2399,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getStatWeight, get_ep, get_item_id, greenWhite, hasAchievement, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, get_ep, get_item_id, greenWhite, hasAchievement, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateStatWeights, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -3341,6 +3344,84 @@
       return list;
     };
     /*
+      # Upgrade helpers
+      */
+    ShadowcraftGear.prototype.getUpgradeRecommandationList = function() {
+      var ItemLookup, curr_level, data, gear, item, itemEP, max_level, new_item, new_itemEP, new_item_id, next, obj, ret, slotIndex, _i, _len;
+      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
+      data = Shadowcraft.Data;
+      ret = [];
+      for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
+        slotIndex = SLOT_ORDER[_i];
+        slotIndex = parseInt(slotIndex);
+        gear = data.gear[slotIndex];
+        if (!gear) {
+          continue;
+        }
+        item = ItemLookup[gear.item_id];
+        if (!item) {
+          continue;
+        }
+        ret;
+        if (item.upgradeable) {
+          curr_level = 0;
+          if (gear.upgrade_level != null) {
+            curr_level = gear.upgrade_level;
+          }
+          max_level = item.quality === 3 ? 1 : 2;
+          if (curr_level >= max_level) {
+            continue;
+          }
+          new_item_id = gear.item_id;
+          if (gear.upgrade_level) {
+            new_item_id = Math.floor(new_item_id / 1000000);
+            next = 2;
+          } else {
+            if (item.suffix) {
+              new_item_id = Math.floor(new_item_id / 1000);
+            }
+            next = 1;
+          }
+          new_item_id = new_item_id * 1000000 + next;
+          if (item.suffix) {
+            new_item_id += Math.abs(item.suffix) * 1000;
+          }
+          new_item = ItemLookup[new_item_id];
+          itemEP = getSimpleEPForUpgrade(slotIndex, item);
+          new_itemEP = getSimpleEPForUpgrade(slotIndex, new_item);
+          obj = {};
+          obj.slot = slotIndex;
+          obj.item_id = item.item_id;
+          obj.name = item.name;
+          obj.old_ep = itemEP;
+          obj.new_ep = new_itemEP;
+          obj.diff = new_itemEP - itemEP;
+          ret.push(obj);
+        }
+      }
+      return ret;
+    };
+    getSimpleEPForUpgrade = function(slot, item) {
+      var gearEP, gear_offset, rec, reforgeEP, reforge_offset;
+      if (!item) {
+        return 0;
+      }
+      reforge_offset = statOffset(gear[slot], FACETS.REFORGE);
+      gear_offset = statOffset(gear[slot], FACETS.ITEM);
+      fudgeOffsets(reforge_offset);
+      rec = recommendReforge(item, reforge_offset);
+      if (rec) {
+        reforgeEP = reforgeEp(rec, item, reforge_offset);
+      } else {
+        reforgeEP = 0;
+      }
+      gearEP = get_ep(item, null, slot, gear_offset);
+      if (isNaN(gearEP)) {
+        gearEP = 0;
+      }
+      return gearEP + reforgeEP;
+    };
+    /*
       # Reforge helpers
       */
     canReforge = function(item) {
@@ -3429,7 +3510,7 @@
         for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
           slot = SLOT_ORDER[_i];
           g = model.gear[slot];
-          if (g.item_id === id && parseInt(slot) === s) {
+          if (g.item_id === id && slot === s) {
             gear = g;
             break;
           }
@@ -3766,6 +3847,53 @@
       }
       obj.__statsToDesc = buff.join("/");
       return obj.__statsToDesc;
+    };
+    ShadowcraftGear.prototype.updateUpgradeWindow = function() {
+      var buffer, data, exist, i, max, name, pct, rec, target, val, _len;
+      rec = Shadowcraft.Gear.getUpgradeRecommandationList();
+      rec.sort(function(a, b) {
+        return b.diff - a.diff;
+      });
+      max = null;
+      buffer = "";
+      target = $("#upgraderankings .inner");
+      for (i = 0, _len = rec.length; i < _len; i++) {
+        data = rec[i];
+        exist = $("#upgraderankings #talent-weight-" + data.item_id);
+        val = parseInt(data.diff, 10);
+        name = data.name;
+        if (isNaN(val)) {
+          name += " (NYI)";
+          val = 0;
+        }
+        max || (max = val);
+        pct = val / max * 100 + 0.01;
+        if (exist.length === 0) {
+          buffer = Templates.talentContribution({
+            name: name,
+            raw_name: data.item_id,
+            val: val.toFixed(1),
+            width: pct
+          });
+          target.append(buffer);
+        }
+        exist = $("#upgraderankings #talent-weight-" + data.item_id);
+        $.data(exist.get(0), "val", val);
+        exist.show().find(".pct-inner").css({
+          width: pct + "%"
+        });
+        exist.find(".label").text(val.toFixed(1));
+      }
+      return $("#upgraderankings .talent_contribution").sortElements(function(a, b) {
+        var ad, bd;
+        ad = $.data(a, "val");
+        bd = $.data(b, "val");
+        if (ad > bd) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
     };
     clickSlot = function(slot, prop) {
       var $slot, slotIndex;
