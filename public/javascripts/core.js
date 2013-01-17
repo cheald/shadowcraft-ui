@@ -956,7 +956,6 @@
             d.options.advanced[v] = advanced[i + 1];
           }
         }
-        console.log(d);
         return d;
       }
     };
@@ -2011,7 +2010,7 @@
     ShadowcraftTalents.prototype.updateActiveTalents = function() {
       var data;
       data = Shadowcraft.Data;
-      if (!data.activeTalents) {
+      if (!data.activeSpec) {
         data.activeTalents = data.talents[data.active].talents;
         data.activeSpec = data.talents[data.active].spec;
         data.glyphs = data.talents[data.active].glyphs;

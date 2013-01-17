@@ -166,7 +166,7 @@ class ShadowcraftTalents
 
   updateActiveTalents: ->
     data = Shadowcraft.Data
-    if not data.activeTalents
+    if not data.activeSpec
       data.activeTalents = data.talents[data.active].talents
       data.activeSpec = data.talents[data.active].spec
       data.glyphs = data.talents[data.active].glyphs
