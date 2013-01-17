@@ -796,7 +796,7 @@
     };
     compress_handlers = {
       "1": function(data) {
-        var buff, buffs, gear, gearSet, general, index, k, options, profession, professions, ret, rotationOptions, set, slot, talent, talentSet, v, val, _i, _len, _len2, _ref, _ref2, _ref3, _ref4;
+        var advancedOptions, buff, buffs, gear, gearSet, general, index, k, options, profession, professions, ret, rotationOptions, set, slot, talent, talentSet, v, val, _i, _len, _len2, _ref, _ref2, _ref3, _ref4, _ref5;
         ret = [DATA_VERSION];
         gearSet = [];
         for (slot = 0; slot <= 17; slot++) {
@@ -852,13 +852,22 @@
           rotationOptions.push(map(v, rotationValueMap));
         }
         options.push(base36Encode(rotationOptions));
+        advancedOptions = [];
+        _ref5 = data.options["advanced"];
+        for (k in _ref5) {
+          v = _ref5[k];
+          advancedOptions.push(k);
+          advancedOptions.push(v);
+        }
+        options.push(advancedOptions);
         ret.push(options);
+        ret.push(base36Encode(data.achievements || []));
         return ret;
       }
     };
     decompress_handlers = {
       "1": function(data) {
-        var d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _ref, _ref2, _ref3, _step, _step2, _step3;
+        var advanced, d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _len6, _ref, _ref2, _ref3, _step, _step2, _step3, _step4;
         d = {
           gear: {},
           active: data[2],
@@ -867,7 +876,7 @@
           glyphs: base36Decode(data[5]),
           options: {},
           talents: [],
-          achievements: base36Decode(data[8])
+          achievements: data[8] ? base36Decode(data[8]) : []
         };
         talentSets = data[6];
         for (index = 0, _len = talentSets.length, _step = 3; index < _len; index += _step) {
@@ -939,6 +948,15 @@
           v = rotation[i];
           d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i + 1], rotationValueMap);
         }
+        if (options[4]) {
+          advanced = options[4];
+          d.options.advanced = {};
+          for (i = 0, _len6 = advanced.length, _step4 = 2; i < _len6; i += _step4) {
+            v = advanced[i];
+            d.options.advanced[v] = advanced[i + 1];
+          }
+        }
+        console.log(d);
         return d;
       }
     };
