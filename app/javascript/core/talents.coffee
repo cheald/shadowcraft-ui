@@ -166,7 +166,7 @@ class ShadowcraftTalents
 
   updateActiveTalents: ->
     data = Shadowcraft.Data
-    if not data.activeSpec
+    if not data.activeTalents
       data.activeTalents = data.talents[data.active].talents
       data.activeSpec = data.talents[data.active].spec
       data.glyphs = data.talents[data.active].glyphs
@@ -421,7 +421,6 @@ class ShadowcraftTalents
     $("#reset_talents").click(resetTalents)
 
     Shadowcraft.bind "loadData", ->
-      console.log "loadData executed"
       app.updateActiveTalents()
       app.initGlyphs()
 

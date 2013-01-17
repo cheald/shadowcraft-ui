@@ -462,7 +462,7 @@ class ShadowcraftGear
   getEquippedGemCount = (gem, pendingChanges, ignoreSlotIndex) ->
     count = 0
     for slot in SLOT_ORDER
-      continue if parseInt(slot) == ignoreSlotIndex
+      continue if parseInt(slot, 10) == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
       if gem.id == gear.g0 or gem.id == gear.g1 or gem.id == gear.g2
         count++
@@ -476,7 +476,7 @@ class ShadowcraftGear
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
 
     for slot in SLOT_ORDER
-      continue if parseInt(slot) == ignoreSlotIndex
+      continue if parseInt(slot, 10) == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
       for i in [0..2]
         gem = gear["g" + i]? and Gems[gear["g" + i]]
@@ -495,7 +495,7 @@ class ShadowcraftGear
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
 
     for slot in SLOT_ORDER
-      continue if parseInt(slot) == ignoreSlotIndex
+      continue if parseInt(slot, 10) == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
       for i in [0..2]
         gem = gear["g" + i]? and Gems[gear["g" + i]]
@@ -644,7 +644,7 @@ class ShadowcraftGear
     gem_list = getGemRecommendationList()
 
     for slotIndex in SLOT_ORDER_OPTIMIZE_GEMS
-      slotIndex = parseInt(slotIndex)
+      slotIndex = parseInt(slotIndex, 10)
       gear = data.gear[slotIndex]
       continue unless gear
 
