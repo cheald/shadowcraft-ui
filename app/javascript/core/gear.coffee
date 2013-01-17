@@ -727,68 +727,6 @@ class ShadowcraftGear
     list
 
   ###
-  # Upgrade helpers
-  ###
-
-  getUpgradeRecommandationList: ->
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-    data = Shadowcraft.Data
-    ret = []
-    for slotIndex in SLOT_ORDER
-      slotIndex = parseInt(slotIndex)
-      gear = data.gear[slotIndex]
-      continue unless gear
-      item = ItemLookup[gear.item_id]
-      continue unless item
-      ret 
-      if item.upgradeable
-        curr_level = 0
-        curr_level = gear.upgrade_level if gear.upgrade_level?
-        max_level = if item.quality == 3 then 1 else 2
-        continue if curr_level >= max_level
-        new_item_id = gear.item_id
-        if gear.upgrade_level
-          new_item_id = Math.floor(new_item_id / 1000000)
-          next = 2
-        else
-          if item.suffix
-            new_item_id = Math.floor(new_item_id / 1000)
-          next = 1
-        new_item_id = new_item_id * 1000000 + next
-        if item.suffix
-          new_item_id += Math.abs(item.suffix) * 1000
-
-        new_item = ItemLookup[new_item_id]
-        itemEP = getSimpleEPForUpgrade(slotIndex, item)
-        new_itemEP = getSimpleEPForUpgrade(slotIndex, new_item)
-        obj = {}
-        obj.slot = slotIndex
-        obj.item_id = item.item_id
-        obj.name = item.name
-        obj.old_ep = itemEP
-        obj.new_ep = new_itemEP
-        obj.diff = new_itemEP - itemEP
-        ret.push obj
-    ret
-
-  getSimpleEPForUpgrade = (slot, item) ->
-    return 0 unless item
-
-    reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
-    gear_offset = statOffset(gear[slot], FACETS.ITEM)
-    fudgeOffsets(reforge_offset)
-
-    rec = recommendReforge(item, reforge_offset)
-    if rec
-      reforgeEP = reforgeEp(rec, item, reforge_offset)
-    else
-      reforgeEP = 0
-
-    gearEP = get_ep(item, null, slot, gear_offset)
-    gearEP = 0 if isNaN gearEP
-    return gearEP +  reforgeEP
-
-  ###
   # Reforge helpers
   ###
 
