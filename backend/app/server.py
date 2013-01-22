@@ -203,7 +203,7 @@ class ShadowcraftComputation:
                 'use_hemorrhage'
             ]
         ]
-    elif __builtin__.shadowcraft_engine_version == 5.0: # FIXME what options are avaibly??
+    elif __builtin__.shadowcraft_engine_version == 5.0 or __builtin__.shadowcraft_engine_version == 5.2: # FIXME what options are avaibly??
         validCycleKeys = [[
                 'min_envenom_size_non_execute',
                 'min_envenom_size_execute',
@@ -461,8 +461,8 @@ class ShadowcraftComputation:
             out["ep"] = calculator.get_ep(default_ep_stats)
 
             # Compute DPS Breakdown.
-            breakdown = calculator.get_dps_breakdown()
-            out["total_dps"] = sum(entry[1] for entry in breakdown.items())
+            out["breakdown"] = calculator.get_dps_breakdown()
+            out["total_dps"] = sum(entry[1] for entry in out["breakdown"].items())
 
             # Glyph ranking is slow
             out["glyph_ranking"] = calculator.get_glyphs_ranking(input.get("gly", []))

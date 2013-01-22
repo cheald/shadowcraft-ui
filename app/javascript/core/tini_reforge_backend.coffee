@@ -50,7 +50,9 @@ class ShadowcraftTiniReforgeBackend
       success: (data) ->
         Shadowcraft.Gear.setReforges(data)
       error: (xhr, textStatus, error) ->
-        flash textStatus
+        flash textStatus, error
+        Shadowcraft.update()
+        Shadowcraft.Gear.updateDisplay()
       dataType: "json",
       contentType: "application/json"
 
@@ -82,7 +84,7 @@ class ShadowcraftTiniReforgeBackend
     if override
       ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override
       ep.oh_expertise_rating = Shadowcraft.Data.options.advanced.oh_expertise_rating_override
-      ep.expertise_rating = ep.mh_expertise_rating + ep.mh_expertise_rating
+      ep.expertise_rating = ep.mh_expertise_rating + ep.oh_expertise_rating
     req =
       items: items
       ep: ep

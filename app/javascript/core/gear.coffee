@@ -727,6 +727,109 @@ class ShadowcraftGear
     list
 
   ###
+  # Upgrade helpers
+  ###
+
+  getUpgradeRecommandationList = ->
+    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+    data = Shadowcraft.Data
+    ret = []
+    for slotIndex in SLOT_ORDER
+      slotIndex = parseInt(slotIndex)
+      gear = data.gear[slotIndex]
+      continue unless gear
+      item = ItemLookup[gear.item_id]
+      continue unless item
+      ret
+      if item.upgradeable
+        curr_level = 0
+        curr_level = gear.upgrade_level if gear.upgrade_level?
+        max_level = if item.quality == 3 then 1 else 2
+        continue if curr_level >= max_level
+        new_item_id = gear.item_id
+        if gear.upgrade_level
+          new_item_id = Math.floor(new_item_id / 1000000)
+          next = 2
+        else
+          if item.suffix
+            new_item_id = Math.floor(new_item_id / 1000)
+          next = 1
+        new_item_id = new_item_id * 1000000 + next
+        if item.suffix
+          new_item_id += Math.abs(item.suffix) * 1000
+
+        new_item = ItemLookup[new_item_id]
+        itemEP = getSimpleEPForUpgrade(slotIndex, item)
+        new_itemEP = getSimpleEPForUpgrade(slotIndex, new_item)
+        obj = {}
+        obj.slot = slotIndex
+        obj.item_id = item.item_id
+        obj.name = item.name
+        obj.old_ep = itemEP
+        obj.new_ep = new_itemEP
+        obj.diff = new_itemEP - itemEP
+        ret.push obj
+    ret
+
+  getUpgradeRecommandationList2 = ->
+    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+    data = Shadowcraft.Data
+    ret = []
+    for slotIndex in SLOT_ORDER
+      slotIndex = parseInt(slotIndex)
+      gear = data.gear[slotIndex]
+      continue unless gear
+      item = ItemLookup[gear.item_id]
+      continue unless item
+      ret
+      if item.upgradeable
+        curr_level = 0
+        curr_level = gear.upgrade_level if gear.upgrade_level?
+        max_level = if item.quality == 3 then 1 else 2
+        continue if curr_level >= max_level
+        new_item_id = gear.item_id
+        if gear.upgrade_level
+          new_item_id = Math.floor(new_item_id / 1000000)
+          next = 2
+        else
+          if item.suffix
+            new_item_id = Math.floor(new_item_id / 1000)
+          next = 1
+        new_item_id = new_item_id * 1000000 + next
+        if item.suffix
+          new_item_id += Math.abs(item.suffix) * 1000
+
+        new_item = ItemLookup[new_item_id]
+        itemEP = getSimpleEPForUpgrade(slotIndex, item)
+        new_itemEP = getSimpleEPForUpgrade(slotIndex, new_item)
+        obj = {}
+        obj.slot = slotIndex
+        obj.item_id = item.item_id
+        obj.name = item.name
+        obj.old_ep = itemEP
+        obj.new_ep = new_itemEP
+        obj.diff = new_itemEP - itemEP
+        ret.push obj
+    ret
+
+  getSimpleEPForUpgrade = (slot, item) ->
+    return 0 unless item
+
+    reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
+    gear_offset = statOffset(gear[slot], FACETS.ITEM)
+    fudgeOffsets(reforge_offset)
+
+    rec = recommendReforge(item, reforge_offset)
+    if rec
+      reforgeEP = reforgeEp(rec, item, reforge_offset)
+    else
+      reforgeEP = 0
+
+    gearEP = get_ep(item, null, slot, gear_offset)
+    gearEP = 0 if isNaN gearEP
+    return gearEP + reforgeEP
+
+  ###
   # Reforge helpers
   ###
 
@@ -939,7 +1042,6 @@ class ShadowcraftGear
 
         buffer += Templates.itemSlot(opt)
       $slots.get(ssi).innerHTML = buffer
-    #this.updateUpgradeWindow()
     checkForWarnings('gear')
 
   whiteWhite = (v, s) ->
@@ -1072,13 +1174,14 @@ class ShadowcraftGear
     obj.__statsToDesc = buff.join("/")
     return obj.__statsToDesc
 
-  updateUpgradeWindow: ->
-    rec = Shadowcraft.Gear.getUpgradeRecommandationList()
+  updateUpgradeWindow = ->
+    rec = getUpgradeRecommandationList()
     rec.sort (a, b) ->
       b.diff - a.diff
     max = null
     buffer = ""
     target = $("#upgraderankings .inner")
+    $("#upgraderankings .talent_contribution").hide()
     for data, i in rec
       exist = $("#upgraderankings #talent-weight-" + data.item_id)
       val = parseInt(data.diff, 10)
@@ -1102,6 +1205,40 @@ class ShadowcraftGear
       exist.find(".label").text(val.toFixed(1))
 
     $("#upgraderankings .talent_contribution").sortElements (a, b) ->
+      ad = $.data(a, "val")
+      bd = $.data(b, "val")
+      if ad > bd then -1 else 1
+
+  updateDpsBreakdown = ->
+    dps_breakdown = Shadowcraft.lastCalculation.breakdown
+    max = null
+    buffer = ""
+    target = $("#dpsbreakdown .inner")
+    rankings = _.extend({}, dps_breakdown)
+    max = _.max(rankings)
+    $("#dpsbreakdown .talent_contribution").hide()
+    for skill, val of dps_breakdown
+      exist = $("#dpsbreakdown #talent-weight-" + skill)
+      val = parseInt(val, 10)
+      name = titleize(skill)
+      if isNaN(val)
+        name += " (NYI)"
+        val = 0
+      pct = val / max * 100 + 0.01
+      if exist.length == 0
+        buffer = Templates.talentContribution({
+          name: name,
+          raw_name: skill,
+          val: val.toFixed(1),
+          width: pct
+        })
+        target.append(buffer)
+      exist = $("#dpsbreakdown #talent-weight-" + skill)
+      $.data(exist.get(0), "val", val)
+      exist.show().find(".pct-inner").css({width: pct + "%"})
+      exist.find(".label").text(val.toFixed(1))
+
+    $("#dpsbreakdown .talent_contribution").sortElements (a, b) ->
       ad = $.data(a, "val")
       bd = $.data(b, "val")
       if ad > bd then -1 else 1
@@ -1475,6 +1612,8 @@ class ShadowcraftGear
 
     Shadowcraft.Backend.bind("recompute2", updateStatWeights)
     Shadowcraft.Backend.bind("recompute2", -> Shadowcraft.Gear )
+    Shadowcraft.Backend.bind("recompute2", updateDpsBreakdown)
+    #Shadowcraft.Backend.bind("recompute2", updateUpgradeWindow)
 
     Shadowcraft.Talents.bind "changed", ->
       app.updateStatsWindow()

@@ -187,8 +187,8 @@ class ShadowcraftOptions
     })
 
     @setup("#advanced #advancedReforge", "advanced", {
-      mh_expertise_rating_override: {name: "MH Exp Rating Override", type: "input", desc: "Override MH expertise rating EP value", 'default': 0.7, datatype: 'float', min: 0.1, max: 5.0}
-      oh_expertise_rating_override: {name: "OH Exp Rating Override", type: "input", desc: "Override OH expertise rating EP value", 'default': 0.3, datatype: 'float', min: 0.1, max: 5.0}
+      mh_expertise_rating_override: {name: "Custom MH Exp Rating", type: "input", desc: "Override MH expertise rating EP value", 'default': 0.7, datatype: 'float', min: 0.1, max: 5.0}
+      oh_expertise_rating_override: {name: "Custom OH Exp Rating", type: "input", desc: "Override OH expertise rating EP value", 'default': 0.3, datatype: 'float', min: 0.1, max: 5.0}
     })
 
   changeOption = (elem, inputType, val) ->
