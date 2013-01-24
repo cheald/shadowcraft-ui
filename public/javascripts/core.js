@@ -3951,6 +3951,7 @@
       $("#dpsbreakdown .talent_contribution").hide();
       for (skill in dps_breakdown) {
         val = dps_breakdown[skill];
+        skill = skill.split(' ').join('_');
         exist = $("#dpsbreakdown #talent-weight-" + skill);
         val = parseInt(val, 10);
         name = titleize(skill);

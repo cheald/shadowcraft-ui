@@ -1218,6 +1218,7 @@ class ShadowcraftGear
     max = _.max(rankings)
     $("#dpsbreakdown .talent_contribution").hide()
     for skill, val of dps_breakdown
+      skill = skill.split(' ').join('_')
       exist = $("#dpsbreakdown #talent-weight-" + skill)
       val = parseInt(val, 10)
       name = titleize(skill)
