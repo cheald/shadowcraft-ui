@@ -50,11 +50,13 @@ class ShadowcraftTiniReforgeBackend
       success: (data) ->
         Shadowcraft.Gear.setReforges(data)
       error: (xhr, textStatus, error) ->
-        flash textStatus
+        flash textStatus, error
+        Shadowcraft.update()
+        Shadowcraft.Gear.updateDisplay()
       dataType: "json",
       contentType: "application/json"
 
-  buildRequest: ->
+  buildRequest: (override = false) ->
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     f = ShadowcraftGear.FACETS
     stats = @gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT)
@@ -79,6 +81,10 @@ class ShadowcraftTiniReforgeBackend
       caps[k] = Math.ceil(v)
     
     ep = @gear.getWeights()
+    if override
+      ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override
+      ep.oh_expertise_rating = Shadowcraft.Data.options.advanced.oh_expertise_rating_override
+      ep.expertise_rating = ep.mh_expertise_rating + ep.oh_expertise_rating
     req =
       items: items
       ep: ep

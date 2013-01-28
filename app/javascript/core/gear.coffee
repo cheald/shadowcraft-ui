@@ -3,6 +3,7 @@ class ShadowcraftGear
   MAX_ENGINEERING_GEMS = 1
   MAX_HYDRAULIC_GEMS = 1
   JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"]
+  CHAPTER_2_ACHIEVEMENTS = [7534, 8008]
   REFORGE_FACTOR = 0.4
   DEFAULT_BOSS_DODGE = 7.5
 
@@ -169,10 +170,22 @@ class ShadowcraftGear
     if c
       if item.dps
         if slot == 15
-          total += (item.dps * c.mh_ep.mh_dps) + (item.speed * c.mh_speed_ep["mh_" + item.speed])
+          total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed]
           total += racialExpertiseBonus(item) * Weights.mh_expertise_rating
         else if slot == 16
-          total += (item.dps * c.oh_ep.oh_dps) + (item.speed * c.oh_speed_ep["oh_" + item.speed])
+          #if Shadowcraft.Data.activeSpec == "Z"
+          #  mod = 1
+          #  if item.subclass == 15
+          #    mod = c.oh_weapon_modifier["oh_"+item.speed+"_dagger"]
+          #  else
+          #    for weapon_type in ["one-hander","fist","axe","sword","mace"]
+          #      if c.oh_weapon_modifier["oh_"+item.speed+"_"+weapon_type]
+          #        mod = c.oh_weapon_modifier["oh_"+item.speed+"_"+weapon_type]
+          #        break
+          #    total += (item.dps * c.oh_ep.oh_dps) * mod
+          #else
+          total += (item.dps * c.oh_ep.oh_dps)
+          total += c.oh_speed_ep["oh_" + item.speed]
           total += racialExpertiseBonus(item) * Weights.oh_expertise_rating
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem
@@ -443,12 +456,13 @@ class ShadowcraftGear
     return count
 
   isProfessionalGem = (gem, profession) ->
+    return false unless gem?
     gem.requires?.profession? and gem.requires.profession == profession
 
   getEquippedGemCount = (gem, pendingChanges, ignoreSlotIndex) ->
     count = 0
     for slot in SLOT_ORDER
-      continue if slot == ignoreSlotIndex
+      continue if parseInt(slot, 10) == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
       if gem.id == gear.g0 or gem.id == gear.g1 or gem.id == gear.g2
         count++
@@ -462,7 +476,7 @@ class ShadowcraftGear
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
 
     for slot in SLOT_ORDER
-      continue if slot == ignoreSlotIndex
+      continue if parseInt(slot, 10) == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
       for i in [0..2]
         gem = gear["g" + i]? and Gems[gear["g" + i]]
@@ -481,7 +495,7 @@ class ShadowcraftGear
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
 
     for slot in SLOT_ORDER
-      continue if slot == ignoreSlotIndex
+      continue if parseInt(slot, 10) == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
       for i in [0..2]
         gem = gear["g" + i]? and Gems[gear["g" + i]]
@@ -501,8 +515,7 @@ class ShadowcraftGear
       return false if isProfessionalGem(gem, 'jewelcrafting') and getProfessionalGemCount('jewelcrafting', pendingChanges, ignoreSlotIndex) >= MAX_JEWELCRAFTING_GEMS
     
     return false if gem.slot == "Cogwheel" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
-    
-    return false if gem.slot == "Hydraulic" and getGemTypeCount("Hydraulic", pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
+    return false if gem.slot == "Hydraulic" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
     return false if (gemType == "Meta" or gemType == "Cogwheel" or gemType == "Hydraulic") and gem.slot != gemType
     return false if (gem.slot == "Meta" or gem.slot == "Cogwheel" or gem.slot == "Hydraulic") and gem.slot != gemType
     true
@@ -542,6 +555,23 @@ class ShadowcraftGear
       else if !blacksmith and last == "Prismatic"
         item.sockets.pop()
 
+  addAchievementBonuses = (item) ->
+    item.sockets ||= []
+    if item.equip_location in ["mainhand","offhand"]
+      chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS)
+      last = item.sockets[item.sockets.length - 1]
+      if last != "Prismatic" and last == "Hydraulic" and chapter2
+        item.sockets.push "Prismatic"
+      else if !chapter2 and last == "Prismatic"
+        item.sockets.pop()
+
+  hasAchievement = (achievements) ->
+    return false unless Shadowcraft.Data.achievements
+    for id in Shadowcraft.Data.achievements
+      if id in achievements
+        return true
+    return false
+
   # Check if the gems have equal stats to pretend that optimize gems 
   # not change gems to stat equal gems
   equalGemStats = (from_gem,to_gem) ->
@@ -566,21 +596,26 @@ class ShadowcraftGear
     if returnFull
       sGems = []
       mGems = []
-
     for gemType in item.sockets
+      broke = false
       for gem in gem_list
         continue unless canUseGem gem, gemType, sGems, ignoreSlotIndex
         straightGemEP += getRegularGemEpValue(gem, offset)
         sGems.push gem.id if returnFull
+        broke = true
         break
+      sGems.push null if !broke and returnFull
 
     for gemType in item.sockets
+      broke = false
       for gem in gem_list
         continue unless canUseGem gem, gemType, mGems, ignoreSlotIndex
         if gem[gemType]
           matchedGemEP += getRegularGemEpValue(gem, offset)
           mGems.push gem.id if returnFull
+          broke = true
           break
+      mGems.push null if !broke and returnFull
 
     bonus = false
     if matchedGemEP > straightGemEP
@@ -609,6 +644,7 @@ class ShadowcraftGear
     gem_list = getGemRecommendationList()
 
     for slotIndex in SLOT_ORDER_OPTIMIZE_GEMS
+      slotIndex = parseInt(slotIndex, 10)
       gear = data.gear[slotIndex]
       continue unless gear
 
@@ -621,6 +657,7 @@ class ShadowcraftGear
         for gem, gemIndex in rec.gems
           from_gem = Gems[gear["g#{gemIndex}"]]
           to_gem = Gems[gem]
+          continue unless to_gem?
           if gear["g#{gemIndex}"] != gem
             if from_gem && to_gem
               continue if from_gem.name == to_gem.name
@@ -688,6 +725,109 @@ class ShadowcraftGear
     list.sort (a, b) ->
       b.normal_ep - a.normal_ep
     list
+
+  ###
+  # Upgrade helpers
+  ###
+
+  getUpgradeRecommandationList = ->
+    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+    data = Shadowcraft.Data
+    ret = []
+    for slotIndex in SLOT_ORDER
+      slotIndex = parseInt(slotIndex)
+      gear = data.gear[slotIndex]
+      continue unless gear
+      item = ItemLookup[gear.item_id]
+      continue unless item
+      ret
+      if item.upgradeable
+        curr_level = 0
+        curr_level = gear.upgrade_level if gear.upgrade_level?
+        max_level = if item.quality == 3 then 1 else 2
+        continue if curr_level >= max_level
+        new_item_id = gear.item_id
+        if gear.upgrade_level
+          new_item_id = Math.floor(new_item_id / 1000000)
+          next = 2
+        else
+          if item.suffix
+            new_item_id = Math.floor(new_item_id / 1000)
+          next = 1
+        new_item_id = new_item_id * 1000000 + next
+        if item.suffix
+          new_item_id += Math.abs(item.suffix) * 1000
+
+        new_item = ItemLookup[new_item_id]
+        itemEP = getSimpleEPForUpgrade(slotIndex, item)
+        new_itemEP = getSimpleEPForUpgrade(slotIndex, new_item)
+        obj = {}
+        obj.slot = slotIndex
+        obj.item_id = item.item_id
+        obj.name = item.name
+        obj.old_ep = itemEP
+        obj.new_ep = new_itemEP
+        obj.diff = new_itemEP - itemEP
+        ret.push obj
+    ret
+
+  getUpgradeRecommandationList2 = ->
+    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+    data = Shadowcraft.Data
+    ret = []
+    for slotIndex in SLOT_ORDER
+      slotIndex = parseInt(slotIndex)
+      gear = data.gear[slotIndex]
+      continue unless gear
+      item = ItemLookup[gear.item_id]
+      continue unless item
+      ret
+      if item.upgradeable
+        curr_level = 0
+        curr_level = gear.upgrade_level if gear.upgrade_level?
+        max_level = if item.quality == 3 then 1 else 2
+        continue if curr_level >= max_level
+        new_item_id = gear.item_id
+        if gear.upgrade_level
+          new_item_id = Math.floor(new_item_id / 1000000)
+          next = 2
+        else
+          if item.suffix
+            new_item_id = Math.floor(new_item_id / 1000)
+          next = 1
+        new_item_id = new_item_id * 1000000 + next
+        if item.suffix
+          new_item_id += Math.abs(item.suffix) * 1000
+
+        new_item = ItemLookup[new_item_id]
+        itemEP = getSimpleEPForUpgrade(slotIndex, item)
+        new_itemEP = getSimpleEPForUpgrade(slotIndex, new_item)
+        obj = {}
+        obj.slot = slotIndex
+        obj.item_id = item.item_id
+        obj.name = item.name
+        obj.old_ep = itemEP
+        obj.new_ep = new_itemEP
+        obj.diff = new_itemEP - itemEP
+        ret.push obj
+    ret
+
+  getSimpleEPForUpgrade = (slot, item) ->
+    return 0 unless item
+
+    reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
+    gear_offset = statOffset(gear[slot], FACETS.ITEM)
+    fudgeOffsets(reforge_offset)
+
+    rec = recommendReforge(item, reforge_offset)
+    if rec
+      reforgeEP = reforgeEp(rec, item, reforge_offset)
+    else
+      reforgeEP = 0
+
+    gearEP = get_ep(item, null, slot, gear_offset)
+    gearEP = 0 if isNaN gearEP
+    return gearEP + reforgeEP
 
   ###
   # Reforge helpers
@@ -835,6 +975,7 @@ class ShadowcraftGear
         upgradeable = null
         if item
           addTradeskillBonuses(item)
+          addAchievementBonuses(item)
           enchantable = EnchantSlots[item.equip_location]?
           if (!data.options.professions.enchanting && item.equip_location == 11) || item.equip_location == "ranged"
             enchantable = false
@@ -1033,6 +1174,77 @@ class ShadowcraftGear
     obj.__statsToDesc = buff.join("/")
     return obj.__statsToDesc
 
+  updateUpgradeWindow = ->
+    rec = getUpgradeRecommandationList()
+    rec.sort (a, b) ->
+      b.diff - a.diff
+    max = null
+    buffer = ""
+    target = $("#upgraderankings .inner")
+    $("#upgraderankings .talent_contribution").hide()
+    for data, i in rec
+      exist = $("#upgraderankings #talent-weight-" + data.item_id)
+      val = parseInt(data.diff, 10)
+      name = data.name
+      if isNaN(val)
+        name += " (NYI)"
+        val = 0
+      max ||= val
+      pct = val / max * 100 + 0.01
+      if exist.length == 0
+        buffer = Templates.talentContribution({
+          name: name,
+          raw_name: data.item_id,
+          val: val.toFixed(1),
+          width: pct
+        })
+        target.append(buffer)
+      exist = $("#upgraderankings #talent-weight-" + data.item_id)
+      $.data(exist.get(0), "val", val)
+      exist.show().find(".pct-inner").css({width: pct + "%"})
+      exist.find(".label").text(val.toFixed(1))
+
+    $("#upgraderankings .talent_contribution").sortElements (a, b) ->
+      ad = $.data(a, "val")
+      bd = $.data(b, "val")
+      if ad > bd then -1 else 1
+
+  updateDpsBreakdown = ->
+    dps_breakdown = Shadowcraft.lastCalculation.breakdown
+    max = null
+    buffer = ""
+    target = $("#dpsbreakdown .inner")
+    rankings = _.extend({}, dps_breakdown)
+    max = _.max(rankings)
+    $("#dpsbreakdown .talent_contribution").hide()
+    for skill, val of dps_breakdown
+      skill = skill.split(' ').join('_')
+      exist = $("#dpsbreakdown #talent-weight-" + skill)
+      val = parseInt(val, 10)
+      name = titleize(skill)
+      if isNaN(val)
+        name += " (NYI)"
+        val = 0
+      pct = val / max * 100 + 0.01
+      if exist.length == 0
+        buffer = Templates.talentContribution({
+          name: name,
+          raw_name: skill,
+          val: val.toFixed(1),
+          width: pct
+        })
+        target.append(buffer)
+      exist = $("#dpsbreakdown #talent-weight-" + skill)
+      $.data(exist.get(0), "val", val)
+      exist.show().find(".pct-inner").css({width: pct + "%"})
+      exist.find(".label").text(val.toFixed(1))
+
+    $("#dpsbreakdown .talent_contribution").sortElements (a, b) ->
+      ad = $.data(a, "val")
+      bd = $.data(b, "val")
+      if ad > bd then -1 else 1
+    
+
   # Standard setup for the popup
   clickSlot = (slot, prop) ->
     $slot = $(slot).closest(".slot")
@@ -1086,7 +1298,7 @@ class ShadowcraftGear
     gear = Shadowcraft.Data.gear
     loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
 
-    slot = parseInt($(this).parent().data("slot"), 10)
+    #slot = parseInt($(this).parent().data("slot"), 10)
 
     reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
     gear_offset = statOffset(gear[slot], FACETS.ITEM)
@@ -1101,7 +1313,8 @@ class ShadowcraftGear
       setBonEP[set_name] ||= 0
       setBonEP[set_name] += setBonusEP(set, setCount)
     for l in loc
-      l.__gemRec = getGemmingRecommendation(GemList, l, true, null, gem_offset)
+      addAchievementBonuses(l)
+      l.__gemRec = getGemmingRecommendation(GemList, l, true, slot, gem_offset)
       rec = recommendReforge(l, reforge_offset)
       if rec
         l.__reforgeEP = reforgeEp(rec, l, reforge_offset)
@@ -1400,6 +1613,8 @@ class ShadowcraftGear
 
     Shadowcraft.Backend.bind("recompute2", updateStatWeights)
     Shadowcraft.Backend.bind("recompute2", -> Shadowcraft.Gear )
+    Shadowcraft.Backend.bind("recompute2", updateDpsBreakdown)
+    #Shadowcraft.Backend.bind("recompute2", updateUpgradeWindow)
 
     Shadowcraft.Talents.bind "changed", ->
       app.updateStatsWindow()
@@ -1411,6 +1626,11 @@ class ShadowcraftGear
       # Shadowcraft.Gear.reforgeAll()
       window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
       TiniReforger.buildRequest()
+
+    $("#reforgeAllExp").click ->
+      # Shadowcraft.Gear.reforgeAll()
+      window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
+      TiniReforger.buildRequest(override = true)
 
     $("#optimizeGems").click ->
       window._gaq.push ['_trackEvent', "Character", "Optimize Gems"] if window._gaq

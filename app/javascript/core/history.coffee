@@ -254,7 +254,15 @@ class ShadowcraftHistory
         rotationOptions.push map(v, rotationValueMap)
       options.push base36Encode(rotationOptions)
 
+      # advanced options
+      advancedOptions = []
+      for k, v of data.options["advanced"]
+        advancedOptions.push k
+        advancedOptions.push v
+      options.push advancedOptions
+
       ret.push options
+      ret.push base36Encode(data.achievements || [])
       return ret
 
   decompress_handlers =
@@ -267,6 +275,7 @@ class ShadowcraftHistory
         glyphs: base36Decode(data[5])
         options: {}
         talents: []
+        achievements: if data[8] then base36Decode(data[8]) else []
 
       talentSets = data[6]
       for id, index in talentSets by 3
@@ -323,5 +332,9 @@ class ShadowcraftHistory
       d.options.rotation = {}
       for v, i in rotation by 2
         d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i+1], rotationValueMap)
-
+      if options[4]
+        advanced = options[4]
+        d.options.advanced = {}
+        for v, i in advanced by 2
+          d.options.advanced[v] = advanced[i+1]
       return d

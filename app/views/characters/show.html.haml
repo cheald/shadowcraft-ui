@@ -25,6 +25,9 @@
           %a{:href => "#talents"} Talents &amp; Glyphs
         %li
           %a{:href => "#settings"} Settings
+        %li
+          %a{:href => "#advanced"} Advanced
+
       %a.dropdown#settingsDropdown{:href => "#", :"data-menu" => "settingsDropdownMenu"}<
         =image_tag "cog.png"
 
@@ -115,6 +118,21 @@
         .option-list
           %h3 Professions
           #professions
+
+    #advanced.with-tools
+      .panel-tools
+        %section#dpsbreakdown
+          %h3 DPS Breakdown
+          .inner
+        /*%section#upgraderankings*/
+        /*  %h3 Upgrade Rankings*/
+        /*  .inner */    
+      .panel-content
+        %section.cluster
+          .option-list
+            %h3 Custom Expertise Rating Stat Weights
+            #advancedReforge
+            %button#reforgeAllExp Auto-Reforge All Exp
 
     #console-footer
       %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :class => @character.properties['race'].downcase.gsub(/ /, "_")}

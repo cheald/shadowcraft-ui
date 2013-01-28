@@ -3,6 +3,9 @@ class ShadowcraftBackend
 
   get_engine = ->
     switch Shadowcraft.Data.options.general.patch
+      when 52
+        port = 8880
+        endpoint = "engine-5.2"
       when 50
         port = 8881
         endpoint = "engine-5.0"
