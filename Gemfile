@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.19'
+gem 'rails', '3.0.20'
 gem 'nokogiri'
 gem "compass", ">= 0.10.5"
 gem "formtastic"
