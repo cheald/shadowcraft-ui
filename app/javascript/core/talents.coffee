@@ -100,6 +100,7 @@ class ShadowcraftTalents
     if !str
       updateTalentAvailability(null)
       return
+    talentsSpent = 0
     $("#talentframe .talent").each ->
       position = $.data(this, "position")
       points = $.data(this, "points")
@@ -122,7 +123,7 @@ class ShadowcraftTalents
 
   setSpec = (str) ->
     data = Shadowcraft.Data
-    $("#specactive").html(getSpecName(str)) #TODO working but is html the right function?
+    $("#specactive").html(getSpecName(str))
     data.activeSpec = str
 
   getSpec = ->
@@ -174,10 +175,17 @@ class ShadowcraftTalents
     setTalents data.activeTalents
     this.setGlyphs data.glyphs
 
-  initTalentsPane: ->
-    Talents = Shadowcraft.ServerData.TALENTS
-    TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP
-    data = Shadowcraft.Data
+  initTalentTree: ->
+    switch Shadowcraft.Data.options.general.patch
+      when 52
+        Talents = Shadowcraft.ServerData.TALENTS_52
+        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52
+      when 50
+        Talents = Shadowcraft.ServerData.TALENTS
+        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP
+      else
+        Talents = Shadowcraft.ServerData.TALENTS
+        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP
 
     buffer = ""
     buffer += Templates.talentTier({
@@ -241,6 +249,10 @@ class ShadowcraftTalents
         $.data(listening, "removed", true)
     )
 
+  initTalentsPane: ->
+    this.initTalentTree()
+    
+    data = Shadowcraft.Data
     buffer = ""
     for talent in data.talents
       buffer += Templates.talentSet({
@@ -423,6 +435,11 @@ class ShadowcraftTalents
     Shadowcraft.bind "loadData", ->
       app.updateActiveTalents()
       app.initGlyphs()
+
+    Shadowcraft.Options.bind "update", (opt, val) ->
+      if opt in ['general.patch']
+        app.initTalentTree()
+        app.updateActiveTalents()
 
     $("#talents #talentframe").mousemove (e) ->
       $.data document, "mouse-x", e.pageX

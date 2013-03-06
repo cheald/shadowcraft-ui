@@ -105,6 +105,7 @@ class Item
     end
 
     json[:heroic] = "Heroic" if properties["is_heroic"]
+    json[:tag] = properties["tag"] if properties["tag"]
 
     if !properties["speed"].blank?
       json[:speed] = properties["speed"]
@@ -161,12 +162,14 @@ class Item
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0"
     #item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=501;maxle=550;ub=4;cr=21;crs=1;crv=0"
 
-    item_ids += [ 87057, 86132, 86791, 87574, 81265, 81267, 75274, 87495, 77534, 77530 ] # some extra_items
+    item_ids += [ 87057, 86132, 86791, 87574, 81265, 81267, 75274, 87495, 77534, 77530 ] # some extra_items, mostly 5.0 trinkets
+    item_ids += [ 94523, 96409, 96037, 95665] #bad juju
+    item_ids += [ 96174, 94511] # missing other trinkets
     puts "importing now #{item_ids.length} items"
     pos = 0
     item_ids.each do |id|
       pos = pos + 1
-      puts "test #{pos} item"
+      puts "item #{pos} of #{item_ids.length}"
       single_import id
       single_import id,{:upgrade_level => 1}
       single_import id,{:upgrade_level => 2}

@@ -106,7 +106,7 @@ class ShadowcraftOptions
     data = Shadowcraft.Data
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Engine", 'default': 50, datatype: 'integer', options: {50: '5.1'}},
+      patch: {type: "select", name: "Patch/Engine", desc: 'Only changes UI Stuff like Talents. It always uses the latest Engine, so you cannot compare Patches.', 'default': 52, datatype: 'integer', options: {50: '5.1', 52: '5.2'}},
       level: {type: "input", name: "Level", 'default': 90, datatype: 'integer', min: 85, max: 90},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
@@ -175,7 +175,9 @@ class ShadowcraftOptions
       use_rupture: {type: "check", name: "Use Rupture?", right: true, default: true}
       ksp_immediately: {type: "select", name: "Killing Spree", options: {'true': "Killing Spree on cooldown", 'false': "Wait for Bandit's Guile before using Killing Spree"}, 'default': 'true', datatype: 'string'}
       revealing_strike_pooling: {type: "check", name: "Pool for Revealing Strike", right: true, default: true, datatype: 'bool'}
+      stack_cds: {type: "check", name: "Stack Cooldowns", desc: "Use Adrenaline Rush and Shadow Blades together", right: true, default: true, datatype: 'bool'}
       blade_flurry: {type: "check", name: "Blade Flurry", right: true, desc: "Use Blade Flurry", default: false, datatype: 'bool'}
+      bf_targets: {type: "select", name: "Blade Flurry Targets", options: [1,2,3,4], 'default': 1, datatype: 'integer', min: 1, max: 4}
       opener_name_combat: {type: "select", name: "Opener Name", options: {'sinister_strike': "Sinister Strike", 'revealing_strike': "Revealing Strike", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'sinister_strike', datatype: 'string'}
       opener_use_combat: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })

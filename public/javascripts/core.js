@@ -790,7 +790,7 @@
     poisonMap = ["dp", "wp"];
     utilPoisonMap = ["lp", "n"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"];
-    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "use_rupture", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "clip_recuperate", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"];
+    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "use_rupture", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "bf_targets", "stack_cds", "clip_recuperate", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"];
     rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'sometimes', 'pool', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike', 'opener'];
     map = function(value, m) {
       return m.indexOf(value);
@@ -932,7 +932,7 @@
           tricks: general[7] !== 0,
           receive_tricks: general[8] !== 0,
           prepot: general[9] !== 0,
-          patch: general[10] || 50,
+          patch: general[10] || 52,
           min_ilvl: general[11] || 430,
           epic_gems: general[12] || 0,
           stormlash: general[13] || 0,
@@ -1054,6 +1054,12 @@
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
     EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
+    if (section === void 0 || section === "options") {
+      Shadowcraft.Console.remove(".options");
+      if (parseInt(data.options.general.patch) < 52) {
+        Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to Patch 5.2 and/or clear all saved data and refresh from armory.", null, 'warn', 'options');
+      }
+    }
     if (section === void 0 || section === "glyphs") {
       Shadowcraft.Console.remove(".glyphs");
       if (data.glyphs.length < 3) {
@@ -1282,11 +1288,13 @@
       this.setup("#settings #general", "general", {
         patch: {
           type: "select",
-          name: "Engine",
-          'default': 50,
+          name: "Patch/Engine",
+          desc: 'Only changes UI Stuff like Talents. It always uses the latest Engine, so you cannot compare Patches.',
+          'default': 52,
           datatype: 'integer',
           options: {
-            50: '5.1'
+            50: '5.1',
+            52: '5.2'
           }
         },
         level: {
@@ -1647,6 +1655,14 @@
           "default": true,
           datatype: 'bool'
         },
+        stack_cds: {
+          type: "check",
+          name: "Stack Cooldowns",
+          desc: "Use Adrenaline Rush and Shadow Blades together",
+          right: true,
+          "default": true,
+          datatype: 'bool'
+        },
         blade_flurry: {
           type: "check",
           name: "Blade Flurry",
@@ -1654,6 +1670,15 @@
           desc: "Use Blade Flurry",
           "default": false,
           datatype: 'bool'
+        },
+        bf_targets: {
+          type: "select",
+          name: "Blade Flurry Targets",
+          options: [1, 2, 3, 4],
+          'default': 1,
+          datatype: 'integer',
+          min: 1,
+          max: 4
         },
         opener_name_combat: {
           type: "select",
@@ -1938,6 +1963,7 @@
         updateTalentAvailability(null);
         return;
       }
+      talentsSpent = 0;
       $("#talentframe .talent").each(function() {
         var p, points, position;
         position = $.data(this, "position");
@@ -2023,11 +2049,21 @@
       setTalents(data.activeTalents);
       return this.setGlyphs(data.glyphs);
     };
-    ShadowcraftTalents.prototype.initTalentsPane = function() {
-      var TalentLookup, Talents, buffer, data, initTalentsPane, talent, talentName, talentSet, talentTrees, talentframe, tframe, tree, treeIndex, _i, _len, _ref;
-      Talents = Shadowcraft.ServerData.TALENTS;
-      TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP;
-      data = Shadowcraft.Data;
+    ShadowcraftTalents.prototype.initTalentTree = function() {
+      var TalentLookup, Talents, buffer, talentTrees, talentframe, tframe, tree, treeIndex;
+      switch (Shadowcraft.Data.options.general.patch) {
+        case 52:
+          Talents = Shadowcraft.ServerData.TALENTS_52;
+          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52;
+          break;
+        case 50:
+          Talents = Shadowcraft.ServerData.TALENTS;
+          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP;
+          break;
+        default:
+          Talents = Shadowcraft.ServerData.TALENTS;
+          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP;
+      }
       buffer = "";
       buffer += Templates.talentTier({
         background: 1,
@@ -2130,7 +2166,7 @@
           }
         }
       });
-      talentframe.bind("touchstart", function(e) {
+      return talentframe.bind("touchstart", function(e) {
         var listening;
         listening = $.data(tframe, "listening");
         if (e.originalEvent.touches.length > 1 && listening && $.data(listening, "listening")) {
@@ -2140,6 +2176,11 @@
           return $.data(listening, "removed", true);
         }
       });
+    };
+    ShadowcraftTalents.prototype.initTalentsPane = function() {
+      var buffer, data, initTalentsPane, talent, talentName, talentSet, _i, _len, _ref;
+      this.initTalentTree();
+      data = Shadowcraft.Data;
       buffer = "";
       _ref = data.talents;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -2387,6 +2428,12 @@
         app.updateActiveTalents();
         return app.initGlyphs();
       });
+      Shadowcraft.Options.bind("update", function(opt, val) {
+        if (opt === 'general.patch') {
+          app.initTalentTree();
+          return app.updateActiveTalents();
+        }
+      });
       $("#talents #talentframe").mousemove(function(e) {
         $.data(document, "mouse-x", e.pageX);
         return $.data(document, "mouse-y", e.pageY);
@@ -2459,6 +2506,13 @@
         bonuses: {
           4: "rogue_t14_4pc",
           2: "rogue_t14_2pc"
+        }
+      },
+      T15: {
+        ids: [95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679],
+        bonuses: {
+          4: "rogue_t15_4pc",
+          2: "rogue_t15_2pc"
         }
       }
     };
@@ -3833,8 +3887,10 @@
       other = {
         mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps,
         offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps,
-        t14_2pc: source.other_ep.rogue_t14_2pc,
-        t14_4pc: source.other_ep.rogue_t14_4pc
+        t14_2pc: source.other_ep.rogue_t14_2pc || 0,
+        t14_4pc: source.other_ep.rogue_t14_4pc || 0,
+        t15_2pc: source.other_ep.rogue_t15_2pc || 0,
+        t15_4pc: source.other_ep.rogue_t15_4pc || 0
       };
       all = _.extend(Weights, other);
       $weights = $("#weights .inner");
@@ -3852,10 +3908,8 @@
             $.data(exist.get(0), "sortkey", 1);
           } else if (key === "mh_expertise_rating" || key === "oh_expertise_rating") {
             $.data(exist.get(0), "sortkey", 2);
-          } else if (key === "t14_2pc") {
+          } else if (key === "t14_2pc" || key === "t14_4pc" || key === "t15_2pc" || key === "t15_4pc") {
             $.data(exist.get(0), "sortkey", 3);
-          } else if (key === "t14_4pc") {
-            $.data(exist.get(0), "sortkey", 4);
           }
         }
         $.data(exist.get(0), "weight", weight);
@@ -4730,6 +4784,7 @@
           return app.updateDisplay();
         }
       });
+      checkForWarnings('options');
       return this;
     };
     function ShadowcraftGear(app) {

@@ -172,7 +172,7 @@ class ShadowcraftHistory
   raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"]
   rotationOptionsMap = [
     "min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute",
-    "use_rupture", "ksp_immediately", "revealing_strike_pooling", "blade_flurry",
+    "use_rupture", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "bf_targets", "stack_cds"
     "clip_recuperate", "use_hemorrhage",
     "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"
   ]
@@ -316,7 +316,7 @@ class ShadowcraftHistory
         tricks:               general[7] != 0
         receive_tricks:       general[8] != 0
         prepot:               general[9] != 0
-        patch:                general[10] || 50
+        patch:                general[10] || 52
         min_ilvl:             general[11] || 430
         epic_gems:            general[12] || 0
         stormlash:            general[13] || 0

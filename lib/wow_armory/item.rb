@@ -126,7 +126,7 @@ module WowArmory
     STAT_LOOKUP = Hash[*STAT_INDEX.map {|k, v| [v, k]}.flatten]
 
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ori_ilevel, :ilevel, :quality, :requirement, :is_heroic, :socket_bonus, :sockets, :gem_slot, :speed, :subclass, :dps, :armor_class, :random_suffix, :upgradeable, :upgrade_level
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ori_ilevel, :ilevel, :quality, :requirement, :tag, :is_heroic, :socket_bonus, :sockets, :gem_slot, :speed, :subclass, :dps, :armor_class, :random_suffix, :upgradeable, :upgrade_level
     attr_accessor *ACCESSORS
     def initialize(id, random_suffix = nil, upgrade_level = nil, name = nil)
       self.stats = {}
@@ -398,6 +398,9 @@ module WowArmory
       #self.requirement = lis.map {|li| li.text.match(/Requires ([a-z]+) \(/i) }.compact.first.try(:[], 1)
       #self.is_heroic = value(".color-tooltip-green").try(:strip) == "Heroic"
       self.is_heroic = @json["nameDescription"] == "Heroic"
+      unless @json["nameDescription"].nil?
+        self.tag = @json["nameDescription"]
+      end
       unless @json["gemInfo"].nil?
         self.gem_slot = @json["gemInfo"]["type"]["type"].capitalize
         puts gem_slot

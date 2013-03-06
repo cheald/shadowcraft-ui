@@ -44,6 +44,9 @@ class ShadowcraftGear
     T14:
       ids: [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128]
       bonuses: {4: "rogue_t14_4pc", 2: "rogue_t14_2pc"}
+    T15:
+      ids: [95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679]
+      bonuses: {4: "rogue_t15_4pc", 2: "rogue_t15_2pc"}
 
   Weights =
     attack_power: 1
@@ -1132,8 +1135,10 @@ class ShadowcraftGear
     other =
       mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps
       offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps
-      t14_2pc: source.other_ep.rogue_t14_2pc
-      t14_4pc: source.other_ep.rogue_t14_4pc
+      t14_2pc: source.other_ep.rogue_t14_2pc || 0
+      t14_4pc: source.other_ep.rogue_t14_4pc || 0
+      t15_2pc: source.other_ep.rogue_t15_2pc || 0
+      t15_4pc: source.other_ep.rogue_t15_4pc || 0
 
     all = _.extend(Weights, other)
 
@@ -1151,10 +1156,8 @@ class ShadowcraftGear
           $.data(exist.get(0), "sortkey", 1)
         else if key in ["mh_expertise_rating","oh_expertise_rating"]
           $.data(exist.get(0), "sortkey", 2)
-        else if key in ["t14_2pc"]
+        else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc"]
           $.data(exist.get(0), "sortkey", 3)
-        else if key in ["t14_4pc"]
-          $.data(exist.get(0), "sortkey", 4)
       $.data(exist.get(0), "weight", weight)
 
     $("#weights .stat").sortElements (a, b) ->
@@ -1879,6 +1882,8 @@ class ShadowcraftGear
     Shadowcraft.Options.bind "update", (opt, val) ->
       if opt in ['professions.enchanting', 'professions.blacksmithing','rotation.use_hemorrhage']
         app.updateDisplay()
+
+    checkForWarnings('options')
 
     this
 

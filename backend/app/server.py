@@ -95,7 +95,26 @@ class ShadowcraftComputation:
         81267: "searing_words",
         87574: "corens_cold_chromium_coaster",
         84072: "braid_of_ten_songs",
-        75274: "zen_alchemist_stone"
+        75274: "zen_alchemist_stone",
+
+        # 5.2
+        95665: 'lfr_bad_juju',
+        94523: 'bad_juju',
+        96037: 'thunder_bad_juju',
+        96409: 'heroic_bad_juju',
+        95802: 'lfr_rune_of_re_origination',
+        94532: 'rune_of_re_origination',
+        96174: 'thunder_rune_of_re_origination',
+        96546: 'heroic_rune_of_re_origination',
+        95748: 'lfr_talisman_of_bloodlust',
+        94522: 'talisman_of_bloodlust',
+        96120: 'thunder_talisman_of_bloodlust',
+        96492: 'heroic_talisman_of_bloodlust',
+        95625: 'lfr_renatakis_soul_charm',
+        94512: 'renatakis_soul_charm',
+        95997: 'thunder_renatakis_soul_charm',
+        96369: 'heroic_renatakis_soul_charm',
+        94511: 'vicious_talisman_of_the_shado-pan_assault'
     }
     
     gearBoosts = {
@@ -132,6 +151,7 @@ class ShadowcraftComputation:
     tier12IDS = frozenset([71046, 71538, 71047, 71539, 71048, 71540, 71049, 71541, 71045, 71537])
     tier13IDS = frozenset([78664, 78679, 78699, 78708, 78738, 77023, 77024, 77025, 77026, 77027, 78759, 78774, 78794, 78803, 78833])
     tier14IDS = frozenset([85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128])
+    tier15IDS = frozenset([95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679])
 
     
     legendary_tier_1 = frozenset([77945, 77946])
@@ -203,7 +223,7 @@ class ShadowcraftComputation:
                 'use_hemorrhage'
             ]
         ]
-    elif __builtin__.shadowcraft_engine_version == 5.0 or __builtin__.shadowcraft_engine_version == 5.2: # FIXME what options are avaibly??
+    elif __builtin__.shadowcraft_engine_version == 5.0:
         validCycleKeys = [[
                 'min_envenom_size_non_execute',
                 'min_envenom_size_execute',
@@ -214,6 +234,24 @@ class ShadowcraftComputation:
                 'revealing_strike_pooling',
                 'ksp_immediately',
                 'blade_flurry'
+            ], [
+                'clip_recuperate',
+                'use_hemorrhage'
+            ]
+        ]
+    elif __builtin__.shadowcraft_engine_version == 5.2:
+        validCycleKeys = [[
+                'min_envenom_size_non_execute',
+                'min_envenom_size_execute',
+                'prioritize_rupture_uptime_non_execute',
+                'prioritize_rupture_uptime_execute'
+            ], [
+                'use_rupture',
+                'revealing_strike_pooling',
+                'ksp_immediately',
+                'blade_flurry',
+                'stack_cds',
+                'bf_targets'
             ], [
                 'clip_recuperate',
                 'use_hemorrhage'
@@ -322,6 +360,12 @@ class ShadowcraftComputation:
 
         if len(self.tier14IDS & gear) >= 4:
             buff_list.append('rogue_t14_4pc')
+
+        if len(self.tier15IDS & gear) >= 2:
+            buff_list.append('rogue_t15_2pc')
+
+        if len(self.tier15IDS & gear) >= 4:
+            buff_list.append('rogue_t15_4pc')
     
         agi_bonus = 0
         if len(self.arenaSeason9SetIds & gear) >= 2:
@@ -468,7 +512,7 @@ class ShadowcraftComputation:
             out["glyph_ranking"] = calculator.get_glyphs_ranking(input.get("gly", []))
             
             out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
-            out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc'])
+            out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc'])
 
             trinket_rankings = calculator.get_upgrades_ep(self.trinkets)
             out["trinket_ranking"] = {}

@@ -70,6 +70,12 @@ checkForWarnings = (section) ->
   EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
   EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS
 
+  if section == undefined or section == "options"
+    # Warn basic stuff
+    Shadowcraft.Console.remove(".options")
+    if parseInt(data.options.general.patch) < 52
+      Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to Patch 5.2 and/or clear all saved data and refresh from armory.", null, 'warn', 'options')
+
   if section == undefined or section == "glyphs"
     # Warn glyphs
     Shadowcraft.Console.remove(".glyphs")
