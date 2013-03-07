@@ -25,6 +25,9 @@ from shadowcraft.objects import glyphs
 
 from shadowcraft.core import i18n
 
+import hotshot
+import uuid
+
 class ShadowcraftComputation:
     enchantMap = {
         4083: 'hurricane',
@@ -84,7 +87,7 @@ class ShadowcraftComputation:
         #72897: 'arrow_of_time',
 
         # 5.0
-        81125: "windswept_pages",
+        #81125: "windswept_pages",
         79328: "relic_of_xuen",
         86332: "terror_in_the_mists",
         87167: "heroic_terror_in_the_mists",
@@ -92,9 +95,9 @@ class ShadowcraftComputation:
         86132: "bottle_of_infinite_stars",
         87057: "heroic_bottle_of_infinite_stars",
         86791: "lfr_bottle_of_infinite_stars",
-        81267: "searing_words",
-        87574: "corens_cold_chromium_coaster",
-        84072: "braid_of_ten_songs",
+        #81267: "searing_words",
+        #87574: "corens_cold_chromium_coaster",
+        #84072: "braid_of_ten_songs",
         75274: "zen_alchemist_stone",
 
         # 5.2
@@ -132,12 +135,12 @@ class ShadowcraftComputation:
         #77974: 'lfr_kiroptyric_sigil',
         
         #5.0
-        87495: "gerps_perfect_arrow",
-        81265: "flashing_steel_talisman",
+        #87495: "gerps_perfect_arrow",
+        #81265: "flashing_steel_talisman",
         89082: "hawkmasters_talon",
-        87079: "heroic_jade_bandit_figurine",
+        #87079: "heroic_jade_bandit_figurine",
         86043: "jade_bandit_figurine",
-        86772: "lfr_jade_bandit_figurine",
+        #86772: "lfr_jade_bandit_figurine",
         
         # 5.1
         93253: "woundripper_medallion",
@@ -509,10 +512,10 @@ class ShadowcraftComputation:
             out["total_dps"] = sum(entry[1] for entry in out["breakdown"].items())
 
             # Glyph ranking is slow
-            out["glyph_ranking"] = calculator.get_glyphs_ranking(input.get("gly", []))
+            out["glyph_ranking"] = [] #calculator.get_glyphs_ranking(input.get("gly", []))
             
             out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
-            out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc'])
+            out["other_ep"] = [] #calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc'])
 
             trinket_rankings = calculator.get_upgrades_ep(self.trinkets)
             out["trinket_ranking"] = {}
@@ -526,10 +529,10 @@ class ShadowcraftComputation:
             
             # Compute weapon ep
             out["mh_ep"], out["oh_ep"] = calculator.get_weapon_ep(dps=True, enchants=True)
-            out["mh_speed_ep"], out["oh_speed_ep"] = calculator.get_weapon_ep([2.9, 2.7, 2.6, 1.8, 1.4, 1.3])
+            out["mh_speed_ep"], out["oh_speed_ep"] = calculator.get_weapon_ep([2.6, 1.8])
 
             # Talent ranking is slow. This is done last per a note from nextormento.
-            out["talent_ranking_main"] = calculator.get_talents_ranking()      
+            out["talent_ranking_main"] = [] #calculator.get_talents_ranking()      
 
             # oh weapon modifier, pull only for combat spec
             #if input.get("spec", 'a') == "Z":
@@ -559,6 +562,9 @@ class ShadowcraftSite(resource.Resource):
     def _render_post(self, input):
         start = clock()
         log.msg("Request: %s" % input)
+        #prof = hotshot.Profile("profile/stones-%s.prof" % uuid.uuid4())
+        #response = prof.runcall(engine.get_all, input)
+        #prof.close()
         response = engine.get_all(input)
         log.msg("Request time: %s sec" % (clock() - start))
         return json.dumps(response)
