@@ -4734,7 +4734,6 @@
         $this = $(this);
         popup = $this.parents(".popup");
         search = $.trim($this.val().toLowerCase());
-        console.log(search);
         all = popup.find(".slot");
         show = all.filter(":regex(data-search, " + escape(search) + ")");
         hide = all.not(show);
