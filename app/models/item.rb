@@ -154,7 +154,19 @@ class Item
         single_import id,{:random_suffix => suffix, :upgrade_level => 2}
       end
     end
-    
+
+    # 5.2 random enchantment items
+    suffixes = (-340..-336).to_a
+    random_item_ids = [ 94979, 95796, 96168, 96540 ]
+    puts "importing now #{random_item_ids.length} random items for 5.2"
+    random_item_ids.each do |id|
+      single_import id
+      suffixes.each do |suffix|
+        single_import id,{:random_suffix => suffix}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 1}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 2}
+      end
+    end
     
     item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=483;ub=4;cr=21;crs=1;crv=0"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=484;maxle=500;ub=4;cr=21;crs=1;crv=0"

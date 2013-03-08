@@ -3150,7 +3150,9 @@
       if ((_ref = item.equip_location) === "mainhand" || _ref === "offhand") {
         chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS);
         last = item.sockets[item.sockets.length - 1];
-        if (last !== "Prismatic" && last === "Hydraulic" && chapter2) {
+        if (item.ilvl >= 502 && !(item.id === 87012 || item.id === 87032) && last !== "Prismatic" && chapter2) {
+          return item.sockets.push("Prismatic");
+        } else if (last !== "Prismatic" && last === "Hydraulic" && chapter2) {
           return item.sockets.push("Prismatic");
         } else if (!chapter2 && last === "Prismatic") {
           return item.sockets.pop();
@@ -4128,6 +4130,9 @@
         if (isNaN(l.__gearEP)) {
           l.__gearEP = 0;
         }
+        if (isNaN(l.__setBonusEP)) {
+          l.__setBonusEP = 0;
+        }
         l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP + l.__setBonusEP;
       }
       loc.sort(__epSort);
@@ -4232,7 +4237,7 @@
           ttid: ttid,
           ttrand: ttrand,
           ttupgd: ttupgd,
-          desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : "") + " " + (l.__setBonusEP !== 0 ? "/ " + l.__setBonusEP.toFixed(1) + " set" : "") + " ",
+          desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : "") + " " + (l.__setBonusEP > 0 ? "/ " + l.__setBonusEP.toFixed(1) + " set" : "") + " ",
           search: l.name,
           percent: Math.max((iEP - minIEP) / maxIEP * 100, 0.01),
           ep: iEP.toFixed(1)
@@ -4264,6 +4269,9 @@
       for (_i = 0, _len = enchants.length; _i < _len; _i++) {
         enchant = enchants[_i];
         enchant.__ep = get_ep(enchant, null, slot, offset);
+        if (isNaN(enchant.__ep)) {
+          enchant.__ep = 0;
+        }
         max = enchant.__ep > max ? enchant.__ep : max;
       }
       enchants.sort(__epSort);

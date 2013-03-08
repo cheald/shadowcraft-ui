@@ -82,7 +82,12 @@ module WowArmory
       134 => "of the Galeburst",
       135 => "of the Windflurry",
       136 => "of the Zephyr",
-      137 => "of the Windstorm"
+      137 => "of the Windstorm",
+      336 => "[Crit]",
+      337 => "[Hit]",
+      338 => "[Exp]",
+      339 => "[Mastery]",
+      340 => "[Haste]"
     }
 
     ITEM_SOCKET_COST = 160.0 # TODO 160 is for every item from mop but add the socket cost database
@@ -254,7 +259,7 @@ module WowArmory
       row = random_suffixes[random_suffix.abs.to_s]
       base = rand_prop_points[self.ilevel.to_s]
 
-      self.stats = {}
+      self.stats = get_item_stats_api
       4.times do |i|
         enchantid = row[3+i]
         multiplier = row[8+i].to_f / 10000.0
@@ -439,8 +444,9 @@ module WowArmory
         puts self.random_suffix
         populate_random_suffix_item
         puts self.stats.inspect
-        if !self.name.include? 'of the'
+        if !self.name.include? 'of the' or self.name.include? 'Bracers of the Midnight Comet'
           self.name += " #{SUFFIX_NAME_MAP[self.random_suffix.abs]}"
+          puts self.name
         end
       else 
         populate_item_upgrade_level

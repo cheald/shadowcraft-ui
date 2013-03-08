@@ -563,7 +563,9 @@ class ShadowcraftGear
     if item.equip_location in ["mainhand","offhand"]
       chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS)
       last = item.sockets[item.sockets.length - 1]
-      if last != "Prismatic" and last == "Hydraulic" and chapter2
+      if item.ilvl >= 502 and not (item.id == 87012 or item.id == 87032) and last != "Prismatic" and chapter2
+        item.sockets.push "Prismatic"
+      else if last != "Prismatic" and last == "Hydraulic" and chapter2
         item.sockets.push "Prismatic"
       else if !chapter2 and last == "Prismatic"
         item.sockets.pop()
@@ -1330,6 +1332,7 @@ class ShadowcraftGear
 
       l.__gearEP = get_ep(l, null, slot, gear_offset)
       l.__gearEP = 0 if isNaN l.__gearEP
+      l.__setBonusEP = 0 if isNaN l.__setBonusEP
       l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP + l.__setBonusEP
 
     loc.sort(__epSort)
@@ -1398,7 +1401,7 @@ class ShadowcraftGear
         ttid: ttid
         ttrand: ttrand
         ttupgd: ttupgd
-        desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" } #{if l.__setBonusEP != 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
+        desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" } #{if l.__setBonusEP > 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
         search: l.name
         percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01
         ep: iEP.toFixed(1)
@@ -1431,6 +1434,7 @@ class ShadowcraftGear
     offset = statOffset(Shadowcraft.Data.gear[slot], FACETS.ENCHANT)
     for enchant in enchants
       enchant.__ep = get_ep(enchant, null, slot, offset)
+      enchant.__ep = 0 if isNaN enchant.__ep
       max = if enchant.__ep > max then enchant.__ep else max
     enchants.sort(__epSort)
     selected_id = data.gear[slot].enchant
