@@ -1402,7 +1402,7 @@ class ShadowcraftGear
         ttrand: ttrand
         ttupgd: ttupgd
         desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" } #{if l.__setBonusEP > 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
-        search: l.name
+        search: escape(l.name)
         percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01
         ep: iEP.toFixed(1)
       )
@@ -1842,7 +1842,7 @@ class ShadowcraftGear
       popup = $this.parents(".popup")
       search = $.trim($this.val().toLowerCase())
       all = popup.find(".slot")
-      show = all.filter(":regex(data-search, " + search + ")")
+      show = all.filter(":regex(data-search, " + escape(search) + ")")
       hide = all.not(show)
       show.removeClass("hidden")
       hide.addClass("hidden")

@@ -4238,7 +4238,7 @@
           ttrand: ttrand,
           ttupgd: ttupgd,
           desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : "") + " " + (l.__setBonusEP > 0 ? "/ " + l.__setBonusEP.toFixed(1) + " set" : "") + " ",
-          search: l.name,
+          search: escape(l.name),
           percent: Math.max((iEP - minIEP) / maxIEP * 100, 0.01),
           ep: iEP.toFixed(1)
         });
@@ -4734,8 +4734,9 @@
         $this = $(this);
         popup = $this.parents(".popup");
         search = $.trim($this.val().toLowerCase());
+        console.log(search);
         all = popup.find(".slot");
-        show = all.filter(":regex(data-search, " + search + ")");
+        show = all.filter(":regex(data-search, " + escape(search) + ")");
         hide = all.not(show);
         show.removeClass("hidden");
         return hide.addClass("hidden");
