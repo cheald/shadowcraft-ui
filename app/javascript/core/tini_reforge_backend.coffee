@@ -47,12 +47,12 @@ class ShadowcraftTiniReforgeBackend
       data: json_encode(req)
       complete: ->
         deferred.resolve()
+        Shadowcraft.update()
+        Shadowcraft.Gear.updateDisplay()
       success: (data) ->
         Shadowcraft.Gear.setReforges(data)
       error: (xhr, textStatus, error) ->
-        flash textStatus, error
-        Shadowcraft.update()
-        Shadowcraft.Gear.updateDisplay()
+        flash textStatus
       dataType: "json",
       contentType: "application/json"
 

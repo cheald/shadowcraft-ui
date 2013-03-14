@@ -1124,15 +1124,15 @@ class ShadowcraftGear
     Weights.agility = source.ep.agi
     Weights.crit_rating = source.ep.crit
     Weights.hit_rating = source.ep.white_hit
-    Weights.spell_hit = source.ep.spell_hit
+    Weights.spell_hit = source.ep.spell_hit || source.ep.white_hit
     Weights.strength = source.ep.str
     Weights.mastery_rating = source.ep.mastery
     Weights.haste_rating = source.ep.haste
-    Weights.expertise_rating = source.ep.dodge_exp
+    Weights.expertise_rating = source.ep.dodge_exp || source.ep.mh_dodge_exp + source.ep.oh_dodge_exp
     Weights.mh_expertise_rating = source.ep.mh_dodge_exp
     Weights.oh_expertise_rating = source.ep.oh_dodge_exp
     Weights.yellow_hit = source.ep.yellow_hit
-    Weights.pvp_power_rating = source.ep.pvp_power
+    Weights.pvp_power_rating = source.ep.pvp_power || 0
 
     other =
       mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps
@@ -1147,6 +1147,7 @@ class ShadowcraftGear
     $weights = $("#weights .inner")
     $weights.empty()
     for key, weight of all
+      continue if weight == 0
       exist = $(".stat#weight_" + key)
       if exist.length > 0
         exist.find("val").text weight.toFixed(3)

@@ -58,7 +58,7 @@ flash = (message) ->
     $(".flash").fadeIn(300)
   if flashHide
     window.clearTimeout(flashHide)
-  flashHide = window.setTimeout(hideFlash, 20000)
+  flashHide = window.setTimeout(hideFlash, 1500)
 
 # /******* View update helpers *************/
 

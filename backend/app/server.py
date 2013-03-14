@@ -504,7 +504,11 @@ class ShadowcraftComputation:
         try:
             calculator = self.setup(input)
             default_ep_stats = ['white_hit', 'yellow_hit', 'str', 'agi', 'haste',
-                'crit', 'mastery', 'dodge_exp', 'spell_hit', 'spell_exp', 'pvp_power', 'ap', 'mh_dodge_exp', 'oh_dodge_exp']
+                'crit', 'mastery', 'spell_hit', 'ap', 'mh_dodge_exp', 'oh_dodge_exp']
+            _opt = input.get("settings", {})
+            is_pvp = _opt.get("pvp", False)
+            if is_pvp:
+                default_ep_stats.append("pvp_power")
             out["ep"] = calculator.get_ep(default_ep_stats)
 
             # Compute DPS Breakdown.
