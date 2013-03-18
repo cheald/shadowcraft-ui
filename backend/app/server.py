@@ -87,7 +87,7 @@ class ShadowcraftComputation:
         #72897: 'arrow_of_time',
 
         # 5.0
-        #81125: "windswept_pages",
+        81125: "windswept_pages",
         79328: "relic_of_xuen",
         86332: "terror_in_the_mists",
         87167: "heroic_terror_in_the_mists",
@@ -95,8 +95,8 @@ class ShadowcraftComputation:
         86132: "bottle_of_infinite_stars",
         87057: "heroic_bottle_of_infinite_stars",
         86791: "lfr_bottle_of_infinite_stars",
-        #81267: "searing_words",
-        #87574: "corens_cold_chromium_coaster",
+        81267: "searing_words",
+        87574: "corens_cold_chromium_coaster",
         #84072: "braid_of_ten_songs",
         75274: "zen_alchemist_stone",
 
@@ -136,7 +136,7 @@ class ShadowcraftComputation:
         
         #5.0
         #87495: "gerps_perfect_arrow",
-        #81265: "flashing_steel_talisman",
+        81265: "flashing_steel_talisman",
         89082: "hawkmasters_talon",
         #87079: "heroic_jade_bandit_figurine",
         86043: "jade_bandit_figurine",
