@@ -105,6 +105,7 @@ class ShadowcraftComputation:
         94523: 'bad_juju',
         96037: 'thunder_bad_juju',
         96409: 'heroic_bad_juju',
+        96781: 'heroic_thunder_bad_juju',
         95802: 'lfr_rune_of_re_origination',
         94532: 'rune_of_re_origination',
         96174: 'thunder_rune_of_re_origination',
@@ -117,6 +118,7 @@ class ShadowcraftComputation:
         94512: 'renatakis_soul_charm',
         95997: 'thunder_renatakis_soul_charm',
         96369: 'heroic_renatakis_soul_charm',
+        96741: 'heroic_thunder_renatakis_soul_charm',
         94511: 'vicious_talisman_of_the_shado-pan_assault'
     }
     
