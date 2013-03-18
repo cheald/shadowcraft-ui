@@ -1114,7 +1114,7 @@
   wait = function(msg) {
     msg || (msg = "");
     $("#waitMsg").html(msg);
-    return $("#wait").data('timeout', setTimeout('$("#wait").show()', 800));
+    return $("#wait").data('timeout', setTimeout('$("#wait").show()', 1000));
   };
   stopWait = function() {
     clearTimeout($("#wait").hide().data('timeout'));

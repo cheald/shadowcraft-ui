@@ -118,7 +118,7 @@ checkForWarnings = (section) ->
 wait = (msg) ->
   msg ||= ""
   $("#waitMsg").html(msg)
-  $("#wait").data('timeout', setTimeout('$("#wait").show()', 800))
+  $("#wait").data('timeout', setTimeout('$("#wait").show()', 1000))
 
 stopWait = ->
   clearTimeout($("#wait").hide().data('timeout'))
