@@ -195,6 +195,7 @@ class Item
     populate_from_wowhead "http://www.wowhead.com/items=3?filter=qu=2:3:4;minle=86;maxle=90;cr=99;crs=11;crv=0"
 
     single_import 89873 # 500agi gem
+    single_import 95346 # legendary meta gem
   end
 
   def self.populate_glyphs

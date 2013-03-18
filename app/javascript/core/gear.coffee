@@ -39,6 +39,7 @@ class ShadowcraftGear
     4894: "swordguard_embroidery"
 
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
+  @LEGENDARY_META_GEM = 95346
 
   Sets =
     T14:
@@ -192,6 +193,8 @@ class ShadowcraftGear
           total += racialExpertiseBonus(item) * Weights.oh_expertise_rating
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem
+      else if ShadowcraftGear.LEGENDARY_META_GEM == item.id
+        total += c.meta.legendary_capacitive_meta || 0
       else if PROC_ENCHANTS[get_item_id(item)]
         switch slot
           when 14
@@ -1224,7 +1227,7 @@ class ShadowcraftGear
     max = _.max(rankings)
     $("#dpsbreakdown .talent_contribution").hide()
     for skill, val of dps_breakdown
-      skill = skill.split(' ').join('_')
+      skill = skill.replace('(','').replace(')','').split(' ').join('_')
       exist = $("#dpsbreakdown #talent-weight-" + skill)
       val = parseInt(val, 10)
       name = titleize(skill)

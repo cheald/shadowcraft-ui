@@ -495,6 +495,9 @@
           if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(g.g0) !== -1) {
             payload.mg = "chaotic";
           }
+          if (ShadowcraftGear.LEGENDARY_META_GEM === g.g0) {
+            payload.mg = "capacitive";
+          }
         }
         if (k === "14" && g.enchant && g.enchant === 4894) {
           payload.se = "swordguard_embroidery";
@@ -2508,6 +2511,7 @@
       4894: "swordguard_embroidery"
     };
     ShadowcraftGear.CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886];
+    ShadowcraftGear.LEGENDARY_META_GEM = 95346;
     Sets = {
       T14: {
         ids: [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128],
@@ -2665,6 +2669,8 @@
           }
         } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
           total += c.meta.chaotic_metagem;
+        } else if (ShadowcraftGear.LEGENDARY_META_GEM === item.id) {
+          total += c.meta.legendary_capacitive_meta || 0;
         } else if (PROC_ENCHANTS[get_item_id(item)]) {
           switch (slot) {
             case 14:
@@ -4018,7 +4024,7 @@
       $("#dpsbreakdown .talent_contribution").hide();
       for (skill in dps_breakdown) {
         val = dps_breakdown[skill];
-        skill = skill.split(' ').join('_');
+        skill = skill.replace('(', '').replace(')', '').split(' ').join('_');
         exist = $("#dpsbreakdown #talent-weight-" + skill);
         val = parseInt(val, 10);
         name = titleize(skill);

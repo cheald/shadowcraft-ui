@@ -339,9 +339,6 @@ class ShadowcraftComputation:
         if input.get("mg") == "chaotic":
             buff_list.append('chaotic_metagem')
 
-        if input.get("mg") == "capacitive":
-            buff_list.append('legendary_capacitive_meta')
-
         if len(self.tier11IDS & gear) >= 2:
             buff_list.append('rogue_t11_2pc')
 
@@ -426,6 +423,9 @@ class ShadowcraftComputation:
         # if tailor
         if "tailoring" in professions and input.get("se") == 'swordguard_embroidery':
             proclist.append('swordguard_embroidery')
+
+        if input.get("mg") == "capacitive":
+            proclist.append('legendary_capacitive_meta')
 
         _procs = procs.ProcsList(*proclist)
 
