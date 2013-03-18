@@ -2462,12 +2462,13 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, CHAPTER_3_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
     CHAPTER_2_ACHIEVEMENTS = [7534, 8008];
+    CHAPTER_3_ACHIEVEMENTS = [7535];
     REFORGE_FACTOR = 0.4;
     DEFAULT_BOSS_DODGE = 7.5;
     FACETS = {
@@ -3314,6 +3315,9 @@
                   continue;
                 }
                 if (equalGemStats(from_gem, to_gem)) {
+                  continue;
+                }
+                if (!hasAchievement(CHAPTER_3_ACHIEVEMENTS) && to_gem.id === ShadowcraftGear.LEGENDARY_META_GEM) {
                   continue;
                 }
                 Shadowcraft.Console.log("Regemming " + item.name + " socket " + (gemIndex + 1) + " from " + from_gem.name + " to " + to_gem.name);

@@ -4,6 +4,7 @@ class ShadowcraftGear
   MAX_HYDRAULIC_GEMS = 1
   JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"]
   CHAPTER_2_ACHIEVEMENTS = [7534, 8008]
+  CHAPTER_3_ACHIEVEMENTS = [7535]
   REFORGE_FACTOR = 0.4
   DEFAULT_BOSS_DODGE = 7.5
 
@@ -524,6 +525,7 @@ class ShadowcraftGear
     return false if gem.slot == "Hydraulic" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
     return false if (gemType == "Meta" or gemType == "Cogwheel" or gemType == "Hydraulic") and gem.slot != gemType
     return false if (gem.slot == "Meta" or gem.slot == "Cogwheel" or gem.slot == "Hydraulic") and gem.slot != gemType
+    #return false if (not hasAchievement(CHAPTER_3_ACHIEVEMENTS)) and gem.id == ShadowcraftGear.LEGENDARY_META_GEM
     true
 
   # Returns the EP value of a gem.  If it happens to require JC, it'll return
@@ -670,6 +672,7 @@ class ShadowcraftGear
             if from_gem && to_gem
               continue if from_gem.name == to_gem.name
               continue if equalGemStats(from_gem, to_gem)
+              continue if not hasAchievement(CHAPTER_3_ACHIEVEMENTS) and to_gem.id == ShadowcraftGear.LEGENDARY_META_GEM
               Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} from #{from_gem.name} to #{to_gem.name}"
             else
               Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} to #{to_gem.name}"
