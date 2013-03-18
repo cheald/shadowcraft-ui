@@ -191,6 +191,7 @@ class ShadowcraftBackend
       data: $.toJSON(payload)
     }, (data) ->
       app.handleRecompute(data)
-    , 'json').always( stopWait() )
+      stopWait()
+    , 'json')
 
 loadingSnapshot = false

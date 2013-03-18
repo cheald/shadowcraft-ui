@@ -579,8 +579,9 @@
       return $.post(get_engine(), {
         data: $.toJSON(payload)
       }, function(data) {
-        return app.handleRecompute(data);
-      }, 'json').always(stopWait());
+        app.handleRecompute(data);
+        return stopWait();
+      }, 'json');
     };
     return ShadowcraftBackend;
   })();
@@ -1113,7 +1114,7 @@
   wait = function(msg) {
     msg || (msg = "");
     $("#waitMsg").html(msg);
-    return $("#wait").data('timeout', setTimeout('$("#wait").show()', 500));
+    return $("#wait").data('timeout', setTimeout('$("#wait").show()', 800));
   };
   stopWait = function() {
     clearTimeout($("#wait").hide().data('timeout'));
