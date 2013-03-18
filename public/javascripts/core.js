@@ -1,5 +1,5 @@
 (function() {
-  var $, $doc, NOOP, ShadowcraftApp, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftDpsGraph, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, ShadowcraftTiniReforgeBackend, Templates, checkForWarnings, deepCopy, flash, formatreforge, hideFlash, json_encode, loadingSnapshot, modal, showPopup, tip, titleize, tooltip, wait;
+  var $, $doc, NOOP, ShadowcraftApp, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftDpsGraph, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, ShadowcraftTiniReforgeBackend, Templates, checkForWarnings, deepCopy, flash, formatreforge, hideFlash, json_encode, loadingSnapshot, modal, showPopup, stopWait, tip, titleize, tooltip, wait;
   var __indexOf = Array.prototype.indexOf || function(item) {
     for (var i = 0, l = this.length; i < l; i++) {
       if (this[i] === item) return i;
@@ -531,6 +531,7 @@
       if (window._gaq) {
         window._gaq.push(['_trackEvent', "Character", "Recompute"]);
       }
+      wait('Calculate...');
       if (window.WebSocket && !forcePost && false) {
         return this.recompute_via_websocket(payload);
       } else {
@@ -559,10 +560,12 @@
       xdr.send();
       xdr.onload = function() {
         var data;
+        stopWait();
         data = JSON.parse(xdr.responseText);
         return app.handleRecompute(data);
       };
       return xdr.onerror = function() {
+        stopWait();
         flash("Error contacting backend engine");
         return false;
       };
@@ -574,7 +577,7 @@
         data: $.toJSON(payload)
       }, function(data) {
         return app.handleRecompute(data);
-      }, 'json');
+      }, 'json').always(stopWait());
     };
     return ShadowcraftBackend;
   })();
@@ -1107,7 +1110,11 @@
   wait = function(msg) {
     msg || (msg = "");
     $("#waitMsg").html(msg);
-    return $("#wait").fadeIn();
+    return $("#wait").data('timeout', setTimeout('$("#wait").show()', 500));
+  };
+  stopWait = function() {
+    clearTimeout($("#wait").hide().data('timeout'));
+    return $("#wait").hide();
   };
   showPopup = function(popup) {
     var $parent, body, ht, left, max, ot, speed, top;
@@ -4915,7 +4922,7 @@
         ratings: stats
       };
       return this.request(req).then(function() {
-        $("#wait").hide();
+        stopWait();
         return Shadowcraft.Console.log("Finished reforge optimization!", "gold underline");
       });
     };

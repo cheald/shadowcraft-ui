@@ -150,6 +150,7 @@ class ShadowcraftBackend
     return if @cancelRecompute or not payload?
     window._gaq.push ['_trackEvent', "Character", "Recompute"] if window._gaq
 
+    wait('Calculate...')
     if window.WebSocket and not forcePost and false
       this.recompute_via_websocket payload
     else
@@ -174,9 +175,11 @@ class ShadowcraftBackend
     xdr.open "get", get_engine() + "?rnd=#{new Date().getTime()}&data=" + JSON.stringify(payload)
     xdr.send()
     xdr.onload = ->
+      stopWait()
       data = JSON.parse xdr.responseText
       app.handleRecompute(data)
     xdr.onerror = ->
+      stopWait()
       flash "Error contacting backend engine"
       false
 
@@ -186,6 +189,6 @@ class ShadowcraftBackend
       data: $.toJSON(payload)
     }, (data) ->
       app.handleRecompute(data)
-    , 'json')
+    , 'json').always( stopWait() )
 
 loadingSnapshot = false

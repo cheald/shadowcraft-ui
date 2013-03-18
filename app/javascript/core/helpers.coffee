@@ -118,7 +118,11 @@ checkForWarnings = (section) ->
 wait = (msg) ->
   msg ||= ""
   $("#waitMsg").html(msg)
-  $("#wait").fadeIn()
+  $("#wait").data('timeout', setTimeout('$("#wait").show()', 500))
+
+stopWait = ->
+  clearTimeout($("#wait").hide().data('timeout'))
+  $("#wait").hide()
 
 showPopup = (popup) ->
   $(".popup").removeClass("visible");

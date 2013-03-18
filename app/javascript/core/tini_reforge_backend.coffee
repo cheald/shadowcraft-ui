@@ -91,5 +91,5 @@ class ShadowcraftTiniReforgeBackend
       cap: caps
       ratings: stats
     @request(req).then ->
-      $("#wait").hide()
+      stopWait()
       Shadowcraft.Console.log "Finished reforge optimization!", "gold underline"
