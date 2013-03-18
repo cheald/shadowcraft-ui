@@ -191,7 +191,7 @@ module WowArmory
         basevalue = base[1+quality_index(self.quality)*5+slot_index(equip_location)]
         if enchantid != "0"
           stat = item_enchants[enchantid][8].to_i
-          self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).round # round think its correct
+          self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).to_i
         end
       end
       # if weapon update dps
@@ -266,7 +266,7 @@ module WowArmory
         basevalue = base[1+quality_index(self.quality)*5+slot_index(equip_location)]
         if enchantid != "0"
           stat = item_enchants[enchantid][8].to_i
-          self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).round # round think its correct
+          self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).to_i # looks like round is wrong and floor is correct
         end
       end
     end
