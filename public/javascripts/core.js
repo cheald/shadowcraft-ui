@@ -2384,6 +2384,7 @@
           exist.show().find(".pct-inner").css({
             width: pct + "%"
           });
+          exist.find(".name").text(name);
           exist.find(".label").text(val.toFixed(1));
         }
       }

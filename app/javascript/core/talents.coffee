@@ -395,6 +395,7 @@ class ShadowcraftTalents
         exist = $("#talentrankings #talent-weight-" + k)
         $.data(exist.get(0), "val", val)
         exist.show().find(".pct-inner").css({width: pct + "%"})
+        exist.find(".name").text(name)
         exist.find(".label").text(val.toFixed(1))
 
     $("#talentrankings .talent_contribution").sortElements (a, b) ->

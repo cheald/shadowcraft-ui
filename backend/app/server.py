@@ -339,6 +339,9 @@ class ShadowcraftComputation:
         if input.get("mg") == "chaotic":
             buff_list.append('chaotic_metagem')
 
+        if input.get("mg") == "capacitive":
+            buff_list.append('legendary_capacitive_meta')
+
         if len(self.tier11IDS & gear) >= 2:
             buff_list.append('rogue_t11_2pc')
 
@@ -515,10 +518,10 @@ class ShadowcraftComputation:
             out["total_dps"] = sum(entry[1] for entry in out["breakdown"].items())
 
             # Glyph ranking is slow
-            out["glyph_ranking"] = [] #calculator.get_glyphs_ranking(input.get("gly", []))
+            out["glyph_ranking"] = calculator.get_glyphs_ranking(input.get("gly", []))
             
-            out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
-            out["other_ep"] = [] #calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc'])
+            out["meta"] = calculator.get_other_ep(['chaotic_metagem','legendary_capacitive_meta'])
+            out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc'])
 
             trinket_rankings = calculator.get_upgrades_ep(self.trinkets)
             out["trinket_ranking"] = {}
@@ -535,7 +538,7 @@ class ShadowcraftComputation:
             out["mh_speed_ep"], out["oh_speed_ep"] = calculator.get_weapon_ep([2.6, 1.8])
 
             # Talent ranking is slow. This is done last per a note from nextormento.
-            out["talent_ranking_main"] = [] #calculator.get_talents_ranking()      
+            out["talent_ranking_main"] = calculator.get_talents_ranking()      
 
             # oh weapon modifier, pull only for combat spec
             #if input.get("spec", 'a') == "Z":
