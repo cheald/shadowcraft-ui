@@ -256,7 +256,6 @@ class ShadowcraftComputation:
                 'stack_cds',
                 'bf_targets'
             ], [
-                'clip_recuperate',
                 'use_hemorrhage'
             ]
         ]
