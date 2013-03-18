@@ -58,7 +58,7 @@ module WowArmory
       "offHand" => 16,
     }
 
-    ACHIEVEMENTS = [7534, 8008]
+    ACHIEVEMENTS = [7534, 8008, 7535]
 
     include Document
 
