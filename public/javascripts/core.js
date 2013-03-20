@@ -534,7 +534,6 @@
       if (window._gaq) {
         window._gaq.push(['_trackEvent', "Character", "Recompute"]);
       }
-      wait('Calculate...');
       if (window.WebSocket && !forcePost && false) {
         return this.recompute_via_websocket(payload);
       } else {
@@ -563,12 +562,10 @@
       xdr.send();
       xdr.onload = function() {
         var data;
-        stopWait();
         data = JSON.parse(xdr.responseText);
         return app.handleRecompute(data);
       };
       return xdr.onerror = function() {
-        stopWait();
         flash("Error contacting backend engine");
         return false;
       };
@@ -579,8 +576,7 @@
       return $.post(get_engine(), {
         data: $.toJSON(payload)
       }, function(data) {
-        app.handleRecompute(data);
-        return stopWait();
+        return app.handleRecompute(data);
       }, 'json');
     };
     return ShadowcraftBackend;
