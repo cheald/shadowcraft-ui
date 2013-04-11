@@ -4100,7 +4100,7 @@
       }
       lowest_exp = caps.mh_exp < caps.oh_exp ? caps.mh_exp : caps.oh_exp;
       if (stats.expertise_rating > (lowest_exp * 0.8)) {
-        offsets.expertise_rating += lowest_exp;
+        offsets.expertise_rating += stats.expertise_rating - lowest_exp - 1;
       }
       return offsets;
     };
