@@ -59,16 +59,17 @@ module WowArmory
     }
 
     ACHIEVEMENTS = [7534, 8008, 7535]
+    QUESTS = [32595]
 
     include Document
 
-    attr_accessor :realm, :region, :name, :active_talents, :professions, :gear, :race, :level, :player_class, :talents, :portrait, :achievements
+    attr_accessor :realm, :region, :name, :active_talents, :professions, :gear, :race, :level, :player_class, :talents, :portrait, :achievements, :quests
 
     def initialize(character, realm, region = 'US')
       @character = character
       @realm = realm
       @region = region
-      fetch region, "api/wow/character/%s/%s?fields=talents,items,professions,achievements" % [normalize_realm(realm), normalize_character(character)], :json
+      fetch region, "api/wow/character/%s/%s?fields=talents,items,professions,achievements,quests" % [normalize_realm(realm), normalize_character(character)], :json
 
       populate!
 
@@ -81,6 +82,7 @@ module WowArmory
       end
 
       self.achievements = @json["achievements"]["achievementsCompleted"].find_all{|id| ACHIEVEMENTS.include? id }
+      self.quests = @json["quests"].find_all{|id| QUESTS.include? id }
     end
 
     def gear
@@ -101,7 +103,8 @@ module WowArmory
           end.flatten
           {:spec => tree["calcSpec"], :talents => tree["calcTalent"], :glyphs => glyphs}
         end,
-        :achievements => achievements
+        :achievements => achievements,
+        :quests => quests
       }
     end
 

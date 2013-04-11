@@ -4,7 +4,7 @@ class ShadowcraftGear
   MAX_HYDRAULIC_GEMS = 1
   JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"]
   CHAPTER_2_ACHIEVEMENTS = [7534, 8008]
-  CHAPTER_3_ACHIEVEMENTS = [7535]
+  LEGENDARY_META_GEM_QUESTS = [32595]
   REFORGE_FACTOR = 0.4
   DEFAULT_BOSS_DODGE = 7.5
 
@@ -582,6 +582,13 @@ class ShadowcraftGear
         return true
     return false
 
+  hasQuest = (quests) ->
+    return false unless Shadowcraft.Data.quests
+    for id in Shadowcraft.Data.quests
+      if id in quests
+        return true
+    return false
+
   # Check if the gems have equal stats to pretend that optimize gems 
   # not change gems to stat equal gems
   equalGemStats = (from_gem,to_gem) ->
@@ -672,7 +679,7 @@ class ShadowcraftGear
             if from_gem && to_gem
               continue if from_gem.name == to_gem.name
               continue if equalGemStats(from_gem, to_gem)
-              continue if not hasAchievement(CHAPTER_3_ACHIEVEMENTS) and to_gem.id == ShadowcraftGear.LEGENDARY_META_GEM
+              continue if not hasQuest(LEGENDARY_META_GEM_QUESTS) and to_gem.id == ShadowcraftGear.LEGENDARY_META_GEM
               Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} from #{from_gem.name} to #{to_gem.name}"
             else
               Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} to #{to_gem.name}"

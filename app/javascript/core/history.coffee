@@ -263,6 +263,7 @@ class ShadowcraftHistory
 
       ret.push options
       ret.push base36Encode(data.achievements || [])
+      ret.push base36Encode(data.quests || [])
       return ret
 
   decompress_handlers =
@@ -276,6 +277,7 @@ class ShadowcraftHistory
         options: {}
         talents: []
         achievements: if data[8] then base36Decode(data[8]) else []
+        quests: if data[9] then base36Decode(data[9]) else []
 
       talentSets = data[6]
       for id, index in talentSets by 3
