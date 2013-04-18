@@ -158,7 +158,10 @@ class ShadowcraftOptions
       tricks: {type: "check", name: "Tricks of the Trade on cooldown", 'default': false, datatype: 'bool'},
       receive_tricks: {type: "check", name: "Receiving Tricks on cooldown from another rogue", 'default': false, datatype: 'bool'},
       stormlash: {type: "check", name: "Stormlash Totem", desc: "10sec / 5min cooldown", 'default': false, datatype: 'bool'},
-      pvp: {type: "check", name: "PvP Mode", desc: "This actives the PvP Mode (Not fully supported)", 'default': false, datatype: 'bool'},
+    })
+
+    @setup("#settings #pvp", "general", {
+      pvp: {type: "check", name: "PvP Mode", desc: "Activate the PvP Mode (Exp Cap = 3%, Hit Cap = 3%)", 'default': false, datatype: 'bool'},
       #pvp_target_armor: {type: "input", name: "bla", desc: "blllaaa", 'default': 10000, datatype: 'integer', min: 3000, max: 99000},
     })
 

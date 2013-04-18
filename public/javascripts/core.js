@@ -1571,11 +1571,13 @@
           desc: "10sec / 5min cooldown",
           'default': false,
           datatype: 'bool'
-        },
+        }
+      });
+      this.setup("#settings #pvp", "general", {
         pvp: {
           type: "check",
           name: "PvP Mode",
-          desc: "This actives the PvP Mode (Not fully supported)",
+          desc: "Activate the PvP Mode (Exp Cap = 3%, Hit Cap = 3%)",
           'default': false,
           datatype: 'bool'
         }
@@ -2461,7 +2463,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -2470,6 +2472,10 @@
     LEGENDARY_META_GEM_QUESTS = [32595];
     REFORGE_FACTOR = 0.4;
     DEFAULT_BOSS_DODGE = 7.5;
+    DEFAULT_BOSS_MISS = 7.5;
+    DEFAULT_DW_PENALTY = 19.0;
+    DEFAULT_PVP_DODGE = 3.0;
+    DEFAULT_PVP_MISS = 7.5;
     FACETS = {
       ITEM: 1,
       GEMS: 2,
@@ -2810,23 +2816,24 @@
       return this.statSum[stat] || 0;
     };
     ShadowcraftGear.prototype.getDodge = function(hand) {
-      var ItemLookup, boss_dodge, data, expertise;
+      var ItemLookup, data, dodge_chance, expertise;
       data = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       expertise = this.statSum.expertise_rating;
-      boss_dodge = DEFAULT_BOSS_DODGE;
+      dodge_chance = data.options.general.pvp ? DEFAULT_PVP_DODGE : DEFAULT_BOSS_DODGE;
       if ((!(hand != null) || hand === "main") && data.gear[15] && data.gear[15].item_id) {
         expertise += racialExpertiseBonus(ItemLookup[data.gear[15].item_id]);
       } else if ((hand === "off") && data.gear[16] && data.gear[16].item_id) {
         expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id]);
       }
-      return DEFAULT_BOSS_DODGE - expertise / Shadowcraft._R("expertise_rating");
+      return dodge_chance - expertise / Shadowcraft._R("expertise_rating");
     };
     getHitEP = function() {
-      var exist, spellHitCap, whiteHitCap, yellowHitCap;
-      yellowHitCap = Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating");
-      spellHitCap = Shadowcraft._R("spell_hit") * 7.5 - racialHitBonus("spell_hit");
-      whiteHitCap = Shadowcraft._R("hit_rating") * 26.5 - racialHitBonus("hit_rating");
+      var exist, miss_chance, spellHitCap, whiteHitCap, yellowHitCap;
+      miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
+      yellowHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating");
+      spellHitCap = Shadowcraft._R("spell_hit") * miss_chance - racialHitBonus("spell_hit");
+      whiteHitCap = Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating");
       exist = Shadowcraft.Gear.getStat("hit_rating");
       if (exist < yellowHitCap) {
         return Weights.yellow_hit;
@@ -2839,16 +2846,18 @@
       }
     };
     ShadowcraftGear.prototype.getCaps = function() {
-      var ItemLookup, caps, data, exp_base;
+      var ItemLookup, caps, data, dodge_chance, exp_base, miss_chance;
       data = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-      exp_base = Shadowcraft._R("expertise_rating") * DEFAULT_BOSS_DODGE;
+      dodge_chance = data.options.general.pvp ? DEFAULT_PVP_DODGE : DEFAULT_BOSS_DODGE;
+      miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
+      exp_base = Shadowcraft._R("expertise_rating") * dodge_chance;
       caps = {
-        yellowHitCap: Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating"),
-        spellHitCap: Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating"),
-        whiteHitCap: Shadowcraft._R("hit_rating") * 26.5 - racialHitBonus("hit_rating"),
-        mh_exp: 2550,
-        oh_exp: 2550
+        yellowHitCap: Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating"),
+        spellHitCap: Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating"),
+        whiteHitCap: Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating"),
+        mh_exp: exp_base,
+        oh_exp: exp_base
       };
       if (data.gear[15]) {
         caps.mh_exp = exp_base - racialExpertiseBonus(ItemLookup[data.gear[15].item_id]);
@@ -2859,20 +2868,21 @@
       return caps;
     };
     ShadowcraftGear.prototype.getMiss = function(cap) {
-      var data, hasHit, hitCap, r;
+      var data, hasHit, hitCap, miss_chance, r;
       data = Shadowcraft.Data;
+      miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
       switch (cap) {
         case "yellow":
           r = Shadowcraft._R("hit_rating");
-          hitCap = r * 7.5 - racialHitBonus("hit_rating");
+          hitCap = r * miss_chance - racialHitBonus("hit_rating");
           break;
         case "spell":
           r = Shadowcraft._R("hit_rating");
-          hitCap = r * 7.5 - racialHitBonus("hit_rating");
+          hitCap = r * miss_chance - racialHitBonus("hit_rating");
           break;
         case "white":
           r = Shadowcraft._R("hit_rating");
-          hitCap = r * 26.5 - racialHitBonus("hit_rating");
+          hitCap = r * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating");
       }
       if ((r != null) && (hitCap != null)) {
         hasHit = this.statSum.hit_rating || 0;
@@ -2885,7 +2895,7 @@
       return -99;
     };
     getStatWeight = function(stat, num, ignore, ignoreAll) {
-      var ItemLookup, boss_dodge, data, delta, exist, mhCap, neg, ohCap, remaining, spellHitCap, total, usable, whiteHitCap, yellowHitCap;
+      var ItemLookup, data, delta, dodge_chance, exist, mhCap, miss_chance, neg, ohCap, remaining, spellHitCap, total, usable, whiteHitCap, yellowHitCap;
       data = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       exist = 0;
@@ -2899,8 +2909,8 @@
       num = Math.abs(num);
       switch (stat) {
         case "expertise_rating":
-          boss_dodge = DEFAULT_BOSS_DODGE;
-          mhCap = Shadowcraft._R("expertise_rating") * boss_dodge;
+          dodge_chance = data.options.general.pvp ? DEFAULT_PVP_DODGE : DEFAULT_BOSS_DODGE;
+          mhCap = Shadowcraft._R("expertise_rating") * dodge_chance;
           ohCap = mhCap;
           if (data.gear[15] && data.gear[15].item_id) {
             mhCap -= racialExpertiseBonus(ItemLookup[data.gear[15].item_id]);
@@ -2925,9 +2935,10 @@
           }
           return total * neg;
         case "hit_rating":
-          yellowHitCap = Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating");
-          spellHitCap = Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating");
-          whiteHitCap = Shadowcraft._R("hit_rating") * 26.5 - racialHitBonus("hit_rating");
+          miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
+          yellowHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating");
+          spellHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating");
+          whiteHitCap = Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating");
           total = 0;
           remaining = num;
           if (remaining > 0 && exist < yellowHitCap) {
@@ -3709,6 +3720,7 @@
     ShadowcraftGear.prototype.updateDisplay = function(skipUpdate) {
       var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, curr_level, data, enchant, enchantable, from, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, restid, slotIndex, slotSet, socket, ssi, stat, to, upgrade, upgradeable, _base, _i, _len, _len2, _len3, _ref, _ref2;
       this.updateStatsWindow();
+      this.updateSummaryWindow();
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
       EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
@@ -3864,6 +3876,23 @@
         total += weight;
       }
       return total;
+    };
+    ShadowcraftGear.prototype.updateSummaryWindow = function() {
+      var $summary, a_stats, data;
+      data = Shadowcraft.Data;
+      $summary = $("#summary .inner");
+      a_stats = [];
+      a_stats.push({
+        name: "Mode",
+        val: data.options.general.pvp ? "PvP" : "PvE"
+      });
+      a_stats.push({
+        name: "Spec",
+        val: ShadowcraftTalents.GetActiveSpecName() || "n/a"
+      });
+      return $summary.get(0).innerHTML = Templates.stats({
+        stats: a_stats
+      });
     };
     ShadowcraftGear.prototype.updateStatsWindow = function() {
       var $stats, a_stats, idx, keys, stat, total, weight;
@@ -4507,7 +4536,8 @@
       });
       Shadowcraft.Backend.bind("recompute2", updateDpsBreakdown);
       Shadowcraft.Talents.bind("changed", function() {
-        return app.updateStatsWindow();
+        app.updateStatsWindow();
+        return app.updateSummaryWindow();
       });
       Shadowcraft.bind("loadData", function() {
         return app.updateDisplay();
@@ -4822,7 +4852,7 @@
         return false;
       });
       Shadowcraft.Options.bind("update", function(opt, val) {
-        if (opt === 'professions.enchanting' || opt === 'professions.blacksmithing' || opt === 'rotation.use_hemorrhage') {
+        if (opt === 'professions.enchanting' || opt === 'professions.blacksmithing' || opt === 'rotation.use_hemorrhage' || opt === 'general.pvp') {
           return app.updateDisplay();
         }
       });

@@ -33,7 +33,10 @@
 
     #gear.with-tools
       .panel-tools
-        %section.clearfix#stats
+        %section.clearfix#summary
+          %h3 Summary
+          .inner
+        %section#stats
           %h3 Stats
           .inner
           %a#getPawnString{:href => "#"}
@@ -109,6 +112,10 @@
         .option-list
           %h3 Other
           #raidOther
+        
+        .option-list
+          %h3 PvP Mode
+          #pvp
 
       %section.cluster
         .option-list

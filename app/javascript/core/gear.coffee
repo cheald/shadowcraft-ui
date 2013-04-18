@@ -7,6 +7,10 @@ class ShadowcraftGear
   LEGENDARY_META_GEM_QUESTS = [32595]
   REFORGE_FACTOR = 0.4
   DEFAULT_BOSS_DODGE = 7.5
+  DEFAULT_BOSS_MISS = 7.5
+  DEFAULT_DW_PENALTY = 19.0
+  DEFAULT_PVP_DODGE = 3.0
+  DEFAULT_PVP_MISS = 7.5
 
   FACETS = {
     ITEM: 1
@@ -306,17 +310,18 @@ class ShadowcraftGear
     data = Shadowcraft.Data
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     expertise = @statSum.expertise_rating
-    boss_dodge = DEFAULT_BOSS_DODGE
+    dodge_chance = if data.options.general.pvp then DEFAULT_PVP_DODGE else DEFAULT_BOSS_DODGE
     if (!hand? or hand == "main") and data.gear[15] and data.gear[15].item_id
       expertise += racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
     else if (hand == "off") and data.gear[16] and data.gear[16].item_id
       expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id])
-    return DEFAULT_BOSS_DODGE - expertise / Shadowcraft._R("expertise_rating")
+    return dodge_chance - expertise / Shadowcraft._R("expertise_rating")
 
   getHitEP = ->
-    yellowHitCap = Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating")
-    spellHitCap = Shadowcraft._R("spell_hit")  * 7.5 - racialHitBonus("spell_hit")
-    whiteHitCap = Shadowcraft._R("hit_rating") * 26.5 - racialHitBonus("hit_rating")
+    miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
+    yellowHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating")
+    spellHitCap = Shadowcraft._R("spell_hit")  * miss_chance - racialHitBonus("spell_hit")
+    whiteHitCap = Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating")
     exist = Shadowcraft.Gear.getStat("hit_rating")
     if exist < yellowHitCap
       Weights.yellow_hit
@@ -331,13 +336,16 @@ class ShadowcraftGear
     data = Shadowcraft.Data
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
 
-    exp_base = Shadowcraft._R("expertise_rating") * DEFAULT_BOSS_DODGE
+    dodge_chance = if data.options.general.pvp then DEFAULT_PVP_DODGE else DEFAULT_BOSS_DODGE
+    miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
+
+    exp_base = Shadowcraft._R("expertise_rating") * dodge_chance
     caps =
-      yellowHitCap: Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating")
-      spellHitCap: Shadowcraft._R("hit_rating")  * 7.5 - racialHitBonus("hit_rating")
-      whiteHitCap: Shadowcraft._R("hit_rating") * 26.5 - racialHitBonus("hit_rating")
-      mh_exp: 2550
-      oh_exp: 2550
+      yellowHitCap: Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating")
+      spellHitCap: Shadowcraft._R("hit_rating")  * miss_chance - racialHitBonus("hit_rating")
+      whiteHitCap: Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating")
+      mh_exp: exp_base
+      oh_exp: exp_base
     if data.gear[15]
       caps.mh_exp = exp_base - racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
     if data.gear[16]
@@ -346,16 +354,17 @@ class ShadowcraftGear
 
   getMiss: (cap) ->
     data = Shadowcraft.Data
+    miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
     switch cap
       when "yellow"
         r = Shadowcraft._R("hit_rating")
-        hitCap = r * 7.5 - racialHitBonus("hit_rating")
+        hitCap = r * miss_chance - racialHitBonus("hit_rating")
       when "spell"
         r = Shadowcraft._R("hit_rating")
-        hitCap = r * 7.5 - racialHitBonus("hit_rating")
+        hitCap = r * miss_chance - racialHitBonus("hit_rating")
       when "white"
         r = Shadowcraft._R("hit_rating")
-        hitCap = r * 26.5 - racialHitBonus("hit_rating")
+        hitCap = r * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating")
     if r? and hitCap?
       hasHit = @statSum.hit_rating || 0
       if hasHit < hitCap or cap == "white"
@@ -382,8 +391,8 @@ class ShadowcraftGear
 
     switch(stat)
       when "expertise_rating"
-        boss_dodge = DEFAULT_BOSS_DODGE
-        mhCap = Shadowcraft._R("expertise_rating") * boss_dodge
+        dodge_chance = if data.options.general.pvp then DEFAULT_PVP_DODGE else DEFAULT_BOSS_DODGE
+        mhCap = Shadowcraft._R("expertise_rating") * dodge_chance
         ohCap = mhCap
         if data.gear[15] and data.gear[15].item_id
           mhCap -= racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
@@ -402,9 +411,10 @@ class ShadowcraftGear
 
         return total * neg
       when "hit_rating"
-        yellowHitCap = Shadowcraft._R("hit_rating") * 7.5 - racialHitBonus("hit_rating")
-        spellHitCap = Shadowcraft._R("hit_rating")  * 7.5 - racialHitBonus("hit_rating")
-        whiteHitCap = Shadowcraft._R("hit_rating") * 26.5 - racialHitBonus("hit_rating")
+        miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
+        yellowHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating")
+        spellHitCap = Shadowcraft._R("hit_rating")  * miss_chance - racialHitBonus("hit_rating")
+        whiteHitCap = Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating")
 
         total = 0
         remaining = num
@@ -971,6 +981,7 @@ class ShadowcraftGear
 
   updateDisplay: (skipUpdate) ->
     this.updateStatsWindow()
+    this.updateSummaryWindow()
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
     EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS
@@ -1096,6 +1107,20 @@ class ShadowcraftGear
       weight = getStatWeight(stat, @statSum[stat], null, true)
       total += weight
     return total
+
+  updateSummaryWindow: ->
+    data = Shadowcraft.Data
+    $summary = $("#summary .inner")
+    a_stats = []
+    a_stats.push {
+      name: "Mode"
+      val: if data.options.general.pvp then "PvP" else "PvE"
+    }
+    a_stats.push {
+      name: "Spec"
+      val: ShadowcraftTalents.GetActiveSpecName() || "n/a"
+    }
+    $summary.get(0).innerHTML = Templates.stats {stats: a_stats}
 
   updateStatsWindow: ->
     this.sumStats()
@@ -1639,6 +1664,7 @@ class ShadowcraftGear
 
     Shadowcraft.Talents.bind "changed", ->
       app.updateStatsWindow()
+      app.updateSummaryWindow()
 
     Shadowcraft.bind "loadData", ->
       app.updateDisplay()
@@ -1898,7 +1924,7 @@ class ShadowcraftGear
       false
 
     Shadowcraft.Options.bind "update", (opt, val) ->
-      if opt in ['professions.enchanting', 'professions.blacksmithing','rotation.use_hemorrhage']
+      if opt in ['professions.enchanting', 'professions.blacksmithing','rotation.use_hemorrhage','general.pvp']
         app.updateDisplay()
 
     checkForWarnings('options')
