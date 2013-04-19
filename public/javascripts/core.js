@@ -1169,7 +1169,7 @@
   };
   ShadowcraftOptions = (function() {
     var cast, changeCheck, changeInput, changeOption, changeSelect, enforceBounds;
-    ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'mastery_buff', 'melee_haste_buff', 'attack_power_buff', 'armor_debuff', 'physical_vulnerability_debuff', 'spell_damage_debuff', 'agi_flask_mop', 'food_300_agi'];
+    ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'mastery_buff', 'melee_haste_buff', 'attack_power_buff', 'armor_debuff', 'physical_vulnerability_debuff', 'spell_damage_debuff', 'agi_flask_mop', 'food_300_agi', 'spell_haste_buff'];
     cast = function(val, dtype) {
       switch (dtype) {
         case "integer":
@@ -1516,6 +1516,12 @@
         mastery_buff: {
           name: "Mastery",
           desc: "Blessing of Might/Grace of Air",
+          'default': true,
+          datatype: 'bool'
+        },
+        spell_haste_buff: {
+          name: "5% Spell Haste",
+          desc: "Moonkin Form/Shadowform/Elemental Oath",
           'default': true,
           datatype: 'bool'
         }

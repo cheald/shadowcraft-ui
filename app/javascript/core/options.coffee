@@ -10,7 +10,8 @@ class ShadowcraftOptions
     'physical_vulnerability_debuff',
     'spell_damage_debuff',
     'agi_flask_mop',
-    'food_300_agi'
+    'food_300_agi',
+    'spell_haste_buff'
   ]
 
   cast = (val, dtype) ->
@@ -143,7 +144,8 @@ class ShadowcraftOptions
       crit_chance_buff: {name: "5% Crit", desc: "Leader of the Pack/Arcane Brilliance/Legacy of the White Tiger", 'default': true, datatype: 'bool'},
       melee_haste_buff: {name: "10% Haste", desc: "Unleashed Rage/Unholy Aura/Swiftblade's Cunning", 'default': true, datatype: 'bool'},
       attack_power_buff: {name: "10% Attack Power", desc: "Horn of Winter/Trueshot Aura/Battle Shout", 'default': true, datatype: 'bool'},
-      mastery_buff: {name: "Mastery", desc: "Blessing of Might/Grace of Air", 'default': true, datatype: 'bool'}
+      mastery_buff: {name: "Mastery", desc: "Blessing of Might/Grace of Air", 'default': true, datatype: 'bool'},
+      spell_haste_buff: {name: "5% Spell Haste", desc: "Moonkin Form/Shadowform/Elemental Oath", 'default': true, datatype: 'bool'}
     })
 
     @setup("#settings #targetDebuffs", "buffs", {

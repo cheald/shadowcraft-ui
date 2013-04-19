@@ -198,7 +198,8 @@ class ShadowcraftComputation:
         'physical_vulnerability_debuff',
         'spell_damage_debuff',
         'agi_flask_mop',
-        'food_300_agi'
+        'food_300_agi',
+        'spell_haste_buff'
     ]
     
     if __builtin__.shadowcraft_engine_version == 4.1:
