@@ -2835,7 +2835,8 @@
       return dodge_chance - expertise / Shadowcraft._R("expertise_rating");
     };
     getHitEP = function() {
-      var exist, miss_chance, spellHitCap, whiteHitCap, yellowHitCap;
+      var data, exist, miss_chance, spellHitCap, whiteHitCap, yellowHitCap;
+      data = Shadowcraft.Data;
       miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
       yellowHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating");
       spellHitCap = Shadowcraft._R("spell_hit") * miss_chance - racialHitBonus("spell_hit");

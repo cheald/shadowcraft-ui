@@ -318,6 +318,7 @@ class ShadowcraftGear
     return dodge_chance - expertise / Shadowcraft._R("expertise_rating")
 
   getHitEP = ->
+    data = Shadowcraft.Data
     miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
     yellowHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating")
     spellHitCap = Shadowcraft._R("spell_hit")  * miss_chance - racialHitBonus("spell_hit")
