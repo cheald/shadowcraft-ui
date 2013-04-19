@@ -1627,7 +1627,7 @@
             'ambush': "Ambush",
             'garrote': "Garrote"
           },
-          'default': 'mutilate',
+          'default': 'ambush',
           datatype: 'string'
         },
         opener_use_assassination: {
@@ -1700,7 +1700,7 @@
             'ambush': "Ambush",
             'garrote': "Garrote"
           },
-          'default': 'sinister_strike',
+          'default': 'ambush',
           datatype: 'string'
         },
         opener_use_combat: {

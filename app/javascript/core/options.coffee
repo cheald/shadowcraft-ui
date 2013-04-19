@@ -170,7 +170,7 @@ class ShadowcraftOptions
       min_envenom_size_execute: {type: "select", name: "Min CP/Envenom < 35%", options: [5,4,3,2,1], 'default': 5, desc: "CP for Envenom when using Dispatch, no effect with Anticipation", datatype: 'integer', min: 1, max: 5}
       prioritize_rupture_uptime_non_execute: {type: "check", name: "Prioritize Rupture (>35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate", default: true, datatype: 'bool'}
       prioritize_rupture_uptime_execute: {type: "check", name: "Prioritize Rupture (<35%)", right: true, desc: "Prioritize Rupture over Envenom when your CP builder is Dispatch", default: true, datatype: 'bool'}
-      opener_name_assassination: {type: "select", name: "Opener Name", options: {'mutilate': "Mutilate", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'mutilate', datatype: 'string'}
+      opener_name_assassination: {type: "select", name: "Opener Name", options: {'mutilate': "Mutilate", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
       opener_use_assassination: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })
 
@@ -181,7 +181,7 @@ class ShadowcraftOptions
       stack_cds: {type: "check", name: "Stack Cooldowns", desc: "Use Adrenaline Rush and Shadow Blades together", right: true, default: true, datatype: 'bool'}
       blade_flurry: {type: "check", name: "Blade Flurry", right: true, desc: "Use Blade Flurry", default: false, datatype: 'bool'}
       bf_targets: {type: "select", name: "Blade Flurry Targets", options: [1,2,3,4], 'default': 1, datatype: 'integer', min: 1, max: 4}
-      opener_name_combat: {type: "select", name: "Opener Name", options: {'sinister_strike': "Sinister Strike", 'revealing_strike': "Revealing Strike", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'sinister_strike', datatype: 'string'}
+      opener_name_combat: {type: "select", name: "Opener Name", options: {'sinister_strike': "Sinister Strike", 'revealing_strike': "Revealing Strike", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
       opener_use_combat: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })
 
