@@ -187,11 +187,11 @@ class ShadowcraftGear
           #  if item.subclass == 15
           #    mod = c.oh_weapon_modifier["oh_"+item.speed+"_dagger"]
           #  else
-          #    for weapon_type in ["one-hander","fist","axe","sword","mace"]
+          #    for weapon_type in ["one-hander","1h_fist","1h_axe","1h_sword","1h_mace"]
           #      if c.oh_weapon_modifier["oh_"+item.speed+"_"+weapon_type]
           #        mod = c.oh_weapon_modifier["oh_"+item.speed+"_"+weapon_type]
           #        break
-          #    total += (item.dps * c.oh_ep.oh_dps) * mod
+          #  total += (item.dps * c.oh_ep.oh_dps) * mod
           #else
           total += (item.dps * c.oh_ep.oh_dps)
           total += c.oh_speed_ep["oh_" + item.speed]

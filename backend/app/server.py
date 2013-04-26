@@ -542,12 +542,12 @@ class ShadowcraftComputation:
             out["mh_ep"], out["oh_ep"] = calculator.get_weapon_ep(dps=True, enchants=True)
             out["mh_speed_ep"], out["oh_speed_ep"] = calculator.get_weapon_ep([2.4, 2.6, 1.8])
 
-            # Talent ranking is slow. This is done last per a note from nextormento.
-            out["talent_ranking_main"] = calculator.get_talents_ranking()      
-
             # oh weapon modifier, pull only for combat spec
             #if input.get("spec", 'a') == "Z":
-            #  out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
+            #    out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
+            
+            # Talent ranking is slow. This is done last per a note from nextormento.
+            out["talent_ranking_main"] = calculator.get_talents_ranking()      
 
             return out
         except (InputNotModeledException, exceptions.InvalidInputException) as e:

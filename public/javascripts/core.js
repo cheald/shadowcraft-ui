@@ -2057,11 +2057,9 @@
     ShadowcraftTalents.prototype.updateActiveTalents = function() {
       var data;
       data = Shadowcraft.Data;
-      if (!data.activeSpec) {
-        data.activeTalents = data.talents[data.active].talents;
-        data.activeSpec = data.talents[data.active].spec;
-        data.glyphs = data.talents[data.active].glyphs;
-      }
+      data.activeTalents = data.talents[data.active].talents;
+      data.activeSpec = data.talents[data.active].spec;
+      data.glyphs = data.talents[data.active].glyphs;
       setSpec(data.activeSpec);
       setTalents(data.activeTalents);
       return this.setGlyphs(data.glyphs);
