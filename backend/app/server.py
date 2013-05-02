@@ -510,25 +510,27 @@ class ShadowcraftComputation:
         out = {}
         try:
             calculator = self.setup(input)
+
+            # Compute DPS Breakdown.
+            out["breakdown"] = calculator.get_dps_breakdown()
+            out["total_dps"] = sum(entry[1] for entry in out["breakdown"].items())
+
+            # Get EP Values
             default_ep_stats = ['white_hit', 'yellow_hit', 'str', 'agi', 'haste',
                 'crit', 'mastery', 'spell_hit', 'ap', 'mh_dodge_exp', 'oh_dodge_exp']
             _opt = input.get("settings", {})
             is_pvp = _opt.get("pvp", False)
             if is_pvp:
                 default_ep_stats.append("pvp_power")
-            out["ep"] = calculator.get_ep(default_ep_stats)
-
-            # Compute DPS Breakdown.
-            out["breakdown"] = calculator.get_dps_breakdown()
-            out["total_dps"] = sum(entry[1] for entry in out["breakdown"].items())
+            out["ep"] = calculator.get_ep(ep_stats=default_ep_stats,baseline_dps=out["total_dps"])
 
             # Glyph ranking is slow
-            out["glyph_ranking"] = calculator.get_glyphs_ranking(input.get("gly", []))
+            out["glyph_ranking"] = [] # calculator.get_glyphs_ranking(input.get("gly", []))
             
             out["meta"] = calculator.get_other_ep(['chaotic_metagem','legendary_capacitive_meta'])
             out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc'])
-
-            trinket_rankings = calculator.get_upgrades_ep(self.trinkets)
+            
+            trinket_rankings = calculator.get_upgrades_ep_fast(self.trinkets)
             out["trinket_ranking"] = {}
             for k in trinket_rankings:
                 for id in self.trinketMap:
@@ -547,7 +549,7 @@ class ShadowcraftComputation:
             #    out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
             
             # Talent ranking is slow. This is done last per a note from nextormento.
-            out["talent_ranking_main"] = calculator.get_talents_ranking()      
+            out["talent_ranking_main"] = [] # calculator.get_talents_ranking()      
 
             return out
         except (InputNotModeledException, exceptions.InvalidInputException) as e:
