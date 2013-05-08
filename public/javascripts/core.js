@@ -1134,7 +1134,7 @@
     }
     $parent = popup.parents(".ui-tabs-panel");
     max = $parent.scrollTop() + $parent.outerHeight();
-    top = $.data(document, "mouse-y") - 40;
+    top = $.data(document, "mouse-y") - 40 + $parent.scrollTop();
     if (top + popup.outerHeight() > max - 20) {
       top = max - 20 - popup.outerHeight();
     }

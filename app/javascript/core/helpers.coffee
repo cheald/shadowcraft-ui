@@ -125,7 +125,7 @@ stopWait = ->
   $("#wait").hide()
 
 showPopup = (popup) ->
-  $(".popup").removeClass("visible");
+  $(".popup").removeClass("visible")
   if popup.find(".close-popup").length == 0
     popup.append("<a href='#' class='close-popup ui-dialog-titlebar-close ui-corner-all' role='button'><span class='ui-icon ui-icon-closethick'></span></a>")
     popup.find(".close-popup").click(->
@@ -138,9 +138,9 @@ showPopup = (popup) ->
 
   $parent = popup.parents(".ui-tabs-panel")
   max = $parent.scrollTop() + $parent.outerHeight()
-  top = $.data(document, "mouse-y") - 40
+  top = $.data(document, "mouse-y") - 40 + $parent.scrollTop()
   if top + popup.outerHeight() > max - 20
-    top = max - 20 - popup.outerHeight();
+    top = max - 20 - popup.outerHeight()
 
   if top < 15
     top = 15
