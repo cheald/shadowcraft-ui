@@ -1442,7 +1442,7 @@ class ShadowcraftGear
         ttrand: ttrand
         ttupgd: ttupgd
         desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" } #{if l.__setBonusEP > 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
-        search: escape(l.name)
+        search: escape(l.name + l.tag)
         percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01
         ep: iEP.toFixed(1)
       )
@@ -1489,7 +1489,7 @@ class ShadowcraftGear
         item: enchant
         percent: eEP / max * 100
         ep: eEP.toFixed(1)
-        search: enchant.name + " " + enchant.desc
+        search: escape(enchant.name + " " + enchant.desc)
         desc: enchant.desc
       )
 
@@ -1552,7 +1552,7 @@ class ShadowcraftGear
         ep: gEP.toFixed(1)
         gear: {}
         ttid: gem.id
-        search: gem.name + " " + statsToDesc(gem) + " " + gem.slot
+        search: escape(gem.name + " " + statsToDesc(gem) + " " + gem.slot)
         percent: gEP / max * 100
         desc: desc
     
