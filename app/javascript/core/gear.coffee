@@ -600,6 +600,13 @@ class ShadowcraftGear
         return true
     return false
 
+  canUseLegendaryMetaGem = (item) ->
+    return false if not hasQuest(LEGENDARY_META_GEM_QUESTS)
+    # TODO identify ToT items with a better method
+    return false if item.ilvl < 502
+    return false if item.ilvl >= 502 and item.ilvl < 522 and item.tag != "Raid Finder"
+    true
+
   # Check if the gems have equal stats to pretend that optimize gems 
   # not change gems to stat equal gems
   equalGemStats = (from_gem,to_gem) ->
@@ -628,6 +635,7 @@ class ShadowcraftGear
       broke = false
       for gem in gem_list
         continue unless canUseGem gem, gemType, sGems, ignoreSlotIndex
+        continue if gem.id == ShadowcraftGear.LEGENDARY_META_GEM and not canUseLegendaryMetaGem(item)
         straightGemEP += getRegularGemEpValue(gem, offset)
         sGems.push gem.id if returnFull
         broke = true
@@ -638,6 +646,7 @@ class ShadowcraftGear
       broke = false
       for gem in gem_list
         continue unless canUseGem gem, gemType, mGems, ignoreSlotIndex
+        continue if gem.id == ShadowcraftGear.LEGENDARY_META_GEM and not canUseLegendaryMetaGem(item)
         if gem[gemType]
           matchedGemEP += getRegularGemEpValue(gem, offset)
           mGems.push gem.id if returnFull
@@ -690,7 +699,6 @@ class ShadowcraftGear
             if from_gem && to_gem
               continue if from_gem.name == to_gem.name
               continue if equalGemStats(from_gem, to_gem)
-              continue if not hasQuest(LEGENDARY_META_GEM_QUESTS) and to_gem.id == ShadowcraftGear.LEGENDARY_META_GEM
               Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} from #{from_gem.name} to #{to_gem.name}"
             else
               Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} to #{to_gem.name}"

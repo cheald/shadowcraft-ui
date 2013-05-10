@@ -2474,7 +2474,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, canUseLegendaryMetaGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -3224,6 +3224,18 @@
       }
       return false;
     };
+    canUseLegendaryMetaGem = function(item) {
+      if (!hasQuest(LEGENDARY_META_GEM_QUESTS)) {
+        return false;
+      }
+      if (item.ilvl < 502) {
+        return false;
+      }
+      if (item.ilvl >= 502 && item.ilvl < 522 && item.tag !== "Raid Finder") {
+        return false;
+      }
+      return true;
+    };
     equalGemStats = function(from_gem, to_gem) {
       var stat;
       for (stat in from_gem["stats"]) {
@@ -3261,6 +3273,9 @@
           if (!canUseGem(gem, gemType, sGems, ignoreSlotIndex)) {
             continue;
           }
+          if (gem.id === ShadowcraftGear.LEGENDARY_META_GEM && !canUseLegendaryMetaGem(item)) {
+            continue;
+          }
           straightGemEP += getRegularGemEpValue(gem, offset);
           if (returnFull) {
             sGems.push(gem.id);
@@ -3279,6 +3294,9 @@
         for (_l = 0, _len4 = gem_list.length; _l < _len4; _l++) {
           gem = gem_list[_l];
           if (!canUseGem(gem, gemType, mGems, ignoreSlotIndex)) {
+            continue;
+          }
+          if (gem.id === ShadowcraftGear.LEGENDARY_META_GEM && !canUseLegendaryMetaGem(item)) {
             continue;
           }
           if (gem[gemType]) {
@@ -3351,9 +3369,6 @@
                   continue;
                 }
                 if (equalGemStats(from_gem, to_gem)) {
-                  continue;
-                }
-                if (!hasQuest(LEGENDARY_META_GEM_QUESTS) && to_gem.id === ShadowcraftGear.LEGENDARY_META_GEM) {
                   continue;
                 }
                 Shadowcraft.Console.log("Regemming " + item.name + " socket " + (gemIndex + 1) + " from " + from_gem.name + " to " + to_gem.name);
