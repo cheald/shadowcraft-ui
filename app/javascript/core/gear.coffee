@@ -1788,16 +1788,20 @@ class ShadowcraftGear
           val = parseInt($this.attr("id"), 10)
           data.gear[slot][update] = if val != 0 then val else null
           if update == "item_id"
+            item = ItemLookup[data.gear[slot].item_id]
             data.gear[slot].reforge = null
-            if data.gear[slot].item_id and ItemLookup[data.gear[slot].item_id].upgrade_level
-              data.gear[slot].upgrade_level = ItemLookup[data.gear[slot].item_id].upgrade_level
+            if data.gear[slot].item_id and item.upgrade_level
+              data.gear[slot].upgrade_level = item.upgrade_level
             else
               data.gear[slot].upgrade_level = null
-            if ItemLookup[data.gear[slot].item_id] and ItemLookup[data.gear[slot].item_id].sockets
-              socketlength = ItemLookup[data.gear[slot].item_id].sockets.length
+            if item and item.sockets
+              socketlength = item.sockets.length
               for i in [0..2]
                 if i >= socketlength
                   data.gear[slot]["g" + i] = null
+                else if data.gear[slot]["g" + i]? and not canUseGem Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot
+                  data.gear[slot]["g" + i] = null
+
             else
               data.gear[slot]["g" + i] = null for i in [0..2]
           else

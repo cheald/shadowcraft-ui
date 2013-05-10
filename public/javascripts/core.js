@@ -4676,7 +4676,7 @@
       });
       $altslots.click($.delegate({
         ".slot": function(e) {
-          var $this, EnchantLookup, Gems, ItemLookup, data, gem_id, i, item_id, slot, socketlength, update, val;
+          var $this, EnchantLookup, Gems, ItemLookup, data, gem_id, i, item, item_id, slot, socketlength, update, val;
           ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
           EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
           Gems = Shadowcraft.ServerData.GEM_LOOKUP;
@@ -4688,16 +4688,19 @@
             val = parseInt($this.attr("id"), 10);
             data.gear[slot][update] = val !== 0 ? val : null;
             if (update === "item_id") {
+              item = ItemLookup[data.gear[slot].item_id];
               data.gear[slot].reforge = null;
-              if (data.gear[slot].item_id && ItemLookup[data.gear[slot].item_id].upgrade_level) {
-                data.gear[slot].upgrade_level = ItemLookup[data.gear[slot].item_id].upgrade_level;
+              if (data.gear[slot].item_id && item.upgrade_level) {
+                data.gear[slot].upgrade_level = item.upgrade_level;
               } else {
                 data.gear[slot].upgrade_level = null;
               }
-              if (ItemLookup[data.gear[slot].item_id] && ItemLookup[data.gear[slot].item_id].sockets) {
-                socketlength = ItemLookup[data.gear[slot].item_id].sockets.length;
+              if (item && item.sockets) {
+                socketlength = item.sockets.length;
                 for (i = 0; i <= 2; i++) {
                   if (i >= socketlength) {
+                    data.gear[slot]["g" + i] = null;
+                  } else if ((data.gear[slot]["g" + i] != null) && !canUseGem(Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot)) {
                     data.gear[slot]["g" + i] = null;
                   }
                 }
