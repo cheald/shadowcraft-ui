@@ -140,8 +140,14 @@ class ShadowcraftTalents
     success = false
     if force
       success = true
-    else if dir == 1 && points.cur < points.max && talentsSpent < MAX_TALENT_POINTS
+    else if dir == 1 && points.cur < points.max # && talentsSpent < MAX_TALENT_POINTS
       success = true
+      # a bit hacky but otherwise I had to rewrite the complete talent module
+      $("#talentframe .talent").each ->
+        position2 = $.data(this, "position")
+        points2 = $.data(this, "points")
+        if points2.cur == 1 and position2.row == position.row
+          applyTalentToButton(this, -points2.cur)
     else if dir == -1
       success = true
 
@@ -219,7 +225,7 @@ class ShadowcraftTalents
       $.data(this, "spentButton", trees.find(".spent"))
       $.data(this, "icons", {grey: $this.css("backgroundImage"), normal: $this.css("backgroundImage").replace(/\/grey\//, "/")})
     ).mousedown((e) ->
-      return if !$(this).hasClass("active")
+      #return if !$(this).hasClass("active")
       return if window.Touch?
 
       switch(e.button)

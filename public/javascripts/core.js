@@ -2028,8 +2028,16 @@
       success = false;
       if (force) {
         success = true;
-      } else if (dir === 1 && points.cur < points.max && talentsSpent < MAX_TALENT_POINTS) {
+      } else if (dir === 1 && points.cur < points.max) {
         success = true;
+        $("#talentframe .talent").each(function() {
+          var points2, position2;
+          position2 = $.data(this, "position");
+          points2 = $.data(this, "points");
+          if (points2.cur === 1 && position2.row === position.row) {
+            return applyTalentToButton(this, -points2.cur);
+          }
+        });
       } else if (dir === -1) {
         success = true;
       }
@@ -2149,9 +2157,6 @@
           normal: $this.css("backgroundImage").replace(/\/grey\//, "/")
         });
       }).mousedown(function(e) {
-        if (!$(this).hasClass("active")) {
-          return;
-        }
         if (window.Touch != null) {
           return;
         }
