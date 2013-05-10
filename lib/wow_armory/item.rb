@@ -184,7 +184,7 @@ module WowArmory
       end
       base = rand_prop_points[self.ilevel.to_s]
 
-      self.stats = {}
+      populate_item_upgrade_level
       4.times do |i|
         enchantid = row[3+i]
         multiplier = row[8+i].to_f / 10000.0

@@ -147,7 +147,6 @@ class Item
     puts "importing now #{random_item_ids.length} random items"
 
     random_item_ids.each do |id|
-      single_import id
       suffixes.each do |suffix|
         single_import id,{:random_suffix => suffix}
         single_import id,{:random_suffix => suffix, :upgrade_level => 1}
@@ -157,10 +156,9 @@ class Item
 
     # 5.2 random enchantment items
     suffixes = (-340..-336).to_a
-    random_item_ids = [ 94979, 95796, 96168, 96540 ]
+    random_item_ids = [ 94979, 95796, 96168, 96540, 96912 ]
     puts "importing now #{random_item_ids.length} random items for 5.2"
     random_item_ids.each do |id|
-      single_import id
       suffixes.each do |suffix|
         single_import id,{:random_suffix => suffix}
         single_import id,{:random_suffix => suffix, :upgrade_level => 1}
