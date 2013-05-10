@@ -71,10 +71,10 @@ class ShadowcraftOptions
             templateOptions = []
             if opt.options instanceof Array
               for _v in opt.options
-                templateOptions.push {name: _v, value: _v}
+                templateOptions.push {name: _v+"", value: _v}
             else
               for _k, _v of opt.options
-                templateOptions.push {name: _v, value: _k}
+                templateOptions.push {name: _v+"", value: _k}
             options =
               options: templateOptions
           when "input"
@@ -182,7 +182,7 @@ class ShadowcraftOptions
       revealing_strike_pooling: {type: "check", name: "Pool for Revealing Strike", right: true, default: true, datatype: 'bool'}
       stack_cds: {type: "check", name: "Stack Cooldowns", desc: "Use Adrenaline Rush and Shadow Blades together", right: true, default: true, datatype: 'bool'}
       blade_flurry: {type: "check", name: "Blade Flurry", right: true, desc: "Use Blade Flurry", default: false, datatype: 'bool'}
-      bf_targets: {type: "select", name: "Blade Flurry Targets", options: [1,2,3,4], 'default': 1, datatype: 'integer', min: 1, max: 4}
+      bf_targets: {type: "select", name: "Blade Flurry Targets", options: [0,1,2,3,4], 'default': 1, datatype: 'integer', min: 0, max: 4}
       opener_name_combat: {type: "select", name: "Opener Name", options: {'sinister_strike': "Sinister Strike", 'revealing_strike': "Revealing Strike", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
       opener_use_combat: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })

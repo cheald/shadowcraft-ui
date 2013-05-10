@@ -1243,7 +1243,7 @@
                 for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                   _v = _ref[_i];
                   templateOptions.push({
-                    name: _v,
+                    name: _v + "",
                     value: _v
                   });
                 }
@@ -1252,7 +1252,7 @@
                 for (_k in _ref2) {
                   _v = _ref2[_k];
                   templateOptions.push({
-                    name: _v,
+                    name: _v + "",
                     value: _k
                   });
                 }
@@ -1691,10 +1691,10 @@
         bf_targets: {
           type: "select",
           name: "Blade Flurry Targets",
-          options: [1, 2, 3, 4],
+          options: [0, 1, 2, 3, 4],
           'default': 1,
           datatype: 'integer',
-          min: 1,
+          min: 0,
           max: 4
         },
         opener_name_combat: {
