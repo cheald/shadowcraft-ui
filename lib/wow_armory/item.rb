@@ -87,7 +87,18 @@ module WowArmory
       337 => "[Hit]",
       338 => "[Exp]",
       339 => "[Mastery]",
-      340 => "[Haste]"
+      340 => "[Haste]",
+      344 => "of the Decimator", # 5.3 Barrens
+      345 => "of the Unerring",
+      346 => "of the Adroit",
+      347 => "of the Savant",
+      348 => "of the Impatient", # 5.3 Barrens
+      352 => "of the Landslide", # 5.3 Landslide - Str Versa
+      353 => "of the Stormblast", # 5.3 Stormblast - Agi
+      354 => "of the Galeburst", # 5.3 Galeburst - Agi
+      355 => "of the Windflurry", # 5.3 Windflurry - Agi
+      356 => "of the Windstorm", # 5.3 Windstorm - Agi
+      357 => "of the Zephyr", # 5.3 Zephyr - Agi
     }
 
     ITEM_SOCKET_COST = 160.0 # TODO 160 is for every item from mop but add the socket cost database
