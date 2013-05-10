@@ -8,7 +8,7 @@ class ShadowcraftConsole
     $("#console .inner, #log .inner").oneFingerScroll()
 
   log: (msg, klass) ->
-    @$log.append("<div class='#{klass}'}>#{msg}</div").scrollTop(@$log.get(0).scrollHeight)
+    @$log.append("<div class='#{klass}'>#{msg}</div>").scrollTop(@$log.get(0).scrollHeight)
 
   warn: (item, msg, submsg, klass, section) ->
     this.consoleMessage(item, msg, submsg, "warning", klass, section)
@@ -31,7 +31,7 @@ class ShadowcraftConsole
     @console.hide()
 
   remove: (selector) ->
-    @consoleInner.remove(selector)
+    @consoleInner.find("div"+selector).remove()
 
   clear: ->
     @consoleInner.empty()

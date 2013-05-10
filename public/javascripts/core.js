@@ -5081,7 +5081,7 @@
       return $("#console .inner, #log .inner").oneFingerScroll();
     };
     ShadowcraftConsole.prototype.log = function(msg, klass) {
-      return this.$log.append("<div class='" + klass + "'}>" + msg + "</div").scrollTop(this.$log.get(0).scrollHeight);
+      return this.$log.append("<div class='" + klass + "'>" + msg + "</div>").scrollTop(this.$log.get(0).scrollHeight);
     };
     ShadowcraftConsole.prototype.warn = function(item, msg, submsg, klass, section) {
       return this.consoleMessage(item, msg, submsg, "warning", klass, section);
@@ -5104,7 +5104,7 @@
       return this.console.hide();
     };
     ShadowcraftConsole.prototype.remove = function(selector) {
-      return this.consoleInner.remove(selector);
+      return this.consoleInner.find("div" + selector).remove();
     };
     ShadowcraftConsole.prototype.clear = function() {
       return this.consoleInner.empty();
