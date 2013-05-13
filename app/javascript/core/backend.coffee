@@ -133,9 +133,12 @@ class ShadowcraftBackend
     payload.g = gear_ids
     payload
 
+  recomputeFailed: ->
+    Shadowcraft.Console.remove(".error")
+    Shadowcraft.Console.warn {}, "Error contacting backend engine", null, "error", "error"
+
   handleRecompute: (data) ->
     Shadowcraft.Console.remove(".error")
-
     if data.error
       Shadowcraft.Console.warn {}, data.error, null, "error", "error"
       return
@@ -143,7 +146,7 @@ class ShadowcraftBackend
     if Shadowcraft.Data.options.general.receive_tricks
       data.total_dps *= 1.03
     @app.lastCalculation = data
-    this.trigger("recompute2", data)
+    #this.trigger("recompute2", data)
     this.trigger("recompute", data)
 
   recompute: (payload = null, forcePost = false) ->
@@ -182,16 +185,28 @@ class ShadowcraftBackend
       app.handleRecompute(data)
     xdr.onerror = ->
       #stopWait()
+      app.recomputeFailed()
       flash "Error contacting backend engine"
       false
 
   recompute_via_xhr: (payload) ->
     app = this
-    $.post(get_engine(), {
-      data: $.toJSON(payload)
-    }, (data) ->
-      app.handleRecompute(data)
-      #stopWait()
-    , 'json')
+    $.ajax
+      type: "POST"
+      url: get_engine()
+      data: { data: $.toJSON(payload) }
+      dataType: 'json'
+      success: (data) ->
+        app.handleRecompute(data)
+        #stopWait()
+      error: (xhr, textStatus, error) ->
+        app.recomputeFailed()
+
+    #$.post(get_engine(), {
+    #  data: $.toJSON(payload)
+    #}, (data) ->
+    #  app.handleRecompute(data)
+    #  #stopWait()
+    #, 'json')
 
 loadingSnapshot = false

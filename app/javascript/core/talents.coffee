@@ -282,7 +282,7 @@ class ShadowcraftTalents
 
   setGlyphs: (glyphs) ->
     Shadowcraft.Data.glyphs = glyphs
-    this.initGlyphs()
+    this.updateGlyphDisplay()
 
   initGlyphs: ->
     buffer = [null, "", ""]
@@ -296,11 +296,20 @@ class ShadowcraftTalents
 
     $("#major-glyphs .inner").get(0).innerHTML = buffer[1]
     $("#minor-glyphs .inner").get(0).innerHTML = buffer[2]
+    this.updateGlyphDisplay()
 
+  updateGlyphDisplay: ->
+    Glyphs = Shadowcraft.ServerData.GLYPHS
+    data = Shadowcraft.Data
     return unless data.glyphs?
-    for glyph, i in data.glyphs
-      g = $(".glyph_slot[data-id='" + glyph + "']")
-      toggleGlyph(g, true) if g.length > 0
+
+    for glyph, idx in Glyphs
+      g = $(".glyph_slot[data-id='" + glyph.id + "']")
+      if glyph.id in data.glyphs
+        setGlyph(g, true)
+      else
+        setGlyph(g, false)
+    checkForWarnings('glyphs')
 
   updateGlyphWeights = (data) ->
     max = _.max(data.glyph_ranking)
@@ -312,7 +321,6 @@ class ShadowcraftTalents
         width = weight / max * 100
         slot = $(".glyph_slot[data-id='" + g.id + "']")
         $.data(slot[0], "weight", weight)
-        $.data(slot[0], "name", g.name)
         slot.show().find(".pct-inner").css({width: width + "%"})
         slot.find(".label").text(weight.toFixed(1) + " DPS")
 
@@ -322,15 +330,22 @@ class ShadowcraftTalents
     glyphSets = $(".glyphset")
     for glyphSet in glyphSets
       $(glyphSet).find(".glyph_slot").sortElements (a, b) ->
+        gl = Shadowcraft.ServerData.GLYPH_LOOKUP
+        aa = if $(a).hasClass("activated") then 1 else 0
+        ba = if $(b).hasClass("activated") then 1 else 0
         aw = $.data(a, "weight")
         bw = $.data(b, "weight")
-        an = $.data(a, "name")
-        bn = $.data(b, "name")
+        if gl
+          an = gl[$.data(a, "id")].name
+          bn = gl[$.data(b, "id")].name
         aw ||= -1; bw ||= -1; an ||= ""; bn ||= ""
         if aw != bw
           if aw > bw then -1 else 1
         else
-          if an > bn then 1 else -1
+          if aa != ba
+            if aa > ba then -1 else 1
+          else
+            if an > bn then 1 else -1
 
   glyphRankCount = (rank, g) ->
     data = Shadowcraft.Data
@@ -343,6 +358,24 @@ class ShadowcraftTalents
       if GlyphLookup[glyph]?
         count++ if GlyphLookup[glyph].rank == rank
     count
+
+  setGlyph = (e, active) ->
+    GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
+    data = Shadowcraft.Data
+
+    $e = $(e)
+    $set = $e.parents(".glyphset")
+    id = parseInt($e.data("id"), 10)
+    glyph = GlyphLookup[id]
+    if active
+      $e.addClass("activated")
+    else
+      $e.removeClass("activated")
+      $set.removeClass("full")
+    if glyphRankCount(null, id) >= 3
+      $set.addClass("full")
+    else
+      $set.removeClass("full")
 
   toggleGlyph = (e, override) ->
     GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
@@ -441,7 +474,7 @@ class ShadowcraftTalents
 
     Shadowcraft.bind "loadData", ->
       app.updateActiveTalents()
-      app.initGlyphs()
+      #app.updateGlyphDisplay()
 
     Shadowcraft.Options.bind "update", (opt, val) ->
       if opt in ['general.patch']

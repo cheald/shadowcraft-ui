@@ -64,7 +64,7 @@ flash = (message) ->
 
 # This is kludgy.
 checkForWarnings = (section) ->
-  Shadowcraft.Console.hide();
+  Shadowcraft.Console.hide()
   data = Shadowcraft.Data
   ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
   EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
@@ -74,7 +74,7 @@ checkForWarnings = (section) ->
     # Warn basic stuff
     Shadowcraft.Console.remove(".options")
     if parseInt(data.options.general.patch) < 52
-      Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to Patch 5.2 and/or clear all saved data and refresh from armory.", null, 'warn', 'options')
+      Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to the newest Patch and/or clear all saved data and refresh from armory.", null, 'warn', 'options')
 
   if section == undefined or section == "glyphs"
     # Warn glyphs
@@ -85,35 +85,34 @@ checkForWarnings = (section) ->
   if section == undefined or section == "gear"
     # Warn items
     Shadowcraft.Console.remove(".items")
-    for gear of data.gear
+    for slotIndex, gear of data.gear
       continue if !gear
-      item = ItemLookup[gear.item_id];
+      item = ItemLookup[gear.item_id]
       continue unless item
-      comsole.log(EnchantLookup)
       enchant = EnchantLookup[gear.enchant]
       enchantable = EnchantSlots[item.equip_location] != undefined
       if (!data.options.professions.enchanting && item.equip_location == 11)
         enchantable = false
 
-      if canReforge item
-        rec = recommendReforge(item.stats, if gear.reforge then gear.reforge.stats else null)
-        delta = if rec then Math.round(rec[rec.source.key + "_to_" + rec.dest.key] * 100) / 100 else 0
-        if delta > 0
-          if !gear.reforge
-            Shadowcraft.Console.warn(item, "needs to be reforged", null, null, "items")
-          else
-            if rec and (gear.reforge.from.stat != rec.source.name || gear.reforge.to.stat != rec.dest.name)
-              if !bestOptionalReforge || bestOptionalReforge < delta
-                bestOptionalReforge = delta;
-                Shadowcraft.Console.warn(item,
-                  "is not using an optimal reforge",
-                  "Using " + gear.reforge.from.stat + " &Rightarrow; " + gear.reforge.to.stat + ", recommend " + rec.source.name + " &Rightarrow; " + rec.dest.name + " (+" + delta + ")",
-                  "reforgeWarning",
-                  "items"
-                );
+      #if Shadowcraft.Gear.canReforge item
+      #  rec = Shadowcraft.Gear.recommendReforge(item, if gear.reforge then gear.reforge.stats else null)
+      #  delta = if rec then Math.round(rec[rec.source.key + "_to_" + rec.dest.key] * 100) / 100 else 0
+      #  if delta > 0
+      #    if !gear.reforge
+      #      Shadowcraft.Console.warn(item, "needs to be reforged", null, null, "items")
+      #    else
+      #      if rec and (gear.reforge.from.stat != rec.source.name || gear.reforge.to.stat != rec.dest.name)
+      #        if !bestOptionalReforge || bestOptionalReforge < delta
+      #          bestOptionalReforge = delta;
+      #          Shadowcraft.Console.warn(item,
+      #            "is not using an optimal reforge",
+      #            "Using " + gear.reforge.from.stat + " &Rightarrow; " + gear.reforge.to.stat + ", recommend " + rec.source.name + " &Rightarrow; " + rec.dest.name + " (+" + delta + ")",
+      #            "reforgeWarning",
+      #            "items"
+      #          );
 
       if !enchant and enchantable
-        Shadowcraft.Console.warn(item, "needs an enchantment", null, null, "items")
+        Shadowcraft.Console.warn(item, "needs an enchantment", null, "warn", "items")
 
 wait = (msg) ->
   msg ||= ""

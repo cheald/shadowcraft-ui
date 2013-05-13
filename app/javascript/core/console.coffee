@@ -28,10 +28,13 @@ class ShadowcraftConsole
     @consoleInner.append(fullMsg)
 
   hide: ->
-    @console.hide()
+    if not @consoleInner.html().trim()
+      @console.hide()
 
   remove: (selector) ->
     @consoleInner.find("div"+selector).remove()
+    if not @consoleInner.html().trim()
+      @console.hide()
 
   clear: ->
     @consoleInner.empty()

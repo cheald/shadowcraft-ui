@@ -1129,6 +1129,15 @@ class ShadowcraftGear
       name: "Spec"
       val: ShadowcraftTalents.GetActiveSpecName() || "n/a"
     }
+    if ShadowcraftTalents.GetActiveSpecName() == "Combat"
+      a_stats.push {
+      name: "Blade Flurry"
+      val: 
+        if data.options.rotation.blade_flurry 
+          "ON " + data.options.rotation.bf_targets + " Target/s"
+        else 
+          "OFF"
+    }
     $summary.get(0).innerHTML = Templates.stats {stats: a_stats}
 
   updateStatsWindow: ->
@@ -1501,6 +1510,13 @@ class ShadowcraftGear
         desc: enchant.desc
       )
 
+    buffer += Templates.itemSlot(
+      item: {name: "[No enchant]"}
+      desc: "Clear this enchant"
+      percent: 0
+      ep: 0
+    )
+
     $altslots.get(0).innerHTML = buffer
     $altslots.find(".slot[id='#{selected_id}']").addClass("active")
     showPopup($popup) # TODO
@@ -1666,10 +1682,10 @@ class ShadowcraftGear
 
     TiniReforger = new ShadowcraftTiniReforgeBackend(app)
 
-    Shadowcraft.Backend.bind("recompute2", updateStatWeights)
-    Shadowcraft.Backend.bind("recompute2", -> Shadowcraft.Gear )
-    Shadowcraft.Backend.bind("recompute2", updateDpsBreakdown)
-    #Shadowcraft.Backend.bind("recompute2", updateUpgradeWindow)
+    Shadowcraft.Backend.bind("recompute", updateStatWeights)
+    Shadowcraft.Backend.bind("recompute", -> Shadowcraft.Gear )
+    Shadowcraft.Backend.bind("recompute", updateDpsBreakdown)
+    #Shadowcraft.Backend.bind("recompute", updateUpgradeWindow)
 
     Shadowcraft.Talents.bind "changed", ->
       app.updateStatsWindow()
@@ -1805,8 +1821,11 @@ class ShadowcraftGear
             else
               data.gear[slot]["g" + i] = null for i in [0..2]
           else
-            Shadowcraft.Console.log("Changing " + ItemLookup[data.gear[slot].item_id].name + " enchant to " + EnchantLookup[val].name)
-
+            enchant_id = if not isNaN(val) then val else null
+            if enchant_id?
+              Shadowcraft.Console.log("Changing " + ItemLookup[data.gear[slot].item_id].name + " enchant to " + EnchantLookup[enchant_id].name)
+            else
+              Shadowcraft.Console.log("Removing Enchant from " + ItemLookup[data.gear[slot].item_id].name)
         else if update == "gem"
           item_id = parseInt($this.attr("id"), 10)
           item_id = if not isNaN(item_id) then item_id else null
@@ -1939,6 +1958,8 @@ class ShadowcraftGear
     Shadowcraft.Options.bind "update", (opt, val) ->
       if opt in ['professions.enchanting', 'professions.blacksmithing','rotation.use_hemorrhage','general.pvp']
         app.updateDisplay()
+      if opt in ['rotation.blade_flurry','rotation.bf_targets']
+        app.updateSummaryWindow()
 
     checkForWarnings('options')
 

@@ -506,6 +506,10 @@
       payload.g = gear_ids;
       return payload;
     };
+    ShadowcraftBackend.prototype.recomputeFailed = function() {
+      Shadowcraft.Console.remove(".error");
+      return Shadowcraft.Console.warn({}, "Error contacting backend engine", null, "error", "error");
+    };
     ShadowcraftBackend.prototype.handleRecompute = function(data) {
       Shadowcraft.Console.remove(".error");
       if (data.error) {
@@ -516,7 +520,6 @@
         data.total_dps *= 1.03;
       }
       this.app.lastCalculation = data;
-      this.trigger("recompute2", data);
       return this.trigger("recompute", data);
     };
     ShadowcraftBackend.prototype.recompute = function(payload, forcePost) {
@@ -566,6 +569,7 @@
         return app.handleRecompute(data);
       };
       return xdr.onerror = function() {
+        app.recomputeFailed();
         flash("Error contacting backend engine");
         return false;
       };
@@ -573,11 +577,20 @@
     ShadowcraftBackend.prototype.recompute_via_xhr = function(payload) {
       var app;
       app = this;
-      return $.post(get_engine(), {
-        data: $.toJSON(payload)
-      }, function(data) {
-        return app.handleRecompute(data);
-      }, 'json');
+      return $.ajax({
+        type: "POST",
+        url: get_engine(),
+        data: {
+          data: $.toJSON(payload)
+        },
+        dataType: 'json',
+        success: function(data) {
+          return app.handleRecompute(data);
+        },
+        error: function(xhr, textStatus, error) {
+          return app.recomputeFailed();
+        }
+      });
     };
     return ShadowcraftBackend;
   })();
@@ -1053,7 +1066,7 @@
     return flashHide = window.setTimeout(hideFlash, 1500);
   };
   checkForWarnings = function(section) {
-    var EnchantLookup, EnchantSlots, ItemLookup, bestOptionalReforge, data, delta, enchant, enchantable, gear, item, rec, _results;
+    var EnchantLookup, EnchantSlots, ItemLookup, data, enchant, enchantable, gear, item, slotIndex, _ref, _results;
     Shadowcraft.Console.hide();
     data = Shadowcraft.Data;
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
@@ -1062,7 +1075,7 @@
     if (section === void 0 || section === "options") {
       Shadowcraft.Console.remove(".options");
       if (parseInt(data.options.general.patch) < 52) {
-        Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to Patch 5.2 and/or clear all saved data and refresh from armory.", null, 'warn', 'options');
+        Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to the newest Patch and/or clear all saved data and refresh from armory.", null, 'warn', 'options');
       }
     }
     if (section === void 0 || section === "glyphs") {
@@ -1073,8 +1086,10 @@
     }
     if (section === void 0 || section === "gear") {
       Shadowcraft.Console.remove(".items");
+      _ref = data.gear;
       _results = [];
-      for (gear in data.gear) {
+      for (slotIndex in _ref) {
+        gear = _ref[slotIndex];
         if (!gear) {
           continue;
         }
@@ -1082,29 +1097,12 @@
         if (!item) {
           continue;
         }
-        comsole.log(EnchantLookup);
         enchant = EnchantLookup[gear.enchant];
         enchantable = EnchantSlots[item.equip_location] !== void 0;
         if (!data.options.professions.enchanting && item.equip_location === 11) {
           enchantable = false;
         }
-        if (canReforge(item)) {
-          rec = recommendReforge(item.stats, gear.reforge ? gear.reforge.stats : null);
-          delta = rec ? Math.round(rec[rec.source.key + "_to_" + rec.dest.key] * 100) / 100 : 0;
-          if (delta > 0) {
-            if (!gear.reforge) {
-              Shadowcraft.Console.warn(item, "needs to be reforged", null, null, "items");
-            } else {
-              if (rec && (gear.reforge.from.stat !== rec.source.name || gear.reforge.to.stat !== rec.dest.name)) {
-                if (!bestOptionalReforge || bestOptionalReforge < delta) {
-                  bestOptionalReforge = delta;
-                  Shadowcraft.Console.warn(item, "is not using an optimal reforge", "Using " + gear.reforge.from.stat + " &Rightarrow; " + gear.reforge.to.stat + ", recommend " + rec.source.name + " &Rightarrow; " + rec.dest.name + " (+" + delta + ")", "reforgeWarning", "items");
-                }
-              }
-            }
-          }
-        }
-        _results.push(!enchant && enchantable ? Shadowcraft.Console.warn(item, "needs an enchantment", null, null, "items") : void 0);
+        _results.push(!enchant && enchantable ? Shadowcraft.Console.warn(item, "needs an enchantment", null, "warn", "items") : void 0);
       }
       return _results;
     }
@@ -1849,7 +1847,7 @@
     return ShadowcraftOptions;
   })();
   ShadowcraftTalents = (function() {
-    var ALWAYS_SHOW_GLYPHS, CHARACTER_SPEC, DEFAULT_SPECS, MAX_TALENT_POINTS, TREE_SIZE, applyTalentToButton, getSpec, getSpecName, getTalents, glyphRankCount, hoverTalent, resetTalents, setSpec, setTalents, sumDigits, talentMap, talentsSpent, toggleGlyph, updateGlyphWeights, updateTalentAvailability, updateTalentContribution;
+    var ALWAYS_SHOW_GLYPHS, CHARACTER_SPEC, DEFAULT_SPECS, MAX_TALENT_POINTS, TREE_SIZE, applyTalentToButton, getSpec, getSpecName, getTalents, glyphRankCount, hoverTalent, resetTalents, setGlyph, setSpec, setTalents, sumDigits, talentMap, talentsSpent, toggleGlyph, updateGlyphWeights, updateTalentAvailability, updateTalentContribution;
     talentsSpent = 0;
     MAX_TALENT_POINTS = 6;
     TREE_SIZE = 6;
@@ -2229,10 +2227,10 @@
     };
     ShadowcraftTalents.prototype.setGlyphs = function(glyphs) {
       Shadowcraft.Data.glyphs = glyphs;
-      return this.initGlyphs();
+      return this.updateGlyphDisplay();
     };
     ShadowcraftTalents.prototype.initGlyphs = function() {
-      var Glyphs, buffer, data, g, glyph, i, idx, _len, _len2, _ref, _results;
+      var Glyphs, buffer, data, g, idx, _len;
       buffer = [null, "", ""];
       Glyphs = Shadowcraft.ServerData.GLYPHS;
       data = Shadowcraft.Data;
@@ -2245,17 +2243,25 @@
       }
       $("#major-glyphs .inner").get(0).innerHTML = buffer[1];
       $("#minor-glyphs .inner").get(0).innerHTML = buffer[2];
+      return this.updateGlyphDisplay();
+    };
+    ShadowcraftTalents.prototype.updateGlyphDisplay = function() {
+      var Glyphs, data, g, glyph, idx, _len, _ref;
+      Glyphs = Shadowcraft.ServerData.GLYPHS;
+      data = Shadowcraft.Data;
       if (data.glyphs == null) {
         return;
       }
-      _ref = data.glyphs;
-      _results = [];
-      for (i = 0, _len2 = _ref.length; i < _len2; i++) {
-        glyph = _ref[i];
-        g = $(".glyph_slot[data-id='" + glyph + "']");
-        _results.push(g.length > 0 ? toggleGlyph(g, true) : void 0);
+      for (idx = 0, _len = Glyphs.length; idx < _len; idx++) {
+        glyph = Glyphs[idx];
+        g = $(".glyph_slot[data-id='" + glyph.id + "']");
+        if (_ref = glyph.id, __indexOf.call(data.glyphs, _ref) >= 0) {
+          setGlyph(g, true);
+        } else {
+          setGlyph(g, false);
+        }
       }
-      return _results;
+      return checkForWarnings('glyphs');
     };
     updateGlyphWeights = function(data) {
       var g, glyphSet, glyphSets, id, key, max, slot, weight, width, _i, _j, _len, _len2, _ref, _results;
@@ -2271,7 +2277,6 @@
           width = weight / max * 100;
           slot = $(".glyph_slot[data-id='" + g.id + "']");
           $.data(slot[0], "weight", weight);
-          $.data(slot[0], "name", g.name);
           slot.show().find(".pct-inner").css({
             width: width + "%"
           });
@@ -2287,11 +2292,16 @@
       for (_j = 0, _len2 = glyphSets.length; _j < _len2; _j++) {
         glyphSet = glyphSets[_j];
         _results.push($(glyphSet).find(".glyph_slot").sortElements(function(a, b) {
-          var an, aw, bn, bw;
+          var aa, an, aw, ba, bn, bw, gl;
+          gl = Shadowcraft.ServerData.GLYPH_LOOKUP;
+          aa = $(a).hasClass("activated") ? 1 : 0;
+          ba = $(b).hasClass("activated") ? 1 : 0;
           aw = $.data(a, "weight");
           bw = $.data(b, "weight");
-          an = $.data(a, "name");
-          bn = $.data(b, "name");
+          if (gl) {
+            an = gl[$.data(a, "id")].name;
+            bn = gl[$.data(b, "id")].name;
+          }
           aw || (aw = -1);
           bw || (bw = -1);
           an || (an = "");
@@ -2303,10 +2313,18 @@
               return 1;
             }
           } else {
-            if (an > bn) {
-              return 1;
+            if (aa !== ba) {
+              if (aa > ba) {
+                return -1;
+              } else {
+                return 1;
+              }
             } else {
-              return -1;
+              if (an > bn) {
+                return 1;
+              } else {
+                return -1;
+              }
             }
           }
         }));
@@ -2331,6 +2349,26 @@
         }
       }
       return count;
+    };
+    setGlyph = function(e, active) {
+      var $e, $set, GlyphLookup, data, glyph, id;
+      GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP;
+      data = Shadowcraft.Data;
+      $e = $(e);
+      $set = $e.parents(".glyphset");
+      id = parseInt($e.data("id"), 10);
+      glyph = GlyphLookup[id];
+      if (active) {
+        $e.addClass("activated");
+      } else {
+        $e.removeClass("activated");
+        $set.removeClass("full");
+      }
+      if (glyphRankCount(null, id) >= 3) {
+        return $set.addClass("full");
+      } else {
+        return $set.removeClass("full");
+      }
     };
     toggleGlyph = function(e, override) {
       var $e, $set, GlyphLookup, data, glyph, id;
@@ -2448,8 +2486,7 @@
       }));
       $("#reset_talents").click(resetTalents);
       Shadowcraft.bind("loadData", function() {
-        app.updateActiveTalents();
-        return app.initGlyphs();
+        return app.updateActiveTalents();
       });
       Shadowcraft.Options.bind("update", function(opt, val) {
         if (opt === 'general.patch') {
@@ -3917,6 +3954,12 @@
         name: "Spec",
         val: ShadowcraftTalents.GetActiveSpecName() || "n/a"
       });
+      if (ShadowcraftTalents.GetActiveSpecName() === "Combat") {
+        a_stats.push({
+          name: "Blade Flurry",
+          val: data.options.rotation.blade_flurry ? "ON " + data.options.rotation.bf_targets + " Target/s" : "OFF"
+        });
+      }
       return $summary.get(0).innerHTML = Templates.stats({
         stats: a_stats
       });
@@ -4387,6 +4430,14 @@
           desc: enchant.desc
         });
       }
+      buffer += Templates.itemSlot({
+        item: {
+          name: "[No enchant]"
+        },
+        desc: "Clear this enchant",
+        percent: 0,
+        ep: 0
+      });
       $altslots.get(0).innerHTML = buffer;
       $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
       showPopup($popup);
@@ -4557,11 +4608,11 @@
       $popup = $(".alternatives");
       $altslots = $(".alternatives .body");
       TiniReforger = new ShadowcraftTiniReforgeBackend(app);
-      Shadowcraft.Backend.bind("recompute2", updateStatWeights);
-      Shadowcraft.Backend.bind("recompute2", function() {
+      Shadowcraft.Backend.bind("recompute", updateStatWeights);
+      Shadowcraft.Backend.bind("recompute", function() {
         return Shadowcraft.Gear;
       });
-      Shadowcraft.Backend.bind("recompute2", updateDpsBreakdown);
+      Shadowcraft.Backend.bind("recompute", updateDpsBreakdown);
       Shadowcraft.Talents.bind("changed", function() {
         app.updateStatsWindow();
         return app.updateSummaryWindow();
@@ -4676,7 +4727,7 @@
       });
       $altslots.click($.delegate({
         ".slot": function(e) {
-          var $this, EnchantLookup, Gems, ItemLookup, data, gem_id, i, item, item_id, slot, socketlength, update, val;
+          var $this, EnchantLookup, Gems, ItemLookup, data, enchant_id, gem_id, i, item, item_id, slot, socketlength, update, val;
           ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
           EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
           Gems = Shadowcraft.ServerData.GEM_LOOKUP;
@@ -4710,7 +4761,12 @@
                 }
               }
             } else {
-              Shadowcraft.Console.log("Changing " + ItemLookup[data.gear[slot].item_id].name + " enchant to " + EnchantLookup[val].name);
+              enchant_id = !isNaN(val) ? val : null;
+              if (enchant_id != null) {
+                Shadowcraft.Console.log("Changing " + ItemLookup[data.gear[slot].item_id].name + " enchant to " + EnchantLookup[enchant_id].name);
+              } else {
+                Shadowcraft.Console.log("Removing Enchant from " + ItemLookup[data.gear[slot].item_id].name);
+              }
             }
           } else if (update === "gem") {
             item_id = parseInt($this.attr("id"), 10);
@@ -4883,7 +4939,10 @@
       });
       Shadowcraft.Options.bind("update", function(opt, val) {
         if (opt === 'professions.enchanting' || opt === 'professions.blacksmithing' || opt === 'rotation.use_hemorrhage' || opt === 'general.pvp') {
-          return app.updateDisplay();
+          app.updateDisplay();
+        }
+        if (opt === 'rotation.blade_flurry' || opt === 'rotation.bf_targets') {
+          return app.updateSummaryWindow();
         }
       });
       checkForWarnings('options');
@@ -5124,10 +5183,15 @@
       return this.consoleInner.append(fullMsg);
     };
     ShadowcraftConsole.prototype.hide = function() {
-      return this.console.hide();
+      if (!this.consoleInner.html().trim()) {
+        return this.console.hide();
+      }
     };
     ShadowcraftConsole.prototype.remove = function(selector) {
-      return this.consoleInner.find("div" + selector).remove();
+      this.consoleInner.find("div" + selector).remove();
+      if (!this.consoleInner.html().trim()) {
+        return this.console.hide();
+      }
     };
     ShadowcraftConsole.prototype.clear = function() {
       return this.consoleInner.empty();

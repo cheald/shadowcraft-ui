@@ -1,6 +1,6 @@
 - mustache "log" do
   .log{:class => "{{severity}} {{section}}", :id => "{{messageClass}}"}
-    %span{:class => "quality-{{quality}}"}
+    %span{:class => "quality-{{quality}}"} 
       {{name}}
     {{message}}
     {{#submsg}}
