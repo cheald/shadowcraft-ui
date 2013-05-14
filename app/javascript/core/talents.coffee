@@ -72,6 +72,7 @@ class ShadowcraftTalents
         $this.css({backgroundImage: icons.normal}).addClass("active")
     Shadowcraft.Talents.trigger("changed")
     Shadowcraft.update()
+    checkForWarnings("talents")
 
   hoverTalent = ->
     return if window.Touch?
@@ -159,13 +160,13 @@ class ShadowcraftTalents
 
       #Shadowcraft.Data["tree" + position.treeIndex] = tree.points
       $.data(button, "spentButton").text(tree.points)
-      $points = $.data(button, "pointsButton")
-      $points.get(0).className = "points"
-      if points.cur == points.max
-        $points.addClass("full")
-      else if points.cur > 0
-        $points.addClass("partial")
-      $points.text(points.cur + "/" + points.max)
+      #$points = $.data(button, "pointsButton")
+      #$points.get(0).className = "points"
+      #if points.cur == points.max
+      #  $points.addClass("full")
+      #else if points.cur > 0
+      #  $points.addClass("partial")
+      #$points.text(points.cur + "/" + points.max)
       unless skipUpdate
         data.activeTalents = getTalents()
         updateTalentAvailability $(button).parent()
@@ -232,6 +233,7 @@ class ShadowcraftTalents
         when 0
           Shadowcraft.update() if applyTalentToButton(this, 1)
         when 2
+          return if !$(this).hasClass("active")
           Shadowcraft.update() if applyTalentToButton(this, -1)
 
       $(this).trigger("mouseenter")

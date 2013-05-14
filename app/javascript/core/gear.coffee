@@ -1137,7 +1137,16 @@ class ShadowcraftGear
           "ON " + data.options.rotation.bf_targets + " Target/s"
         else 
           "OFF"
-    }
+      }
+    else if ShadowcraftTalents.GetActiveSpecName() == "Subtlety"
+      a_stats.push {
+      name: "CP Builder"
+      val: 
+        switch data.options.rotation.use_hemorrhage
+          when "never" then "Backstab"
+          when "always" then "Hemorrhage"
+          when "24" then "Backstab w/ Hemo"
+      }
     $summary.get(0).innerHTML = Templates.stats {stats: a_stats}
 
   updateStatsWindow: ->

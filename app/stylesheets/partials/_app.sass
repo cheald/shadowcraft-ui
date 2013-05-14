@@ -944,14 +944,15 @@ img.upgrade
         left: 0
         bottom: 0
         right: 0
-        background: rgba(0, 0, 0, 0.8)
+        background: rgba(0, 0, 0, 0.7)
         +border-radius(3px)
       &.active .grey
         display: none
-      &:hover
-        border-color: #0f0
       &.active
         opacity: 1
+        border-color: #fd0
+      &:hover
+        border-color: #0f0
       +border-radius(3px)
       width: 56px
       height: 56px
@@ -973,7 +974,7 @@ img.upgrade
         &.full
           color: #fd0
           border-color: #fd0
-
+        
 #talentrankings, #upgraderankings, #dpsbreakdown
   .pct
     width: 120px

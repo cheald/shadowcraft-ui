@@ -79,8 +79,17 @@ checkForWarnings = (section) ->
   if section == undefined or section == "glyphs"
     # Warn glyphs
     Shadowcraft.Console.remove(".glyphs")
-    if data.glyphs.length < 3
+    if data.glyphs.length < 1
       Shadowcraft.Console.warn({}, "Glyphs need to be selected", null, 'warn', 'glyphs')
+
+  if section == undefined or section == "talents"
+    # Warn talents
+    Shadowcraft.Console.remove(".talents")
+    if data.activeTalents
+      talents = data.activeTalents.split ""
+      for row, i in talents
+        if i in [0,5] and row == "."
+          Shadowcraft.Console.warn({}, "Level " +  (i+1)*15 + " Talent not set", null, 'warn', 'talents')
 
   if section == undefined or section == "gear"
     # Warn items

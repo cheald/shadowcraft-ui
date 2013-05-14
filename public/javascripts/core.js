@@ -1066,7 +1066,7 @@
     return flashHide = window.setTimeout(hideFlash, 1500);
   };
   checkForWarnings = function(section) {
-    var EnchantLookup, EnchantSlots, ItemLookup, data, enchant, enchantable, gear, item, slotIndex, _ref, _results;
+    var EnchantLookup, EnchantSlots, ItemLookup, data, enchant, enchantable, gear, i, item, row, slotIndex, talents, _len, _ref, _results;
     Shadowcraft.Console.hide();
     data = Shadowcraft.Data;
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
@@ -1080,8 +1080,20 @@
     }
     if (section === void 0 || section === "glyphs") {
       Shadowcraft.Console.remove(".glyphs");
-      if (data.glyphs.length < 3) {
+      if (data.glyphs.length < 1) {
         Shadowcraft.Console.warn({}, "Glyphs need to be selected", null, 'warn', 'glyphs');
+      }
+    }
+    if (section === void 0 || section === "talents") {
+      Shadowcraft.Console.remove(".talents");
+      if (data.activeTalents) {
+        talents = data.activeTalents.split("");
+        for (i = 0, _len = talents.length; i < _len; i++) {
+          row = talents[i];
+          if ((i === 0 || i === 5) && row === ".") {
+            Shadowcraft.Console.warn({}, "Level " + (i + 1) * 15 + " Talent not set", null, 'warn', 'talents');
+          }
+        }
       }
     }
     if (section === void 0 || section === "gear") {
@@ -1942,7 +1954,8 @@
         }
       });
       Shadowcraft.Talents.trigger("changed");
-      return Shadowcraft.update();
+      Shadowcraft.update();
+      return checkForWarnings("talents");
     };
     hoverTalent = function() {
       var nextRank, points, pos, rank, talent;
@@ -2018,7 +2031,7 @@
       return data.activeSpec;
     };
     applyTalentToButton = function(button, dir, force, skipUpdate) {
-      var $points, data, points, position, success, tree;
+      var data, points, position, success, tree;
       data = Shadowcraft.Data;
       points = $.data(button, "points");
       position = $.data(button, "position");
@@ -2045,14 +2058,6 @@
         talentsSpent += dir;
         tree.rowPoints[position.row] += dir;
         $.data(button, "spentButton").text(tree.points);
-        $points = $.data(button, "pointsButton");
-        $points.get(0).className = "points";
-        if (points.cur === points.max) {
-          $points.addClass("full");
-        } else if (points.cur > 0) {
-          $points.addClass("partial");
-        }
-        $points.text(points.cur + "/" + points.max);
         if (!skipUpdate) {
           data.activeTalents = getTalents();
           updateTalentAvailability($(button).parent());
@@ -2165,6 +2170,9 @@
             }
             break;
           case 2:
+            if (!$(this).hasClass("active")) {
+              return;
+            }
             if (applyTalentToButton(this, -1)) {
               Shadowcraft.update();
             }
@@ -3958,6 +3966,20 @@
         a_stats.push({
           name: "Blade Flurry",
           val: data.options.rotation.blade_flurry ? "ON " + data.options.rotation.bf_targets + " Target/s" : "OFF"
+        });
+      } else if (ShadowcraftTalents.GetActiveSpecName() === "Subtlety") {
+        a_stats.push({
+          name: "CP Builder",
+          val: (function() {
+            switch (data.options.rotation.use_hemorrhage) {
+              case "never":
+                return "Backstab";
+              case "always":
+                return "Hemorrhage";
+              case "24":
+                return "Backstab w/ Hemo";
+            }
+          })()
         });
       }
       return $summary.get(0).innerHTML = Templates.stats({
