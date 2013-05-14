@@ -4011,10 +4011,6 @@
         val: pctColor(this.getMiss("yellow"), redWhite, -1)
       });
       a_stats.push({
-        name: "Spell Miss",
-        val: pctColor(this.getMiss("spell"), redWhite)
-      });
-      a_stats.push({
         name: "White Miss",
         val: pctColor(this.getMiss("white"), redWhite)
       });
@@ -4052,6 +4048,9 @@
       for (key in all) {
         weight = all[key];
         if (weight === 0) {
+          continue;
+        }
+        if (key === "spell_hit") {
           continue;
         }
         exist = $(".stat#weight_" + key);

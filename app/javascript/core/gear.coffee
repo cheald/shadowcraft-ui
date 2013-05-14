@@ -1172,10 +1172,10 @@ class ShadowcraftGear
       name: "Yellow Miss"
       val: pctColor this.getMiss("yellow"), redWhite, -1
     }
-    a_stats.push {
-      name: "Spell Miss"
-      val: pctColor this.getMiss("spell"), redWhite
-    }
+    #a_stats.push {
+    #  name: "Spell Miss"
+    #  val: pctColor this.getMiss("spell"), redWhite
+    #}
     a_stats.push {
       name: "White Miss"
       val: pctColor this.getMiss("white"), redWhite
@@ -1213,6 +1213,7 @@ class ShadowcraftGear
     $weights.empty()
     for key, weight of all
       continue if weight == 0
+      continue if key == "spell_hit"
       exist = $(".stat#weight_" + key)
       if exist.length > 0
         exist.find("val").text weight.toFixed(3)
