@@ -1022,6 +1022,7 @@ class ShadowcraftGear
           for socket in item.sockets
             gem = Gems[gear["g" + gems.length]]
             gems[gems.length] = {socket: socket, gem: gem}
+            continue if socket == "Prismatic" # prismatic sockets don't contribute to socket bonus
             if !gem or !gem[socket]
               allSlotsMatch = false
 

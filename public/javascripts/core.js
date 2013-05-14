@@ -3831,6 +3831,10 @@
                 socket: socket,
                 gem: gem
               };
+              console.log(socket);
+              if (socket === "Prismatic") {
+                continue;
+              }
               if (!gem || !gem[socket]) {
                 allSlotsMatch = false;
               }
