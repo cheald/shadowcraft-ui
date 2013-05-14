@@ -23,7 +23,7 @@ $doc = null
 tooltip = (data, x, y, ox, oy) ->
   tip = $("#tooltip")
   if !tip or tip.length == 0
-    tip = $("<div id='tooltip'></div>")
+    tip = $("<div id='tooltip'></div>").addClass("ui-widget")
     $(document.body).append(tip)
     $doc = $(document.body)
 

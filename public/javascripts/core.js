@@ -1019,7 +1019,7 @@
     var rx, ry;
     tip = $("#tooltip");
     if (!tip || tip.length === 0) {
-      tip = $("<div id='tooltip'></div>");
+      tip = $("<div id='tooltip'></div>").addClass("ui-widget");
       $(document.body).append(tip);
       $doc = $(document.body);
     }
