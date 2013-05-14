@@ -4166,7 +4166,7 @@
         val = dps_breakdown[skill];
         skill = skill.replace('(', '').replace(')', '').split(' ').join('_');
         exist = $("#dpsbreakdown #talent-weight-" + skill);
-        val = parseInt(val, 10);
+        val = parseFloat(val, 10);
         name = titleize(skill);
         if (isNaN(val)) {
           name += " (NYI)";
