@@ -989,8 +989,6 @@ class ShadowcraftGear
   ###
 
   updateDisplay: (skipUpdate) ->
-    this.updateStatsWindow()
-    this.updateSummaryWindow()
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
     EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS
@@ -1081,6 +1079,8 @@ class ShadowcraftGear
 
         buffer += Templates.itemSlot(opt)
       $slots.get(ssi).innerHTML = buffer
+    this.updateStatsWindow()
+    this.updateSummaryWindow()
     checkForWarnings('gear')
 
   whiteWhite = (v, s) ->
