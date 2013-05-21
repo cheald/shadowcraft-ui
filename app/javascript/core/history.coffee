@@ -314,7 +314,7 @@ class ShadowcraftHistory
         lethal_poison:        unmap(general[3], poisonMap)
         utility_poison:       unmap(general[4], utilPoisonMap)
         virmens_bite:         general[5] != 0
-        max_ilvl:             general[6] || 600
+        max_ilvl:             general[6] || 700
         tricks:               general[7] != 0
         receive_tricks:       general[8] != 0
         prepot:               general[9] != 0
@@ -322,7 +322,7 @@ class ShadowcraftHistory
         min_ilvl:             general[11] || 430
         epic_gems:            general[12] || 0
         stormlash:            general[13] || 0
-        pvp:                 general[14] || 0
+        pvp:                  general[14] || 0
         show_upgrades:        general[15] || 0
         show_random_items:    general[16] || 0
 

@@ -107,19 +107,19 @@ class ShadowcraftOptions
     data = Shadowcraft.Data
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Patch/Engine", desc: 'Only changes UI Stuff like Talents. It always uses the latest Engine, so you cannot compare Patches.', 'default': 52, datatype: 'integer', options: {50: '5.1', 52: '5.2'}},
+      patch: {type: "select", name: "Patch/Engine", desc: 'Only changes UI Stuff like Talents. It always uses the latest Engine, so you cannot compare Patches.', 'default': 52, datatype: 'integer', options: {50: '5.1', 52: '5.3'}},
       level: {type: "input", name: "Level", 'default': 90, datatype: 'integer', min: 85, max: 90},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
       response_time: {type: "input", name: "Response Time", 'default': 0.5, datatype: 'float', min: 0.1, max: 5}
-      time_in_execute_range: {type: "input", name: "Time in Execute Range", desc: "Only working with Assassination", 'default': 0.35, datatype: 'float', min: 0, max: 1}
+      time_in_execute_range: {type: "input", name: "Time in Execute Range", desc: "Only used in Assassination Spec", 'default': 0.35, datatype: 'float', min: 0, max: 1}
       lethal_poison: {name: "Lethal Poison", type: 'select', options: {'dp': 'Deadly Poison', 'wp': 'Wound Poison'}, 'default': 'dp'}
       utility_poison: {name: "Utility Poison", type: 'select', options: {'lp': 'Leeching Poison', 'n': 'Other/None'}, 'default': 'lp'}
-      max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this ilevel in gear lists", 'default': 600, datatype: 'integer', min: 15, max: 600}
-      min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this ilevel in gear lists", 'default': 430, datatype: 'integer', min: 15, max: 600},
+      max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this ilevel in gear lists", 'default': 700, datatype: 'integer', min: 15, max: 700}
+      min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this ilevel in gear lists", 'default': 430, datatype: 'integer', min: 15, max: 700},
       epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
       show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items on ranking", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
-      show_random_items: {name: "Show Random Items", desc: "Show all items with random stats on ranking (Scenario Loot)", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
+      show_random_items: {name: "Show Random Items", desc: "Show all items with random stats on ranking (e.g. Scenario Loot)", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
     })
 
     @setup("#settings #professions", "professions", {

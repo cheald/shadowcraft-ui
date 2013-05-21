@@ -946,7 +946,7 @@
           lethal_poison: unmap(general[3], poisonMap),
           utility_poison: unmap(general[4], utilPoisonMap),
           virmens_bite: general[5] !== 0,
-          max_ilvl: general[6] || 600,
+          max_ilvl: general[6] || 700,
           tricks: general[7] !== 0,
           receive_tricks: general[8] !== 0,
           prepot: general[9] !== 0,
@@ -1313,7 +1313,7 @@
           datatype: 'integer',
           options: {
             50: '5.1',
-            52: '5.2'
+            52: '5.3'
           }
         },
         level: {
@@ -1349,7 +1349,7 @@
         time_in_execute_range: {
           type: "input",
           name: "Time in Execute Range",
-          desc: "Only working with Assassination",
+          desc: "Only used in Assassination Spec",
           'default': 0.35,
           datatype: 'float',
           min: 0,
@@ -1377,10 +1377,10 @@
           name: "Max ILevel",
           type: "input",
           desc: "Don't show items over this ilevel in gear lists",
-          'default': 600,
+          'default': 700,
           datatype: 'integer',
           min: 15,
-          max: 600
+          max: 700
         },
         min_ilvl: {
           name: "Min ILevel",
@@ -1389,7 +1389,7 @@
           'default': 430,
           datatype: 'integer',
           min: 15,
-          max: 600
+          max: 700
         },
         epic_gems: {
           name: "Recommend Epic Gems",
@@ -1413,7 +1413,7 @@
         },
         show_random_items: {
           name: "Show Random Items",
-          desc: "Show all items with random stats on ranking (Scenario Loot)",
+          desc: "Show all items with random stats on ranking (e.g. Scenario Loot)",
           datatype: 'integer',
           type: 'select',
           options: {
