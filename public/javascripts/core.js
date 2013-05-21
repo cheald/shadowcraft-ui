@@ -5143,7 +5143,7 @@
       }
       $("#dps .inner").html(data.total_dps.toFixed(1) + " DPS" + deltatext);
       if (snapshot) {
-        this.dpsHistory.push([this.dpsIndex, Math.floor(data.total_dps * 10) / 10]);
+        this.dpsHistory.push([this.dpsIndex, Math.round(data.total_dps * 10) / 10]);
         this.dpsIndex++;
         this.snapshotHistory.push(snapshot);
         if (this.dpsHistory.length > MAX_POINTS) {
