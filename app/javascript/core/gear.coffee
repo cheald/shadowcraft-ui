@@ -1342,7 +1342,7 @@ class ShadowcraftGear
 
     lowest_exp = if caps.mh_exp < caps.oh_exp then caps.mh_exp else caps.oh_exp
     if stats.expertise_rating > (lowest_exp * 0.8)
-      offsets.expertise_rating += stats.expertise_rating - lowest_exp - 1
+      offsets.expertise_rating += stats.expertise_rating - lowest_exp
     offsets
 
   patch_max_ilevel = (patch) ->

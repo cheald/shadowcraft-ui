@@ -93,7 +93,6 @@ module WowArmory
       346 => "of the Adroit",
       347 => "of the Savant",
       348 => "of the Impatient", # 5.3 Barrens
-      352 => "of the Landslide", # 5.3 Landslide - Str Versa
       353 => "of the Stormblast", # 5.3 Stormblast - Agi
       354 => "of the Galeburst", # 5.3 Galeburst - Agi
       355 => "of the Windflurry", # 5.3 Windflurry - Agi
@@ -101,7 +100,7 @@ module WowArmory
       357 => "of the Zephyr", # 5.3 Zephyr - Agi
     }
 
-    ITEM_SOCKET_COST = 160.0 # TODO 160 is for every item from mop but add the socket cost database
+    ITEM_SOCKET_COST = 160.0 # 160 is for every item from mop
 
     SOCKET_MAP = {
       1 => "Meta",
@@ -227,16 +226,10 @@ module WowArmory
         enchantid = row[17+i]
         multiplier = row[37+i].to_f
         socket_mult = row[47+i].to_f
-        #puts socket_mult
-        #puts multiplier
-        #puts slot_index(equip_location)
         basevalue = base[1+quality_index(self.quality)*5+slot_index(equip_location)]
-        ori_basevalue = ori_base[1+quality_index(self.quality)*5+slot_index(equip_location)]
-        #puts basevalue
-        #puts ori_basevalue
         if enchantid != "0"
           stat = enchantid.to_i
-          value = (multiplier/10000.0) * basevalue.to_f - socket_mult * ITEM_SOCKET_COST * ( basevalue.to_f / ori_basevalue.to_f )
+          value = (multiplier/10000.0) * basevalue.to_f - socket_mult * ITEM_SOCKET_COST
           puts value
           self.stats[STAT_LOOKUP[stat]] = value.round
           puts STAT_LOOKUP[stat]
@@ -489,7 +482,8 @@ module WowArmory
           populate_item_upgrade_level_with_random_suffix
           puts self.stats.inspect
         else
-          puts "have to use not accurate method for itemid #{self.id}"
+          Rails.logger.debug "Upgrade not accurate #{self.id} #{self.name} #{self.ilevel}"
+          puts "Upgrade not accurate #{self.id} #{self.name} #{self.ilevel}"
           populate_item_upgrade_level2 # FIXME not accurate due to rounding issues, need to get rid of this option
         end
       end

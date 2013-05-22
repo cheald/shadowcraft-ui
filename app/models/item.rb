@@ -165,6 +165,21 @@ class Item
         single_import id,{:random_suffix => suffix, :upgrade_level => 2}
       end
     end
+
+    # 5.3 random enchantment items
+    suffixes = (-348..-344).to_a + (-357..-353).to_a
+    puts suffixes
+    random_item_ids = [ 98279, 98275, 98280, 98271, 98272, 98189, 98172, 98190 ]
+    random_item_ids += (98173..98180).to_a # tidesplitter ilvl 516
+    random_item_ids += [ 97663, 97647, 97682, 97633, 97655, 97639, 97675 ] # disowner ilvl 502
+    puts "importing now #{random_item_ids.length} random items for 5.3"
+    random_item_ids.each do |id|
+      suffixes.each do |suffix|
+        single_import id,{:random_suffix => suffix}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 1}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 2}
+      end
+    end
     
     item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=483;ub=4;cr=21;crs=1;crv=0"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=484;maxle=500;ub=4;cr=21;crs=1;crv=0"
