@@ -221,6 +221,7 @@ class Item
     puts id
     if not options.has_key?("upgrade_level")
       options[:upgrade_level] = nil
+    end
     begin
       Item.find_or_create_by options.merge(:remote_id => id)
     rescue WowArmory::MissingDocument => e
