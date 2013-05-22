@@ -336,7 +336,7 @@ module WowArmory
 
     def get_item_stats
       stats = {}
-      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @id).read
+      doc = Nokogiri::XML open("http://ptr.wowhead.com/item=%d&xml" % @id).read
       eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
       stats1 = JSON::load("{%s}" % doc.css("json").text)
       eqstats.each do |stat, val|
@@ -345,6 +345,7 @@ module WowArmory
           stats[stat2] = val
         end
       end
+      puts stats.inspect
       stats
     end
 
@@ -458,10 +459,12 @@ module WowArmory
       found_in_item_data = true
       if self.stats.nil? or self.stats.blank?
         found_in_item_data = false
+        puts "try bnet api"
         self.stats = get_item_stats_api # battle.net community api
       end
       if self.stats.nil? or self.stats.blank?
         found_in_item_data = false
+        puts "try wowhead api"
         self.stats = get_item_stats # wowhead
       end
       #if self.stats.nil? or self.stats.blank?
