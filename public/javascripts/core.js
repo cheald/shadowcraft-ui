@@ -3234,7 +3234,7 @@
       if ((_ref = item.equip_location) === "mainhand" || _ref === "offhand") {
         chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS);
         last = item.sockets[item.sockets.length - 1];
-        if (item.ilvl >= 502 && !(get_item_id(item) === 87012 || get_item_id(item) === 87032 || item.tag.indexOf("Season") >= 0) && last !== "Prismatic" && chapter2) {
+        if (item.ilvl >= 502 && !(get_item_id(item) === 87012 || get_item_id(item) === 87032 || item.tag.indexOf("Season") >= 0 || item.name.indexOf("Immaculate") >= 0) && last !== "Prismatic" && chapter2) {
           return item.sockets.push("Prismatic");
         } else if (last !== "Prismatic" && last === "Hydraulic" && chapter2) {
           return item.sockets.push("Prismatic");

@@ -580,7 +580,7 @@ class ShadowcraftGear
     if item.equip_location in ["mainhand","offhand"]
       chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS)
       last = item.sockets[item.sockets.length - 1]
-      if item.ilvl >= 502 and not (get_item_id(item) == 87012 or get_item_id(item) == 87032 or item.tag.indexOf("Season") >= 0) and last != "Prismatic" and chapter2
+      if item.ilvl >= 502 and not (get_item_id(item) == 87012 or get_item_id(item) == 87032 or item.tag.indexOf("Season") >= 0 or item.name.indexOf("Immaculate") >= 0) and last != "Prismatic" and chapter2
         item.sockets.push "Prismatic"
       else if last != "Prismatic" and last == "Hydraulic" and chapter2
         item.sockets.push "Prismatic"
