@@ -160,6 +160,13 @@ class Enchant
 
   def self.hardcoded_import
     Enchant.create({
+         :spell_id => 5125,
+         :stats => {},
+         :icon => "inv_enchant_formulasuperior_01",
+         :item_name => "Enchant Weapon - Bloody Dancing Steel",
+         :equip_location => 13
+	})
+    Enchant.create({
          :spell_id => 4444,
          :stats => {},
          :icon => "inv_enchant_formulasuperior_01",

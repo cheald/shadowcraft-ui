@@ -35,6 +35,7 @@ class ShadowcraftComputation:
         4441: 'windsong',
         4443: 'elemental_force',
         4444: 'dancing_steel',
+        5125: 'dancing_steel',
         0: None
     }
 

@@ -2571,6 +2571,7 @@
       4441: "windsong",
       4443: "elemental_force",
       4444: "dancing_steel",
+      5125: "dancing_steel",
       4894: "swordguard_embroidery"
     };
     ShadowcraftGear.CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886];
