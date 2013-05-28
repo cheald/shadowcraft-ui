@@ -88,8 +88,9 @@
     function ShadowcraftApp() {
       _.extend(this, Backbone.Events);
     }
-    ShadowcraftApp.prototype.boot = function(uuid, data, ServerData) {
+    ShadowcraftApp.prototype.boot = function(uuid, region, data, ServerData) {
       this.uuid = uuid;
+      this.region = region;
       this.ServerData = ServerData;
       try {
         return this._boot(this.uuid, data, this.ServerData);
@@ -2519,7 +2520,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, canUseLegendaryMetaGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, canUseLegendaryMetaGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getMaxUpgradeLevel, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -3866,7 +3867,7 @@
               if (gear.upgrade_level != null) {
                 curr_level = gear.upgrade_level;
               }
-              max_level = item.quality === 3 ? 1 : 2;
+              max_level = getMaxUpgradeLevel(item);
               upgrade = {
                 curr_level: curr_level,
                 max_level: max_level
@@ -4244,8 +4245,20 @@
       }
       return item.id;
     };
+    getMaxUpgradeLevel = function(item) {
+      var _ref;
+      if (item.quality === 3) {
+        return 1;
+      } else {
+        if ((_ref = Shadowcraft.region) === "KR" || _ref === "TW" || _ref === "CN") {
+          return 4;
+        } else {
+          return 2;
+        }
+      }
+    };
     clickSlotName = function() {
-      var $slot, GemList, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, maxIEP, max_level, minIEP, rec, reforge_offset, requireDagger, restid, selected_id, set, setBonEP, setCount, set_name, slot, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _len, _len2, _len3;
+      var $slot, GemList, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, loc_all, maxIEP, max_level, minIEP, rec, reforge_offset, requireDagger, selected_id, set, setBonEP, setCount, set_name, slot, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _l, _len, _len2, _len3, _len4;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -4253,7 +4266,33 @@
       equip_location = SLOT_INVTYPES[slot];
       GemList = Shadowcraft.ServerData.GEMS;
       gear = Shadowcraft.Data.gear;
-      loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
+      loc_all = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
+      loc = [];
+      for (_i = 0, _len = loc_all.length; _i < _len; _i++) {
+        l = loc_all[_i];
+        if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
+          continue;
+        }
+        if (l.ilvl < Shadowcraft.Data.options.general.min_ilvl) {
+          continue;
+        }
+        if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
+          continue;
+        }
+        if ((slot === 15) && combatSpec && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
+          continue;
+        }
+        if (l.upgrade_level && !Shadowcraft.Data.options.general.show_upgrades && l.id !== selected_id) {
+          continue;
+        }
+        if (l.upgrade_level > getMaxUpgradeLevel(l)) {
+          continue;
+        }
+        if (l.suffix && !Shadowcraft.Data.options.general.show_random_items && l.id !== selected_id) {
+          continue;
+        }
+        loc.push(l);
+      }
       reforge_offset = statOffset(gear[slot], FACETS.REFORGE);
       gear_offset = statOffset(gear[slot], FACETS.ITEM);
       gem_offset = statOffset(gear[slot], FACETS.GEMS);
@@ -4266,8 +4305,8 @@
         setBonEP[set_name] || (setBonEP[set_name] = 0);
         setBonEP[set_name] += setBonusEP(set, setCount);
       }
-      for (_i = 0, _len = loc.length; _i < _len; _i++) {
-        l = loc[_i];
+      for (_j = 0, _len2 = loc.length; _j < _len2; _j++) {
+        l = loc[_j];
         addAchievementBonuses(l);
         l.__gemRec = getGemmingRecommendation(GemList, l, true, slot, gem_offset);
         rec = recommendReforge(l, reforge_offset);
@@ -4298,27 +4337,9 @@
       buffer = "";
       requireDagger = needsDagger();
       combatSpec = Shadowcraft.Data.activeSpec === "Z";
-      for (_j = 0, _len2 = loc.length; _j < _len2; _j++) {
-        l = loc[_j];
+      for (_k = 0, _len3 = loc.length; _k < _len3; _k++) {
+        l = loc[_k];
         if (l.__ep < 1) {
-          continue;
-        }
-        if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
-          continue;
-        }
-        if ((slot === 15) && combatSpec && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
-          continue;
-        }
-        if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
-          continue;
-        }
-        if (l.ilvl < Shadowcraft.Data.options.general.min_ilvl) {
-          continue;
-        }
-        if (l.upgrade_level && !Shadowcraft.Data.options.general.show_upgrades && l.id !== selected_id) {
-          continue;
-        }
-        if (l.suffix && !Shadowcraft.Data.options.general.show_random_items && l.id !== selected_id) {
           continue;
         }
         if (!isNaN(l.__ep)) {
@@ -4329,40 +4350,13 @@
         }
       }
       maxIEP -= minIEP;
-      for (_k = 0, _len3 = loc.length; _k < _len3; _k++) {
-        l = loc[_k];
+      for (_l = 0, _len4 = loc.length; _l < _len4; _l++) {
+        l = loc[_l];
         if (l.__ep < 1) {
           continue;
         }
-        if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
-          continue;
-        }
-        if ((slot === 15) && combatSpec && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
-          continue;
-        }
-        if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
-          continue;
-        }
-        if (l.ilvl < Shadowcraft.Data.options.general.min_ilvl) {
-          continue;
-        }
-        if (l.upgrade_level && !Shadowcraft.Data.options.general.show_upgrades && l.id !== selected_id) {
-          continue;
-        }
-        if (l.suffix && !Shadowcraft.Data.options.general.show_random_items && l.id !== selected_id) {
-          continue;
-        }
         iEP = l.__ep;
-        restid = l.id;
-        if (l.id > 100000000) {
-          ttid = Math.floor(l.id / 1000000);
-          restid = Math.floor(l.id / 1000);
-        }
-        if (restid > 100000) {
-          ttid = Math.floor(restid / 1000);
-        } else {
-          ttid = l.id;
-        }
+        ttid = get_item_id(l);
         if (l.suffix !== void 0) {
           ttrand = l.suffix;
         } else {
@@ -4379,7 +4373,7 @@
           if (l.upgrade_level != null) {
             curr_level = l.upgrade_level;
           }
-          max_level = l.quality === 3 ? 1 : 2;
+          max_level = getMaxUpgradeLevel(l);
           upgrade = {
             curr_level: curr_level,
             max_level: max_level
@@ -4601,7 +4595,7 @@
       new_item_id = gear.item_id;
       if (gear.upgrade_level) {
         new_item_id = Math.floor(new_item_id / 1000000);
-        max = item.quality === 3 ? 1 : 2;
+        max = getMaxUpgradeLevel(item);
         gear.upgrade_level += 1;
         if (gear.upgrade_level > max) {
           delete gear.upgrade_level;

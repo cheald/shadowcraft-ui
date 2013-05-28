@@ -151,6 +151,8 @@ class Item
         single_import id,{:random_suffix => suffix}
         single_import id,{:random_suffix => suffix, :upgrade_level => 1}
         single_import id,{:random_suffix => suffix, :upgrade_level => 2}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 3}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 4}
       end
     end
 
@@ -163,6 +165,8 @@ class Item
         single_import id,{:random_suffix => suffix}
         single_import id,{:random_suffix => suffix, :upgrade_level => 1}
         single_import id,{:random_suffix => suffix, :upgrade_level => 2}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 3}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 4}
       end
     end
 
@@ -178,6 +182,8 @@ class Item
         single_import id,{:random_suffix => suffix}
         single_import id,{:random_suffix => suffix, :upgrade_level => 1}
         single_import id,{:random_suffix => suffix, :upgrade_level => 2}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 3}
+        single_import id,{:random_suffix => suffix, :upgrade_level => 4}
       end
     end
     
@@ -202,6 +208,8 @@ class Item
       single_import id
       single_import id,{:upgrade_level => 1}
       single_import id,{:upgrade_level => 2}
+      single_import id,{:upgrade_level => 3}
+      single_import id,{:upgrade_level => 4}
     end
     true
   end
@@ -218,9 +226,9 @@ class Item
     populate_from_wowhead "http://www.wowhead.com/items=16.4", :is_glyph => true
   end
 
-  def self.single_import(id,  options = {})
-    puts id
-    if not options.has_key?("upgrade_level")
+  def self.single_import(id, options = {})
+    puts id    
+    if not options.has_key?(:upgrade_level)
       options[:upgrade_level] = nil
     end
     begin

@@ -1045,7 +1045,7 @@ class ShadowcraftGear
           if item.upgradeable
             curr_level = "0"
             curr_level = gear.upgrade_level if gear.upgrade_level?
-            max_level = if item.quality == 3 then 1 else 2
+            max_level = getMaxUpgradeLevel(item)
             upgrade = 
               curr_level: curr_level
               max_level: max_level
@@ -1359,6 +1359,15 @@ class ShadowcraftGear
       return Math.floor(item.id / 1000)
     item.id
 
+  getMaxUpgradeLevel = (item) ->
+    if item.quality == 3
+      return 1
+    else
+        if Shadowcraft.region in ["KR", "TW", "CN"]
+          return 4
+        else
+          return 2
+
   # Click a name in a slot, for binding to event delegation
   clickSlotName = ->
     buf = clickSlot(this, "item_id")
@@ -1369,7 +1378,18 @@ class ShadowcraftGear
     GemList = Shadowcraft.ServerData.GEMS
 
     gear = Shadowcraft.Data.gear
-    loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
+    loc_all = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
+    loc = []
+    for l in loc_all
+      continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
+      continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
+      continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
+      continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
+      #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
+      continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and l.id != selected_id
+      continue if l.upgrade_level > getMaxUpgradeLevel(l)
+      continue if l.suffix and not Shadowcraft.Data.options.general.show_random_items and l.id != selected_id
+      loc.push l
 
     #slot = parseInt($(this).parent().data("slot"), 10)
 
@@ -1412,13 +1432,6 @@ class ShadowcraftGear
 
     for l in loc
       continue if l.__ep < 1
-      continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
-      continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
-      continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
-      continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
-      #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
-      continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and l.id != selected_id
-      continue if l.suffix and not Shadowcraft.Data.options.general.show_random_items and l.id != selected_id
       unless isNaN l.__ep
         maxIEP = l.__ep if maxIEP <= 1
         minIEP = l.__ep
@@ -1427,23 +1440,9 @@ class ShadowcraftGear
 
     for l in loc
       continue if l.__ep < 1
-      continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
-      continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
-      continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
-      continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
-      #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
-      continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and l.id != selected_id
-      continue if l.suffix and not Shadowcraft.Data.options.general.show_random_items and l.id != selected_id
       iEP = l.__ep
 
-      restid = l.id
-      if l.id > 100000000 # it is an upgraded item
-        ttid = Math.floor(l.id / 1000000)
-        restid = Math.floor(l.id / 1000)
-      if restid > 100000 # It has a random component
-        ttid = Math.floor(restid / 1000)
-      else
-        ttid = l.id
+      ttid = get_item_id(l)
       if l.suffix != undefined 
         ttrand = l.suffix
       else
@@ -1456,7 +1455,7 @@ class ShadowcraftGear
       if l.upgradeable
         curr_level = "0"
         curr_level = l.upgrade_level if l.upgrade_level?
-        max_level = if l.quality == 3 then 1 else 2
+        max_level = getMaxUpgradeLevel(l)
         upgrade = 
           curr_level: curr_level
           max_level: max_level
@@ -1666,7 +1665,7 @@ class ShadowcraftGear
     new_item_id = gear.item_id
     if gear.upgrade_level
       new_item_id = Math.floor(new_item_id / 1000000)
-      max = if item.quality == 3 then 1 else 2
+      max = getMaxUpgradeLevel(item)
       gear.upgrade_level += 1
       if gear.upgrade_level > max
         delete gear.upgrade_level

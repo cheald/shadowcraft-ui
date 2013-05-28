@@ -71,7 +71,7 @@ class ShadowcraftApp
   constructor: ->
     _.extend(this, Backbone.Events)
 
-  boot: (@uuid, data, @ServerData) ->
+  boot: (@uuid, @region, data, @ServerData) ->
     try  
       @_boot @uuid, data, @ServerData
     catch error

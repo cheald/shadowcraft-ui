@@ -188,5 +188,6 @@
     #generalDialog
   :javascript
     var uuid = "#{@character.uid}";
+    var region = "#{@character.region}";
     #{flash[:reload] ? "$.jStorage.flush();" : nil}
-    Shadowcraft.boot(uuid, #{patch @character }, ShadowcraftData);
+    Shadowcraft.boot(uuid, region, #{patch @character }, ShadowcraftData);
