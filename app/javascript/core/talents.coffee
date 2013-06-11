@@ -23,32 +23,6 @@ class ShadowcraftTalents
     if activeSpec
       return getSpecName(activeSpec)
     return ""
-  
-  # not used anymore
-  talentMap = "0zMcmVokRsaqbdrfwihuGINALpTjnyxtgevElBCDFHJKOPQSUWXYZ123456789"
-  @encodeTalents = (s) ->
-    str = ""
-    offset = 0
-    for size, index in TREE_SIZE
-      sub = s.substr(offset, size).replace(/0+$/, "")
-      offset += size
-      for c, i in sub by 2
-        l = parseInt(c, 10) * 5 + parseInt(sub[i+1] || 0, 10)
-        str += talentMap[l]
-      str += "Z" unless index == TREE_SIZE.length - 1
-    return str
-
-  @decodeTalents = (s) ->
-    talents = ""
-    #for char, index in s.split ''
-      # Needs to be fleshed out
-    return s
-
-  sumDigits = (s) ->
-    total = 0
-    for c in s
-      total += parseInt(c)
-    return total
 
   getSpecName = (s) ->
     if s == "a"
@@ -482,6 +456,7 @@ class ShadowcraftTalents
       if opt in ['general.patch']
         app.initTalentTree()
         app.updateActiveTalents()
+        checkForWarnings('options')
 
     $("#talents #talentframe").mousemove (e) ->
       $.data document, "mouse-x", e.pageX

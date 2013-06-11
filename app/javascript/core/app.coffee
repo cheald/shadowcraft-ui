@@ -3,38 +3,38 @@ $ = window.jQuery
 class ShadowcraftApp
   RATING_CONVERSIONS = {
     80:
-      hit_rating: 30.7548
-      expertise_rating: 7.68869
+      hit: 30.7548
+      expertise: 7.68869
     81:
-      hit_rating: 40.3836
-      expertise_rating: 10.0959
+      hit: 40.3836
+      expertise: 10.0959
     82:
-      hit_rating: 53.0304
-      expertise_rating: 13.2576
+      hit: 53.0304
+      expertise: 13.2576
     83:
-      hit_rating: 69.6653
-      expertise_rating: 17.4163
+      hit: 69.6653
+      expertise: 17.4163
     84:
-      hit_rating: 91.4738 
-      expertise_rating: 22.8685
+      hit: 91.4738 
+      expertise: 22.8685
     85:
-      hit_rating: 120.109
-      expertise_rating: 30.0272
+      hit: 120.109
+      expertise: 30.0272
     86:
-      hit_rating: 120.109
-      expertise_rating: 30.0272
+      hit: 120.109
+      expertise: 30.0272
     87:
-      hit_rating: 120.109
-      expertise_rating: 30.0272
+      hit: 120.109
+      expertise: 30.0272
     88:
-      hit_rating: 120.109
-      expertise_rating: 30.0272
+      hit: 120.109
+      expertise: 30.0272
     89:
-      hit_rating: 120.109
-      expertise_rating: 30.0272
+      hit: 120.109
+      expertise: 30.0272
     90:
-      hit_rating: 340
-      expertise_rating: 340
+      hit: 340
+      expertise: 340
   }
 
   reload: ->
@@ -94,8 +94,10 @@ class ShadowcraftApp
         if patch
           data.options = Object.deepExtend(@Data.options, data.options)
           @Data = _.extend(@Data, data)
-
-          #@Data.activeTalents = null
+          
+          @Data.active = data.active
+          @Data.activeSpec = data.activeSpec
+          @Data.activeTalents = data.activeTalents
       catch TypeError
         @Data = data
     @Data ||= data

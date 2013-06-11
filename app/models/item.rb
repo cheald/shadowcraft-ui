@@ -5,7 +5,6 @@ class Item
   field :remote_id, :type => Integer, :index => true
   field :random_suffix, :type => Integer
   field :upgrade_level, :type => Integer
-  field :upgradeable, :type => Boolean, :index => true
   field :equip_location, :type => Integer, :index => true
   field :item_level, :type => Integer
   field :properties, :type => Hash
@@ -25,7 +24,7 @@ class Item
 
   before_validation :update_from_armory_if_necessary
   before_save :write_stats
-  EXCLUDE_KEYS = [:stamina, :resilience_rating, :strength, :spirit, :intellect, :dodge_rating, :parry_rating, :health_regen]
+  EXCLUDE_KEYS = [:stamina, :resilience, :strength, :spirit, :intellect, :dodge, :parry, :health_regen]
 
   def update_from_armory_if_necessary
     return if remote_id == 0
@@ -104,7 +103,6 @@ class Item
       json[:sl] = properties["gem_slot"]
     end
 
-    json[:heroic] = "Heroic" if properties["is_heroic"]
     json[:tag] = properties["tag"] if properties["tag"]
 
     if !properties["speed"].blank?
@@ -118,8 +116,8 @@ class Item
     if properties["upgrade_level"]
       json[:upgrade_level] = properties["upgrade_level"]
     end
-    if properties["upgradeable"]
-      json[:upgradeable] = properties["upgradeable"]
+    if properties["upgradable"]
+      json[:upgradable] = properties["upgradable"]
     end
 
     json
@@ -145,7 +143,6 @@ class Item
     
     random_item_ids += (93049..93056).to_a
     puts "importing now #{random_item_ids.length} random items"
-
     random_item_ids.each do |id|
       suffixes.each do |suffix|
         single_import id,{:random_suffix => suffix}

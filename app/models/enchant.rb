@@ -100,13 +100,13 @@ class Enchant
   JSON_TO_INTERNAL = {
     "agi" => "agility",
     "atkpwr" => "attack_power",
-    "critstrkrtng" => "crit_rating",
-    "exprtng" => "expertise_rating",
-    "hastertng" => "haste_rating",
-    "hitrtng" => "hit_rating",
+    "critstrkrtng" => "crit",
+    "exprtng" => "expertise",
+    "hastertng" => "haste",
+    "hitrtng" => "hit",
     "str" => "strength",
     "sta" => "stamina",
-    "mastrtng" => "mastery_rating"
+    "mastrtng" => "mastery"
   }
   SLOT_MAP = [
     0x1, 0x2, 0x4, 0x8,
@@ -189,28 +189,28 @@ class Enchant
 	})
     Enchant.create({
          :spell_id => 4918,
-         :stats => {"expertise_rating" => 200 },
+         :stats => {"expertise" => 200 },
          :icon => "inv_enchant_formulasuperior_01",
          :item_name => "Living Steel Weapon Chain",
          :equip_location => 13
 	})
     Enchant.create({
          :spell_id => 4433,
-         :stats => {"mastery_rating" => 170 },
+         :stats => {"mastery" => 170 },
          :icon => "inv_enchant_formulasuperior_01",
          :item_name => "Enchant Gloves - Superior Mastery",
          :equip_location => 10
 	})
     Enchant.create({
          :spell_id => 4430,
-         :stats => {"haste_rating" => 170 },
+         :stats => {"haste" => 170 },
          :icon => "inv_enchant_formulasuperior_01",
          :item_name => "Enchant Gloves - Greater Haste",
          :equip_location => 10
 	})
     Enchant.create({
          :spell_id => 4431,
-         :stats => {"expertise_rating" => 170 },
+         :stats => {"expertise" => 170 },
          :icon => "inv_enchant_formulasuperior_01",
          :item_name => "Enchant Gloves - Superior Expertise",
          :equip_location => 10
@@ -224,21 +224,21 @@ class Enchant
 	})
      Enchant.create({
          :spell_id => 4908,
-         :stats => {"agility" => 120, "crit_rating" => 80 },
+         :stats => {"agility" => 120, "crit" => 80 },
          :icon => "inv_inscription_runescrolloffortitude_blue",
          :item_name => "Tiger Claw Inscription",
          :equip_location => 3
 	})
      Enchant.create({
          :spell_id => 4804,
-         :stats => {"agility" => 200, "crit_rating" => 100 },
+         :stats => {"agility" => 200, "crit" => 100 },
          :icon => "inv_inscription_runescrolloffortitude_yellow",
          :item_name => "Greater Tiger Claw Inscription",
          :equip_location => 3
 	})
      Enchant.create({
          :spell_id => 4914,
-         :stats => {"agility" => 520, "crit_rating" => 100 },
+         :stats => {"agility" => 520, "crit" => 100 },
          :icon => "inv_misc_mastersinscription",
          :item_name => "Secret Tiger Claw Inscription",
          :equip_location => 3
@@ -252,28 +252,28 @@ class Enchant
 	})
      Enchant.create({
          :spell_id => 4880,
-         :stats => {"agility" => 285, "crit_rating" => 165 },
+         :stats => {"agility" => 285, "crit" => 165 },
          :icon => "inv_misc_cataclysmarmorkit_12",
          :item_name => "Primal Leg Reinforcements",
          :equip_location => 7
 	})
      Enchant.create({
          :spell_id => 4822,
-         :stats => {"agility" => 285, "crit_rating" => 165 },
+         :stats => {"agility" => 285, "crit" => 165 },
          :icon => "inv_misc_cataclysmarmorkit_02",
          :item_name => "Shadowleather Leg Armor",
          :equip_location => 7
 	})
      Enchant.create({
          :spell_id => 4871,
-         :stats => {"agility" => 170, "crit_rating" => 100 },
+         :stats => {"agility" => 170, "crit" => 100 },
          :icon => "inv_misc_cataclysmarmorkit_01",
          :item_name => "Sha-Touched Leg Armor",
          :equip_location => 7
 	})
      Enchant.create({
          :spell_id => 4429,
-         :stats => {"mastery_rating" => 140 },
+         :stats => {"mastery" => 140 },
          :icon => "inv_misc_enchantedscroll",
          :item_name => "Enchant Boots - Pandaren's Step",
          :equip_location => 8
@@ -287,14 +287,14 @@ class Enchant
 	})
      Enchant.create({
          :spell_id => 4426,
-         :stats => {"haste_rating" => 175 },
+         :stats => {"haste" => 175 },
          :icon => "inv_misc_enchantedscroll",
          :item_name => "Enchant Boots - Greater Haste",
          :equip_location => 8
 	})
      Enchant.create({
          :spell_id => 4427,
-         :stats => {"hit_rating" => 175 },
+         :stats => {"hit" => 175 },
          :icon => "inv_misc_enchantedscroll",
          :item_name => "Enchant Boots - Greater Precision",
          :equip_location => 8
@@ -308,7 +308,7 @@ class Enchant
 	})
      Enchant.create({
          :spell_id => 4411,
-         :stats => {"mastery_rating" => 170 },
+         :stats => {"mastery" => 170 },
          :icon => "inv_misc_enchantedscroll",
          :item_name => "Enchant Bracers - Mastery",
          :equip_location => 9
@@ -329,14 +329,14 @@ class Enchant
 	})
      Enchant.create({
          :spell_id => 4421,
-         :stats => {"hit_rating" => 180 },
+         :stats => {"hit" => 180 },
          :icon => "inv_misc_enchantedscroll",
          :item_name => "Enchant Cloak - Accuracy",
          :equip_location => 16
 	})
      Enchant.create({
          :spell_id => 4424,
-         :stats => {"crit_rating" => 180 },
+         :stats => {"crit" => 180 },
          :icon => "inv_misc_enchantedscroll",
          :item_name => "Enchant Cloak - Superior Critical Strike",
          :equip_location => 16

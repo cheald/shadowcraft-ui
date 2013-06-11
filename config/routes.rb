@@ -55,7 +55,7 @@ Roguesim::Application.routes.draw do
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id(.:format)))'
-
+  
   match "/:region/:realm/:name", :to => "characters#show", :as => :character, :region => /us|eu|kr|tw|cn/i
   match "/:region/:realm/:name/refresh", :to => "characters#refresh", :as => :refresh_character, :region => /us|eu|kr|tw|cn/i
   match "/error", :to => "application#error"

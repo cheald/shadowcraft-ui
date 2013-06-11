@@ -2,16 +2,18 @@ class ShadowcraftBackend
   # WS_ENGINE   = "ws://#{window.location.hostname}:#{port}/engine"
 
   get_engine = ->
-    switch Shadowcraft.Data.options.general.patch
-      when 52
-        port = 8880
-        endpoint = "engine-5.2"
-      when 50
-        port = 8881
-        endpoint = "engine-5.0"
-      else
-        port = 8881
-        endpoint = "engine-4.1"
+    #switch Shadowcraft.Data.options.general.patch
+    #  when 52
+    #    port = 8880
+    #    endpoint = "engine-5.2"
+    #  when 50
+    #    port = 8881
+    #    endpoint = "engine-5.0"
+    #  else
+    #    port = 8881
+    #    endpoint = "engine-4.1"
+    port = 8880
+    endpoint = "engine-5.2"
 
     if window.location.host.match(/:/)
         "http://#{window.location.hostname}:#{port}/#{endpoint}"
@@ -87,13 +89,13 @@ class ShadowcraftBackend
         statSummary.strength || 0,
         statSummary.agility || 0,
         statSummary.attack_power || 0,
-        statSummary.crit_rating || 0,
-        statSummary.hit_rating || 0,
-        statSummary.expertise_rating || 0,
-        statSummary.haste_rating || 0,
-        statSummary.mastery_rating || 0,
-        statSummary.resilience_rating || 0,
-        statSummary.pvp_power_rating || 0
+        statSummary.crit || 0,
+        statSummary.hit || 0,
+        statSummary.expertise || 0,
+        statSummary.haste || 0,
+        statSummary.mastery || 0,
+        statSummary.resilience || 0,
+        statSummary.pvp_power || 0
       ],
       gly: glyph_list,
       pro: professions

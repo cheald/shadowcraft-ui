@@ -67,13 +67,13 @@ class Character
       properties["gear"].each do |slot, item|
         # if its a random item first import the blank item if not yet in db
         # because sometimes its not working correctly if the blank item is not in the db
-        unless item["suffix"].blank?
-          i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i)
-          if i.new_record?
-            i.save
-          end
-        end
-        upgrade_levels = [nil, 1, 2]
+        #unless item["suffix"].blank?
+        #  i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i)
+        #  if i.new_record?
+        #    i.save
+        # end
+        #end
+        upgrade_levels = [nil, 1, 2, 3, 4]
         upgrade_levels.each do |level|
           i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i, :random_suffix => item["suffix"], :upgrade_level => level)
           if i.new_record?
@@ -100,7 +100,7 @@ class Character
     {
       :gear   => Character.encode_items(properties["gear"]),
       :talents => properties["talents"],
-      :active => properties["active_talents"],
+      :active => properties["active"],
       :options => {
         :general => {
           :level => properties["level"],
@@ -170,8 +170,8 @@ class Character
   end
 
   def is_supported_level?
-    unless properties["level"] >= 85
-      errors.add :base, "Rogues under level 85 are not currently supported by Shadowcraft."
+    unless properties["level"] >= 90
+      errors.add :base, "Rogues under level 90 are not currently supported by Shadowcraft."
       return false
     end
     return true

@@ -137,9 +137,9 @@
       .panel-content
         %section.cluster
           .option-list
-            %h3 Custom Expertise Rating Stat Weights
+            %h3 Custom Stat Weights Reforge
             #advancedReforge
-            %button#reforgeAllExp Auto-Reforge All Exp
+            %button#reforgeAllExp Custom Auto-Reforge All
 
     #console-footer
       %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :class => @character.properties['race'].downcase.gsub(/ /, "_")}

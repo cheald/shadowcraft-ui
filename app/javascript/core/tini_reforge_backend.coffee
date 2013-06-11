@@ -8,7 +8,18 @@ class ShadowcraftTiniReforgeBackend
   #  ENGINE = "http://#{window.location.hostname}/calc"
   ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"]
   ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)]
-  REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"]
+  REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"]
+  REFORGER_MAP =
+    "spirit": "spirit"
+    "dodge": "dodge_rating"
+    "parry": "parry_rating"
+    "hit": "hit_rating"
+    "crit": "crit_rating"
+    "haste": "haste_rating"
+    "expertise": "expertise_rating"
+    "mastery": "mastery_rating"
+    "mh_expertise": "mh_expertise_rating"
+    "oh_expertise": "oh_expertise_rating"
 
   deferred = null
   constructor: (@gear) ->
@@ -59,20 +70,26 @@ class ShadowcraftTiniReforgeBackend
   buildRequest: (override = false) ->
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     f = ShadowcraftGear.FACETS
-    stats = @gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT)
+    _stats = @gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT)
+    stats = {}
+    for k, v of _stats
+       continue unless k in REFORGABLE
+       stats[REFORGER_MAP[k]] = v
 
     items = _.map(Shadowcraft.Data.gear, (e, k) ->
       r = { id: e.item_id+"-"+k }
       if ItemLookup[e.item_id]
         for key, val of ItemLookup[e.item_id].stats
           if REFORGABLE.indexOf(key) != -1
-            r[key] = val
+            r[REFORGER_MAP[key]] = val
       r
     )
-
+    revert = {}
+    for k,v of REFORGER_MAP
+      revert[v] = k
     items = _.select items, (i) ->
       for k, v of i
-        if REFORGABLE.indexOf(k) != -1
+        if REFORGABLE.indexOf(revert[k]) != -1
           return true
       return false
 
@@ -80,11 +97,20 @@ class ShadowcraftTiniReforgeBackend
     for k, v of caps
       caps[k] = Math.ceil(v)
     
-    ep = @gear.getWeights()
+    _ep = @gear.getWeights()
+    ep = {}
+    for k, v of _ep
+      if k in _.keys(REFORGER_MAP)
+        ep[REFORGER_MAP[k]] = v
+      else
+        ep[k] = v
     if override
       ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override
       ep.oh_expertise_rating = Shadowcraft.Data.options.advanced.oh_expertise_rating_override
       ep.expertise_rating = ep.mh_expertise_rating + ep.oh_expertise_rating
+      if Shadowcraft.Data.options.advanced.force_mastery_over_haste
+        if ep.haste_rating > ep.mastery_rating
+          ep.mastery_rating = ep.haste_rating + 0.05
     req =
       items: items
       ep: ep

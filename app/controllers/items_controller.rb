@@ -44,21 +44,21 @@ class ItemsController < ApplicationController
   def index_rogue
     @alt_items = []
     VALID_SLOTS.each do |i|
-      @alt_items += Item.where(:equip_location => i, :item_level.gte => 265).desc(:item_level).all
+      @alt_items += Item.where(:equip_location => i, :item_level.gte => 430).desc(:item_level).all
     end
 
     # This is really haxy, but it's flexible.
-    bad_keys = %w"intellect spell_power spirit parry_rating dodge_rating"
+    bad_keys = %w"intellect spell_power spirit parry dodge"
     bad_classes = %w"Plate Mail"
     @alt_items.reject! {|item| !(item.stats.keys & bad_keys).empty? }
     @alt_items.reject! {|item| item.stats.empty? and item.equip_location != 12 } # Don't reject trinkets with empty stats
     @alt_items.reject! {|item| bad_classes.include? item.properties['armor_class'] }
     @alt_items.reject! {|item| item.properties['armor_class'] == "Cloth" && item.equip_location != 16 }
     @alt_items.reject! {|item| item.properties['name'].match(/DONTUSE/) }
-    @alt_items.reject! {|item| !item.properties['upgradeable'] and [1,2,3,4].include? item.properties['upgrade_level'] } # reject items which are upgrades but are not allowed
+    @alt_items.reject! {|item| !item.properties['upgradable'] and [1,2,3,4].include? item.properties['upgrade_level'] } # reject items which are upgrades but are not allowed
     @alt_items.reject! {|item| item.properties['quality'] == 3 and [2,3,4].include? item.properties['upgrade_level'] } # reject blue items with upgrade_level >= 2
 
-    gems = Item.where(:has_stats => true, :is_gem => true, :item_level.gt => 70).all
+    gems = Item.where(:has_stats => true, :is_gem => true, :item_level.gt => 87).all
     @gems = gems.select {|g| !g.properties["name"].match(/Stormjewel/) }
     @enchants = Enchant.all
     h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_mop.xml")).read

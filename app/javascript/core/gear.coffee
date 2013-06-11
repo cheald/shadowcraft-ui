@@ -23,13 +23,13 @@ class ShadowcraftGear
 
   REFORGE_STATS = [
     # {key: "spirit", val: "Spirit"}
-    {key: "expertise_rating", val: "Expertise"}
-    {key: "hit_rating", val: "Hit"}
-    {key: "haste_rating", val: "Haste"}
-    {key: "crit_rating", val: "Crit"}
-    {key: "mastery_rating", val: "Mastery"}
+    {key: "expertise", val: "Expertise"}
+    {key: "hit", val: "Hit"}
+    {key: "haste", val: "Haste"}
+    {key: "crit", val: "Crit"}
+    {key: "mastery", val: "Mastery"}
   ]
-  REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"]
+  REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"]
   @REFORGABLE = REFORGABLE
   REFORGE_CONST = 112
   SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"]
@@ -58,17 +58,17 @@ class ShadowcraftGear
   Weights =
     attack_power: 1
     agility: 2.66
-    crit_rating: 0.87
+    crit: 0.87
     spell_hit: 1.3
-    hit_rating: 1.02
-    expertise_rating: 1.51
-    mh_expertise_rating: 1.0
-    oh_expertise_rating: 0.51
-    haste_rating: 1.44
-    mastery_rating: 1.15
+    hit: 1.02
+    expertise: 1.51
+    mh_expertise: 1.0
+    oh_expertise: 0.51
+    haste: 1.44
+    mastery: 1.15
     yellow_hit: 1.79
     strength: 1.05
-    pvp_power_rating: 0
+    pvp_power: 0
 
   getWeights: ->
     Weights
@@ -153,8 +153,8 @@ class ShadowcraftGear
   # console.log getReforgeFrom(161), getReforgeTo(161), "should be expertise to mastery"
   # console.log getReforgeFrom(113), getReforgeTo(113), "should be spirit to dodge"
   # console.log getReforgeFrom(134), getReforgeTo(134), "should be hit to spirit"
-  # console.log compactReforge("spirit", "dodge_rating"), "should be 113"
-  # console.log compactReforge("hit_rating", "spirit"), "should be 134"
+  # console.log compactReforge("spirit", "dodge"), "should be 113"
+  # console.log compactReforge("hit", "spirit"), "should be 134"
 
   sumItem = (s, i, key) ->
     key ||= "stats"
@@ -181,7 +181,7 @@ class ShadowcraftGear
       if item.dps
         if slot == 15
           total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed]
-          total += racialExpertiseBonus(item) * Weights.mh_expertise_rating
+          total += racialExpertiseBonus(item) * Weights.mh_expertise
         else if slot == 16
           #if Shadowcraft.Data.activeSpec == "Z"
           #  mod = 1
@@ -196,7 +196,7 @@ class ShadowcraftGear
           #else
           total += (item.dps * c.oh_ep.oh_dps)
           total += c.oh_speed_ep["oh_" + item.speed]
-          total += racialExpertiseBonus(item) * Weights.oh_expertise_rating
+          total += racialExpertiseBonus(item) * Weights.oh_expertise
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem
       else if ShadowcraftGear.LEGENDARY_META_GEM == item.id
@@ -290,13 +290,13 @@ class ShadowcraftGear
     race = Shadowcraft.Data.options.general.race
 
     if(race == "Human" && (mh_type == 7 || mh_type == 4))
-      Shadowcraft._R("expertise_rating")
+      Shadowcraft._R("expertise")
     else if(race == "Gnome" && (mh_type == 7 || mh_type == 15))
-      Shadowcraft._R("expertise_rating")
+      Shadowcraft._R("expertise")
     else if(race == "Dwarf" && (mh_type == 4))
-      Shadowcraft._R("expertise_rating")
+      Shadowcraft._R("expertise")
     else if(race == "Orc" && (mh_type == 0 || mh_type == 13))
-      Shadowcraft._R("expertise_rating")
+      Shadowcraft._R("expertise")
     else
       0
 
@@ -310,27 +310,27 @@ class ShadowcraftGear
   getDodge: (hand) ->
     data = Shadowcraft.Data
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-    expertise = @statSum.expertise_rating
+    expertise = @statSum.expertise
     dodge_chance = if data.options.general.pvp then DEFAULT_PVP_DODGE else DEFAULT_BOSS_DODGE
     if (!hand? or hand == "main") and data.gear[15] and data.gear[15].item_id
       expertise += racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
     else if (hand == "off") and data.gear[16] and data.gear[16].item_id
       expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id])
-    return dodge_chance - expertise / Shadowcraft._R("expertise_rating")
+    return dodge_chance - expertise / Shadowcraft._R("expertise")
 
   getHitEP = ->
     data = Shadowcraft.Data
     miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
-    yellowHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating")
+    yellowHitCap = Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit")
     spellHitCap = Shadowcraft._R("spell_hit")  * miss_chance - racialHitBonus("spell_hit")
-    whiteHitCap = Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating")
-    exist = Shadowcraft.Gear.getStat("hit_rating")
+    whiteHitCap = Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit")
+    exist = Shadowcraft.Gear.getStat("hit")
     if exist < yellowHitCap
       Weights.yellow_hit
     else if exist < spellHitCap
       Weights.spell_hit
     else if exist < whiteHitCap
-      Weights.hit_rating
+      Weights.hit
     else
       0
 
@@ -341,11 +341,11 @@ class ShadowcraftGear
     dodge_chance = if data.options.general.pvp then DEFAULT_PVP_DODGE else DEFAULT_BOSS_DODGE
     miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
 
-    exp_base = Shadowcraft._R("expertise_rating") * dodge_chance
+    exp_base = Shadowcraft._R("expertise") * dodge_chance
     caps =
-      yellowHitCap: Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating")
-      spellHitCap: Shadowcraft._R("hit_rating")  * miss_chance - racialHitBonus("hit_rating")
-      whiteHitCap: Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating")
+      yellowHitCap: Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit")
+      spellHitCap: Shadowcraft._R("hit")  * miss_chance - racialHitBonus("hit")
+      whiteHitCap: Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit")
       mh_exp: exp_base
       oh_exp: exp_base
     if data.gear[15]
@@ -359,16 +359,16 @@ class ShadowcraftGear
     miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
     switch cap
       when "yellow"
-        r = Shadowcraft._R("hit_rating")
-        hitCap = r * miss_chance - racialHitBonus("hit_rating")
+        r = Shadowcraft._R("hit")
+        hitCap = r * miss_chance - racialHitBonus("hit")
       when "spell"
-        r = Shadowcraft._R("hit_rating")
-        hitCap = r * miss_chance - racialHitBonus("hit_rating")
+        r = Shadowcraft._R("hit")
+        hitCap = r * miss_chance - racialHitBonus("hit")
       when "white"
-        r = Shadowcraft._R("hit_rating")
-        hitCap = r * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating")
+        r = Shadowcraft._R("hit")
+        hitCap = r * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit")
     if r? and hitCap?
-      hasHit = @statSum.hit_rating || 0
+      hasHit = @statSum.hit || 0
       if hasHit < hitCap or cap == "white"
         return (hitCap - hasHit) / r
       else
@@ -392,9 +392,9 @@ class ShadowcraftGear
     num = Math.abs(num)
 
     switch(stat)
-      when "expertise_rating"
+      when "expertise"
         dodge_chance = if data.options.general.pvp then DEFAULT_PVP_DODGE else DEFAULT_BOSS_DODGE
-        mhCap = Shadowcraft._R("expertise_rating") * dodge_chance
+        mhCap = Shadowcraft._R("expertise") * dodge_chance
         ohCap = mhCap
         if data.gear[15] and data.gear[15].item_id
           mhCap -= racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
@@ -405,18 +405,18 @@ class ShadowcraftGear
         if mhCap > exist
           usable = mhCap - exist
           usable = num if usable > num
-          total += usable * Weights.mh_expertise_rating
+          total += usable * Weights.mh_expertise
         if ohCap > exist
           usable = ohCap - exist
           usable = num if usable > num
-          total += usable * Weights.oh_expertise_rating
+          total += usable * Weights.oh_expertise
 
         return total * neg
-      when "hit_rating"
+      when "hit"
         miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
-        yellowHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating")
-        spellHitCap = Shadowcraft._R("hit_rating")  * miss_chance - racialHitBonus("hit_rating")
-        whiteHitCap = Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating")
+        yellowHitCap = Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit")
+        spellHitCap = Shadowcraft._R("hit")  * miss_chance - racialHitBonus("hit")
+        whiteHitCap = Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit")
 
         total = 0
         remaining = num
@@ -434,7 +434,7 @@ class ShadowcraftGear
 
         if remaining > 0 && exist < whiteHitCap
           delta = if (whiteHitCap - exist) > remaining then remaining else (whiteHitCap - exist)
-          total += delta * Weights.hit_rating
+          total += delta * Weights.hit
           remaining -= delta
           exist += delta
 
@@ -676,6 +676,7 @@ class ShadowcraftGear
 
     depth ||= 0
     if depth == 0
+      Shadowcraft.Console.purgeOld()
       EP_PRE_REGEM = @getEPTotal()
       Shadowcraft.Console.log "Beginning auto-regem...", "gold underline"
     madeChanges = false
@@ -754,7 +755,7 @@ class ShadowcraftGear
     bestJewelcrafterGem = getBestJewelcrafterGem()
     for gem in copy
       continue if gem.quality == 4 and gem.requires == undefined and not use_epic_gems
-      continue if gem.stats["expertise_rating"] > 0
+      continue if gem.stats["expertise"] > 0
       continue if gem.requires?.profession == "jewelcrafting" and gem.id != bestJewelcrafterGem.id
       gem.normal_ep = getRegularGemEpValue(gem)
       if gem.normal_ep and gem.normal_ep > 1
@@ -779,15 +780,15 @@ class ShadowcraftGear
       item = ItemLookup[gear.item_id]
       continue unless item
       ret
-      if item.upgradeable
+      if item.upgradable
         curr_level = 0
         curr_level = gear.upgrade_level if gear.upgrade_level?
-        max_level = if item.quality == 3 then 1 else 2
+        max_level = getMaxUpgradeLevel(item)
         continue if curr_level >= max_level
         new_item_id = gear.item_id
         if gear.upgrade_level
           new_item_id = Math.floor(new_item_id / 1000000)
-          next = 2
+          next = gear.upgrade_level + 1
         else
           if item.suffix
             new_item_id = Math.floor(new_item_id / 1000)
@@ -820,15 +821,15 @@ class ShadowcraftGear
       item = ItemLookup[gear.item_id]
       continue unless item
       ret
-      if item.upgradeable
+      if item.upgradable
         curr_level = 0
         curr_level = gear.upgrade_level if gear.upgrade_level?
-        max_level = if item.quality == 3 then 1 else 2
+        max_level = getMaxUpgradeLevel(item)
         continue if curr_level >= max_level
         new_item_id = gear.item_id
         if gear.upgrade_level
           new_item_id = Math.floor(new_item_id / 1000000)
-          next = 2
+          next = gear.upgrade_level + 1
         else
           if item.suffix
             new_item_id = Math.floor(new_item_id / 1000)
@@ -924,6 +925,7 @@ class ShadowcraftGear
     return gain + loss
 
   setReforges: (reforges) ->
+    Shadowcraft.Console.purgeOld()
     model = Shadowcraft.Data
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     for id, reforge of reforges
@@ -953,6 +955,7 @@ class ShadowcraftGear
     Shadowcraft.Gear.updateDisplay()
 
   clearReforge = ->
+    Shadowcraft.Console.purgeOld()
     data = Shadowcraft.Data
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
 
@@ -966,6 +969,7 @@ class ShadowcraftGear
     $("#reforge").removeClass("visible")
 
   doReforge: ->
+    Shadowcraft.Console.purgeOld()
     data = Shadowcraft.Data
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
 
@@ -1009,7 +1013,7 @@ class ShadowcraftGear
         enchantable = null
         reforge = null
         reforgable = null
-        upgradeable = null
+        upgradable = null
         if item
           addTradeskillBonuses(item)
           addAchievementBonuses(item)
@@ -1043,7 +1047,7 @@ class ShadowcraftGear
               from: titleize(from)
               to: titleize(to)
             }
-          if item.upgradeable
+          if item.upgradable
             curr_level = "0"
             curr_level = gear.upgrade_level if gear.upgrade_level?
             max_level = getMaxUpgradeLevel(item)
@@ -1075,7 +1079,7 @@ class ShadowcraftGear
         opt.sockets = if item then item.sockets else null
         opt.enchantable = enchantable
         opt.enchant = enchant
-        opt.upgradeable = if item then item.upgradeable else false
+        opt.upgradable = if item then item.upgradable else false
         opt.upgrade = upgrade
 
         buffer += Templates.itemSlot(opt)
@@ -1189,17 +1193,17 @@ class ShadowcraftGear
   updateStatWeights = (source) ->
     data = Shadowcraft.Data
     Weights.agility = source.ep.agi
-    Weights.crit_rating = source.ep.crit
-    Weights.hit_rating = source.ep.white_hit
+    Weights.crit = source.ep.crit
+    Weights.hit = source.ep.white_hit
     Weights.spell_hit = source.ep.spell_hit || source.ep.white_hit
     Weights.strength = source.ep.str
-    Weights.mastery_rating = source.ep.mastery
-    Weights.haste_rating = source.ep.haste
-    Weights.expertise_rating = source.ep.dodge_exp || source.ep.mh_dodge_exp + source.ep.oh_dodge_exp
-    Weights.mh_expertise_rating = source.ep.mh_dodge_exp
-    Weights.oh_expertise_rating = source.ep.oh_dodge_exp
+    Weights.mastery = source.ep.mastery
+    Weights.haste= source.ep.haste
+    Weights.expertise = source.ep.dodge_exp || source.ep.mh_dodge_exp + source.ep.oh_dodge_exp
+    Weights.mh_expertise = source.ep.mh_dodge_exp
+    Weights.oh_expertise = source.ep.oh_dodge_exp
     Weights.yellow_hit = source.ep.yellow_hit
-    Weights.pvp_power_rating = source.ep.pvp_power || 0
+    Weights.pvp_power = source.ep.pvp_power || 0
 
     other =
       mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps
@@ -1225,7 +1229,7 @@ class ShadowcraftGear
         $.data(exist.get(0), "sortkey", 0)
         if key in ["mainhand_dps","offhand_dps"]
           $.data(exist.get(0), "sortkey", 1)
-        else if key in ["mh_expertise_rating","oh_expertise_rating"]
+        else if key in ["mh_expertise","oh_expertise"]
           $.data(exist.get(0), "sortkey", 2)
         else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc"]
           $.data(exist.get(0), "sortkey", 3)
@@ -1334,16 +1338,16 @@ class ShadowcraftGear
   fudgeOffsets = (offsets) ->
     caps = Shadowcraft.Gear.getCaps()
     stats = Shadowcraft.Gear.sumStats()
-    offsets.hit_rating ||= 0
-    offsets.expertise_rating ||= 0
-    if stats.hit_rating > (caps.whiteHitCap * 0.9) and stats.hit_rating < (caps.whiteHitCap * 1.1)
-      offsets.hit_rating += stats.hit_rating - caps.yellowHitCap - 1
-    else if stats.hit_rating > (caps.yellowHitCap * 0.9) and stats.hit_rating < (caps.yellowHitCap * 1.1)
-      offsets.hit_rating += stats.hit_rating - caps.yellowHitCap - 1
+    offsets.hit ||= 0
+    offsets.expertise ||= 0
+    if stats.hit > (caps.whiteHitCap * 0.9) and stats.hit < (caps.whiteHitCap * 1.1)
+      offsets.hit += stats.hit - caps.yellowHitCap - 1
+    else if stats.hit > (caps.yellowHitCap * 0.9) and stats.hit < (caps.yellowHitCap * 1.1)
+      offsets.hit += stats.hit - caps.yellowHitCap - 1
 
     lowest_exp = if caps.mh_exp < caps.oh_exp then caps.mh_exp else caps.oh_exp
-    if stats.expertise_rating > (lowest_exp * 0.8)
-      offsets.expertise_rating += stats.expertise_rating - lowest_exp
+    if stats.expertise > (lowest_exp * 0.8)
+      offsets.expertise += stats.expertise - lowest_exp
     offsets
 
   patch_max_ilevel = (patch) ->
@@ -1379,9 +1383,16 @@ class ShadowcraftGear
     GemList = Shadowcraft.ServerData.GEMS
 
     gear = Shadowcraft.Data.gear
+
+    requireDagger = needsDagger()
+    combatSpec = Shadowcraft.Data.activeSpec == "Z"
+
     loc_all = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
     loc = []
     for l in loc_all
+      if l.id == selected_id # always show equiped item
+        loc.push l
+        continue
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
@@ -1428,8 +1439,6 @@ class ShadowcraftGear
     maxIEP = 1
     minIEP = 0
     buffer = ""
-    requireDagger = needsDagger()
-    combatSpec = Shadowcraft.Data.activeSpec == "Z"
 
     for l in loc
       continue if l.__ep < 1
@@ -1444,16 +1453,10 @@ class ShadowcraftGear
       iEP = l.__ep
 
       ttid = get_item_id(l)
-      if l.suffix != undefined 
-        ttrand = l.suffix
-      else
-        ttrand = ""
-      if l.upgrade_level != undefined
-        ttupgd = l.upgrade_level
-      else
-        ttupgd = ""
+      ttrand = if l.suffix? then l.suffix else ""
+      ttupgd = if l.upgrade_level? then l.upgrade_level else ""
       upgrade = []
-      if l.upgradeable
+      if l.upgradable
         curr_level = "0"
         curr_level = l.upgrade_level if l.upgrade_level?
         max_level = getMaxUpgradeLevel(l)
@@ -1464,7 +1467,7 @@ class ShadowcraftGear
         item: l
         gear: {}
         gems: []
-        upgradeable: l.upgradeable
+        upgradable: l.upgradable
         upgrade: upgrade
         ttid: ttid
         ttrand: ttrand
@@ -1545,7 +1548,7 @@ class ShadowcraftGear
 
     item = ItemLookup[parseInt($slot.attr("id"), 10)]
     # prismatic sockets should not devalue gems who contribute to the socketbonus
-    socketlength = item.sockets.length;
+    socketlength = item.sockets.length
     if item.socketbonus and item.sockets[item.sockets.length-1] == "Prismatic"
       socketlength--
     socketEPBonus = (if item.socketbonus then get_ep(item, "socketbonus") else 0) / socketlength
@@ -1563,17 +1566,18 @@ class ShadowcraftGear
     usedNames = {}
     max = null
     for gem in GemList
-      continue unless canUseGem gem, gemType
-      max ||= gem.__ep
+      gemCt += 1
+      break if gemCt > 50
 
       if usedNames[gem.name]
         if gem.id == selected_id
           selected_id = usedNames[gem.name]
         continue
 
-      gemCt += 1
-      break if gemCt > 50
       usedNames[gem.name] = gem.id
+      continue if gem.name.indexOf("Perfect") == 0 and selected_id != gem.id
+      continue unless canUseGem gem, gemType
+      max ||= gem.__ep
       gEP = gem.__ep
       desc = statsToDesc(gem)
 
@@ -1657,7 +1661,6 @@ class ShadowcraftGear
     equip_location = SLOT_INVTYPES[slot]
 
     data = Shadowcraft.Data
-    loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
 
     #slot = parseInt($(this).parent().data("slot"), 10)
 
@@ -1772,10 +1775,10 @@ class ShadowcraftGear
 
     $("#getPawnString").click ->
       scale = _.extend({}, defaultScale)
-      scale.ExpertiseRating = Weights.expertise_rating
-      scale.MasteryRating = Weights.mastery_rating
-      scale.CritRating = Weights.crit_rating
-      scale.HasteRating = Weights.haste_rating
+      scale.ExpertiseRating = Weights.expertise
+      scale.MasteryRating = Weights.mastery
+      scale.CritRating = Weights.crit
+      scale.HasteRating = Weights.haste
       scale.HitRating = getHitEP()
       scale.Agility = Weights.agility
       scale.Strength = Weights.strength
@@ -1803,6 +1806,7 @@ class ShadowcraftGear
     # Select an item from a popup
     $altslots.click $.delegate
       ".slot": (e) ->
+        Shadowcraft.Console.purgeOld()
         ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
         EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
         Gems = Shadowcraft.ServerData.GEM_LOOKUP
@@ -1858,7 +1862,7 @@ class ShadowcraftGear
         $("#reforge .pct").each(->
           $this = $(this)
           target = $this.closest(".stat").attr("data-stat")
-          c = compactReforge("expertise_rating", "hit_rating")
+          c = compactReforge("expertise", "hit")
 
           ep = Math.abs reforgeEp(compactReforge(src, target), item)
           max = ep if ep > max

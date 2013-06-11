@@ -63,7 +63,7 @@ module WowArmory
 
     include Document
 
-    attr_accessor :realm, :region, :name, :active_talents, :professions, :gear, :race, :level, :player_class, :talents, :portrait, :achievements, :quests
+    attr_accessor :realm, :region, :name, :active, :professions, :gear, :race, :level, :player_class, :talents, :portrait, :achievements, :quests
 
     def initialize(character, realm, region = 'US')
       @character = character
@@ -74,7 +74,7 @@ module WowArmory
       populate!
 
       @json["talents"].each_with_index do |tree, index|
-        self.active_talents = index if tree["selected"]
+        self.active = index if tree["selected"]
       end
 
       self.professions = @json["professions"]["primary"].map do |prof|
@@ -94,7 +94,7 @@ module WowArmory
         :gear => gear,
         :race => race,
         :level => level,
-        :active_talents => active_talents,
+        :active => active,
         :professions => professions,
         :player_class => player_class,
         :talents => self.talents.map do |tree|

@@ -90,12 +90,12 @@
     .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}", :"data-tooltip-rand" => "{{ttrand}}", :"data-tooltip-upgd" => "{{ttupgd}}"}
       {{item/name}}
       %em.heroic {{item/tag}}
-      {{#upgradeable}}
+      {{#upgradable}}
       {{#upgrade}}
       %em.upgrade {{curr_level}}/{{max_level}}
       %img.upgrade{:src => "/images/up_arrow.png"}
       {{/upgrade}}
-      {{/upgradeable}}
+      {{/upgradable}}
       -#{{#item/id}}
       %a.wowhead{:href => "http://www.wowhead.com/item={{ttid}}", :target => "_blank"} Wowhead
       -#{{/item/id}}

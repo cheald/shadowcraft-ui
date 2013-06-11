@@ -75,6 +75,7 @@ class ShadowcraftHistory
     key = @app.uuid + "snapshots"
     snapshots = $.jStorage.get(key, {})
     @loadSnapshot snapshots[name]
+    flash "#{name} has been loaded"
 
   deleteSnapshot: (name) ->
     if confirm "Delete this snapshot?"

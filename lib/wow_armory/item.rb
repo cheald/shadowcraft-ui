@@ -12,47 +12,47 @@ module WowArmory
     # STATS = Hash[*STAT_MAP.split(/\n/).map {|line| x = line.strip.split(" ", 2); [x.last.downcase.gsub(" ", "_").to_sym, x.first.to_i]}.flatten]
     STAT_INDEX = {
       :damage_done                      => 41,
-      :dodge_rating                     => 13,
+      :dodge                            => 13,
       :spirit                           => 6,
       :block_value                      => 48,
-      :critical_strike_avoidance_rating => 34,
+      :critical_strike_avoidance        => 34,
       :healing_done                     => 42,
-      :parry_rating                     => 14,
+      :parry                            => 14,
       :stamina                          => 7,
-      :mastery_rating                   => 49,
-      :haste_rating                     => 36,
+      :mastery                          => 49,
+      :haste                            => 36,
       :mana_every_5_seconds             => 43,
-      :shield_block_rating              => 15,
+      :shield_block                     => 15,
       :intellect                        => 5,
       :attack_power                     => 38,
-      :resilience_rating                => 35,
-      :pvp_power_rating                 => 57,
+      :pvp_resilience                   => 35,
+      :pvp_power                        => 57,
       :armor_penetration                => 44,
-      :hit_rating                       => 31,
-      :expertise_rating                 => 37,
+      :hit                              => 31,
+      :expertise                        => 37,
       :agility                          => 3,
       :mana                             => 2,
       :health                           => 1,
       :health_every_5_seconds           => 46,
-      :crit_rating                      => 32,
+      :crit                             => 32,
       :feral_attack_power               => 40,
       :power                            => 45,
-      :defense_rating                   => 12,
+      :defense                          => 12,
       :strength                         => 4,
       :penetration                      => 47,
-      :hit_avoidance_rating             => 33
+      :hit_avoidance                    => 33
     }
 
     WOWHEAD_MAP = {
-      "hitrtng" => "hit_rating",
-      "hastertng" => "haste_rating",
-      "critstrkrtng" => "crit_rating",
-      "mastrtng" => "mastery_rating",
-      "exprtng" => "expertise_rating",
+      "hitrtng" => "hit",
+      "hastertng" => "haste",
+      "critstrkrtng" => "crit",
+      "mastrtng" => "mastery",
+      "exprtng" => "expertise",
       "agi" => "agility",
       "sta" => "stamina",
-      "pvppower" => "pvp_power_rating",
-      "resirtng" => "resilience_rating"
+      "pvppower" => "pvp_power",
+      "resirtng" => "pvp_resilience"
     }
 
     # redundant to character.rb
@@ -141,7 +141,7 @@ module WowArmory
     STAT_LOOKUP = Hash[*STAT_INDEX.map {|k, v| [v, k]}.flatten]
 
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ori_ilevel, :ilevel, :quality, :requirement, :tag, :is_heroic, :socket_bonus, :sockets, :gem_slot, :speed, :subclass, :dps, :armor_class, :random_suffix, :upgradeable, :upgrade_level
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :subclass, :dps, :armor_class, :random_suffix, :upgradable, :upgrade_level
     attr_accessor *ACCESSORS
     def initialize(id, random_suffix = nil, upgrade_level = nil, name = nil)
       self.stats = {}
@@ -157,7 +157,6 @@ module WowArmory
       else
         @id = id.to_i
       end
-
       #fetch "us", "item/%d/tooltip" % id
       fetch "us", "api/wow/item/%d" % id, :json
       populate_stats
@@ -169,16 +168,14 @@ module WowArmory
       end
     end
     
-    def is_upgradeable
-      puts "upgradable"
-      puts @json["upgradable"]
+    def is_upgradable
       if @json["upgradable"].nil?
         return false
       end
       return @json["upgradable"]
       #row = ruleset_item_upgrade[self.id.to_s]
       #if row.nil?
-      #  puts "item not upgradeable #{self.id}"
+      #  puts "item not upgradable #{self.id}"
       #  return false
       #end
       #true
@@ -218,7 +215,7 @@ module WowArmory
         return
       end
       base = rand_prop_points[self.ilevel.to_s]
-      ori_base = rand_prop_points[self.ori_ilevel.to_s]
+      ori_base = rand_prop_points[@ori_ilevel.to_s]
 
       self.stats = {}
       10.times do |i|
@@ -230,12 +227,13 @@ module WowArmory
         if enchantid != "0"
           stat = enchantid.to_i
           value = (multiplier/10000.0) * basevalue.to_f - socket_mult * ITEM_SOCKET_COST
-          puts value
+          #puts value
           self.stats[STAT_LOOKUP[stat]] = value.round
-          puts STAT_LOOKUP[stat]
-          puts self.stats[STAT_LOOKUP[stat]]
+          #puts STAT_LOOKUP[stat]
+          #puts self.stats[STAT_LOOKUP[stat]]
         end
       end
+      puts self.stats.inspect
       # if weapon update dps
       row2 = item_damage_one_hand[self.ilevel.to_s]
       if not self.speed.nil? and not self.speed.blank?
@@ -244,7 +242,7 @@ module WowArmory
     end
 
     def populate_item_upgrade_level2      
-      ori_base = rand_prop_points[self.ori_ilevel.to_s]
+      ori_base = rand_prop_points[@ori_ilevel.to_s]
       base = rand_prop_points[self.ilevel.to_s]
       ori_basevalue = ori_base[1+quality_index(self.quality)*5+slot_index(equip_location)]
       basevalue = base[1+quality_index(self.quality)*5+slot_index(equip_location)]
@@ -336,7 +334,7 @@ module WowArmory
 
     def get_item_stats
       stats = {}
-      doc = Nokogiri::XML open("http://ptr.wowhead.com/item=%d&xml" % @id).read
+      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @id).read
       eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
       stats1 = JSON::load("{%s}" % doc.css("json").text)
       eqstats.each do |stat, val|
@@ -377,21 +375,12 @@ module WowArmory
     end
 
     def populate_stats
-      #self.name ||= value("h3")
       self.name ||= @json["name"]
-      #lis = @document.css(".item-specs li")
-      #self.quality = attr("h3", "class").match(/color-q(\d)/).try(:[], 1).try(:to_i)
       self.quality = @json["quality"]
-      #self.equip_location = lis.text.map {|e| EQUIP_LOCATIONS[e.strip.downcase] }.compact.first
       self.equip_location = @json["inventoryType"]
-      #self.ilevel = lis.text.map {|e| e.match(/Item Level (\d+)/).try(:[], 1) }.compact.first.try(:to_i)
       self.ilevel = @json["itemLevel"]
-      #self.icon = attr("span.icon-frame", "style").match(/(http.*)"/)[1]
       self.icon = @json["icon"]
-      #if bonus = @document.css("li.color-d4").text.detect {|li| li.match(/Socket Bonus:/) }.try(:strip)
-      #  self.socket_bonus = scan_str(bonus)
-      #end
-      #self.sockets = @document.css(".icon-socket").map {|span| span.attr("class").match(/socket-(\d+)/).try(:[], 1).try(:to_i) }.compact.map {|s| SOCKET_MAP[s] }
+
       if @json["hasSockets"]
         self.sockets = []
         sockets = @json["socketInfo"]["sockets"]
@@ -405,22 +394,19 @@ module WowArmory
       unless @json["requiredSkill"].nil?
         self.requirement = PROF_MAP[@json["requiredSkill"]]
       end
-      #self.requirement = lis.map {|li| li.text.match(/Requires ([a-z]+) \(/i) }.compact.first.try(:[], 1)
-      #self.is_heroic = value(".color-tooltip-green").try(:strip) == "Heroic"
-      self.is_heroic = @json["nameDescription"] == "Heroic"
       unless @json["nameDescription"].nil?
         self.tag = @json["nameDescription"]
       end
-      unless @json["gemInfo"].nil?
-        self.gem_slot = @json["gemInfo"]["type"]["type"].capitalize
-        puts gem_slot
-      end
-      #self.gem_slot = fix_gem_colors lis.map {|t| t.text.match(/Matches a ([a-z ]+) socket/i).try(:[], 1) }.compact.first
-      #self.gem_slot ||= lis.map {|t| t.text.match(/Only fits in a (Cogwheel|Meta) (socket|gem slot)/i).try(:[], 1) }.compact.first.try(:humanize)
-      #self.gem_slot = "Hydraulic" if is_hydraulic_gem
-  
-      #self.armor_class ||= lis.map {|t| t.text.strip.match(/(^|\s)(Plate|Mail|Leather|Cloth)($|\s)/).try(:[], 2) }.compact.first
-      if @json["itemClass"] == 4
+      if @json["itemClass"] == 3 # gem
+        its_a_gem = true
+        puts "its a gem"
+        unless @json["gemInfo"].nil?
+            self.gem_slot = @json["gemInfo"]["type"]["type"].capitalize
+            gem_empty = false
+        else
+            gem_empty = true
+        end
+      elsif @json["itemClass"] == 4 # armor
         self.armor_class ||= ARMOR_CLASS[@json["itemSubClass"]]
       end
 
@@ -429,9 +415,6 @@ module WowArmory
         self.dps = @json["weaponInfo"]["dps"].to_f
         self.subclass = @json["itemSubClass"]
       end
-      #if weapon_type = lis.text.map {|e| e.strip.match(/^(Dagger|Mace|Axe|Thrown|Wand|Bow|Gun|Crossbow|Fist Weapon|Sword)$/)}.compact.first
-      #  populate_weapon_stats!
-      #end
 
       # this is probably a bit overkill but working quite good
       # 1. if random_suffix found populate stats from random suffix db
@@ -439,11 +422,17 @@ module WowArmory
       # 3. if nothing found in item_data.csv try wowhead
       # 4. if nothing found on wowhead try battle.net tooltip
       # 5. if upgrade_level and have stats
-      # 6.  - if item is upgradeable TODO
+      # 6.  - if item is upgradable TODO
       # 7.  - set new ilevel
       # 8.  - if step#2 found nothing use alternative stat calculation which has rounding issues (FIXME need all items in item_data.csv from item-sparse file)
-      # 
-      self.ori_ilevel = self.ilevel
+      #
+      if its_a_gem
+        unless gem_empty
+            self.stats = get_item_stats # wowhead
+        end
+        return
+      end
+      @ori_ilevel = self.ilevel
       unless self.random_suffix.nil?
         puts "populate random items"
         puts self.random_suffix
@@ -471,8 +460,8 @@ module WowArmory
       #  found_in_item_data = false
       #  self.stats = scan_stats # battle.net tooltip
       #end
-      self.upgradeable = self.is_upgradeable
-      if not self.upgrade_level.nil? and not self.stats.blank? and self.upgradeable
+      self.upgradable = self.is_upgradable
+      if not self.upgrade_level.nil? and not self.stats.blank? and self.upgradable
         if self.quality == 4
           upgrade_levels = 4
         else
@@ -495,13 +484,13 @@ module WowArmory
     SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "hit", "expertise",
                        "haste", "mastery", "pvp resilience", "pvp power", "all stats", "dodge", "block", "parry"
     ]
-    SCAN_OVERRIDE = { "critical strike" => "crit rating", 
-                        "hit" => "hit rating",
-                        "expertise" => "expertise rating",
-                        "haste" => "haste rating",
-                        "mastery" => "mastery rating",
-                        "pvp resilience" => "resilience rating",
-                        "pvp power" => "pvp power rating"
+    SCAN_OVERRIDE = { "critical strike" => "crit", 
+                        #"hit" => "hit rating",
+                        #"expertise" => "expertise rating",
+                        #"haste" => "haste rating",
+                        #"mastery" => "mastery rating",
+                        #"pvp resilience" => "resilience",
+                        #"pvp power" => "pvp power rating"
                       }
 
     def scan_stats

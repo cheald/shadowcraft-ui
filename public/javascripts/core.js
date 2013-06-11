@@ -11,48 +11,48 @@
     var RATING_CONVERSIONS, _update;
     RATING_CONVERSIONS = {
       80: {
-        hit_rating: 30.7548,
-        expertise_rating: 7.68869
+        hit: 30.7548,
+        expertise: 7.68869
       },
       81: {
-        hit_rating: 40.3836,
-        expertise_rating: 10.0959
+        hit: 40.3836,
+        expertise: 10.0959
       },
       82: {
-        hit_rating: 53.0304,
-        expertise_rating: 13.2576
+        hit: 53.0304,
+        expertise: 13.2576
       },
       83: {
-        hit_rating: 69.6653,
-        expertise_rating: 17.4163
+        hit: 69.6653,
+        expertise: 17.4163
       },
       84: {
-        hit_rating: 91.4738,
-        expertise_rating: 22.8685
+        hit: 91.4738,
+        expertise: 22.8685
       },
       85: {
-        hit_rating: 120.109,
-        expertise_rating: 30.0272
+        hit: 120.109,
+        expertise: 30.0272
       },
       86: {
-        hit_rating: 120.109,
-        expertise_rating: 30.0272
+        hit: 120.109,
+        expertise: 30.0272
       },
       87: {
-        hit_rating: 120.109,
-        expertise_rating: 30.0272
+        hit: 120.109,
+        expertise: 30.0272
       },
       88: {
-        hit_rating: 120.109,
-        expertise_rating: 30.0272
+        hit: 120.109,
+        expertise: 30.0272
       },
       89: {
-        hit_rating: 120.109,
-        expertise_rating: 30.0272
+        hit: 120.109,
+        expertise: 30.0272
       },
       90: {
-        hit_rating: 340,
-        expertise_rating: 340
+        hit: 340,
+        expertise: 340
       }
     };
     ShadowcraftApp.prototype.reload = function() {
@@ -117,6 +117,9 @@
           if (patch) {
             data.options = Object.deepExtend(this.Data.options, data.options);
             this.Data = _.extend(this.Data, data);
+            this.Data.active = data.active;
+            this.Data.activeSpec = data.activeSpec;
+            this.Data.activeTalents = data.activeTalents;
           }
         } catch (TypeError) {
           this.Data = data;
@@ -362,19 +365,8 @@
     var get_engine;
     get_engine = function() {
       var endpoint, port;
-      switch (Shadowcraft.Data.options.general.patch) {
-        case 52:
-          port = 8880;
-          endpoint = "engine-5.2";
-          break;
-        case 50:
-          port = 8881;
-          endpoint = "engine-5.0";
-          break;
-        default:
-          port = 8881;
-          endpoint = "engine-4.1";
-      }
+      port = 8880;
+      endpoint = "engine-5.2";
       if (window.location.host.match(/:/)) {
         return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
       } else {
@@ -473,7 +465,7 @@
         },
         spec: data.activeSpec,
         t: talentString,
-        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit_rating || 0, statSummary.hit_rating || 0, statSummary.expertise_rating || 0, statSummary.haste_rating || 0, statSummary.mastery_rating || 0, statSummary.resilience_rating || 0, statSummary.pvp_power_rating || 0],
+        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit || 0, statSummary.hit || 0, statSummary.expertise || 0, statSummary.haste || 0, statSummary.mastery || 0, statSummary.resilience || 0, statSummary.pvp_power || 0],
         gly: glyph_list,
         pro: professions
       };
@@ -690,7 +682,8 @@
       var key, snapshots;
       key = this.app.uuid + "snapshots";
       snapshots = $.jStorage.get(key, {});
-      return this.loadSnapshot(snapshots[name]);
+      this.loadSnapshot(snapshots[name]);
+      return flash("" + name + " has been loaded");
     };
     ShadowcraftHistory.prototype.deleteSnapshot = function(name) {
       var key, snapshots;
@@ -1309,7 +1302,6 @@
         patch: {
           type: "select",
           name: "Patch/Engine",
-          desc: 'Only changes UI Stuff like Talents. It always uses the latest Engine, so you cannot compare Patches.',
           'default': 52,
           datatype: 'integer',
           options: {
@@ -1380,7 +1372,7 @@
           desc: "Don't show items over this ilevel in gear lists",
           'default': 700,
           datatype: 'integer',
-          min: 15,
+          min: 430,
           max: 700
         },
         min_ilvl: {
@@ -1389,7 +1381,7 @@
           desc: "Don't show items under this ilevel in gear lists",
           'default': 430,
           datatype: 'integer',
-          min: 15,
+          min: 430,
           max: 700
         },
         epic_gems: {
@@ -1403,7 +1395,7 @@
         },
         show_upgrades: {
           name: "Show Upgrades",
-          desc: "Show all upgraded items on ranking",
+          desc: "Show all upgraded items in gear lists",
           datatype: 'integer',
           type: 'select',
           options: {
@@ -1413,15 +1405,13 @@
           'default': 0
         },
         show_random_items: {
-          name: "Show Random Items",
-          desc: "Show all items with random stats on ranking (e.g. Scenario Loot)",
+          name: "Min ILevel (Random Items)",
+          desc: "Don't show random items under this ilevel in gear lists",
           datatype: 'integer',
-          type: 'select',
-          options: {
-            1: 'Yes',
-            0: 'No'
-          },
-          'default': 0
+          type: 'input',
+          min: 430,
+          max: 700,
+          'default': 502
         }
       });
       this.setup("#settings #professions", "professions", {
@@ -1768,22 +1758,29 @@
       });
       return this.setup("#advanced #advancedReforge", "advanced", {
         mh_expertise_rating_override: {
-          name: "Custom MH Exp Rating",
+          name: "MH Expertise",
           type: "input",
-          desc: "Override MH expertise rating EP value",
+          desc: "Override MH expertise EP value",
           'default': 0.7,
           datatype: 'float',
           min: 0.1,
           max: 5.0
         },
         oh_expertise_rating_override: {
-          name: "Custom OH Exp Rating",
+          name: "OH Expertise",
           type: "input",
-          desc: "Override OH expertise rating EP value",
+          desc: "Override OH expertise EP value",
           'default': 0.3,
           datatype: 'float',
           min: 0.1,
           max: 5.0
+        },
+        force_mastery_over_haste: {
+          name: "Force Mastery > Haste",
+          type: "check",
+          desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP + 0.05",
+          datatype: 'bool',
+          'default': false
         }
       });
     };
@@ -1860,7 +1857,7 @@
     return ShadowcraftOptions;
   })();
   ShadowcraftTalents = (function() {
-    var ALWAYS_SHOW_GLYPHS, CHARACTER_SPEC, DEFAULT_SPECS, MAX_TALENT_POINTS, TREE_SIZE, applyTalentToButton, getSpec, getSpecName, getTalents, glyphRankCount, hoverTalent, resetTalents, setGlyph, setSpec, setTalents, sumDigits, talentMap, talentsSpent, toggleGlyph, updateGlyphWeights, updateTalentAvailability, updateTalentContribution;
+    var ALWAYS_SHOW_GLYPHS, CHARACTER_SPEC, DEFAULT_SPECS, MAX_TALENT_POINTS, TREE_SIZE, applyTalentToButton, getSpec, getSpecName, getTalents, glyphRankCount, hoverTalent, resetTalents, setGlyph, setSpec, setTalents, talentsSpent, toggleGlyph, updateGlyphWeights, updateTalentAvailability, updateTalentContribution;
     talentsSpent = 0;
     MAX_TALENT_POINTS = 6;
     TREE_SIZE = 6;
@@ -1890,40 +1887,6 @@
         return getSpecName(activeSpec);
       }
       return "";
-    };
-    talentMap = "0zMcmVokRsaqbdrfwihuGINALpTjnyxtgevElBCDFHJKOPQSUWXYZ123456789";
-    ShadowcraftTalents.encodeTalents = function(s) {
-      var c, i, index, l, offset, size, str, sub, _len, _len2, _step;
-      str = "";
-      offset = 0;
-      for (index = 0, _len = TREE_SIZE.length; index < _len; index++) {
-        size = TREE_SIZE[index];
-        sub = s.substr(offset, size).replace(/0+$/, "");
-        offset += size;
-        for (i = 0, _len2 = sub.length, _step = 2; i < _len2; i += _step) {
-          c = sub[i];
-          l = parseInt(c, 10) * 5 + parseInt(sub[i + 1] || 0, 10);
-          str += talentMap[l];
-        }
-        if (index !== TREE_SIZE.length - 1) {
-          str += "Z";
-        }
-      }
-      return str;
-    };
-    ShadowcraftTalents.decodeTalents = function(s) {
-      var talents;
-      talents = "";
-      return s;
-    };
-    sumDigits = function(s) {
-      var c, total, _i, _len;
-      total = 0;
-      for (_i = 0, _len = s.length; _i < _len; _i++) {
-        c = s[_i];
-        total += parseInt(c);
-      }
-      return total;
     };
     getSpecName = function(s) {
       if (s === "a") {
@@ -2500,7 +2463,8 @@
       Shadowcraft.Options.bind("update", function(opt, val) {
         if (opt === 'general.patch') {
           app.initTalentTree();
-          return app.updateActiveTalents();
+          app.updateActiveTalents();
+          return checkForWarnings('options');
         }
       });
       $("#talents #talentframe").mousemove(function(e) {
@@ -2543,23 +2507,23 @@
     ShadowcraftGear.FACETS = FACETS;
     REFORGE_STATS = [
       {
-        key: "expertise_rating",
+        key: "expertise",
         val: "Expertise"
       }, {
-        key: "hit_rating",
+        key: "hit",
         val: "Hit"
       }, {
-        key: "haste_rating",
+        key: "haste",
         val: "Haste"
       }, {
-        key: "crit_rating",
+        key: "crit",
         val: "Crit"
       }, {
-        key: "mastery_rating",
+        key: "mastery",
         val: "Mastery"
       }
     ];
-    REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"];
+    REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"];
     ShadowcraftGear.REFORGABLE = REFORGABLE;
     REFORGE_CONST = 112;
     SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"];
@@ -2595,17 +2559,17 @@
     Weights = {
       attack_power: 1,
       agility: 2.66,
-      crit_rating: 0.87,
+      crit: 0.87,
       spell_hit: 1.3,
-      hit_rating: 1.02,
-      expertise_rating: 1.51,
-      mh_expertise_rating: 1.0,
-      oh_expertise_rating: 0.51,
-      haste_rating: 1.44,
-      mastery_rating: 1.15,
+      hit: 1.02,
+      expertise: 1.51,
+      mh_expertise: 1.0,
+      oh_expertise: 0.51,
+      haste: 1.44,
+      mastery: 1.15,
       yellow_hit: 1.79,
       strength: 1.05,
-      pvp_power_rating: 0
+      pvp_power: 0
     };
     ShadowcraftGear.prototype.getWeights = function() {
       return Weights;
@@ -2725,11 +2689,11 @@
         if (item.dps) {
           if (slot === 15) {
             total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed];
-            total += racialExpertiseBonus(item) * Weights.mh_expertise_rating;
+            total += racialExpertiseBonus(item) * Weights.mh_expertise;
           } else if (slot === 16) {
             total += item.dps * c.oh_ep.oh_dps;
             total += c.oh_speed_ep["oh_" + item.speed];
-            total += racialExpertiseBonus(item) * Weights.oh_expertise_rating;
+            total += racialExpertiseBonus(item) * Weights.oh_expertise;
           }
         } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
           total += c.meta.chaotic_metagem;
@@ -2849,13 +2813,13 @@
       }
       race = Shadowcraft.Data.options.general.race;
       if (race === "Human" && (mh_type === 7 || mh_type === 4)) {
-        return Shadowcraft._R("expertise_rating");
+        return Shadowcraft._R("expertise");
       } else if (race === "Gnome" && (mh_type === 7 || mh_type === 15)) {
-        return Shadowcraft._R("expertise_rating");
+        return Shadowcraft._R("expertise");
       } else if (race === "Dwarf" && (mh_type === 4)) {
-        return Shadowcraft._R("expertise_rating");
+        return Shadowcraft._R("expertise");
       } else if (race === "Orc" && (mh_type === 0 || mh_type === 13)) {
-        return Shadowcraft._R("expertise_rating");
+        return Shadowcraft._R("expertise");
       } else {
         return 0;
       }
@@ -2877,29 +2841,29 @@
       var ItemLookup, data, dodge_chance, expertise;
       data = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-      expertise = this.statSum.expertise_rating;
+      expertise = this.statSum.expertise;
       dodge_chance = data.options.general.pvp ? DEFAULT_PVP_DODGE : DEFAULT_BOSS_DODGE;
       if ((!(hand != null) || hand === "main") && data.gear[15] && data.gear[15].item_id) {
         expertise += racialExpertiseBonus(ItemLookup[data.gear[15].item_id]);
       } else if ((hand === "off") && data.gear[16] && data.gear[16].item_id) {
         expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id]);
       }
-      return dodge_chance - expertise / Shadowcraft._R("expertise_rating");
+      return dodge_chance - expertise / Shadowcraft._R("expertise");
     };
     getHitEP = function() {
       var data, exist, miss_chance, spellHitCap, whiteHitCap, yellowHitCap;
       data = Shadowcraft.Data;
       miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
-      yellowHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating");
+      yellowHitCap = Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit");
       spellHitCap = Shadowcraft._R("spell_hit") * miss_chance - racialHitBonus("spell_hit");
-      whiteHitCap = Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating");
-      exist = Shadowcraft.Gear.getStat("hit_rating");
+      whiteHitCap = Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit");
+      exist = Shadowcraft.Gear.getStat("hit");
       if (exist < yellowHitCap) {
         return Weights.yellow_hit;
       } else if (exist < spellHitCap) {
         return Weights.spell_hit;
       } else if (exist < whiteHitCap) {
-        return Weights.hit_rating;
+        return Weights.hit;
       } else {
         return 0;
       }
@@ -2910,11 +2874,11 @@
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       dodge_chance = data.options.general.pvp ? DEFAULT_PVP_DODGE : DEFAULT_BOSS_DODGE;
       miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
-      exp_base = Shadowcraft._R("expertise_rating") * dodge_chance;
+      exp_base = Shadowcraft._R("expertise") * dodge_chance;
       caps = {
-        yellowHitCap: Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating"),
-        spellHitCap: Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating"),
-        whiteHitCap: Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating"),
+        yellowHitCap: Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit"),
+        spellHitCap: Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit"),
+        whiteHitCap: Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit"),
         mh_exp: exp_base,
         oh_exp: exp_base
       };
@@ -2932,19 +2896,19 @@
       miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
       switch (cap) {
         case "yellow":
-          r = Shadowcraft._R("hit_rating");
-          hitCap = r * miss_chance - racialHitBonus("hit_rating");
+          r = Shadowcraft._R("hit");
+          hitCap = r * miss_chance - racialHitBonus("hit");
           break;
         case "spell":
-          r = Shadowcraft._R("hit_rating");
-          hitCap = r * miss_chance - racialHitBonus("hit_rating");
+          r = Shadowcraft._R("hit");
+          hitCap = r * miss_chance - racialHitBonus("hit");
           break;
         case "white":
-          r = Shadowcraft._R("hit_rating");
-          hitCap = r * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating");
+          r = Shadowcraft._R("hit");
+          hitCap = r * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit");
       }
       if ((r != null) && (hitCap != null)) {
-        hasHit = this.statSum.hit_rating || 0;
+        hasHit = this.statSum.hit || 0;
         if (hasHit < hitCap || cap === "white") {
           return (hitCap - hasHit) / r;
         } else {
@@ -2967,9 +2931,9 @@
       neg = num < 0 ? -1 : 1;
       num = Math.abs(num);
       switch (stat) {
-        case "expertise_rating":
+        case "expertise":
           dodge_chance = data.options.general.pvp ? DEFAULT_PVP_DODGE : DEFAULT_BOSS_DODGE;
-          mhCap = Shadowcraft._R("expertise_rating") * dodge_chance;
+          mhCap = Shadowcraft._R("expertise") * dodge_chance;
           ohCap = mhCap;
           if (data.gear[15] && data.gear[15].item_id) {
             mhCap -= racialExpertiseBonus(ItemLookup[data.gear[15].item_id]);
@@ -2983,21 +2947,21 @@
             if (usable > num) {
               usable = num;
             }
-            total += usable * Weights.mh_expertise_rating;
+            total += usable * Weights.mh_expertise;
           }
           if (ohCap > exist) {
             usable = ohCap - exist;
             if (usable > num) {
               usable = num;
             }
-            total += usable * Weights.oh_expertise_rating;
+            total += usable * Weights.oh_expertise;
           }
           return total * neg;
-        case "hit_rating":
+        case "hit":
           miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
-          yellowHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating");
-          spellHitCap = Shadowcraft._R("hit_rating") * miss_chance - racialHitBonus("hit_rating");
-          whiteHitCap = Shadowcraft._R("hit_rating") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit_rating");
+          yellowHitCap = Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit");
+          spellHitCap = Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit");
+          whiteHitCap = Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit");
           total = 0;
           remaining = num;
           if (remaining > 0 && exist < yellowHitCap) {
@@ -3014,7 +2978,7 @@
           }
           if (remaining > 0 && exist < whiteHitCap) {
             delta = (whiteHitCap - exist) > remaining ? remaining : whiteHitCap - exist;
-            total += delta * Weights.hit_rating;
+            total += delta * Weights.hit;
             remaining -= delta;
             exist += delta;
           }
@@ -3385,6 +3349,7 @@
       data = Shadowcraft.Data;
       depth || (depth = 0);
       if (depth === 0) {
+        Shadowcraft.Console.purgeOld();
         EP_PRE_REGEM = this.getEPTotal();
         Shadowcraft.Console.log("Beginning auto-regem...", "gold underline");
       }
@@ -3488,7 +3453,7 @@
         if (gem.quality === 4 && gem.requires === void 0 && !use_epic_gems) {
           continue;
         }
-        if (gem.stats["expertise_rating"] > 0) {
+        if (gem.stats["expertise"] > 0) {
           continue;
         }
         if (((_ref = gem.requires) != null ? _ref.profession : void 0) === "jewelcrafting" && gem.id !== bestJewelcrafterGem.id) {
@@ -3524,19 +3489,19 @@
           continue;
         }
         ret;
-        if (item.upgradeable) {
+        if (item.upgradable) {
           curr_level = 0;
           if (gear.upgrade_level != null) {
             curr_level = gear.upgrade_level;
           }
-          max_level = item.quality === 3 ? 1 : 2;
+          max_level = getMaxUpgradeLevel(item);
           if (curr_level >= max_level) {
             continue;
           }
           new_item_id = gear.item_id;
           if (gear.upgrade_level) {
             new_item_id = Math.floor(new_item_id / 1000000);
-            next = 2;
+            next = gear.upgrade_level + 1;
           } else {
             if (item.suffix) {
               new_item_id = Math.floor(new_item_id / 1000);
@@ -3579,19 +3544,19 @@
           continue;
         }
         ret;
-        if (item.upgradeable) {
+        if (item.upgradable) {
           curr_level = 0;
           if (gear.upgrade_level != null) {
             curr_level = gear.upgrade_level;
           }
-          max_level = item.quality === 3 ? 1 : 2;
+          max_level = getMaxUpgradeLevel(item);
           if (curr_level >= max_level) {
             continue;
           }
           new_item_id = gear.item_id;
           if (gear.upgrade_level) {
             new_item_id = Math.floor(new_item_id / 1000000);
-            next = 2;
+            next = gear.upgrade_level + 1;
           } else {
             if (item.suffix) {
               new_item_id = Math.floor(new_item_id / 1000);
@@ -3712,6 +3677,7 @@
     };
     ShadowcraftGear.prototype.setReforges = function(reforges) {
       var ItemLookup, amt, from, g, gear, id, item, model, reforge, s, slot, to, _i, _len, _ref;
+      Shadowcraft.Console.purgeOld();
       model = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       for (id in reforges) {
@@ -3752,6 +3718,7 @@
     };
     clearReforge = function() {
       var ItemLookup, data, gear, slot;
+      Shadowcraft.Console.purgeOld();
       data = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       slot = $.data(document.body, "selecting-slot");
@@ -3769,6 +3736,7 @@
     };
     ShadowcraftGear.prototype.doReforge = function() {
       var ItemLookup, amt, data, from, gear, item, slot, to;
+      Shadowcraft.Console.purgeOld();
       data = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       slot = $.data(document.body, "selecting-slot");
@@ -3792,7 +3760,7 @@
       # View helpers
       */
     ShadowcraftGear.prototype.updateDisplay = function(skipUpdate) {
-      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, curr_level, data, enchant, enchantable, from, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, restid, slotIndex, slotSet, socket, ssi, stat, to, upgrade, upgradeable, _base, _i, _len, _len2, _len3, _ref, _ref2;
+      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, curr_level, data, enchant, enchantable, from, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, restid, slotIndex, slotSet, socket, ssi, stat, to, upgradable, upgrade, _base, _i, _len, _len2, _len3, _ref, _ref2;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
       EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
@@ -3813,7 +3781,7 @@
           enchantable = null;
           reforge = null;
           reforgable = null;
-          upgradeable = null;
+          upgradable = null;
           if (item) {
             addTradeskillBonuses(item);
             addAchievementBonuses(item);
@@ -3863,7 +3831,7 @@
                 to: titleize(to)
               };
             }
-            if (item.upgradeable) {
+            if (item.upgradable) {
               curr_level = "0";
               if (gear.upgrade_level != null) {
                 curr_level = gear.upgrade_level;
@@ -3903,7 +3871,7 @@
           opt.sockets = item ? item.sockets : null;
           opt.enchantable = enchantable;
           opt.enchant = enchant;
-          opt.upgradeable = item ? item.upgradeable : false;
+          opt.upgradable = item ? item.upgradable : false;
           opt.upgrade = upgrade;
           buffer += Templates.itemSlot(opt);
         }
@@ -4028,17 +3996,17 @@
       var $weights, all, data, e, exist, key, other, weight;
       data = Shadowcraft.Data;
       Weights.agility = source.ep.agi;
-      Weights.crit_rating = source.ep.crit;
-      Weights.hit_rating = source.ep.white_hit;
+      Weights.crit = source.ep.crit;
+      Weights.hit = source.ep.white_hit;
       Weights.spell_hit = source.ep.spell_hit || source.ep.white_hit;
       Weights.strength = source.ep.str;
-      Weights.mastery_rating = source.ep.mastery;
-      Weights.haste_rating = source.ep.haste;
-      Weights.expertise_rating = source.ep.dodge_exp || source.ep.mh_dodge_exp + source.ep.oh_dodge_exp;
-      Weights.mh_expertise_rating = source.ep.mh_dodge_exp;
-      Weights.oh_expertise_rating = source.ep.oh_dodge_exp;
+      Weights.mastery = source.ep.mastery;
+      Weights.haste = source.ep.haste;
+      Weights.expertise = source.ep.dodge_exp || source.ep.mh_dodge_exp + source.ep.oh_dodge_exp;
+      Weights.mh_expertise = source.ep.mh_dodge_exp;
+      Weights.oh_expertise = source.ep.oh_dodge_exp;
       Weights.yellow_hit = source.ep.yellow_hit;
-      Weights.pvp_power_rating = source.ep.pvp_power || 0;
+      Weights.pvp_power = source.ep.pvp_power || 0;
       other = {
         mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps,
         offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps,
@@ -4067,7 +4035,7 @@
           $.data(exist.get(0), "sortkey", 0);
           if (key === "mainhand_dps" || key === "offhand_dps") {
             $.data(exist.get(0), "sortkey", 1);
-          } else if (key === "mh_expertise_rating" || key === "oh_expertise_rating") {
+          } else if (key === "mh_expertise" || key === "oh_expertise") {
             $.data(exist.get(0), "sortkey", 2);
           } else if (key === "t14_2pc" || key === "t14_4pc" || key === "t15_2pc" || key === "t15_4pc") {
             $.data(exist.get(0), "sortkey", 3);
@@ -4216,16 +4184,16 @@
       var caps, lowest_exp, stats;
       caps = Shadowcraft.Gear.getCaps();
       stats = Shadowcraft.Gear.sumStats();
-      offsets.hit_rating || (offsets.hit_rating = 0);
-      offsets.expertise_rating || (offsets.expertise_rating = 0);
-      if (stats.hit_rating > (caps.whiteHitCap * 0.9) && stats.hit_rating < (caps.whiteHitCap * 1.1)) {
-        offsets.hit_rating += stats.hit_rating - caps.yellowHitCap - 1;
-      } else if (stats.hit_rating > (caps.yellowHitCap * 0.9) && stats.hit_rating < (caps.yellowHitCap * 1.1)) {
-        offsets.hit_rating += stats.hit_rating - caps.yellowHitCap - 1;
+      offsets.hit || (offsets.hit = 0);
+      offsets.expertise || (offsets.expertise = 0);
+      if (stats.hit > (caps.whiteHitCap * 0.9) && stats.hit < (caps.whiteHitCap * 1.1)) {
+        offsets.hit += stats.hit - caps.yellowHitCap - 1;
+      } else if (stats.hit > (caps.yellowHitCap * 0.9) && stats.hit < (caps.yellowHitCap * 1.1)) {
+        offsets.hit += stats.hit - caps.yellowHitCap - 1;
       }
       lowest_exp = caps.mh_exp < caps.oh_exp ? caps.mh_exp : caps.oh_exp;
-      if (stats.expertise_rating > (lowest_exp * 0.8)) {
-        offsets.expertise_rating += stats.expertise_rating - lowest_exp;
+      if (stats.expertise > (lowest_exp * 0.8)) {
+        offsets.expertise += stats.expertise - lowest_exp;
       }
       return offsets;
     };
@@ -4267,10 +4235,16 @@
       equip_location = SLOT_INVTYPES[slot];
       GemList = Shadowcraft.ServerData.GEMS;
       gear = Shadowcraft.Data.gear;
+      requireDagger = needsDagger();
+      combatSpec = Shadowcraft.Data.activeSpec === "Z";
       loc_all = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
       loc = [];
       for (_i = 0, _len = loc_all.length; _i < _len; _i++) {
         l = loc_all[_i];
+        if (l.id === selected_id) {
+          loc.push(l);
+          continue;
+        }
         if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
           continue;
         }
@@ -4336,8 +4310,6 @@
       maxIEP = 1;
       minIEP = 0;
       buffer = "";
-      requireDagger = needsDagger();
-      combatSpec = Shadowcraft.Data.activeSpec === "Z";
       for (_k = 0, _len3 = loc.length; _k < _len3; _k++) {
         l = loc[_k];
         if (l.__ep < 1) {
@@ -4358,18 +4330,10 @@
         }
         iEP = l.__ep;
         ttid = get_item_id(l);
-        if (l.suffix !== void 0) {
-          ttrand = l.suffix;
-        } else {
-          ttrand = "";
-        }
-        if (l.upgrade_level !== void 0) {
-          ttupgd = l.upgrade_level;
-        } else {
-          ttupgd = "";
-        }
+        ttrand = l.suffix != null ? l.suffix : "";
+        ttupgd = l.upgrade_level != null ? l.upgrade_level : "";
         upgrade = [];
-        if (l.upgradeable) {
+        if (l.upgradable) {
           curr_level = "0";
           if (l.upgrade_level != null) {
             curr_level = l.upgrade_level;
@@ -4384,7 +4348,7 @@
           item: l,
           gear: {},
           gems: [],
-          upgradeable: l.upgradeable,
+          upgradable: l.upgradable,
           upgrade: upgrade,
           ttid: ttid,
           ttrand: ttrand,
@@ -4491,21 +4455,24 @@
       max = null;
       for (_j = 0, _len2 = GemList.length; _j < _len2; _j++) {
         gem = GemList[_j];
-        if (!canUseGem(gem, gemType)) {
-          continue;
+        gemCt += 1;
+        if (gemCt > 50) {
+          break;
         }
-        max || (max = gem.__ep);
         if (usedNames[gem.name]) {
           if (gem.id === selected_id) {
             selected_id = usedNames[gem.name];
           }
           continue;
         }
-        gemCt += 1;
-        if (gemCt > 50) {
-          break;
-        }
         usedNames[gem.name] = gem.id;
+        if (gem.name.indexOf("Perfect") === 0 && selected_id !== gem.id) {
+          continue;
+        }
+        if (!canUseGem(gem, gemType)) {
+          continue;
+        }
+        max || (max = gem.__ep);
         gEP = gem.__ep;
         desc = statsToDesc(gem);
         if (gEP < 1) {
@@ -4581,7 +4548,7 @@
       return true;
     };
     clickItemUpgrade = function(e) {
-      var $slot, ItemLookup, buf, data, equip_location, gear, item, loc, max, new_item_id, selected_id, slot;
+      var $slot, ItemLookup, buf, data, equip_location, gear, item, max, new_item_id, selected_id, slot;
       e.stopPropagation();
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       buf = clickSlot(this, "item_id");
@@ -4590,7 +4557,6 @@
       selected_id = parseInt($slot.attr("id"), 10);
       equip_location = SLOT_INVTYPES[slot];
       data = Shadowcraft.Data;
-      loc = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
       gear = data.gear[slot];
       item = ItemLookup[gear.item_id];
       new_item_id = gear.item_id;
@@ -4712,10 +4678,10 @@
       $("#getPawnString").click(function() {
         var name, pawnstr, scale, stats, val, weight;
         scale = _.extend({}, defaultScale);
-        scale.ExpertiseRating = Weights.expertise_rating;
-        scale.MasteryRating = Weights.mastery_rating;
-        scale.CritRating = Weights.crit_rating;
-        scale.HasteRating = Weights.haste_rating;
+        scale.ExpertiseRating = Weights.expertise;
+        scale.MasteryRating = Weights.mastery;
+        scale.CritRating = Weights.crit;
+        scale.HasteRating = Weights.haste;
         scale.HitRating = getHitEP();
         scale.Agility = Weights.agility;
         scale.Strength = Weights.strength;
@@ -4747,6 +4713,7 @@
       $altslots.click($.delegate({
         ".slot": function(e) {
           var $this, EnchantLookup, Gems, ItemLookup, data, enchant_id, gem_id, i, item, item_id, slot, socketlength, update, val;
+          Shadowcraft.Console.purgeOld();
           ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
           EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
           Gems = Shadowcraft.ServerData.GEM_LOOKUP;
@@ -4813,7 +4780,7 @@
             var $this, c, ep, target;
             $this = $(this);
             target = $this.closest(".stat").attr("data-stat");
-            c = compactReforge("expertise_rating", "hit_rating");
+            c = compactReforge("expertise", "hit");
             ep = Math.abs(reforgeEp(compactReforge(src, target), item));
             if (ep > max) {
               return max = ep;
@@ -4973,10 +4940,22 @@
     return ShadowcraftGear;
   })();
   ShadowcraftTiniReforgeBackend = (function() {
-    var ENGINE, ENGINES, REFORGABLE, deferred;
+    var ENGINE, ENGINES, REFORGABLE, REFORGER_MAP, deferred;
     ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"];
     ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
-    REFORGABLE = ["spirit", "dodge_rating", "parry_rating", "hit_rating", "crit_rating", "haste_rating", "expertise_rating", "mastery_rating"];
+    REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"];
+    REFORGER_MAP = {
+      "spirit": "spirit",
+      "dodge": "dodge_rating",
+      "parry": "parry_rating",
+      "hit": "hit_rating",
+      "crit": "crit_rating",
+      "haste": "haste_rating",
+      "expertise": "expertise_rating",
+      "mastery": "mastery_rating",
+      "mh_expertise": "mh_expertise_rating",
+      "oh_expertise": "oh_expertise_rating"
+    };
     deferred = null;
     function ShadowcraftTiniReforgeBackend(gear) {
       this.gear = gear;
@@ -5033,13 +5012,21 @@
       });
     };
     ShadowcraftTiniReforgeBackend.prototype.buildRequest = function(override) {
-      var ItemLookup, caps, ep, f, items, k, req, stats, v;
+      var ItemLookup, caps, ep, f, items, k, req, revert, stats, v, _ep, _stats;
       if (override == null) {
         override = false;
       }
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       f = ShadowcraftGear.FACETS;
-      stats = this.gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT);
+      _stats = this.gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT);
+      stats = {};
+      for (k in _stats) {
+        v = _stats[k];
+        if (__indexOf.call(REFORGABLE, k) < 0) {
+          continue;
+        }
+        stats[REFORGER_MAP[k]] = v;
+      }
       items = _.map(Shadowcraft.Data.gear, function(e, k) {
         var key, r, val, _ref;
         r = {
@@ -5050,17 +5037,22 @@
           for (key in _ref) {
             val = _ref[key];
             if (REFORGABLE.indexOf(key) !== -1) {
-              r[key] = val;
+              r[REFORGER_MAP[key]] = val;
             }
           }
         }
         return r;
       });
+      revert = {};
+      for (k in REFORGER_MAP) {
+        v = REFORGER_MAP[k];
+        revert[v] = k;
+      }
       items = _.select(items, function(i) {
         var k, v;
         for (k in i) {
           v = i[k];
-          if (REFORGABLE.indexOf(k) !== -1) {
+          if (REFORGABLE.indexOf(revert[k]) !== -1) {
             return true;
           }
         }
@@ -5071,11 +5063,25 @@
         v = caps[k];
         caps[k] = Math.ceil(v);
       }
-      ep = this.gear.getWeights();
+      _ep = this.gear.getWeights();
+      ep = {};
+      for (k in _ep) {
+        v = _ep[k];
+        if (__indexOf.call(_.keys(REFORGER_MAP), k) >= 0) {
+          ep[REFORGER_MAP[k]] = v;
+        } else {
+          ep[k] = v;
+        }
+      }
       if (override) {
         ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override;
         ep.oh_expertise_rating = Shadowcraft.Data.options.advanced.oh_expertise_rating_override;
         ep.expertise_rating = ep.mh_expertise_rating + ep.oh_expertise_rating;
+        if (Shadowcraft.Data.options.advanced.force_mastery_over_haste) {
+          if (ep.haste_rating > ep.mastery_rating) {
+            ep.mastery_rating = ep.haste_rating + 0.05;
+          }
+        }
       }
       req = {
         items: items,
@@ -5182,7 +5188,11 @@
       return $("#console .inner, #log .inner").oneFingerScroll();
     };
     ShadowcraftConsole.prototype.log = function(msg, klass) {
-      return this.$log.append("<div class='" + klass + "'>" + msg + "</div>").scrollTop(this.$log.get(0).scrollHeight);
+      var date, now;
+      date = new Date();
+      now = Math.round(date / 1000);
+      msg = "[" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "] " + msg;
+      return this.$log.append("<div class='" + klass + "' data-created='" + now + "'>" + msg + "</div>").scrollTop(this.$log.get(0).scrollHeight);
     };
     ShadowcraftConsole.prototype.warn = function(item, msg, submsg, klass, section) {
       return this.consoleMessage(item, msg, submsg, "warning", klass, section);
@@ -5214,6 +5224,23 @@
     };
     ShadowcraftConsole.prototype.clear = function() {
       return this.consoleInner.empty();
+    };
+    ShadowcraftConsole.prototype.purgeOld = function(age) {
+      var now;
+      if (age == null) {
+        age = 60;
+      }
+      now = Math.round(+new Date() / 1000);
+      return $("#log .inner div").each(function() {
+        var $this, created;
+        $this = $(this);
+        created = $this.data("created");
+        if (created + age < now) {
+          return $this.fadeOut(500, function() {
+            return $this.remove();
+          });
+        }
+      });
     };
     return ShadowcraftConsole;
   })();

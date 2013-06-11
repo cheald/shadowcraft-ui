@@ -8,7 +8,10 @@ class ShadowcraftConsole
     $("#console .inner, #log .inner").oneFingerScroll()
 
   log: (msg, klass) ->
-    @$log.append("<div class='#{klass}'>#{msg}</div>").scrollTop(@$log.get(0).scrollHeight)
+    date = new Date()
+    now = Math.round date/1000
+    msg = "["+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] " + msg
+    @$log.append("<div class='#{klass}' data-created='#{now}'>#{msg}</div>").scrollTop(@$log.get(0).scrollHeight)
 
   warn: (item, msg, submsg, klass, section) ->
     this.consoleMessage(item, msg, submsg, "warning", klass, section)
@@ -38,3 +41,12 @@ class ShadowcraftConsole
 
   clear: ->
     @consoleInner.empty()
+
+  purgeOld: (age=60) ->
+    now = Math.round +new Date()/1000
+    $("#log .inner div").each ->
+      $this = $(this)
+      created = $this.data("created")
+      if created + age < now
+        $this.fadeOut 500, -> $this.remove()
+    
