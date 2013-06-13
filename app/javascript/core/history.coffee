@@ -237,7 +237,7 @@ class ShadowcraftHistory
         if data.options.general.stormlash then 1 else 0
         if data.options.general.pvp then 1 else 0
         if data.options.general.show_upgrades then 1 else 0
-        if data.options.general.show_random_items then 1 else 0
+        data.options.general.show_random_items || 502
       ]
       options.push base36Encode(general)
 
