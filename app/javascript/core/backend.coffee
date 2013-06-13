@@ -12,7 +12,7 @@ class ShadowcraftBackend
     #  else
     #    port = 8881
     #    endpoint = "engine-4.1"
-    port = 8880
+    port = 8881
     endpoint = "engine-5.2"
 
     if window.location.host.match(/:/)
