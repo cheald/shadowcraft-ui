@@ -15,7 +15,7 @@ formatreforge = (str) ->
   for s, i in sp
     f = s.substring(0,1).toUpperCase()
     r = s.substring(1).toLowerCase()
-    word.push f+r
+    word.push f+r+"Rating"
   word.join('')
 
 tip = null
