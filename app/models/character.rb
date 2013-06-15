@@ -100,7 +100,13 @@ class Character
     {
       :gear   => Character.encode_items(properties["gear"]),
       :talents => properties["talents"],
-      :active => properties["active"],
+      :active => if not properties["active"].nil?
+                    properties["active"]
+                 elsif not properties["active_talents"].nil?
+                    properties["active_talents"]
+                 else
+                    0
+                 end,
       :options => {
         :general => {
           :level => properties["level"],
