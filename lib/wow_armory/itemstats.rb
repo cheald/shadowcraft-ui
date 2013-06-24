@@ -3,6 +3,7 @@ module WowArmory
     unloadable
 
     @random_suffix_csv = nil
+    @item_enchants = nil
     @rand_prop_points = nil
     @item_data = nil
     @item_damage_one_hand = nil
@@ -264,7 +265,12 @@ module WowArmory
       @ori_ilevel = @properties[:ilevel]
       unless self.random_suffix.nil?
         if !@properties[:name].include? 'of the' or @properties[:name].include? 'Bracers of the Midnight Comet'
-          self.name = @properties[:name] + " #{SUFFIX_NAME_MAP[self.random_suffix.abs]}"
+          row = random_suffixes[self.random_suffix.abs.to_s]
+          unless row.nil?
+            suffix = row[1]
+          end
+          suffix ||= ""
+          self.name = @properties[:name] + " #{suffix}"
         end
       end
 
