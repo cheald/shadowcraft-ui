@@ -65,24 +65,7 @@ class Character
       self.portrait = char.portrait
 
       properties["gear"].each do |slot, item|
-        # if its a random item first import the blank item if not yet in db
-        # because sometimes its not working correctly if the blank item is not in the db
-        #unless item["suffix"].blank?
-        #  i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i)
-        #  if i.new_record?
-        #    i.save
-        # end
-        #end
-        upgrade_levels = [nil, 1, 2, 3, 4]
-        upgrade_levels.each do |level|
-          i = Item.find_or_initialize_by(:remote_id => item["item_id"].to_i, :random_suffix => item["suffix"], :upgrade_level => level)
-          if i.new_record?
-            unless item["suffix"].blank?
-              i.item_name_override = item["name"]
-            end
-            i.save
-          end
-        end
+        Item.import item["item_id"].to_i,[nil,1,2,3,4],[item["suffix"]]
         [item["g0"],item["g1"],item["g2"]].each do |gemid|
           unless gemid.nil?
             i = Item.find_or_initialize_by(:remote_id => gemid.to_i)
