@@ -105,8 +105,8 @@ class Item
       json[:sl] = properties["gem_slot"]
     end
 
-    json[:tag] = properties["tag"] if properties["tag"]
-
+    json[:tag] = if properties["tag"] then properties["tag"] else "" end
+    
     if !properties["speed"].blank?
       json[:speed] = properties["speed"]
       json[:dps] = properties["dps"]
@@ -125,7 +125,8 @@ class Item
     json
   end
 
-  def self.populate_gear(prefix = "www")
+  def self.populate_gear(prefix = "www",source = "wowapi")
+    @source = source
     suffixes = (-137..-133).to_a
     random_item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;ub=4;cr=124;crs=0;crv=zephyr"
     random_item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4?filter=na=hozen-speed"
@@ -160,6 +161,7 @@ class Item
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=501;maxle=510;ub=4;cr=21;crs=1;crv=0"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=511;maxle=530;ub=4;cr=21;crs=1;crv=0"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=531;maxle=550;ub=4;cr=21;crs=1;crv=0"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=551;maxle=580;ub=4;cr=21;crs=1;crv=0"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0"
     #item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=501;maxle=550;ub=4;cr=21;crs=1;crv=0"
 
@@ -172,7 +174,7 @@ class Item
     pos = 0
     item_ids.each do |id|
       pos = pos + 1
-      puts "item #{pos} of #{item_ids.length}"
+      puts "item #{pos} of #{item_ids.length}" if pos % 10 == 0
       import id,[nil,1,2,3,4]
     end
     true
@@ -191,6 +193,7 @@ class Item
   end
 
   def self.import(id, upgrade_levels = [nil], random_suffixes = [nil])
+    @source = "wowapi" if @source.nil?
     # options need to be upgrade_level = [nil,1,2,3,4]
     # same for random_suffix
     item = nil
@@ -200,7 +203,7 @@ class Item
           db_item = Item.find_or_initialize_by(:remote_id => id, :upgrade_level => level, :random_suffix => suffix)
           if db_item.properties.nil?
             if item.nil?
-              item = WowArmory::Item.new(id)
+              item = WowArmory::Item.new(id, @source)
             end
             db_item.properties = item.as_json.with_indifferent_access
             item_stats = WowArmory::Itemstats.new(db_item.properties, suffix, level)

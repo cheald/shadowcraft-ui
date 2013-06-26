@@ -130,12 +130,20 @@ module WowArmory
       "thrown" => 25
     }
 
+    WEAPON_SUBCLASSES = {
+      "axe" => 0,
+      "sword" => 7,
+      "mace" => 4,
+      "fist weapon" => 13,
+      "dagger" => 15,
+    }
+
     STAT_LOOKUP = Hash[*STAT_INDEX.map {|k, v| [v, k]}.flatten]
 
     include Document
     ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable
     attr_accessor *ACCESSORS
-    def initialize(id, name = nil)
+    def initialize(id, source = "wowapi", name = nil)
       self.name = name
 
       if id == :empty or id == 0 or id.nil?
@@ -145,8 +153,18 @@ module WowArmory
         @id = id.to_i
       end
       #fetch "us", "item/%d/tooltip" % id
-      fetch "us", "api/wow/item/%d" % id, :json
-      populate_base_data
+      if source == "wowapi"
+        fetch "us", "api/wow/item/%d" % id, :json
+        populate_base_data
+      elsif source == "wowdb"
+        populate_base_data_wowdb
+      elsif source == "wowdb_ptr"
+        populate_base_data_wowdb("ptr")
+      elsif source == "wowhead"
+        populate_base_data_wowhead
+      elsif source == "wowhead_ptr"
+        populate_base_data_wowhead("ptr")
+      end
     end
 
     def as_json(options = {})
@@ -206,6 +224,49 @@ module WowArmory
       end
 
       self.upgradable = is_upgradable
+    end
+
+    def populate_base_data_wowhead(prefix = "www")
+      raise Exception.new "Import source not yet working"
+      doc = Nokogiri::XML open("http://#{prefix}.wowhead.com/item=%d&xml" % @id).read
+      eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
+      stats = JSON::load("{%s}" % doc.css("json").text)
+      self.name ||= doc.css("name").text
+      self.quality = doc.xpath("//quality").attr("id").text.to_i
+      self.equip_location = doc.xpath("//inventorySlot").attr("id").text.to_i
+      self.ilevel = doc.css("level").text.to_i
+      self.icon = doc.css("icon").text.downcase
+    end
+
+    def populate_base_data_wowdb(prefix = "www")
+      doc = Nokogiri::HTML open("http://#{prefix}.wowdb.com/items/%d" % @id).read
+      title = doc.css(".db-title")
+      self.name ||= title.text.try(:strip)
+      self.quality = title.attr("class").value().match(/q(\d)/)[1].to_i
+      dds = doc.css(".db-tooltip dd")
+      self.equip_location = dds.map{|e| EQUIP_LOCATIONS[e.text.strip.downcase.gsub(' ','-')] }.compact.first
+      self.ilevel = doc.css(".j-item-level").text.to_i
+      self.icon = doc.css(".db-image > .icon-56").attr("src").value().match(/large\/(\w*)/)[1]
+      if bonus = doc.css(".q0").text.try(:strip)
+       self.socket_bonus = scan_str(bonus)
+      end
+      self.sockets = doc.css(".socket").map {|test| test.attr("data-socket") }
+
+      armor = dds.select{|a| ARMOR_CLASS.values.include? a.text.strip }.compact.first
+      unless armor.nil?
+        self.armor_class = armor.text.strip
+      end
+      dpsinfo = doc.css(".j-dps-info")
+      unless dpsinfo.nil? or dpsinfo.blank?
+        self.speed = dpsinfo.attr("data-speed").value().to_f / 1000
+        self.dps = doc.css(".j-dps").text.gsub(',', '').to_f
+        self.subclass = doc.css(".db-right").map {|c| WEAPON_SUBCLASSES[c.text.strip.downcase] }.compact.first
+      end
+      if self.ilevel >= 458
+        self.upgradable = true
+      else
+        self.upgradable = false
+      end
     end
 
     SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "hit", "expertise",
