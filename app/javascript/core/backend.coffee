@@ -2,23 +2,15 @@ class ShadowcraftBackend
   # WS_ENGINE   = "ws://#{window.location.hostname}:#{port}/engine"
 
   get_engine = ->
-    #switch Shadowcraft.Data.options.general.patch
-    #  when 52
-    #    port = 8880
-    #    endpoint = "engine-5.2"
-    #  when 50
-    #    port = 8881
-    #    endpoint = "engine-5.0"
-    #  else
-    #    port = 8881
-    #    endpoint = "engine-4.1"
-    port = 8881
-    endpoint = "engine-5.2"
+    switch Shadowcraft.Data.options.general.patch
+      when 54
+        port = 8880
+        endpoint = "engine-5.4"
+      else
+        port = 8881
+        endpoint = "engine-5.2"
 
-    if window.location.host.match(/:/)
-        "http://#{window.location.hostname}:#{port}/#{endpoint}"
-    else
-      "http://#{window.location.hostname}/#{endpoint}"
+    "http://#{window.location.hostname}:#{port}/#{endpoint}"
 
   constructor: (@app) ->
     @app.Backend = this

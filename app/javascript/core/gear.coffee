@@ -1215,6 +1215,8 @@ class ShadowcraftGear
       t14_4pc: source.other_ep.rogue_t14_4pc || 0
       t15_2pc: source.other_ep.rogue_t15_2pc || 0
       t15_4pc: source.other_ep.rogue_t15_4pc || 0
+      t16_2pc: source.other_ep.rogue_t16_2pc || 0
+      t16_4pc: source.other_ep.rogue_t16_4pc || 0
 
     all = _.extend(Weights, other)
 
@@ -1234,7 +1236,7 @@ class ShadowcraftGear
           $.data(exist.get(0), "sortkey", 1)
         else if key in ["mh_expertise","oh_expertise"]
           $.data(exist.get(0), "sortkey", 2)
-        else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc"]
+        else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc","t16_2pc","t16_4pc"]
           $.data(exist.get(0), "sortkey", 3)
       $.data(exist.get(0), "weight", weight)
 

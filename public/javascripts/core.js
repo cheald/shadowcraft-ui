@@ -365,13 +365,16 @@
     var get_engine;
     get_engine = function() {
       var endpoint, port;
-      port = 8881;
-      endpoint = "engine-5.2";
-      if (window.location.host.match(/:/)) {
-        return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
-      } else {
-        return "http://" + window.location.hostname + "/" + endpoint;
+      switch (Shadowcraft.Data.options.general.patch) {
+        case 54:
+          port = 8880;
+          endpoint = "engine-5.4";
+          break;
+        default:
+          port = 8881;
+          endpoint = "engine-5.2";
       }
+      return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
     };
     function ShadowcraftBackend(app) {
       this.app = app;
@@ -4020,7 +4023,9 @@
         t14_2pc: source.other_ep.rogue_t14_2pc || 0,
         t14_4pc: source.other_ep.rogue_t14_4pc || 0,
         t15_2pc: source.other_ep.rogue_t15_2pc || 0,
-        t15_4pc: source.other_ep.rogue_t15_4pc || 0
+        t15_4pc: source.other_ep.rogue_t15_4pc || 0,
+        t16_2pc: source.other_ep.rogue_t16_2pc || 0,
+        t16_4pc: source.other_ep.rogue_t16_4pc || 0
       };
       all = _.extend(Weights, other);
       $weights = $("#weights .inner");
@@ -4044,7 +4049,7 @@
             $.data(exist.get(0), "sortkey", 1);
           } else if (key === "mh_expertise" || key === "oh_expertise") {
             $.data(exist.get(0), "sortkey", 2);
-          } else if (key === "t14_2pc" || key === "t14_4pc" || key === "t15_2pc" || key === "t15_4pc") {
+          } else if (key === "t14_2pc" || key === "t14_4pc" || key === "t15_2pc" || key === "t15_4pc" || key === "t16_2pc" || key === "t16_4pc") {
             $.data(exist.get(0), "sortkey", 3);
           }
         }
