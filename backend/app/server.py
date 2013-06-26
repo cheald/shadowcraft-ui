@@ -160,8 +160,8 @@ class ShadowcraftComputation:
     tier13IDS = frozenset([78664, 78679, 78699, 78708, 78738, 77023, 77024, 77025, 77026, 77027, 78759, 78774, 78794, 78803, 78833])
     tier14IDS = frozenset([85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128])
     tier15IDS = frozenset([95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679])
+    tier16IDS = frozenset([99006, 99007, 99008, 99009, 99010, 99112, 99113, 99114, 99115, 99116, 99348, 99349, 99350, 99355, 99356, 99629, 99630, 99631, 99634, 99635])
 
-    
     legendary_tier_1 = frozenset([77945, 77946])
     legendary_tier_2 = frozenset([77947, 77948])
     legendary_tier_3 = frozenset([77949, 77950])
@@ -374,6 +374,12 @@ class ShadowcraftComputation:
 
         if len(self.tier15IDS & gear) >= 4:
             buff_list.append('rogue_t15_4pc')
+
+        if len(self.tier16IDS & gear) >= 2:
+            buff_list.append('rogue_t16_2pc')
+
+        if len(self.tier16IDS & gear) >= 4:
+            buff_list.append('rogue_t16_4pc')
     
         agi_bonus = 0
         if len(self.arenaSeason9SetIds & gear) >= 2:

@@ -54,6 +54,9 @@ class ShadowcraftGear
     T15:
       ids: [95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679]
       bonuses: {4: "rogue_t15_4pc", 2: "rogue_t15_2pc"}
+    T16:
+      ids: [99006, 99007, 99008, 99009, 99010, 99112, 99113, 99114, 99115, 99116, 99348, 99349, 99350, 99355, 99356, 99629, 99630, 99631, 99634, 99635]
+      bonuses: {4: "rogue_t16_4pc", 2: "rogue_t16_2pc"}
 
   Weights =
     attack_power: 1
@@ -1434,6 +1437,7 @@ class ShadowcraftGear
       l.__gearEP = 0 if isNaN l.__gearEP
       l.__setBonusEP = 0 if isNaN l.__setBonusEP
       l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP + l.__setBonusEP
+
 
     loc.sort(__epSort)
     maxIEP = 1
