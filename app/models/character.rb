@@ -68,9 +68,15 @@ class Character
         Item.import item["item_id"].to_i,[nil,1,2,3,4],[item["suffix"]]
         [item["g0"],item["g1"],item["g2"]].each do |gemid|
           unless gemid.nil?
-            i = Item.find_or_initialize_by(:remote_id => gemid.to_i)
-            if i.new_record?
-              i.save
+            db_item = Item.find_or_initialize_by(:remote_id => gemid.to_i)
+            if db_item.properties.nil?
+              item = WowArmory::Item.new(gemid.to_i)
+              db_item.properties = item.as_json.with_indifferent_access
+              db_item.equip_location = db_item.properties["equip_location"]
+              db_item.is_gem = !db_item.properties["gem_slot"].blank?
+              if db_item.new_record?
+                db_item.save
+              end
             end
           end
         end

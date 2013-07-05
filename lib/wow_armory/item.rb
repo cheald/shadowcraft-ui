@@ -2,6 +2,8 @@ module WowArmory
   class Item
     unloadable
 
+    @item_enchants = nil
+
     STAT_INDEX = {
       :damage_done                      => 41,
       :dodge                            => 13,
@@ -212,6 +214,8 @@ module WowArmory
           self.stats = scan_str(@json["gemInfo"]["bonus"]["name"])
           puts "stats from api"
           puts self.stats.inspect
+        else
+          self.stats = {}
         end
       elsif @json["itemClass"] == 4 # armor
         self.armor_class ||= ARMOR_CLASS[@json["itemSubClass"]]
@@ -227,15 +231,40 @@ module WowArmory
     end
 
     def populate_base_data_wowhead(prefix = "www")
-      raise Exception.new "Import source not yet working"
       doc = Nokogiri::XML open("http://#{prefix}.wowhead.com/item=%d&xml" % @id).read
       eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
       stats = JSON::load("{%s}" % doc.css("json").text)
+      unless doc.css("error").blank?
+        raise Exception.new "Item not found on wowhead id #{@id}"
+      end
       self.name ||= doc.css("name").text
       self.quality = doc.xpath("//quality").attr("id").text.to_i
       self.equip_location = doc.xpath("//inventorySlot").attr("id").text.to_i
       self.ilevel = doc.css("level").text.to_i
       self.icon = doc.css("icon").text.downcase
+      unless eqstats["nsockets"].nil?
+        self.sockets = []
+        for num in 1..eqstats["nsockets"].to_i do
+          self.sockets.push(SOCKET_MAP[eqstats["socket#{num}"]])
+        end
+        unless eqstats["socketbonus"].nil?
+          self.socket_bonus = {}
+          enchant_row = item_enchants[eqstats["socketbonus"].to_s]
+          # TODO if socketbonus includes more than 1 stat this should be supported
+          stat = enchant_row[14].to_i
+          self.socket_bonus[STAT_LOOKUP[stat]] = enchant_row[11].to_i
+        end
+      end
+      unless eqstats["mlespeed"].blank? and eqstats["speed"].blank?
+        self.speed = (eqstats["mlespeed"] || eqstats["speed"]).to_f
+        self.dps = (eqstats["mledps"] || eqstats["dps"]).to_f
+        self.subclass = stats["subclass"].to_i
+      end
+      if self.ilevel >= 458
+        self.upgradable = true
+      else
+        self.upgradable = false
+      end
     end
 
     def populate_base_data_wowdb(prefix = "www")
@@ -326,6 +355,14 @@ module WowArmory
         return "Green"
       else
         color
+      end
+    end
+
+    def item_enchants
+      @@item_enchants ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantments.csv")) do |row|
+          hash[row[0].to_s] = row
+        end
       end
     end
 

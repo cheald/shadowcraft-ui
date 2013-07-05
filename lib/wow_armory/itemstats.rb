@@ -105,8 +105,7 @@ module WowArmory
     def populate_item_upgrade_level_with_random_suffix
       row = random_suffixes[random_suffix.abs.to_s]
       if row.nil?
-        puts "no suffix data found in client db files"
-        return
+        raise Exception.new "no suffix data found in client db files for random_suffix id #{random_suffix.abs}"
       end
       base = rand_prop_points[@properties[:ilevel].to_s]
 
@@ -115,7 +114,7 @@ module WowArmory
         multiplier = row[8+i].to_f / 10000.0
         basevalue = base[1+quality_index(@properties[:quality])*5+slot_index(@properties[:equip_location])]
         if enchantid != "0"
-          stat = item_enchants[enchantid][8].to_i
+          stat = item_enchants[enchantid][14].to_i
           self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).to_i
         end
       end
@@ -124,8 +123,7 @@ module WowArmory
     def populate_item_upgrade_level
       row = item_data[@properties[:id].to_s]
       if row.nil?
-        puts "no item data found in client db files"
-        return
+        raise Exception.new "no item data found in client db files for id #{@properties[:id]}"
       end
       base = rand_prop_points[@properties[:ilevel].to_s]
 
@@ -168,7 +166,7 @@ module WowArmory
         multiplier = row[8+i].to_f / 10000.0
         basevalue = base[1+quality_index(@properties[:quality])*5+slot_index(@properties[:equip_location])]
         if enchantid != "0"
-          stat = item_enchants[enchantid][8].to_i
+          stat = item_enchants[enchantid][14].to_i
           self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).to_i # looks like round is wrong and floor is correct
         end
       end
@@ -184,7 +182,7 @@ module WowArmory
 
     def item_enchants
       @@item_enchants ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantment.dbc.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantments.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -278,10 +276,10 @@ module WowArmory
       if not self.upgrade_level.nil? and @properties[:upgradable]
         upgd_lvl = self.upgrade_level
       end
-      if @properties[:quality] == 4
-        upgrade_level_steps = 4
-      else
+      if @properties[:quality] == 3
         upgrade_level_steps = 8
+      else
+        upgrade_level_steps = 4
       end
       @properties[:ilevel] = @properties[:ilevel] + upgd_lvl * upgrade_level_steps
       populate_item_upgrade_level

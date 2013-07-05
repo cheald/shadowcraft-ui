@@ -155,6 +155,37 @@ class Item
     random_item_ids.each do |id|
       import id,[nil,1,2,3,4],suffixes
     end
+
+    # 5.4 random enchantment items
+    # TODO remove ptr tag for live version
+    if prefix == "ptr"
+      # ilvl 496
+      suffixes = (-381..-377).to_a + (-390..-386).to_a
+      random_item_ids = [101862, 101863, 101864, 101865, 101866, 101867, 101868, 101869] # armor
+      random_item_ids += [101827, 101828, 101829] # neck, ring, cloak
+      puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 496)"
+      random_item_ids.each do |id|
+        import id,[nil,1,2,3,4],suffixes
+      end
+
+      # ilvl 528
+      suffixes = (-409..-405).to_a + (-418..-414).to_a
+      random_item_ids = [101949, 101950, 101951, 101952, 101953, 101954, 101955, 101956]
+      random_item_ids += [101916, 101917, 101918]
+      puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 528)"
+      random_item_ids.each do |id|
+        import id,[nil,1,2,3,4],suffixes
+      end
+
+      # ilvl 546
+      suffixes = (-437..-433).to_a + (-446..-442).to_a
+      random_item_ids = [102036, 102037, 102038, 102039, 102040, 102041, 102042, 102043]
+      random_item_ids += [102003, 102004, 102005]
+      puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 546)"
+      random_item_ids.each do |id|
+        import id,[nil,1,2,3,4],suffixes
+      end
+    end
     
     item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=483;ub=4;cr=21;crs=1;crv=0"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=484;maxle=500;ub=4;cr=21;crs=1;crv=0"
@@ -181,21 +212,39 @@ class Item
   end
 
   def self.populate_gems
-    populate_from_wowhead "http://www.wowhead.com/items=3?filter=qu=2:3;minle=86;maxle=90"
-    populate_from_wowhead "http://www.wowhead.com/items=3?filter=qu=2:3:4;minle=86;maxle=90;cr=99;crs=11;crv=0"
+    gem_ids = get_ids_from_wowhead "http://www.wowhead.com/items=3?filter=qu=2:3;minle=86;maxle=90"
+    gem_ids += get_ids_from_wowhead  "http://www.wowhead.com/items=3?filter=qu=2:3:4;minle=86;maxle=90;cr=99;crs=11;crv=0"
 
-    single_import 89873 # 500agi gem
-    single_import 95346 # legendary meta gem
+    gem_ids += [89873] # 500agi gem
+    gem_ids += [95346] # legendary meta gem
+    
+    puts "importing now #{gem_ids.length} gems"
+    pos = 0
+    gem_ids.each do |id|
+      pos = pos + 1
+      puts "gem #{pos} of #{gem_ids.length}" if pos % 10 == 0
+      db_item = Item.find_or_initialize_by(:remote_id => id)
+      if db_item.properties.nil?
+        item = WowArmory::Item.new(id)
+        db_item.properties = item.as_json.with_indifferent_access
+        db_item.equip_location = db_item.properties["equip_location"]
+        db_item.is_gem = !db_item.properties["gem_slot"].blank?
+        if db_item.new_record?
+          db_item.save
+        end
+      end
+    end
   end
 
   def self.populate_glyphs
     populate_from_wowhead "http://www.wowhead.com/items=16.4", :is_glyph => true
   end
 
-  def self.import(id, upgrade_levels = [nil], random_suffixes = [nil])
-    @source = "wowapi" if @source.nil?
+  def self.import(id, upgrade_levels = [nil,1,2,3,4], random_suffixes = nil, source = @source)
+    source = "wowapi" if source.nil?
     # options need to be upgrade_level = [nil,1,2,3,4]
     # same for random_suffix
+    random_suffixes = [nil] if random_suffixes.nil?
     item = nil
     begin
       random_suffixes.each do |suffix|
@@ -203,7 +252,7 @@ class Item
           db_item = Item.find_or_initialize_by(:remote_id => id, :upgrade_level => level, :random_suffix => suffix)
           if db_item.properties.nil?
             if item.nil?
-              item = WowArmory::Item.new(id, @source)
+              item = WowArmory::Item.new(id, source)
             end
             db_item.properties = item.as_json.with_indifferent_access
             item_stats = WowArmory::Itemstats.new(db_item.properties, suffix, level)
@@ -217,6 +266,9 @@ class Item
         end
       end
     rescue WowArmory::MissingDocument => e
+      puts id
+      puts e.message
+    rescue Exception => e
       puts id
       puts e.message
     end
