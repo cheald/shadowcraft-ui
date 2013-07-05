@@ -197,7 +197,8 @@ class Item
     #item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=501;maxle=550;ub=4;cr=21;crs=1;crv=0"
 
     item_ids += [ 87057, 86132, 86791, 87574, 81265, 81267, 75274, 87495, 77534, 77530 ] # some extra_items, mostly 5.0 trinkets
-    item_ids += [ 94523, 96409, 96037, 95665] #bad juju
+    item_ids += [ 94523, 96409, 96037, 95665] # bad juju
+    item_ids += [ 96741, 96369, 95997, 94512, 95625] # renatakis soul charm
     item_ids += [ 96174, 94511] # missing other trinkets
     item_ids += [ 96741, 96781] # heroic thunderforged, rune of reorigination and talisman of bloodlust still missing
     item_ids += [ 98148 ] # ilvl 600 cloak 5.3    
