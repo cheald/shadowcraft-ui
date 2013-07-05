@@ -1223,6 +1223,7 @@ class ShadowcraftGear
     $weights = $("#weights .inner")
     $weights.empty()
     for key, weight of all
+      continue if isNaN weight
       continue if weight == 0
       continue if key == "spell_hit"
       exist = $(".stat#weight_" + key)

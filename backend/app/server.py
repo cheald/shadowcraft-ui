@@ -538,14 +538,15 @@ class ShadowcraftComputation:
             out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc','rogue_t16_2pc','rogue_t16_4pc'])
             
             trinket_rankings = calculator.get_upgrades_ep_fast(self.trinkets)
+            trinketMapReverse = dict((v,k) for k,v in self.trinketMap.iteritems())
             out["trinket_ranking"] = {}
             for k in trinket_rankings:
-                for id in self.trinketMap:
-                    if self.trinketMap[id] == k:
-                        try:
-                            out["trinket_ranking"][id] = [floor(float(x) * 10) / 10 for x in trinket_rankings[k]]
-                        except ValueError:
-                            pass
+                if k in trinketMapReverse:
+                    id = trinketMapReverse[k]
+                    try:
+                        out["trinket_ranking"][id] = [floor(float(x) * 10) / 10 for x in trinket_rankings[k]]
+                    except ValueError:
+                        pass
             
             # Compute weapon ep
             out["mh_ep"], out["oh_ep"] = calculator.get_weapon_ep(dps=True, enchants=True)

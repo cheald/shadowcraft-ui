@@ -4032,6 +4032,9 @@
       $weights.empty();
       for (key in all) {
         weight = all[key];
+        if (isNaN(weight)) {
+          continue;
+        }
         if (weight === 0) {
           continue;
         }
