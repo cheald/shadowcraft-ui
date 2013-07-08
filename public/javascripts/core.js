@@ -3252,7 +3252,12 @@
       if (item.ilvl < 502) {
         return false;
       }
-      if (item.ilvl >= 502 && item.ilvl < 522 && item.tag !== "Raid Finder") {
+      if (item.ilvl >= 502 && item.ilvl < 522) {
+        if (item.name.indexOf("Tidesplitter Hood") >= 0) {
+          return true;
+        } else if (item.tag === "Raid Finder") {
+          return true;
+        }
         return false;
       }
       return true;

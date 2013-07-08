@@ -608,7 +608,12 @@ class ShadowcraftGear
     return false if not hasQuest(LEGENDARY_META_GEM_QUESTS)
     # TODO identify ToT items with a better method
     return false if item.ilvl < 502
-    return false if item.ilvl >= 502 and item.ilvl < 522 and item.tag != "Raid Finder"
+    if item.ilvl >= 502 and item.ilvl < 522
+      if item.name.indexOf("Tidesplitter Hood") >= 0
+        return true
+      else if item.tag == "Raid Finder"
+        return true
+      return false
     true
 
   # Check if the gems have equal stats to pretend that optimize gems 
