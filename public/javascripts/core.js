@@ -1132,6 +1132,7 @@
       popup.append("<a href='#' class='close-popup ui-dialog-titlebar-close ui-corner-all' role='button'><span class='ui-icon ui-icon-closethick'></span></a>");
       popup.find(".close-popup").click(function() {
         $(".popup").removeClass("visible");
+        $(".slots").find(".active").removeClass("active");
         return false;
       }).hover(function() {
         return $(this).addClass('ui-state-hover');
@@ -1159,6 +1160,7 @@
     popup.addClass("visible");
     ttlib.hide();
     body = popup.find(".body");
+    $(".popup #filter input").val("");
     if (!window.Touch) {
       $(".popup #filter input").focus();
     }
@@ -4890,7 +4892,7 @@
         $this = $(this);
         popup = $this.parents(".popup");
         search = $.trim($this.val().toLowerCase());
-        all = popup.find(".slot");
+        all = popup.find(".slot:not(.active)");
         show = all.filter(":regex(data-search, " + escape(search) + ")");
         hide = all.not(show);
         show.removeClass("hidden");

@@ -1940,7 +1940,7 @@ class ShadowcraftGear
       $this = $(this)
       popup = $this.parents(".popup")
       search = $.trim($this.val().toLowerCase())
-      all = popup.find(".slot")
+      all = popup.find(".slot:not(.active)")
       show = all.filter(":regex(data-search, " + escape(search) + ")")
       hide = all.not(show)
       show.removeClass("hidden")

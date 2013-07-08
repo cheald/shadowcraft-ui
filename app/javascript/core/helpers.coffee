@@ -138,6 +138,7 @@ showPopup = (popup) ->
     popup.append("<a href='#' class='close-popup ui-dialog-titlebar-close ui-corner-all' role='button'><span class='ui-icon ui-icon-closethick'></span></a>")
     popup.find(".close-popup").click(->
       $(".popup").removeClass("visible")
+      $(".slots").find(".active").removeClass("active")
       return false
     ).hover ->
       $(this).addClass('ui-state-hover')
@@ -161,6 +162,7 @@ showPopup = (popup) ->
   popup.addClass("visible")
   ttlib.hide()
   body = popup.find(".body")
+  $(".popup #filter input").val("")
   unless window.Touch
     $(".popup #filter input").focus()
   ot = popup.find(".active").get(0)
