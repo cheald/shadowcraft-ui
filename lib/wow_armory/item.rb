@@ -242,6 +242,12 @@ module WowArmory
       self.equip_location = doc.xpath("//inventorySlot").attr("id").text.to_i
       self.ilevel = doc.css("level").text.to_i
       self.icon = doc.css("icon").text.downcase
+      self.tag = ""
+      tooltip = doc.css("htmlTooltip").text
+      tag = tooltip.match(/<span style=\"color: #00FF00\">(Heroic|Heroic Thunderforged|Thunderforged|Flexible|Raid Finder|Season \d+)<\/span>/)
+      unless tag.nil?
+        self.tag = tag[1]
+      end
       unless eqstats["nsockets"].nil?
         self.sockets = []
         for num in 1..eqstats["nsockets"].to_i do

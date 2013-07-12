@@ -250,7 +250,7 @@ module WowArmory
     end
 
     def populate_stats
-      # 1. if gem, type data from community api
+      # 1. if gem, take data from community api
       # 2. if random_suffix, update item name
       # 3. set new ilevel based on upgrade_level and item quality
       # 4. populate item data
@@ -291,7 +291,7 @@ module WowArmory
         row = item_damage_one_hand[@properties[:ilevel].to_s]
         self.dps = row[1+@properties[:quality]].to_f
       end
-      puts "#{self.name} #{@properties[:ilevel]}"
+      puts "#{self.name} #{@properties[:tag]} #{@properties[:ilevel]}"
       puts self.stats.inspect
     end
 
