@@ -3871,7 +3871,7 @@
               opt.ttid = Math.floor(item.id / 1000000);
               restid = Math.floor(item.id / 1000);
             }
-            if (restid > 100000) {
+            if (restid > 1000000) {
               opt.ttid = Math.floor(restid / 1000);
             } else {
               opt.ttid = item.id;

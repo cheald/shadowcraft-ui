@@ -177,11 +177,11 @@ class Item
         import id,[nil,1,2,3,4],suffixes
       end
 
-      # ilvl 546
+      # ilvl 535
       suffixes = (-437..-433).to_a + (-446..-442).to_a
       random_item_ids = [102036, 102037, 102038, 102039, 102040, 102041, 102042, 102043]
       random_item_ids += [102003, 102004, 102005]
-      puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 546)"
+      puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 535)"
       random_item_ids.each do |id|
         import id,[nil,1,2,3,4],suffixes
       end
@@ -201,7 +201,10 @@ class Item
     item_ids += [ 96741, 96369, 95997, 94512, 95625] # renatakis soul charm
     item_ids += [ 96174, 94511] # missing other trinkets
     item_ids += [ 96741, 96781] # heroic thunderforged, rune of reorigination and talisman of bloodlust still missing
-    item_ids += [ 98148 ] # ilvl 600 cloak 5.3    
+    item_ids += [ 98148 ] # ilvl 600 cloak 5.3
+    if prefix == "ptr"
+      item_ids += [ 102248 ] # ilvl 600 legendary cloak 5.4
+    end
     puts "importing now #{item_ids.length} items"
     pos = 0
     item_ids.each do |id|
@@ -250,7 +253,11 @@ class Item
     begin
       random_suffixes.each do |suffix|
         upgrade_levels.each do |level|
-          db_item = Item.find_or_initialize_by(:remote_id => id, :upgrade_level => level, :random_suffix => suffix)
+          options = {}
+          options[:remote_id] = id
+          options[:upgrade_level] = level
+          options[:random_suffix] = suffix unless suffix.nil?
+          db_item = Item.find_or_initialize_by options
           if db_item.properties.nil?
             if item.nil?
               item = WowArmory::Item.new(id, source)
