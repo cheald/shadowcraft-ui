@@ -540,7 +540,6 @@ class ShadowcraftGear
     return false if gem.slot == "Hydraulic" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
     return false if (gemType == "Meta" or gemType == "Cogwheel" or gemType == "Hydraulic") and gem.slot != gemType
     return false if (gem.slot == "Meta" or gem.slot == "Cogwheel" or gem.slot == "Hydraulic") and gem.slot != gemType
-    #return false if (not hasAchievement(CHAPTER_3_ACHIEVEMENTS)) and gem.id == ShadowcraftGear.LEGENDARY_META_GEM
     true
 
   # Returns the EP value of a gem.  If it happens to require JC, it'll return
@@ -1842,8 +1841,13 @@ class ShadowcraftGear
               for i in [0..2]
                 if i >= socketlength
                   data.gear[slot]["g" + i] = null
-                else if data.gear[slot]["g" + i]? and not canUseGem Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot
-                  data.gear[slot]["g" + i] = null
+                else if data.gear[slot]["g" + i]?
+                  gem = Gems[data.gear[slot]["g" + i]]
+                  if gem
+                    if gem.id == ShadowcraftGear.LEGENDARY_META_GEM and not canUseLegendaryMetaGem(item)
+                      data.gear[slot]["g" + i] = null
+                    else if not canUseGem Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot
+                      data.gear[slot]["g" + i] = null
 
             else
               data.gear[slot]["g" + i] = null for i in [0..2]

@@ -4734,7 +4734,7 @@
       });
       $altslots.click($.delegate({
         ".slot": function(e) {
-          var $this, EnchantLookup, Gems, ItemLookup, data, enchant_id, gem_id, i, item, item_id, slot, socketlength, update, val;
+          var $this, EnchantLookup, Gems, ItemLookup, data, enchant_id, gem, gem_id, i, item, item_id, slot, socketlength, update, val;
           Shadowcraft.Console.purgeOld();
           ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
           EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
@@ -4759,8 +4759,15 @@
                 for (i = 0; i <= 2; i++) {
                   if (i >= socketlength) {
                     data.gear[slot]["g" + i] = null;
-                  } else if ((data.gear[slot]["g" + i] != null) && !canUseGem(Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot)) {
-                    data.gear[slot]["g" + i] = null;
+                  } else if (data.gear[slot]["g" + i] != null) {
+                    gem = Gems[data.gear[slot]["g" + i]];
+                    if (gem) {
+                      if (gem.id === ShadowcraftGear.LEGENDARY_META_GEM && !canUseLegendaryMetaGem(item)) {
+                        data.gear[slot]["g" + i] = null;
+                      } else if (!canUseGem(Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot)) {
+                        data.gear[slot]["g" + i] = null;
+                      }
+                    }
                   }
                 }
               } else {
