@@ -1593,7 +1593,7 @@ class ShadowcraftGear
 
       usedNames[gem.name] = gem.id
       continue if gem.name.indexOf("Perfect") == 0 and selected_id != gem.id
-      continue unless canUseGem gem, gemType
+      continue unless canUseGem gem, gemType, [], slot
       max ||= gem.__ep
       gEP = gem.__ep
       desc = statsToDesc(gem)

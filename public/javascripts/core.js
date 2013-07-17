@@ -4502,7 +4502,7 @@
         if (gem.name.indexOf("Perfect") === 0 && selected_id !== gem.id) {
           continue;
         }
-        if (!canUseGem(gem, gemType)) {
+        if (!canUseGem(gem, gemType, [], slot)) {
           continue;
         }
         max || (max = gem.__ep);
