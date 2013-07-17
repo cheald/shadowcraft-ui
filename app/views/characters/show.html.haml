@@ -142,7 +142,7 @@
             %button#reforgeAllExp Custom Auto-Reforge All
 
     #console-footer
-      %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :class => @character.properties['race'].downcase.gsub(/ /, "_")}
+      %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :target => "_blank", :class => @character.properties['race'].downcase.gsub(/ /, "_")}
         .img
           %img{:src => @character.portrait}
         %span.info
