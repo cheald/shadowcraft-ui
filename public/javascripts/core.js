@@ -2489,7 +2489,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, canUseLegendaryMetaGem, clearReforge, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getMaxUpgradeLevel, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, sumSlot, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, canUseLegendaryMetaGem, clearReforge, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getMaxUpgradeLevel, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -2632,7 +2632,7 @@
       var offsets;
       offsets = {};
       if (gear) {
-        sumSlot(gear, offsets, facet);
+        Shadowcraft.Gear.sumSlot(gear, offsets, facet);
       }
       return offsets;
     };
@@ -2746,7 +2746,7 @@
       stats[to] || (stats[to] = 0);
       return stats[to] += amt;
     };
-    sumSlot = function(gear, out, facets) {
+    ShadowcraftGear.prototype.sumSlot = function(gear, out, facets) {
       var EnchantLookup, Gems, ItemLookup, enchant, enchant_id, gem, gid, item, matchesAllSockets, socket, socketIndex, _ref;
       if ((gear != null ? gear.item_id : void 0) == null) {
         return;
@@ -2801,7 +2801,7 @@
       data = Shadowcraft.Data;
       for (i = 0, _len = SLOT_ORDER.length; i < _len; i++) {
         si = SLOT_ORDER[i];
-        sumSlot(data.gear[si], stats, facets);
+        Shadowcraft.Gear.sumSlot(data.gear[si], stats, facets);
       }
       this.statSum = stats;
       return stats;
@@ -3379,6 +3379,9 @@
         if (!gear) {
           continue;
         }
+        if (gear.locked) {
+          continue;
+        }
         item = ItemLookup[gear.item_id];
         gem_offset = statOffset(gear, FACETS.GEMS);
         fudgeOffsets(gem_offset);
@@ -3890,6 +3893,14 @@
           opt.enchant = enchant;
           opt.upgradable = item ? item.upgradable : false;
           opt.upgrade = upgrade;
+          if (item) {
+            opt.lock = true;
+            if (gear.locked) {
+              opt.lock_class = "lock_on";
+            } else {
+              opt.lock_class = "lock_off";
+            }
+          }
           buffer += Templates.itemSlot(opt);
         }
         $slots.get(ssi).innerHTML = buffer;
@@ -4608,6 +4619,30 @@
       Shadowcraft.Gear.updateDisplay();
       return true;
     };
+    clickItemLock = function(e) {
+      var $slot, ItemLookup, buf, data, equip_location, gear, item, selected_id, slot;
+      e.stopPropagation();
+      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
+      buf = clickSlot(this, "item_id");
+      $slot = buf[0];
+      slot = buf[1];
+      selected_id = parseInt($slot.attr("id"), 10);
+      equip_location = SLOT_INVTYPES[slot];
+      data = Shadowcraft.Data;
+      gear = data.gear[slot];
+      gear.locked || (gear.locked = false);
+      data.gear[slot].locked = !gear.locked;
+      item = ItemLookup[gear.item_id];
+      if (item) {
+        if (data.gear[slot].locked) {
+          Shadowcraft.Console.log("Locking " + item.name + " for Auto-Reforge and Optimize Gems");
+        } else {
+          Shadowcraft.Console.log("Unlocking " + item.name + " for Auto-Reforge and Optimize Gems");
+        }
+      }
+      Shadowcraft.Gear.updateDisplay();
+      return true;
+    };
     ShadowcraftGear.prototype.boot = function() {
       var TiniReforger, app, defaultScale, reset;
       app = this;
@@ -4655,6 +4690,7 @@
       }));
       $slots.click($.delegate({
         ".upgrade": clickItemUpgrade,
+        ".lock": clickItemLock,
         ".wowhead": clickWowhead,
         ".name": clickSlotName,
         ".enchant": clickSlotEnchant,
@@ -5057,10 +5093,23 @@
         stats[REFORGER_MAP[k]] = v;
       }
       items = _.map(Shadowcraft.Data.gear, function(e, k) {
-        var key, r, val, _ref;
+        var key, r, v, val, _name, _ref, _temp;
         r = {
           id: e.item_id + "-" + k
         };
+        if (e.locked) {
+          _temp = {};
+          Shadowcraft.Gear.sumSlot(e, _temp, f.REFORGE);
+          for (k in _temp) {
+            v = _temp[k];
+            if (__indexOf.call(REFORGABLE, k) < 0) {
+              continue;
+            }
+            stats[_name = REFORGER_MAP[k]] || (stats[_name] = 0);
+            stats[REFORGER_MAP[k]] += v;
+          }
+          return r;
+        }
         if (ItemLookup[e.item_id]) {
           _ref = ItemLookup[e.item_id].stats;
           for (key in _ref) {
@@ -5087,6 +5136,11 @@
         }
         return false;
       });
+      if (items.length < 2) {
+        Shadowcraft.Console.remove(".error");
+        Shadowcraft.Console.warn({}, "You must have at least two reforgable items to use the reforger", null, "error", "error");
+        return;
+      }
       caps = this.gear.getCaps();
       for (k in caps) {
         v = caps[k];

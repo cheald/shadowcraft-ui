@@ -78,6 +78,14 @@ class ShadowcraftTiniReforgeBackend
 
     items = _.map(Shadowcraft.Data.gear, (e, k) ->
       r = { id: e.item_id+"-"+k }
+      if e.locked # return empty item but add reforge item stats to stats
+        _temp = {}
+        Shadowcraft.Gear.sumSlot(e, _temp, f.REFORGE)
+        for k, v of _temp
+          continue unless k in REFORGABLE
+          stats[REFORGER_MAP[k]] ||= 0
+          stats[REFORGER_MAP[k]] += v
+        return r
       if ItemLookup[e.item_id]
         for key, val of ItemLookup[e.item_id].stats
           if REFORGABLE.indexOf(key) != -1
@@ -92,6 +100,11 @@ class ShadowcraftTiniReforgeBackend
         if REFORGABLE.indexOf(revert[k]) != -1
           return true
       return false
+
+    if items.length < 2
+      Shadowcraft.Console.remove(".error")
+      Shadowcraft.Console.warn {}, "You must have at least two reforgable items to use the reforger", null, "error", "error"
+      return
 
     caps = @gear.getCaps()
     for k, v of caps

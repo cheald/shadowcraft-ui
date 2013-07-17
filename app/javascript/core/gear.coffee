@@ -122,7 +122,7 @@ class ShadowcraftGear
   statOffset = (gear, facet) ->
     offsets = {}
     if gear
-      sumSlot(gear, offsets, facet)
+      Shadowcraft.Gear.sumSlot(gear, offsets, facet)
     return offsets
 
   reforgeAmount = (item, stat) ->
@@ -233,7 +233,7 @@ class ShadowcraftGear
     stats[to] ||= 0
     stats[to] += amt
 
-  sumSlot = (gear, out, facets) ->
+  sumSlot: (gear, out, facets) ->
     return unless gear?.item_id?
     facets ||= FACETS.ALL
 
@@ -273,7 +273,7 @@ class ShadowcraftGear
     data = Shadowcraft.Data
 
     for si, i in SLOT_ORDER
-      sumSlot(data.gear[si], stats, facets)
+      Shadowcraft.Gear.sumSlot(data.gear[si], stats, facets)
 
     @statSum = stats
     return stats
@@ -693,6 +693,7 @@ class ShadowcraftGear
       slotIndex = parseInt(slotIndex, 10)
       gear = data.gear[slotIndex]
       continue unless gear
+      continue if gear.locked
 
       item = ItemLookup[gear.item_id]
       gem_offset = statOffset(gear, FACETS.GEMS)
@@ -1088,7 +1089,12 @@ class ShadowcraftGear
         opt.enchant = enchant
         opt.upgradable = if item then item.upgradable else false
         opt.upgrade = upgrade
-
+        if item
+          opt.lock = true
+          if gear.locked
+            opt.lock_class = "lock_on"
+          else
+            opt.lock_class = "lock_off"
         buffer += Templates.itemSlot(opt)
       $slots.get(ssi).innerHTML = buffer
     this.updateStatsWindow()
@@ -1699,6 +1705,32 @@ class ShadowcraftGear
     Shadowcraft.Gear.updateDisplay()
     true
 
+  clickItemLock = (e) ->
+    e.stopPropagation()
+    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+    buf = clickSlot(this, "item_id")
+    $slot = buf[0]
+    slot = buf[1]
+    selected_id = parseInt $slot.attr("id"), 10
+    equip_location = SLOT_INVTYPES[slot]
+
+    data = Shadowcraft.Data
+
+    #slot = parseInt($(this).parent().data("slot"), 10)
+
+    gear = data.gear[slot]
+    gear.locked ||= false
+    data.gear[slot].locked = not gear.locked
+    item = ItemLookup[gear.item_id]
+    if item
+      if data.gear[slot].locked
+        Shadowcraft.Console.log("Locking " + item.name + " for Auto-Reforge and Optimize Gems")
+      else
+        Shadowcraft.Console.log("Unlocking " + item.name + " for Auto-Reforge and Optimize Gems")
+    #Shadowcraft.update()
+    Shadowcraft.Gear.updateDisplay()
+    true
+
   boot: ->
     app = this
     $slots = $(".slots")
@@ -1742,6 +1774,7 @@ class ShadowcraftGear
     #  Change out an item
     $slots.click $.delegate
       ".upgrade" : clickItemUpgrade
+      ".lock"    : clickItemLock
       ".wowhead" : clickWowhead
       ".name"    : clickSlotName
       ".enchant" : clickSlotEnchant

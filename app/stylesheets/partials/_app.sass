@@ -1140,7 +1140,7 @@ img.upgrade
 
 .slot
   position: relative
-  min-height: 48px
+  min-height: 60px
   padding: 2px 2px 1px
   margin: 10px
   margin-left: 66px
@@ -1193,6 +1193,16 @@ img.upgrade
       padding: 1px 2px
       color: #0f0
       +border-radius(2px)
+  .lock
+    opacity: 0.3
+    position: absolute
+    top: 55px
+    left: -24px
+    +transition(hover, 0.1s)
+    &.lock_on
+      opacity: 1.0
+    &:hover
+      opacity: 1.0
 
   .name
     font-weight: bold

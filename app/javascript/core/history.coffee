@@ -265,6 +265,11 @@ class ShadowcraftHistory
       ret.push options
       ret.push base36Encode(data.achievements || [])
       ret.push base36Encode(data.quests || [])
+      #lock = []
+      #for slot in [0..17]
+      #  gear = data.gear[slot] || {}
+      #  lock[slot] = if gear.locked then 1 else 0
+      #ret.push base36Encode(lock || [])
       return ret
 
   decompress_handlers =
@@ -340,4 +345,9 @@ class ShadowcraftHistory
         d.options.advanced = {}
         for v, i in advanced by 2
           d.options.advanced[v] = advanced[i+1]
+        
+      #if data[10]
+      #  lock = base36Decode(data[10])
+      #  for l, slot in lock
+      #    d.gear[slot].locked = l == 1
       return d
