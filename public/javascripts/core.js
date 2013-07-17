@@ -5062,15 +5062,16 @@
         url: ENGINE,
         data: json_encode(req),
         complete: function() {
-          deferred.resolve();
+          return deferred.resolve();
+        },
+        success: function(data) {
+          Shadowcraft.Gear.setReforges(data);
           Shadowcraft.update();
           return Shadowcraft.Gear.updateDisplay();
         },
-        success: function(data) {
-          return Shadowcraft.Gear.setReforges(data);
-        },
         error: function(xhr, textStatus, error) {
-          return flash(textStatus);
+          Shadowcraft.Console.remove(".error");
+          return Shadowcraft.Console.warn({}, "Timed out talking to reforging service", null, "error", "error");
         },
         dataType: "json",
         contentType: "application/json"

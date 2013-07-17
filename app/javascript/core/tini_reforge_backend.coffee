@@ -58,12 +58,13 @@ class ShadowcraftTiniReforgeBackend
       data: json_encode(req)
       complete: ->
         deferred.resolve()
-        Shadowcraft.update()
-        Shadowcraft.Gear.updateDisplay()
       success: (data) ->
         Shadowcraft.Gear.setReforges(data)
+        Shadowcraft.update()
+        Shadowcraft.Gear.updateDisplay()
       error: (xhr, textStatus, error) ->
-        flash textStatus
+        Shadowcraft.Console.remove(".error")
+        Shadowcraft.Console.warn {}, "Timed out talking to reforging service", null, "error", "error"
       dataType: "json",
       contentType: "application/json"
 
