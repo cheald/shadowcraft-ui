@@ -1783,7 +1783,7 @@
         force_mastery_over_haste: {
           name: "Force Mastery > Haste",
           type: "check",
-          desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP + 0.05",
+          desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP * 0.05",
           datatype: 'bool',
           'default': false
         }
@@ -5078,7 +5078,7 @@
       });
     };
     ShadowcraftTiniReforgeBackend.prototype.buildRequest = function(override) {
-      var ItemLookup, caps, ep, f, items, k, req, revert, stats, v, _ep, _stats;
+      var ItemLookup, caps, diff, ep, ep_new_sorted, ep_sorted, f, items, k, max, req, revert, stats, v, _ep, _stats;
       if (override == null) {
         override = false;
       }
@@ -5157,15 +5157,35 @@
           ep[k] = v;
         }
       }
+      ep_sorted = _.sortBy(_.keys(ep), function(k) {
+        return ep[k];
+      });
+      max = Math.max(ep.haste_rating, ep.mastery_rating, ep.crit_rating);
+      if (max < ep.expertise_rating && ep.agility < ep.expertise_rating) {
+        diff = ep.expertise_rating - max;
+        ep.expertise_rating = max + diff / 3;
+        ep.mh_expertise_rating = ep.expertise_rating - ep.oh_expertise_rating;
+      }
+      if (max < ep.yellow_hit && ep.agility < ep.yellow_hit) {
+        diff = ep.yellow_hit - max;
+        ep.yellow_hit = max + diff / 3;
+      }
       if (override) {
         ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override;
         ep.oh_expertise_rating = Shadowcraft.Data.options.advanced.oh_expertise_rating_override;
         ep.expertise_rating = ep.mh_expertise_rating + ep.oh_expertise_rating;
         if (Shadowcraft.Data.options.advanced.force_mastery_over_haste) {
           if (ep.haste_rating > ep.mastery_rating) {
-            ep.mastery_rating = ep.haste_rating + 0.05;
+            ep.mastery_rating = ep.haste_rating * 1.05;
           }
         }
+      }
+      ep_new_sorted = _.sortBy(_.keys(ep), function(k) {
+        return ep[k];
+      });
+      if (!override && !_.isEqual(ep_sorted, ep_new_sorted)) {
+        Shadowcraft.Console.remove(".error");
+        Shadowcraft.Console.warn({}, "It is possible the reforger does not gave correct results. Please send a report with your region, realm and character name", null, "error", "error");
       }
       req = {
         items: items,

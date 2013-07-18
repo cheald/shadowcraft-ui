@@ -118,13 +118,35 @@ class ShadowcraftTiniReforgeBackend
         ep[REFORGER_MAP[k]] = v
       else
         ep[k] = v
+
+    ep_sorted = _.sortBy _.keys(ep), (k) -> 
+      return ep[k]
+
+    # Temporary? fix for long computation time until the reforging service covers the
+    # cases where exp/yellowhit EP and the secondary stats having big gapes
+    # with reducing those big gaps the computation time drops significantly
+    max = Math.max ep.haste_rating,ep.mastery_rating,ep.crit_rating
+    if max < ep.expertise_rating and ep.agility < ep.expertise_rating
+      diff = ep.expertise_rating - max
+      ep.expertise_rating = max + diff / 3
+      ep.mh_expertise_rating = ep.expertise_rating - ep.oh_expertise_rating
+    if max < ep.yellow_hit and ep.agility < ep.yellow_hit
+      diff = ep.yellow_hit - max
+      ep.yellow_hit = max + diff / 3
+
     if override
       ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override
       ep.oh_expertise_rating = Shadowcraft.Data.options.advanced.oh_expertise_rating_override
       ep.expertise_rating = ep.mh_expertise_rating + ep.oh_expertise_rating
       if Shadowcraft.Data.options.advanced.force_mastery_over_haste
         if ep.haste_rating > ep.mastery_rating
-          ep.mastery_rating = ep.haste_rating + 0.05
+          ep.mastery_rating = ep.haste_rating * 1.05
+
+    ep_new_sorted = _.sortBy _.keys(ep), (k) -> 
+      return ep[k]
+    if not override and not _.isEqual(ep_sorted, ep_new_sorted)
+      Shadowcraft.Console.remove(".error")
+      Shadowcraft.Console.warn {}, "It is possible the reforger does not gave correct results. Please send a report with your region, realm and character name", null, "error", "error"
     req =
       items: items
       ep: ep

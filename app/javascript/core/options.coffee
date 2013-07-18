@@ -196,7 +196,7 @@ class ShadowcraftOptions
     @setup("#advanced #advancedReforge", "advanced", {
       mh_expertise_rating_override: {name: "MH Expertise", type: "input", desc: "Override MH expertise EP value", 'default': 0.7, datatype: 'float', min: 0.1, max: 5.0}
       oh_expertise_rating_override: {name: "OH Expertise", type: "input", desc: "Override OH expertise EP value", 'default': 0.3, datatype: 'float', min: 0.1, max: 5.0}
-      force_mastery_over_haste: {name: "Force Mastery > Haste", type: "check", desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP + 0.05", datatype: 'bool', 'default': false}
+      force_mastery_over_haste: {name: "Force Mastery > Haste", type: "check", desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP * 0.05", datatype: 'bool', 'default': false}
     })
 
   changeOption = (elem, inputType, val) ->
