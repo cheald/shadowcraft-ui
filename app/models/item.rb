@@ -225,17 +225,25 @@ class Item
     puts "importing now #{gem_ids.length} gems"
     pos = 0
     gem_ids.each do |id|
-      pos = pos + 1
-      puts "gem #{pos} of #{gem_ids.length}" if pos % 10 == 0
-      db_item = Item.find_or_initialize_by(:remote_id => id)
-      if db_item.properties.nil?
-        item = WowArmory::Item.new(id)
-        db_item.properties = item.as_json.with_indifferent_access
-        db_item.equip_location = db_item.properties["equip_location"]
-        db_item.is_gem = !db_item.properties["gem_slot"].blank?
-        if db_item.new_record?
-          db_item.save
+      begin
+        pos = pos + 1
+        puts "gem #{pos} of #{gem_ids.length}" if pos % 10 == 0
+        db_item = Item.find_or_initialize_by(:remote_id => id)
+        if db_item.properties.nil?
+          item = WowArmory::Item.new(id)
+          db_item.properties = item.as_json.with_indifferent_access
+          db_item.equip_location = db_item.properties["equip_location"]
+          db_item.is_gem = !db_item.properties["gem_slot"].blank?
+          if db_item.new_record?
+            db_item.save
+          end
         end
+      rescue WowArmory::MissingDocument => e
+        puts id
+        puts e.message
+      rescue Exception => e
+        puts id
+        puts e.message
       end
     end
   end
