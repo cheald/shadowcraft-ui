@@ -1416,7 +1416,7 @@ class ShadowcraftGear
       #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
       continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and l.id != selected_id
       continue if l.upgrade_level > getMaxUpgradeLevel(l)
-      continue if l.suffix and not Shadowcraft.Data.options.general.show_random_items and l.id != selected_id
+      continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and l.id != selected_id
       loc.push l
 
     #slot = parseInt($(this).parent().data("slot"), 10)

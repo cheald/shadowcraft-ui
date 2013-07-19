@@ -4296,7 +4296,7 @@
         if (l.upgrade_level > getMaxUpgradeLevel(l)) {
           continue;
         }
-        if (l.suffix && !Shadowcraft.Data.options.general.show_random_items && l.id !== selected_id) {
+        if (l.suffix && Shadowcraft.Data.options.general.show_random_items > l.ilvl && l.id !== selected_id) {
           continue;
         }
         loc.push(l);
