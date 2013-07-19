@@ -5157,8 +5157,8 @@
           ep[k] = v;
         }
       }
-      ep_sorted = _.sortBy(_.keys(ep), function(k) {
-        return ep[k];
+      ep_sorted = _.sortBy(REFORGABLE, function(k) {
+        return ep[REFORGER_MAP[k]];
       });
       max = Math.max(ep.haste_rating, ep.mastery_rating, ep.crit_rating);
       if (max < ep.expertise_rating && ep.agility < ep.expertise_rating) {
@@ -5180,8 +5180,8 @@
           }
         }
       }
-      ep_new_sorted = _.sortBy(_.keys(ep), function(k) {
-        return ep[k];
+      ep_new_sorted = _.sortBy(REFORGABLE, function(k) {
+        return ep[REFORGER_MAP[k]];
       });
       if (!override && !_.isEqual(ep_sorted, ep_new_sorted)) {
         Shadowcraft.Console.remove(".error");

@@ -119,8 +119,8 @@ class ShadowcraftTiniReforgeBackend
       else
         ep[k] = v
 
-    ep_sorted = _.sortBy _.keys(ep), (k) -> 
-      return ep[k]
+    ep_sorted = _.sortBy REFORGABLE, (k) -> 
+      return ep[REFORGER_MAP[k]]
 
     # Temporary? fix for long computation time until the reforging service covers the
     # cases where exp/yellowhit EP and the secondary stats having big gapes
@@ -142,8 +142,8 @@ class ShadowcraftTiniReforgeBackend
         if ep.haste_rating > ep.mastery_rating
           ep.mastery_rating = ep.haste_rating * 1.05
 
-    ep_new_sorted = _.sortBy _.keys(ep), (k) -> 
-      return ep[k]
+    ep_new_sorted = _.sortBy REFORGABLE, (k) -> 
+      return ep[REFORGER_MAP[k]]
     if not override and not _.isEqual(ep_sorted, ep_new_sorted)
       Shadowcraft.Console.remove(".error")
       Shadowcraft.Console.warn {}, "It is possible the reforger does not gave correct results. Please send a report with your region, realm and character name", null, "error", "error"
