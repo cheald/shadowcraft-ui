@@ -1106,6 +1106,9 @@
         if (!item) {
           continue;
         }
+        if (item.name.indexOf("Rune of Re-Origination") !== -1) {
+          Shadowcraft.Console.warn(item, "is not fully supported but also bad for rogues. It is recommended to not use this trinket.", null, "warn", "items");
+        }
         enchant = EnchantLookup[gear.enchant];
         enchantable = EnchantSlots[item.equip_location] !== void 0;
         if (!data.options.professions.enchanting && item.equip_location === 11) {
