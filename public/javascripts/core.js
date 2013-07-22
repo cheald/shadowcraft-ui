@@ -1090,6 +1090,9 @@
           if ((i === 0 || i === 5) && row === ".") {
             Shadowcraft.Console.warn({}, "Level " + (i + 1) * 15 + " Talent not set", null, 'warn', 'talents');
           }
+          if (i === 5 && row === "0") {
+            Shadowcraft.Console.warn({}, "Talent Shuriken Toss is not fully supported by Shadowcraft. It is recommended to not use this talent.", null, 'warn', 'talents');
+          }
         }
       }
     }
