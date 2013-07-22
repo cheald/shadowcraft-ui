@@ -248,6 +248,19 @@ module WowArmory
       unless tag.nil?
         self.tag = tag[1]
       end
+      if stats["classs"] == 3 # gem
+        puts "Gem = True"
+        self.stats = {}
+        eqstats.each do |stat, val|
+         stat2 = WOWHEAD_MAP[stat]
+         unless stat2.nil?
+           self.stats[stat2] = val
+         end
+        end
+        puts self.stats.inspect
+      elsif stats["classs"] == 4
+        self.armor_class = ARMOR_CLASS[stats["subclass"]]
+      end
       unless eqstats["nsockets"].nil?
         self.sockets = []
         for num in 1..eqstats["nsockets"].to_i do

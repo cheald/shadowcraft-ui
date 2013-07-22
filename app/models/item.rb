@@ -215,7 +215,7 @@ class Item
     true
   end
 
-  def self.populate_gems
+  def self.populate_gems(source = "wowapi")
     gem_ids = get_ids_from_wowhead "http://www.wowhead.com/items=3?filter=qu=2:3;minle=86;maxle=90"
     gem_ids += get_ids_from_wowhead  "http://www.wowhead.com/items=3?filter=qu=2:3:4;minle=86;maxle=90;cr=99;crs=11;crv=0"
 
@@ -230,7 +230,7 @@ class Item
         puts "gem #{pos} of #{gem_ids.length}" if pos % 10 == 0
         db_item = Item.find_or_initialize_by(:remote_id => id)
         if db_item.properties.nil?
-          item = WowArmory::Item.new(id)
+          item = WowArmory::Item.new(id, source)
           db_item.properties = item.as_json.with_indifferent_access
           db_item.equip_location = db_item.properties["equip_location"]
           db_item.is_gem = !db_item.properties["gem_slot"].blank?
