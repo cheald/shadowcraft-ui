@@ -728,7 +728,7 @@ class ShadowcraftGear
     copy = $.extend(true, [], Gems)
     list = []
     for gem in copy
-      continue unless gem.requires? or gem.requires?.profession == "jewelcrafter"
+      continue unless gem.requires? or gem.requires?.profession == "jewelcrafting"
       gem.__color_ep = gem.__color_ep || get_ep(gem)
       if gem.__color_ep and gem.__color_ep > 1
         list.push gem
@@ -1574,6 +1574,12 @@ class ShadowcraftGear
     gemType = item.sockets[gemSlot]
     selected_id = data.gear[slot]["g" + gemSlot]
 
+    otherGearGems = []
+    for i in [0..2]
+      continue if i == gemSlot
+      if data.gear[slot]["g" + i]
+        otherGearGems.push data.gear[slot]["g" + i]
+
     for gem in GemList
       gem.__ep = get_ep(gem) + (if gem[item.sockets[gemSlot]] then socketEPBonus else 0)
     GemList.sort(__epSort)
@@ -1593,7 +1599,8 @@ class ShadowcraftGear
 
       usedNames[gem.name] = gem.id
       continue if gem.name.indexOf("Perfect") == 0 and selected_id != gem.id
-      continue unless canUseGem gem, gemType, [], slot
+      continue if gem.stats["expertise"] > 0
+      continue unless canUseGem gem, gemType, otherGearGems, slot
       max ||= gem.__ep
       gEP = gem.__ep
       desc = statsToDesc(gem)

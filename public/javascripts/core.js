@@ -3434,7 +3434,7 @@
       list = [];
       for (_i = 0, _len = copy.length; _i < _len; _i++) {
         gem = copy[_i];
-        if (!((gem.requires != null) || ((_ref = gem.requires) != null ? _ref.profession : void 0) === "jewelcrafter")) {
+        if (!((gem.requires != null) || ((_ref = gem.requires) != null ? _ref.profession : void 0) === "jewelcrafting")) {
           continue;
         }
         gem.__color_ep = gem.__color_ep || get_ep(gem);
@@ -4466,7 +4466,7 @@
       return false;
     };
     clickSlotGem = function() {
-      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemCt, gemSlot, gemType, item, max, selected_id, slot, socketEPBonus, socketlength, usedNames, _i, _j, _len, _len2;
+      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemCt, gemSlot, gemType, i, item, max, otherGearGems, selected_id, slot, socketEPBonus, socketlength, usedNames, _i, _j, _len, _len2;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       GemList = Shadowcraft.ServerData.GEMS;
       data = Shadowcraft.Data;
@@ -4483,6 +4483,15 @@
       $.data(document.body, "gem-slot", gemSlot);
       gemType = item.sockets[gemSlot];
       selected_id = data.gear[slot]["g" + gemSlot];
+      otherGearGems = [];
+      for (i = 0; i <= 2; i++) {
+        if (i === gemSlot) {
+          continue;
+        }
+        if (data.gear[slot]["g" + i]) {
+          otherGearGems.push(data.gear[slot]["g" + i]);
+        }
+      }
       for (_i = 0, _len = GemList.length; _i < _len; _i++) {
         gem = GemList[_i];
         gem.__ep = get_ep(gem) + (gem[item.sockets[gemSlot]] ? socketEPBonus : 0);
@@ -4508,7 +4517,10 @@
         if (gem.name.indexOf("Perfect") === 0 && selected_id !== gem.id) {
           continue;
         }
-        if (!canUseGem(gem, gemType, [], slot)) {
+        if (gem.stats["expertise"] > 0) {
+          continue;
+        }
+        if (!canUseGem(gem, gemType, otherGearGems, slot)) {
           continue;
         }
         max || (max = gem.__ep);
