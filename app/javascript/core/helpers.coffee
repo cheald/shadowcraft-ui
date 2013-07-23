@@ -91,7 +91,7 @@ checkForWarnings = (section) ->
         if i in [0,5] and row == "."
           Shadowcraft.Console.warn({}, "Level " +  (i+1)*15 + " Talent not set", null, 'warn', 'talents')
         if i == 5 and row == "0"
-          Shadowcraft.Console.warn({}, "Talent Shuriken Toss is not fully supported by Shadowcraft. It is recommended to not use this talent.", null, 'warn', 'talents')
+          Shadowcraft.Console.warn({}, "Talent Shuriken Toss is not fully supported by Shadowcraft.", "It is recommended to not use this talent.", 'warn', 'talents')
 
   if section == undefined or section == "gear"
     # Warn items
@@ -101,7 +101,7 @@ checkForWarnings = (section) ->
       item = ItemLookup[gear.item_id]
       continue unless item
       if item.name.indexOf("Rune of Re-Origination") != -1
-        Shadowcraft.Console.warn(item, "is not fully supported but also bad for rogues. It is recommended to not use this trinket.", null, "warn", "items")
+        Shadowcraft.Console.warn(item, "is not fully supported but also bad for rogues.", "It is recommended to not use this trinket.", "warn", "items")
       enchant = EnchantLookup[gear.enchant]
       enchantable = EnchantSlots[item.equip_location] != undefined
       if (!data.options.professions.enchanting && item.equip_location == 11)

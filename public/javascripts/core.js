@@ -1091,7 +1091,7 @@
             Shadowcraft.Console.warn({}, "Level " + (i + 1) * 15 + " Talent not set", null, 'warn', 'talents');
           }
           if (i === 5 && row === "0") {
-            Shadowcraft.Console.warn({}, "Talent Shuriken Toss is not fully supported by Shadowcraft. It is recommended to not use this talent.", null, 'warn', 'talents');
+            Shadowcraft.Console.warn({}, "Talent Shuriken Toss is not fully supported by Shadowcraft.", "It is recommended to not use this talent.", 'warn', 'talents');
           }
         }
       }
@@ -1110,7 +1110,7 @@
           continue;
         }
         if (item.name.indexOf("Rune of Re-Origination") !== -1) {
-          Shadowcraft.Console.warn(item, "is not fully supported but also bad for rogues. It is recommended to not use this trinket.", null, "warn", "items");
+          Shadowcraft.Console.warn(item, "is not fully supported but also bad for rogues.", "It is recommended to not use this trinket.", "warn", "items");
         }
         enchant = EnchantLookup[gear.enchant];
         enchantable = EnchantSlots[item.equip_location] !== void 0;
