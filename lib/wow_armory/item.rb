@@ -106,6 +106,20 @@ module WowArmory
       32 => "Cogwheel"
     }
 
+    GEM_SUBCLASS_MAP = {
+      0 => "Red",
+      1 => "Blue",
+      2 => "Yellow",
+      3 => "Purple",
+      4 => "Green",
+      5 => "Orange",
+      6 => "Meta",
+      #7 => "Simple",
+      8 => "Prismatic",
+      9 => "Hydraulic",
+      10 => "Cogwheel"
+    }
+
     EQUIP_LOCATIONS = {
       "head" => 1,
       "neck" => 2,
@@ -250,6 +264,7 @@ module WowArmory
       end
       if stats["classs"] == 3 # gem
         puts "Gem = True"
+        self.gem_slot = GEM_SUBCLASS_MAP[stats["subclass"].to_i]
         self.stats = {}
         eqstats.each do |stat, val|
          stat2 = WOWHEAD_MAP[stat]
