@@ -92,6 +92,9 @@ class ShadowcraftApp
       try
         @Data = @History.load(data)
         if patch
+          # clear all selected professions first
+          # because data.options does not contain the elements not selected
+          @Data.options.professions = []
           data.options = Object.deepExtend(@Data.options, data.options)
           @Data = _.extend(@Data, data)
           
