@@ -370,12 +370,16 @@
         case 54:
           port = 8880;
           endpoint = "engine-5.4";
-          break;
+          return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
         default:
           port = 8881;
           endpoint = "engine-5.2";
+          if (window.location.host.match(/:/)) {
+            return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
+          } else {
+            return "http://" + window.location.hostname + "/" + endpoint;
+          }
       }
-      return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
     };
     function ShadowcraftBackend(app) {
       this.app = app;

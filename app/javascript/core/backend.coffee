@@ -6,11 +6,14 @@ class ShadowcraftBackend
       when 54
         port = 8880
         endpoint = "engine-5.4"
+        return "http://#{window.location.hostname}:#{port}/#{endpoint}"
       else
         port = 8881
         endpoint = "engine-5.2"
-
-    "http://#{window.location.hostname}:#{port}/#{endpoint}"
+        if window.location.host.match(/:/)
+          return "http://#{window.location.hostname}:#{port}/#{endpoint}"
+        else
+          return "http://#{window.location.hostname}/#{endpoint}"
 
   constructor: (@app) ->
     @app.Backend = this
