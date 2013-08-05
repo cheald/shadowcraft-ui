@@ -115,7 +115,7 @@
         try {
           this.Data = this.History.load(data);
           if (patch) {
-            this.Data.options.professions = [];
+            this.Data.options.professions = {};
             data.options = Object.deepExtend(this.Data.options, data.options);
             this.Data = _.extend(this.Data, data);
             this.Data.active = data.active;
