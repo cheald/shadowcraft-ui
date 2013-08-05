@@ -339,115 +339,115 @@ long,str,str,long,long,long,long,long,long,long,long,long,flags,
 369,"of the Rockslab","5.3 Rockslab - Str Tank",0,0,4059,2815,0,7889,5259,3506,3506,0,
 370,"of the Earthshaker","5.3 Earthshaker - Str DPS",0,0,3727,2822,0,7889,5259,3506,3506,0,
 371,"of the Earthfall","5.3 Earthfall - Str DPS",0,0,2822,3726,0,7889,5259,3506,3506,0,
-377,"of the Decimator","5.4 (ilvl 496) - 1.5 socket cost - Crit",2822,0,0,0,0,4170,0,0,0,0,
-378,"of the Unerring","5.4 (ilvl 496) - 1.5 socket cost - Hit",3727,0,0,0,0,4170,0,0,0,0,
-379,"of the Adroit","5.4 (ilvl 496) - 1.5 socket cost - Expertise",4058,0,0,0,0,4170,0,0,0,0,
-380,"of the Savant","5.4 (ilvl 496) - 1.5 socket cost - Mastery",4059,0,0,0,0,4170,0,0,0,0,
-381,"of the Impatient","5.4 (ilvl 496) - 1.5 socket cost - Haste",3726,0,0,0,0,4170,0,0,0,0,
-382,"of the Bladewall","5.4 (ilvl 496) - 1.5 socket cost - Parry",4060,0,0,0,0,4170,0,0,0,0,
-383,"of the Untouchable","5.4 (ilvl 496) - 1.5 socket cost - Dodge",2815,0,0,0,0,4170,0,0,0,0,
-384,"of the Pious","5.4 (ilvl 496) - 1.5 socket cost - Spirit",2806,0,0,0,0,4170,0,0,0,0,
-385,"of the Landslide","5.4 (ilvl 496) - 1.5 socket cost - Landslide - Str Versa",0,0,3727,4058,0,0,0,2990,2990,0,
-386,"of the Stormblast","5.4 (ilvl 496) - 1.5 socket cost - Stormblast - Agi",0,0,3727,2822,0,7889,5259,2990,2990,0,
-387,"of the Galeburst","5.4 (ilvl 496) - 1.5 socket cost - Galeburst - Agi",0,0,3727,4058,0,7889,5259,2990,2990,0,
-388,"of the Windflurry","5.4 (ilvl 496) - 1.5 socket cost - Windflurry - Agi",0,0,2822,3726,0,7889,5259,2990,2990,0,
-389,"of the Windstorm","5.4 (ilvl 496) - 1.5 socket cost - Windstorm - Agi",0,0,2822,4059,0,7889,5259,2990,2990,0,
-390,"of the Zephyr","5.4 (ilvl 496) - 1.5 socket cost - Zephyr - Agi",0,0,3726,4059,0,7889,5259,2990,2990,0,
-391,"of the Wildfire","5.4 (ilvl 496) - 1.5 socket cost - Wildfire - Int Hit",0,0,3727,2822,0,7889,5259,2990,2990,0,
-392,"of the Flameblaze","5.4 (ilvl 496) - 1.5 socket cost - Flameblaze - Int Hit",0,0,4059,3727,0,7889,5259,2990,2990,0,
-393,"of the Fireflash","5.4 (ilvl 496) - 1.5 socket cost - Fireflash - Int Versa",0,0,2822,3726,0,7889,5259,2990,2990,0,
-394,"of the Feverflare","5.4 (ilvl 496) - 1.5 socket cost - Feverflare - Int Versa",0,0,3726,4059,0,7889,5259,2990,2990,0,
-395,"of the Undertow","5.4 (ilvl 496) - 1.5 socket cost - Undertow - Int Spirit",0,0,3726,2806,0,7889,5259,2990,2990,0,
-396,"of the Wavecrest","5.4 (ilvl 496) - 1.5 socket cost - Wavecrest - Int Spirit",0,0,4059,2806,0,7889,5259,2990,2990,0,
-397,"of the Earthbreaker","5.4 (ilvl 496) - 1.5 socket cost - Earthbreaker - Str DPS",0,0,2822,4059,0,7889,5259,2990,2990,0,
-398,"of the Faultline","5.4 (ilvl 496) - 1.5 socket cost - Faultline - Str DPS",0,0,3726,4059,0,7889,5259,2990,2990,0,
-399,"of the Mountainbed","5.4 (ilvl 496) - 1.5 socket cost - Mountainbed - Str Vers",0,0,4059,4058,0,7889,5259,2990,2990,0,
-400,"of the Bedrock","5.4 (ilvl 496) - 1.5 socket cost - Bedrock - Str Tank",0,0,4059,4060,0,7889,5259,2990,2990,0,
-401,"of the Bouldercrag","5.4 (ilvl 496) - 1.5 socket cost - Bouldercrag - Str Tank",0,0,2815,4060,0,7889,5259,2990,2990,0,
-402,"of the Rockslab","5.4 (ilvl 496) - 1.5 socket cost - Rockslab - Str Tank",0,0,4059,2815,0,7889,5259,2990,2990,0,
-403,"of the Earthshaker","5.4 (ilvl 496) - 1.5 socket cost - Earthshaker - Str DPS",0,0,3727,2822,0,7889,5259,3506,3506,0,
-404,"of the Earthfall","5.4 (ilvl 496) - 1.5 socket cost - Earthfall - Str DPS",0,0,2822,3726,0,7889,5259,3506,3506,0,
-405,"of the Decimator","5.4 (ilvl 528) - 1.5 socket cost - Crit",2822,0,0,0,0,4435,0,0,0,0,
-406,"of the Unerring","5.4 (ilvl 528) - 1.5 socket cost - Hit",3727,0,0,0,0,4435,0,0,0,0,
-407,"of the Adroit","5.4 (ilvl 528) - 1.5 socket cost - Expertise",4058,0,0,0,0,4435,0,0,0,0,
-408,"of the Savant","5.4 (ilvl 528) - 1.5 socket cost - Mastery",4059,0,0,0,0,4435,0,0,0,0,
-409,"of the Impatient"," 5.4 (ilvl 528) - 1.5 socket cost - Haste",3726,0,0,0,0,4435,0,0,0,0,
-410,"of the Bladewall","5.4 (ilvl 528) - 1.5 socket cost - Parry",4060,0,0,0,0,4435,0,0,0,0,
-411,"of the Untouchable","5.4 (ilvl 528) - 1.5 socket cost - Dodge",2815,0,0,0,0,4435,0,0,0,0,
-412,"of the Pious","5.4 (ilvl 528) - 1.5 socket cost - Spirit",2806,0,0,0,0,4435,0,0,0,0,
-413,"of the Landslide","5.4 (ilvl 528) - 1.5 socket cost - Landslide - Str Versa",0,0,3727,4058,0,0,0,3125,3125,0,
-414,"of the Stormblast","5.4 (ilvl 528) - 1.5 socket cost - Stormblast - Agi",0,0,3727,2822,0,7889,5259,3125,3125,0,
-415,"of the Galeburst","5.4 (ilvl 528) - 1.5 socket cost - Galeburst - Agi",0,0,3727,4058,0,7889,5259,3125,3125,0,
-416,"of the Windflurry","5.4 (ilvl 528) - 1.5 socket cost - Windflurry - Agi",0,0,2822,3726,0,7889,5259,3125,3125,0,
-417,"of the Windstorm","5.4 (ilvl 528) - 1.5 socket cost - Windstorm - Agi",0,0,2822,4059,0,7889,5259,3125,3125,0,
-418,"of the Zephyr","5.4 (ilvl 528) - 1.5 socket cost - Zephyr - Agi",0,0,3726,4059,0,7889,5259,3125,3125,0,
-419,"of the Wildfire","5.4 (ilvl 528) - 1.5 socket cost - Wildfire - Int Hit",0,0,3727,2822,0,7889,5259,3125,3125,0,
-420,"of the Flameblaze","5.4 (ilvl 528) - 1.5 socket cost - Flameblaze - Int Hit",0,0,4059,3727,0,7889,5259,3125,3125,0,
-421,"of the Fireflash","5.4 (ilvl 528) - 1.5 socket cost - Fireflash - Int Versa",0,0,2822,3726,0,7889,5259,3125,3125,0,
-422,"of the Feverflare","5.4 (ilvl 528) - 1.5 socket cost - Feverflare - Int Versa",0,0,3726,4059,0,7889,5259,3125,3125,0,
-423,"of the Undertow","5.4 (ilvl 528) - 1.5 socket cost - Undertow - Int Spirit",0,0,3726,2806,0,7889,5259,3125,3125,0,
-424,"of the Wavecrest","5.4 (ilvl 528) - 1.5 socket cost - Wavecrest - Int Spirit",0,0,4059,2806,0,7889,5259,3125,3125,0,
-425,"of the Earthbreaker","5.4 (ilvl 528) - 1.5 socket cost - Earthbreaker - Str DPS",0,0,2822,4059,0,7889,5259,3125,3125,0,
-426,"of the Faultline","5.4 (ilvl 528) - 1.5 socket cost - Faultline - Str DPS",0,0,3726,4059,0,7889,5259,3125,3125,0,
-427,"of the Mountainbed","5.4 (ilvl 528) - 1.5 socket cost - Mountainbed - Str Vers",0,0,4059,4058,0,7889,5259,3125,3125,0,
-428,"of the Bedrock","5.4 (ilvl 528) - 1.5 socket cost - Bedrock - Str Tank",0,0,4059,4060,0,7889,5259,3125,3125,0,
-429,"of the Bouldercrag","5.4 (ilvl 528) - 1.5 socket cost - Bouldercrag - Str Tank",0,0,2815,4060,0,7889,5259,3125,3125,0,
-430,"of the Rockslab","5.4 (ilvl 528) - 1.5 socket cost - Rockslab - Str Tank",0,0,4059,2815,0,7889,5259,3125,3125,0,
-431,"of the Earthshaker","5.4 (ilvl 528) - 1.5 socket cost - Earthshaker - Str DPS",0,0,3727,2822,0,7889,5259,3125,3125,0,
-432,"of the Earthfall","5.4 (ilvl 528) - 1.5 socket cost - Earthfall - Str DPS",0,0,2822,3726,0,7889,5259,3125,3125,0,
-433,"of the Decimator","5.4 (ilvl 546) - 1.5 socket cost - Crit",2822,0,0,0,0,4435,0,0,0,0,
-434,"of the Unerring","5.4 (ilvl 546) - 1.5 socket cost - Hit",3727,0,0,0,0,4435,0,0,0,0,
-435,"of the Adroit","5.4 (ilvl 546) - 1.5 socket cost - Expertise",4058,0,0,0,0,4435,0,0,0,0,
-436,"of the Savant","5.4 (ilvl 546) - 1.5 socket cost - Mastery",4059,0,0,0,0,4435,0,0,0,0,
-437,"of the Impatient","5.4 (ilvl 546) - 1.5 socket cost - Haste",3726,0,0,0,0,4435,0,0,0,0,
-438,"of the Bladewall","5.4 (ilvl 546) - 1.5 socket cost - Parry",4060,0,0,0,0,4435,0,0,0,0,
-439,"of the Untouchable","5.4 (ilvl 546) - 1.5 socket cost - Dodge",2815,0,0,0,0,4435,0,0,0,0,
-440,"of the Pious","5.4 (ilvl 546) - 1.5 socket cost - Spirit",2806,0,0,0,0,4435,0,0,0,0,
-441,"of the Landslide","5.4 (ilvl 546) - 1.5 socket cost - Landslide - Str Versa",0,0,3727,4058,0,0,0,3180,3180,0,
-442,"of the Stormblast","5.4 (ilvl 546) - 1.5 socket cost - Stormblast - Agi",0,0,3727,2822,0,7889,5259,3180,3180,0,
-443,"of the Galeburst","5.4 (ilvl 546) - 1.5 socket cost - Galeburst - Agi",0,0,3727,4058,0,7889,5259,3180,3180,0,
-444,"of the Windflurry","5.4 (ilvl 546) - 1.5 socket cost - Windflurry - Agi",0,0,2822,3726,0,7889,5259,3180,3180,0,
-445,"of the Windstorm","5.4 (ilvl 546) - 1.5 socket cost - Windstorm - Agi",0,0,2822,4059,0,7889,5259,3180,3180,0,
-446,"of the Zephyr","5.4 (ilvl 546) - 1.5 socket cost - Zephyr - Agi",0,0,3726,4059,0,7889,5259,3180,3180,0,
-447,"of the Wildfire","5.4 (ilvl 546) - 1.5 socket cost - Wildfire - Int Hit",0,0,3727,2822,0,7889,5259,3180,3180,0,
-448,"of the Flameblaze","5.4 (ilvl 546) - 1.5 socket cost - Flameblaze - Int Hit",0,0,4059,3727,0,7889,5259,3180,3180,0,
-449,"of the Fireflash","5.4 (ilvl 546) - 1.5 socket cost - Fireflash - Int Versa",0,0,2822,3726,0,7889,5259,3180,3180,0,
-450,"of the Feverflare","5.4 (ilvl 546) - 1.5 socket cost - Feverflare - Int Versa",0,0,3726,4059,0,7889,5259,3180,3180,0,
-451,"of the Undertow","5.4 (ilvl 546) - 1.5 socket cost - Undertow - Int Spirit",0,0,3726,2806,0,7889,5259,3180,3180,0,
-452,"of the Wavecrest","5.4 (ilvl 546) - 1.5 socket cost - Wavecrest - Int Spirit",0,0,4059,2806,0,7889,5259,3180,3180,0,
-453,"of the Earthbreaker","5.4 (ilvl 546) - 1.5 socket cost - Earthbreaker - Str DPS",0,0,2822,4059,0,7889,5259,3180,3180,0,
-454,"of the Faultline","5.4 (ilvl 546) - 1.5 socket cost - Faultline - Str DPS",0,0,3726,4059,0,7889,5259,3180,3180,0,
-455,"of the Mountainbed","5.4 (ilvl 546) - 1.5 socket cost - Mountainbed - Str Vers",0,0,4059,4058,0,7889,5259,3180,3180,0,
-456,"of the Bedrock","5.4 (ilvl 546) - 1.5 socket cost - Bedrock - Str Tank",0,0,4059,4060,0,7889,5259,3180,3180,0,
-457,"of the Bouldercrag","5.4 (ilvl 546) - 1.5 socket cost - Bouldercrag - Str Tank",0,0,2815,4060,0,7889,5259,3180,3180,0,
-458,"of the Rockslab","5.4 (ilvl 546) - 1.5 socket cost - Rockslab - Str Tank",0,0,4059,2815,0,7889,5259,3180,3180,0,
-459,"of the Earthshaker","5.4 (ilvl 546) - 1.5 socket cost - Earthshaker - Str DPS",0,0,3727,2822,0,7889,5259,3180,3180,0,
-460,"of the Earthfall","5.4 (ilvl 546) - 1.5 socket cost - Earthfall - Str DPS",0,0,2822,3726,0,7889,5259,3180,3180,0,
-461,"of the Decimator","5.4 (ilvl 496) - 0.5 socket cost - Crit",2822,0,0,0,0,4345,0,0,0,0,
-462,"of the Unerring","5.4 (ilvl 496) - 0.5 socket cost - Hit",3727,0,0,0,0,4345,0,0,0,0,
-463,"of the Adroit","5.4 (ilvl 496) - 0.5 socket cost - Expertise",4058,0,0,0,0,4345,0,0,0,0,
-464,"of the Savant","5.4 (ilvl 496) - 0.5 socket cost - Mastery",4059,0,0,0,0,4345,0,0,0,0,
-465,"of the Impatient","5.4 (ilvl 496) - 0.5 socket cost - Haste",3726,0,0,0,0,4345,0,0,0,0,
-466,"of the Bladewall","5.4 (ilvl 496) - 0.5 socket cost - Parry",4060,0,0,0,0,4345,0,0,0,0,
-467,"of the Untouchable","5.4 (ilvl 496) - 0.5 socket cost - Dodge",2815,0,0,0,0,4345,0,0,0,0,
-468,"of the Pious","5.4 (ilvl 496) - 0.5 socket cost - Spirit",2806,0,0,0,0,4345,0,0,0,0,
-469,"of the Landslide","5.4 (ilvl 496) - 0.5 socket cost - Landslide - Str Versa",0,0,3727,4058,0,0,0,3075,3075,0,
-470,"of the Stormblast","5.4 (ilvl 496) - 0.5 socket cost - Stormblast - Agi",0,0,3727,2822,0,7889,5259,3075,3075,0,
-471,"of the Galeburst","5.4 (ilvl 496) - 0.5 socket cost - Galeburst - Agi",0,0,3727,4058,0,7889,5259,3075,3075,0,
-472,"of the Windflurry","5.4 (ilvl 496) - 0.5 socket cost - Windflurry - Agi",0,0,2822,3726,0,7889,5259,3075,3075,0,
-473,"of the Windstorm","5.4 (ilvl 496) - 0.5 socket cost - Windstorm - Agi",0,0,2822,4059,0,7889,5259,3075,3075,0,
-474,"of the Zephyr","5.4 (ilvl 496) - 0.5 socket cost - Zephyr - Agi",0,0,3726,4059,0,7889,5259,3075,3075,0,
-475,"of the Wildfire","5.4 (ilvl 496) - 0.5 socket cost - Wildfire - Int Hit",0,0,3727,2822,0,7889,5259,3075,3075,0,
-476,"of the Flameblaze","5.4 (ilvl 496) - 0.5 socket cost - Flameblaze - Int Hit",0,0,4059,3727,0,7889,5259,3075,3075,0,
-477,"of the Fireflash","5.4 (ilvl 496) - 0.5 socket cost - Fireflash - Int Versa",0,0,2822,3726,0,7889,5259,3075,3075,0,
-478,"of the Feverflare","5.4 (ilvl 496) - 0.5 socket cost - Feverflare - Int Versa",0,0,3726,4059,0,7889,5259,3075,3075,0,
-479,"of the Undertow","5.4 (ilvl 496) - 0.5 socket cost - Undertow - Int Spirit",0,0,3726,2806,0,7889,5259,3075,3075,0,
-480,"of the Wavecrest","5.4 (ilvl 496) - 0.5 socket cost - Wavecrest - Int Spirit",0,0,4059,2806,0,7889,5259,3075,3075,0,
-481,"of the Earthbreaker","5.4 (ilvl 496) - 0.5 socket cost - Earthbreaker - Str DPS",0,0,2822,4059,0,7889,5259,3075,3075,0,
-482,"of the Faultline","5.4 (ilvl 496) - 0.5 socket cost - Faultline - Str DPS",0,0,3726,4059,0,7889,5259,3075,3075,0,
-483,"of the Mountainbed","5.4 (ilvl 496) - 0.5 socket cost - Mountainbed - Str Vers",0,0,4059,4058,0,7889,5259,3075,3075,0,
-484,"of the Bedrock","5.4 (ilvl 496) - 0.5 socket cost - Bedrock - Str Tank",0,0,4059,4060,0,7889,5259,3075,3075,0,
-485,"of the Bouldercrag","5.4 (ilvl 496) - 0.5 socket cost - Bouldercrag - Str Tank",0,0,2815,4060,0,7889,5259,3075,3075,0,
-486,"of the Rockslab","5.4 (ilvl 496) - 0.5 socket cost - Rockslab - Str Tank",0,0,4059,2815,0,7889,5259,3075,3075,0,
-487,"of the Earthshaker","5.4 (ilvl 496) - 0.5 socket cost - Earthshaker - Str DPS",0,0,3727,2822,0,7889,5259,3075,3075,0,
-488,"of the Earthfall","5.4 (ilvl 496) - 0.5 socket cost - Earthfall - Str DPS",0,0,2822,3726,0,7889,5259,3075,3075,0,
+377,"of the Decimator","5.4 (ilvl 496) - 1.5 socket cost - Crit",2822,0,0,0,0,4170,0,0,0,0
+378,"of the Unerring","5.4 (ilvl 496) - 1.5 socket cost - Hit",3727,0,0,0,0,4170,0,0,0,0
+379,"of the Adroit","5.4 (ilvl 496) - 1.5 socket cost - Expertise",4058,0,0,0,0,4170,0,0,0,0
+380,"of the Savant","5.4 (ilvl 496) - 1.5 socket cost - Mastery",4059,0,0,0,0,4170,0,0,0,0
+381,"of the Impatient","5.4 (ilvl 496) - 1.5 socket cost - Haste",3726,0,0,0,0,4170,0,0,0,0
+382,"of the Bladewall","5.4 (ilvl 496) - 1.5 socket cost - Parry",4060,0,0,0,0,4170,0,0,0,0
+383,"of the Untouchable","5.4 (ilvl 496) - 1.5 socket cost - Dodge",2815,0,0,0,0,4170,0,0,0,0
+384,"of the Pious","5.4 (ilvl 496) - 1.5 socket cost - Spirit",2806,0,0,0,0,4170,0,0,0,0
+385,"of the Landslide","5.4 (ilvl 496) - 1.5 socket cost - Landslide - Str Versa",0,0,3727,4058,0,0,0,2990,2990,0
+386,"of the Stormblast","5.4 (ilvl 496) - 1.5 socket cost - Stormblast - Agi",0,0,3727,2822,0,7889,5259,2990,2990,0
+387,"of the Galeburst","5.4 (ilvl 496) - 1.5 socket cost - Galeburst - Agi",0,0,3727,4058,0,7889,5259,2990,2990,0
+388,"of the Windflurry","5.4 (ilvl 496) - 1.5 socket cost - Windflurry - Agi",0,0,2822,3726,0,7889,5259,2990,2990,0
+389,"of the Windstorm","5.4 (ilvl 496) - 1.5 socket cost - Windstorm - Agi",0,0,2822,4059,0,7889,5259,2990,2990,0
+390,"of the Zephyr","5.4 (ilvl 496) - 1.5 socket cost - Zephyr - Agi",0,0,3726,4059,0,7889,5259,2990,2990,0
+391,"of the Wildfire","5.4 (ilvl 496) - 1.5 socket cost - Wildfire - Int Hit",0,0,3727,2822,0,7889,5259,2990,2990,0
+392,"of the Flameblaze","5.4 (ilvl 496) - 1.5 socket cost - Flameblaze - Int Hit",0,0,4059,3727,0,7889,5259,2990,2990,0
+393,"of the Fireflash","5.4 (ilvl 496) - 1.5 socket cost - Fireflash - Int Versa",0,0,2822,3726,0,7889,5259,2990,2990,0
+394,"of the Feverflare","5.4 (ilvl 496) - 1.5 socket cost - Feverflare - Int Versa",0,0,3726,4059,0,7889,5259,2990,2990,0
+395,"of the Undertow","5.4 (ilvl 496) - 1.5 socket cost - Undertow - Int Spirit",0,0,3726,2806,0,7889,5259,2990,2990,0
+396,"of the Wavecrest","5.4 (ilvl 496) - 1.5 socket cost - Wavecrest - Int Spirit",0,0,4059,2806,0,7889,5259,2990,2990,0
+397,"of the Earthbreaker","5.4 (ilvl 496) - 1.5 socket cost - Earthbreaker - Str DPS",0,0,2822,4059,0,7889,5259,2990,2990,0
+398,"of the Faultline","5.4 (ilvl 496) - 1.5 socket cost - Faultline - Str DPS",0,0,3726,4059,0,7889,5259,2990,2990,0
+399,"of the Mountainbed","5.4 (ilvl 496) - 1.5 socket cost - Mountainbed - Str Vers",0,0,4059,4058,0,7889,5259,2990,2990,0
+400,"of the Bedrock","5.4 (ilvl 496) - 1.5 socket cost - Bedrock - Str Tank",0,0,4059,4060,0,7889,5259,2990,2990,0
+401,"of the Bouldercrag","5.4 (ilvl 496) - 1.5 socket cost - Bouldercrag - Str Tank",0,0,2815,4060,0,7889,5259,2990,2990,0
+402,"of the Rockslab","5.4 (ilvl 496) - 1.5 socket cost - Rockslab - Str Tank",0,0,4059,2815,0,7889,5259,2990,2990,0
+403,"of the Earthshaker","5.4 (ilvl 496) - 1.5 socket cost - Earthshaker - Str DPS",0,0,3727,2822,0,7889,5259,3506,3506,0
+404,"of the Earthfall","5.4 (ilvl 496) - 1.5 socket cost - Earthfall - Str DPS",0,0,2822,3726,0,7889,5259,3506,3506,0
+405,"of the Decimator","5.4 (ilvl 535) - 0.5 socket cost - Crit",2822,0,0,0,0,4960,0,0,0,0
+406,"of the Unerring","5.4 (ilvl 535) - 0.5 socket cost - Hit",3727,0,0,0,0,4960,0,0,0,0
+407,"of the Adroit","5.4 (ilvl 535) - 0.5 socket cost - Expertise",4058,0,0,0,0,4960,0,0,0,0
+408,"of the Savant","5.4 (ilvl 535) - 0.5 socket cost - Mastery",4059,0,0,0,0,4960,0,0,0,0
+409,"of the Impatient","5.4 (ilvl 535) - 0.5 socket cost - Haste",3726,0,0,0,0,4960,0,0,0,0
+410,"of the Bladewall","5.4 (ilvl 535) - 0.5 socket cost - Parry",4060,0,0,0,0,4960,0,0,0,0
+411,"of the Untouchable","5.4 (ilvl 535) - 0.5 socket cost - Dodge",2815,0,0,0,0,4960,0,0,0,0
+412,"of the Pious","5.4 (ilvl 535) - 0.5 socket cost - Spirit",2806,0,0,0,0,4960,0,0,0,0
+413,"of the Landslide","5.4 (ilvl 535) - 0.5 socket cost - Landslide - Str Versa",0,0,3727,4058,0,0,0,3268,3268,0
+414,"of the Stormblast","5.4 (ilvl 535) - 0.5 socket cost - Stormblast - Agi",0,0,3727,2822,0,7889,5259,3268,3268,0
+415,"of the Galeburst","5.4 (ilvl 535) - 0.5 socket cost - Galeburst - Agi",0,0,3727,4058,0,7889,5259,3268,3268,0
+416,"of the Windflurry","5.4 (ilvl 535) - 0.5 socket cost - Windflurry - Agi",0,0,2822,3726,0,7889,5259,3268,3268,0
+417,"of the Windstorm","5.4 (ilvl 535) - 0.5 socket cost - Windstorm - Agi",0,0,2822,4059,0,7889,5259,3268,3268,0
+418,"of the Zephyr","5.4 (ilvl 535) - 0.5 socket cost - Zephyr - Agi",0,0,3726,4059,0,7889,5259,3268,3268,0
+419,"of the Wildfire","5.4 (ilvl 535) - 0.5 socket cost - Wildfire - Int Hit",0,0,3727,2822,0,7889,5259,3268,3268,0
+420,"of the Flameblaze","5.4 (ilvl 535) - 0.5 socket cost - Flameblaze - Int Hit",0,0,4059,3727,0,7889,5259,3268,3268,0
+421,"of the Fireflash","5.4 (ilvl 535) - 0.5 socket cost - Fireflash - Int Versa",0,0,2822,3726,0,7889,5259,3268,3268,0
+422,"of the Feverflare","5.4 (ilvl 535) - 0.5 socket cost - Feverflare - Int Versa",0,0,3726,4059,0,7889,5259,3268,3268,0
+423,"of the Undertow","5.4 (ilvl 535) - 0.5 socket cost - Undertow - Int Spirit",0,0,3726,2806,0,7889,5259,3268,3268,0
+424,"of the Wavecrest","5.4 (ilvl 535) - 0.5 socket cost - Wavecrest - Int Spirit",0,0,4059,2806,0,7889,5259,3268,3268,0
+425,"of the Earthbreaker","5.4 (ilvl 535) - 0.5 socket cost - Earthbreaker - Str DPS",0,0,2822,4059,0,7889,5259,3268,3268,0
+426,"of the Faultline","5.4 (ilvl 535) - 0.5 socket cost - Faultline - Str DPS",0,0,3726,4059,0,7889,5259,3268,3268,0
+427,"of the Mountainbed","5.4 (ilvl 535) - 0.5 socket cost - Mountainbed - Str Vers",0,0,4059,4058,0,7889,5259,3268,3268,0
+428,"of the Bedrock","5.4 (ilvl 535) - 0.5 socket cost - Bedrock - Str Tank",0,0,4059,4060,0,7889,5259,3268,3268,0
+429,"of the Bouldercrag","5.4 (ilvl 535) - 0.5 socket cost - Bouldercrag - Str Tank",0,0,2815,4060,0,7889,5259,3268,3268,0
+430,"of the Rockslab","5.4 (ilvl 535) - 0.5 socket cost - Rockslab - Str Tank",0,0,4059,2815,0,7889,5259,3268,3268,0
+431,"of the Earthshaker","5.4 (ilvl 535) - 0.5 socket cost - Earthshaker - Str DPS",0,0,3727,2822,0,7889,5259,3268,3268,0
+432,"of the Earthfall","5.4 (ilvl 535) - 0.5 socket cost - Earthfall - Str DPS",0,0,2822,3726,0,7889,5259,3268,3268,0
+433,"of the Decimator","5.4 (ilvl 535) - 1.5 socket cost - Crit",2822,0,0,0,0,4480,0,0,0,0
+434,"of the Unerring","5.4 (ilvl 535) - 1.5 socket cost - Hit",3727,0,0,0,0,4480,0,0,0,0
+435,"of the Adroit","5.4 (ilvl 535) - 1.5 socket cost - Expertise",4058,0,0,0,0,4480,0,0,0,0
+436,"of the Savant","5.4 (ilvl 535) - 1.5 socket cost - Mastery",4059,0,0,0,0,4480,0,0,0,0
+437,"of the Impatient","5.4 (ilvl 535) - 1.5 socket cost - Haste",3726,0,0,0,0,4480,0,0,0,0
+438,"of the Bladewall","5.4 (ilvl 535) - 1.5 socket cost - Parry",4060,0,0,0,0,4480,0,0,0,0
+439,"of the Untouchable","5.4 (ilvl 535) - 1.5 socket cost - Dodge",2815,0,0,0,0,4480,0,0,0,0
+440,"of the Pious","5.4 (ilvl 535) - 1.5 socket cost - Spirit",2806,0,0,0,0,4480,0,0,0,0
+441,"of the Landslide","5.4 (ilvl 535) - 1.5 socket cost - Landslide - Str Versa",0,0,3727,4058,0,0,0,2788,2788,0
+442,"of the Stormblast","5.4 (ilvl 535) - 1.5 socket cost - Stormblast - Agi",0,0,3727,2822,0,7889,5259,2788,2788,0
+443,"of the Galeburst","5.4 (ilvl 535) - 1.5 socket cost - Galeburst - Agi",0,0,3727,4058,0,7889,5259,2788,2788,0
+444,"of the Windflurry","5.4 (ilvl 535) - 1.5 socket cost - Windflurry - Agi",0,0,2822,3726,0,7889,5259,2788,2788,0
+445,"of the Windstorm","5.4 (ilvl 535) - 1.5 socket cost - Windstorm - Agi",0,0,2822,4059,0,7889,5259,2788,2788,0
+446,"of the Zephyr","5.4 (ilvl 535) - 1.5 socket cost - Zephyr - Agi",0,0,3726,4059,0,7889,5259,2788,2788,0
+447,"of the Wildfire","5.4 (ilvl 535) - 1.5 socket cost - Wildfire - Int Hit",0,0,3727,2822,0,7889,5259,2788,2788,0
+448,"of the Flameblaze","5.4 (ilvl 535) - 1.5 socket cost - Flameblaze - Int Hit",0,0,4059,3727,0,7889,5259,2788,2788,0
+449,"of the Fireflash","5.4 (ilvl 535) - 1.5 socket cost - Fireflash - Int Versa",0,0,2822,3726,0,7889,5259,2788,2788,0
+450,"of the Feverflare","5.4 (ilvl 535) - 1.5 socket cost - Feverflare - Int Versa",0,0,3726,4059,0,7889,5259,2788,2788,0
+451,"of the Undertow","5.4 (ilvl 535) - 1.5 socket cost - Undertow - Int Spirit",0,0,3726,2806,0,7889,5259,2788,2788,0
+452,"of the Wavecrest","5.4 (ilvl 535) - 1.5 socket cost - Wavecrest - Int Spirit",0,0,4059,2806,0,7889,5259,2788,2788,0
+453,"of the Earthbreaker","5.4 (ilvl 535) - 1.5 socket cost - Earthbreaker - Str DPS",0,0,2822,4059,0,7889,5259,2788,2788,0
+454,"of the Faultline","5.4 (ilvl 535) - 1.5 socket cost - Faultline - Str DPS",0,0,3726,4059,0,7889,5259,2788,2788,0
+455,"of the Mountainbed","5.4 (ilvl 535) - 1.5 socket cost - Mountainbed - Str Vers",0,0,4059,4058,0,7889,5259,2788,2788,0
+456,"of the Bedrock","5.4 (ilvl 535) - 1.5 socket cost - Bedrock - Str Tank",0,0,4059,4060,0,7889,5259,2788,2788,0
+457,"of the Bouldercrag","5.4 (ilvl 535) - 1.5 socket cost - Bouldercrag - Str Tank",0,0,2815,4060,0,7889,5259,2788,2788,0
+458,"of the Rockslab","5.4 (ilvl 535) - 1.5 socket cost - Rockslab - Str Tank",0,0,4059,2815,0,7889,5259,2788,2788,0
+459,"of the Earthshaker","5.4 (ilvl 535) - 1.5 socket cost - Earthshaker - Str DPS",0,0,3727,2822,0,7889,5259,2788,2788,0
+460,"of the Earthfall","5.4 (ilvl 535) - 1.5 socket cost - Earthfall - Str DPS",0,0,2822,3726,0,7889,5259,2788,2788,0
+461,"of the Decimator","5.4 (ilvl 496) - 0.5 socket cost - Crit",2822,0,0,0,0,4859,0,0,0,0
+462,"of the Unerring","5.4 (ilvl 496) - 0.5 socket cost - Hit",3727,0,0,0,0,4859,0,0,0,0
+463,"of the Adroit","5.4 (ilvl 496) - 0.5 socket cost - Expertise",4058,0,0,0,0,4859,0,0,0,0
+464,"of the Savant","5.4 (ilvl 496) - 0.5 socket cost - Mastery",4059,0,0,0,0,4859,0,0,0,0
+465,"of the Impatient","5.4 (ilvl 496) - 0.5 socket cost - Haste",3726,0,0,0,0,4859,0,0,0,0
+466,"of the Bladewall","5.4 (ilvl 496) - 0.5 socket cost - Parry",4060,0,0,0,0,4859,0,0,0,0
+467,"of the Untouchable","5.4 (ilvl 496) - 0.5 socket cost - Dodge",2815,0,0,0,0,4859,0,0,0,0
+468,"of the Pious","5.4 (ilvl 496) - 0.5 socket cost - Spirit",2806,0,0,0,0,4859,0,0,0,0
+469,"of the Landslide","5.4 (ilvl 496) - 0.5 socket cost - Landslide - Str Versa",0,0,3727,4058,0,0,0,3159,3159,0
+470,"of the Stormblast","5.4 (ilvl 496) - 0.5 socket cost - Stormblast - Agi",0,0,3727,2822,0,7889,5259,3159,3159,0
+471,"of the Galeburst","5.4 (ilvl 496) - 0.5 socket cost - Galeburst - Agi",0,0,3727,4058,0,7889,5259,3159,3159,0
+472,"of the Windflurry","5.4 (ilvl 496) - 0.5 socket cost - Windflurry - Agi",0,0,2822,3726,0,7889,5259,3159,3159,0
+473,"of the Windstorm","5.4 (ilvl 496) - 0.5 socket cost - Windstorm - Agi",0,0,2822,4059,0,7889,5259,3159,3159,0
+474,"of the Zephyr","5.4 (ilvl 496) - 0.5 socket cost - Zephyr - Agi",0,0,3726,4059,0,7889,5259,3159,3159,0
+475,"of the Wildfire","5.4 (ilvl 496) - 0.5 socket cost - Wildfire - Int Hit",0,0,3727,2822,0,7889,5259,3159,3159,0
+476,"of the Flameblaze","5.4 (ilvl 496) - 0.5 socket cost - Flameblaze - Int Hit",0,0,4059,3727,0,7889,5259,3159,3159,0
+477,"of the Fireflash","5.4 (ilvl 496) - 0.5 socket cost - Fireflash - Int Versa",0,0,2822,3726,0,7889,5259,3159,3159,0
+478,"of the Feverflare","5.4 (ilvl 496) - 0.5 socket cost - Feverflare - Int Versa",0,0,3726,4059,0,7889,5259,3159,3159,0
+479,"of the Undertow","5.4 (ilvl 496) - 0.5 socket cost - Undertow - Int Spirit",0,0,3726,2806,0,7889,5259,3159,3159,0
+480,"of the Wavecrest","5.4 (ilvl 496) - 0.5 socket cost - Wavecrest - Int Spirit",0,0,4059,2806,0,7889,5259,3159,3159,0
+481,"of the Earthbreaker","5.4 (ilvl 496) - 0.5 socket cost - Earthbreaker - Str DPS",0,0,2822,4059,0,7889,5259,3159,3159,0
+482,"of the Faultline","5.4 (ilvl 496) - 0.5 socket cost - Faultline - Str DPS",0,0,3726,4059,0,7889,5259,3159,3159,0
+483,"of the Mountainbed","5.4 (ilvl 496) - 0.5 socket cost - Mountainbed - Str Vers",0,0,4059,4058,0,7889,5259,3159,3159,0
+484,"of the Bedrock","5.4 (ilvl 496) - 0.5 socket cost - Bedrock - Str Tank",0,0,4059,4060,0,7889,5259,3159,3159,0
+485,"of the Bouldercrag","5.4 (ilvl 496) - 0.5 socket cost - Bouldercrag - Str Tank",0,0,2815,4060,0,7889,5259,3159,3159,0
+486,"of the Rockslab","5.4 (ilvl 496) - 0.5 socket cost - Rockslab - Str Tank",0,0,4059,2815,0,7889,5259,3159,3159,0
+487,"of the Earthshaker","5.4 (ilvl 496) - 0.5 socket cost - Earthshaker - Str DPS",0,0,3727,2822,0,7889,5259,3159,3159,0
+488,"of the Earthfall","5.4 (ilvl 496) - 0.5 socket cost - Earthfall - Str DPS",0,0,2822,3726,0,7889,5259,3159,3159,0

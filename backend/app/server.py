@@ -122,7 +122,41 @@ class ShadowcraftComputation:
         95997: 'thunder_renatakis_soul_charm',
         96369: 'heroic_renatakis_soul_charm',
         96741: 'heroic_thunder_renatakis_soul_charm',
-        94511: 'vicious_talisman_of_the_shado-pan_assault'
+        94511: 'vicious_talisman_of_the_shado-pan_assault',
+
+        # 5.4 TODO verify the predicted proc names
+        102248: 'fury_of_xuen', # legendary cloak proc
+
+        103686: 'discipline_of_xuen',
+        103986: 'timeless_discipline_of_xuen',
+
+        105029: 'lfr_haromms_talisman',
+        104780: 'flex_haromms_talisman',
+        102301: 'haromms_talisman',
+        105278: 'war_haromms_talisman',
+        104531: 'heroic_haromms_talisman',
+        105527: 'heroic_war_haromms_talisman',
+        
+        105082: 'lfr_sigil_of_rampage',
+        104833: 'flex_sigil_of_rampage',
+        102302: 'sigil_of_rampage',
+        105331: 'war_sigil_of_rampage',
+        104584: 'heroic_sigil_of_rampage',
+        105580: 'heroic_war_sigil_of_rampage',
+        
+        104974: 'lfr_assurance_of_consequence',
+        104725: 'flex_assurance_of_consequence',
+        102292: 'assurance_of_consequence',
+        105223: 'war_assurance_of_consequence',
+        104476: 'heroic_assurance_of_consequence',
+        105472: 'heroic_war_assurance_of_consequence',
+
+        105114: 'lfr_ticking_ebon_detonator',
+        104865: 'flex_ticking_ebon_detonator',
+        102311: 'ticking_ebon_detonator',
+        105363: 'war_ticking_ebon_detonator',
+        104616: 'heroic_ticking_ebon_detonator',
+        105612: 'heroic_war_ticking_ebon_detonator',
     }
     
     gearBoosts = {

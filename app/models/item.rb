@@ -160,7 +160,8 @@ class Item
     # TODO remove ptr tag for live version
     if prefix == "ptr"
       # ilvl 496
-      suffixes = (-381..-377).to_a + (-390..-386).to_a
+      other_suffixes = (-465..-461).to_a + (-474..-470).to_a # 0.5 socket cost ilvl 496
+      suffixes = (-381..-377).to_a + (-390..-386).to_a # 1.5 socket cost ilvl 496
       random_item_ids = [101862, 101863, 101864, 101865, 101866, 101867, 101868, 101869] # armor
       random_item_ids += [101827, 101828, 101829] # neck, ring, cloak
       puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 496)"
@@ -168,23 +169,17 @@ class Item
         import id,[nil,1,2,3,4],suffixes
       end
 
-      # ilvl 528
-      suffixes = (-409..-405).to_a + (-418..-414).to_a
+      # ilvl 535
+      suffixes = (-409..-405).to_a + (-418..-414).to_a # 0.5 socket cost ilvl 535
       random_item_ids = [101949, 101950, 101951, 101952, 101953, 101954, 101955, 101956]
       random_item_ids += [101916, 101917, 101918]
-      puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 528)"
-      random_item_ids.each do |id|
-        import id,[nil,1,2,3,4],suffixes
-      end
-
-      # ilvl 535
-      suffixes = (-437..-433).to_a + (-446..-442).to_a
-      random_item_ids = [102036, 102037, 102038, 102039, 102040, 102041, 102042, 102043]
-      random_item_ids += [102003, 102004, 102005]
       puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 535)"
       random_item_ids.each do |id|
         import id,[nil,1,2,3,4],suffixes
       end
+
+      # TODO some items have 0.5 socket cost and others 1.5
+      other_suffixes = (-437..-433).to_a + (-446..-442).to_a # 1.5 socket cost ilvl 535
     end
     
     item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=483;ub=4;cr=21;crs=1;crv=0"
@@ -204,6 +199,11 @@ class Item
     item_ids += [ 98148 ] # ilvl 600 cloak 5.3
     if prefix == "ptr"
       item_ids += [ 102248 ] # ilvl 600 legendary cloak 5.4
+      item_ids += [ 105029, 104780, 102301, 105278, 104531, 105527 ] # haromms_talisman
+      item_ids += [ 105082, 104833, 102302, 105331, 104584, 105580 ] # sigil_of_rampage    
+      item_ids += [ 104974, 104725, 102292, 105223, 104476, 105472 ] # assurance_of_consequence
+      item_ids += [ 105114, 104865, 102311, 105363, 104616, 105612 ] # ticking_ebon_detonator
+      item_ids += [ 103686, 103986 ] # discipline of xuen timeless isle trinkets
     end
     puts "importing now #{item_ids.length} items"
     pos = 0
@@ -284,7 +284,7 @@ class Item
     rescue WowArmory::MissingDocument => e
       puts id
       puts e.message
-    rescue Exception => e
+    rescue StandardError => e
       puts id
       puts e.message
     end

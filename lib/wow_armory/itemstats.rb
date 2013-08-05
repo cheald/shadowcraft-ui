@@ -105,7 +105,7 @@ module WowArmory
     def populate_item_upgrade_level_with_random_suffix
       row = random_suffixes[random_suffix.abs.to_s]
       if row.nil?
-        raise Exception.new "no suffix data found in client db files for random_suffix id #{random_suffix.abs}"
+        raise StandardError.new "no suffix data found in client db files for random_suffix id #{random_suffix.abs}"
       end
       base = rand_prop_points[@properties[:ilevel].to_s]
 
@@ -123,7 +123,7 @@ module WowArmory
     def populate_item_upgrade_level
       row = item_data[@properties[:id].to_s]
       if row.nil?
-        raise Exception.new "no item data found in client db files for id #{@properties[:id]}"
+        raise StandardError.new "no item data found in client db files for id #{@properties[:id]}"
       end
       base = rand_prop_points[@properties[:ilevel].to_s]
 
