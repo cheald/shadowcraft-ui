@@ -582,7 +582,7 @@ class ShadowcraftGear
     if item.equip_location in ["mainhand","offhand"]
       chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS)
       last = item.sockets[item.sockets.length - 1]
-      if item.ilvl >= 502 and not (get_item_id(item) == 87012 or get_item_id(item) == 87032 or item.tag.indexOf("Season") >= 0 or item.name.indexOf("Immaculate") >= 0) and last != "Prismatic" and chapter2
+      if canUsePrismaticSocket(item) and last != "Prismatic" and chapter2
         item.sockets.push "Prismatic"
       else if last != "Prismatic" and last == "Hydraulic" and chapter2
         item.sockets.push "Prismatic"
@@ -614,6 +614,17 @@ class ShadowcraftGear
         return true
       return false
     true
+
+  canUsePrismaticSocket = (item) ->
+    return false if item.equip_location not in ["mainhand","offhand"]
+    return false if not hasAchievement(CHAPTER_2_ACHIEVEMENTS)
+    last = item.sockets.length - 1
+    return true if last > -1 and item.sockets[last] == "Hydraulic"
+    return true if last > 0 and item.sockets[last] == "Prismatic" and item.sockets[last-1] == "Hydraulic"
+    return false if item.ilvl < 502 or item.ilvl > 549
+    return false if item.ilvl >= 528 and (item.tag.indexOf("Raid Finder") >= 0 or item.tag.indexOf("Flexible") >= 0)
+    return false if get_item_id(item) == 87012 or get_item_id(item) == 87032 or item.tag.indexOf("Season") >= 0 or item.name.indexOf("Immaculate") >= 0
+    return true
 
   # Check if the gems have equal stats to pretend that optimize gems 
   # not change gems to stat equal gems

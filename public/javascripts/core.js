@@ -1794,7 +1794,7 @@
         force_mastery_over_haste: {
           name: "Force Mastery > Haste",
           type: "check",
-          desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP * 0.05",
+          desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP * 1.05",
           datatype: 'bool',
           'default': false
         }
@@ -2500,7 +2500,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, canUseLegendaryMetaGem, clearReforge, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getMaxUpgradeLevel, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clearReforge, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getMaxUpgradeLevel, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -3221,7 +3221,7 @@
       if ((_ref = item.equip_location) === "mainhand" || _ref === "offhand") {
         chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS);
         last = item.sockets[item.sockets.length - 1];
-        if (item.ilvl >= 502 && !(get_item_id(item) === 87012 || get_item_id(item) === 87032 || item.tag.indexOf("Season") >= 0 || item.name.indexOf("Immaculate") >= 0) && last !== "Prismatic" && chapter2) {
+        if (canUsePrismaticSocket(item) && last !== "Prismatic" && chapter2) {
           return item.sockets.push("Prismatic");
         } else if (last !== "Prismatic" && last === "Hydraulic" && chapter2) {
           return item.sockets.push("Prismatic");
@@ -3271,6 +3271,32 @@
         } else if (item.tag === "Raid Finder") {
           return true;
         }
+        return false;
+      }
+      return true;
+    };
+    canUsePrismaticSocket = function(item) {
+      var last, _ref;
+      if ((_ref = item.equip_location) !== "mainhand" && _ref !== "offhand") {
+        return false;
+      }
+      if (!hasAchievement(CHAPTER_2_ACHIEVEMENTS)) {
+        return false;
+      }
+      last = item.sockets.length - 1;
+      if (last > -1 && item.sockets[last] === "Hydraulic") {
+        return true;
+      }
+      if (last > 0 && item.sockets[last] === "Prismatic" && item.sockets[last - 1] === "Hydraulic") {
+        return true;
+      }
+      if (item.ilvl < 502 || item.ilvl > 549) {
+        return false;
+      }
+      if (item.ilvl >= 528 && (item.tag.indexOf("Raid Finder") >= 0 || item.tag.indexOf("Flexible") >= 0)) {
+        return false;
+      }
+      if (get_item_id(item) === 87012 || get_item_id(item) === 87032 || item.tag.indexOf("Season") >= 0 || item.name.indexOf("Immaculate") >= 0) {
         return false;
       }
       return true;

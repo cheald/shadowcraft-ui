@@ -79,7 +79,7 @@
 - mustache("itemSlot") do
   .slot{:id => "{{item/id}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}"}<
     .image<
-      -#%img{:src => "http://www.wowarmory.com/wow-icons/_images/64x64/{{item/icon}}.jpg"}
+      -#%img{:src => "http://static.wowhead.com/images/wow/icons/large/{{item/icon}}.jpg"}
       {{#item}}
       {{#icon}}
       %img{:src => "http://us.media.blizzard.com/wow/icons/56/{{.}}.jpg"}
