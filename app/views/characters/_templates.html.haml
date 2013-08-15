@@ -11,7 +11,7 @@
 - mustache "tree" do
   .tree
     {{#talents}}
-    .talent{:class => "row-{{tier}} col-{{column}}", :style => "background-image: url(http://static.wowhead.com/images/wow/icons/large/{{icon}}.jpg);"}
+    .talent.tt{:class => "row-{{tier}} col-{{column}}", :"data-tooltip-type" => "spell", :"data-tooltip-id" => "{{spell}}", :style => "background-image: url(http://static.wowhead.com/images/wow/icons/large/{{icon}}.jpg);"}
       .grey
       //.points 0/{{maxRank}}
     {{/talents}}
@@ -79,9 +79,9 @@
 - mustache("itemSlot") do
   .slot{:id => "{{item/id}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}"}<
     .image<
-      -#%img{:src => "http://static.wowhead.com/images/wow/icons/large/{{item/icon}}.jpg"}
       {{#item}}
       {{#icon}}
+      -#%img{:src => "http://static.wowhead.com/images/wow/icons/large/{{.}}.jpg"}
       %img{:src => "http://us.media.blizzard.com/wow/icons/56/{{.}}.jpg"}
       {{/icon}}
       {{/item}}

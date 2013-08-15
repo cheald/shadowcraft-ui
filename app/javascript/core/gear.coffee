@@ -708,6 +708,7 @@ class ShadowcraftGear
 
       item = ItemLookup[gear.item_id]
       gem_offset = statOffset(gear, FACETS.GEMS)
+
       fudgeOffsets(gem_offset)
 
       if item
@@ -1151,9 +1152,19 @@ class ShadowcraftGear
     data = Shadowcraft.Data
     $summary = $("#summary .inner")
     a_stats = []
+    if data.options.general.patch
+      if data.options.general.patch == 52
+        valengine = 5.3
+      else if data.options.general.patch == 50
+        valengine = 5.1
+      else
+        valengine = data.options.general.patch / 10
+    else
+      valengine = "5.x"
+    valengine += " " + if data.options.general.pvp then "(PvP)" else "(PvE)"
     a_stats.push {
-      name: "Mode"
-      val: if data.options.general.pvp then "PvP" else "PvE"
+      name: "Engine"
+      val: valengine
     }
     a_stats.push {
       name: "Spec"

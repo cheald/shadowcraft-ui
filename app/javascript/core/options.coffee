@@ -119,7 +119,8 @@ class ShadowcraftOptions
       min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this ilevel in gear lists", 'default': 430, datatype: 'integer', min: 430, max: 700},
       epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
       show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
-      show_random_items: {name: "Min ILevel (Random Items)", desc: "Don't show random items under this ilevel in gear lists", datatype: 'integer', type: 'input', min: 430, max: 700, 'default': 502}
+      show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this ilevel in gear lists", datatype: 'integer', type: 'input', min: 430, max: 700, 'default': 502}
+      num_boss_adds: {name: "Number of Boss Adds", desc: "Used for the Trinket Sigil of Rampage and the Legendary Cloak", datatype: 'integer', type: 'input', min: 0, max: 5, 'default': 0}
     })
 
     @setup("#settings #professions", "professions", {

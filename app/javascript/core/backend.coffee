@@ -77,6 +77,7 @@ class ShadowcraftBackend
         time_in_execute_range: data.options.general.time_in_execute_range
         stormlash: data.options.general.stormlash
         pvp: data.options.general.pvp
+        num_boss_adds: data.options.general.num_boss_adds
       }
       spec: data.activeSpec,
       t: talentString,

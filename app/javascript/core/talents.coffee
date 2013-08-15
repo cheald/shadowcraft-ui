@@ -15,7 +15,7 @@ class ShadowcraftTalents
       spec: "Z"
     "Stock Subtlety":
       talents: "221002"
-      glyphs: []
+      glyphs: [42970]
       spec: "b"
 
   @GetActiveSpecName = ->
@@ -158,15 +158,15 @@ class ShadowcraftTalents
 
   initTalentTree: ->
     switch Shadowcraft.Data.options.general.patch
-      when 52
+      when 52,54
         Talents = Shadowcraft.ServerData.TALENTS_52
         TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52
       when 50
         Talents = Shadowcraft.ServerData.TALENTS
         TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP
       else
-        Talents = Shadowcraft.ServerData.TALENTS
-        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP
+        Talents = Shadowcraft.ServerData.TALENTS_52
+        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52
 
     buffer = ""
     buffer += Templates.talentTier({
@@ -212,8 +212,12 @@ class ShadowcraftTalents
 
       $(this).trigger("mouseenter")
     ).bind("contextmenu", -> false )
-    .mouseenter(hoverTalent)
-    .mouseleave(-> $("#tooltip").hide() )
+    .mouseenter($.delegate
+      ".tt": ttlib.requestTooltip
+    )
+    .mouseleave($.delegate
+      ".tt": ttlib.hide
+    )
     .bind("touchstart", (e) ->
       $.data(this, "removed", false)
       $.data(this, "listening", true)

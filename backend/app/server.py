@@ -124,7 +124,7 @@ class ShadowcraftComputation:
         96741: 'heroic_thunder_renatakis_soul_charm',
         94511: 'vicious_talisman_of_the_shado-pan_assault',
 
-        # 5.4 TODO verify the predicted proc names
+        # 5.4
         102248: 'fury_of_xuen', # legendary cloak proc
 
         103686: 'discipline_of_xuen',
@@ -157,6 +157,13 @@ class ShadowcraftComputation:
         105363: 'war_ticking_ebon_detonator',
         104616: 'heroic_ticking_ebon_detonator',
         105612: 'heroic_war_ticking_ebon_detonator',
+
+        105111: 'lfr_thoks_tail_tip',
+        104862: 'flex_thoks_tail_tip',
+        102305: 'thoks_tail_tip',
+        105360: 'war_thoks_tail_tip',
+        104613: 'heroic_thoks_tail_tip',
+        105609: 'heroic_war_thoks_tail_tip',
     }
     
     gearBoosts = {
@@ -524,6 +531,9 @@ class ShadowcraftComputation:
         if not rotation_keys["opener_name"] in self.validOpenerKeys[tree]: 
           rotation_keys["opener_name"] = "default"
         rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
+        settings_options = {}
+        if __builtin__.shadowcraft_engine_version >= 5.4:
+            settings_options['num_boss_adds'] = _opt.get("num_boss_adds", 0)        
 
         if tree == 0:
             _cycle = settings.AssassinationCycle(**rotation_options)
@@ -542,7 +552,8 @@ class ShadowcraftComputation:
             opener_name = rotation_keys["opener_name"],
             use_opener = rotation_keys["opener_use"],
             stormlash = _opt.get("stormlash", False),
-            is_pvp = _opt.get("pvp", False)
+            is_pvp = _opt.get("pvp", False),
+            **settings_options
         )
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)
         return calculator
@@ -598,6 +609,8 @@ class ShadowcraftComputation:
             out["error"] = e.error_msg
             return out
         except (KeyError) as e:
+            import traceback
+            traceback.print_exc()
             out["error"] = "Error: " + e.message
             return out
 

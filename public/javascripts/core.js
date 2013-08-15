@@ -469,7 +469,8 @@
           response_time: data.options.general.response_time,
           time_in_execute_range: data.options.general.time_in_execute_range,
           stormlash: data.options.general.stormlash,
-          pvp: data.options.general.pvp
+          pvp: data.options.general.pvp,
+          num_boss_adds: data.options.general.num_boss_adds
         },
         spec: data.activeSpec,
         t: talentString,
@@ -856,7 +857,7 @@
           }
         }
         options.push(professions);
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.virmens_bite ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.stormlash ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 502];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.virmens_bite ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.stormlash ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 502, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35];
         options.push(base36Encode(general));
         buffs = [];
         _ref3 = ShadowcraftOptions.buffMap;
@@ -958,7 +959,10 @@
           stormlash: general[13] || 0,
           pvp: general[14] || 0,
           show_upgrades: general[15] || 0,
-          show_random_items: general[16] || 0
+          show_random_items: general[16] || 0,
+          num_boss_adds: general[17] / 100 || 0,
+          response_time: general[18] / 100 || 0.5,
+          time_in_execute_range: general[19] / 100 || 0.35
         };
         d.options.buffs = {};
         _ref3 = options[2];
@@ -1421,13 +1425,22 @@
           'default': 0
         },
         show_random_items: {
-          name: "Min ILevel (Random Items)",
+          name: "Min ILvL (Random Items)",
           desc: "Don't show random items under this ilevel in gear lists",
           datatype: 'integer',
           type: 'input',
           min: 430,
           max: 700,
           'default': 502
+        },
+        num_boss_adds: {
+          name: "Number of Boss Adds",
+          desc: "Used for the Trinket Sigil of Rampage and the Legendary Cloak",
+          datatype: 'integer',
+          type: 'input',
+          min: 0,
+          max: 5,
+          'default': 0
         }
       });
       this.setup("#settings #professions", "professions", {
@@ -1892,7 +1905,7 @@
       },
       "Stock Subtlety": {
         talents: "221002",
-        glyphs: [],
+        glyphs: [42970],
         spec: "b"
       }
     };
@@ -2061,6 +2074,7 @@
       var TalentLookup, Talents, buffer, talentTrees, talentframe, tframe, tree, treeIndex;
       switch (Shadowcraft.Data.options.general.patch) {
         case 52:
+        case 54:
           Talents = Shadowcraft.ServerData.TALENTS_52;
           TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52;
           break;
@@ -2069,8 +2083,8 @@
           TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP;
           break;
         default:
-          Talents = Shadowcraft.ServerData.TALENTS;
-          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP;
+          Talents = Shadowcraft.ServerData.TALENTS_52;
+          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52;
       }
       buffer = "";
       buffer += Templates.talentTier({
@@ -2160,9 +2174,11 @@
         return $(this).trigger("mouseenter");
       }).bind("contextmenu", function() {
         return false;
-      }).mouseenter(hoverTalent).mouseleave(function() {
-        return $("#tooltip").hide();
-      }).bind("touchstart", function(e) {
+      }).mouseenter($.delegate({
+        ".tt": ttlib.requestTooltip
+      })).mouseleave($.delegate({
+        ".tt": ttlib.hide
+      })).bind("touchstart", function(e) {
         $.data(this, "removed", false);
         $.data(this, "listening", true);
         return $.data(tframe, "listening", this);
@@ -3988,13 +4004,25 @@
       return total;
     };
     ShadowcraftGear.prototype.updateSummaryWindow = function() {
-      var $summary, a_stats, data;
+      var $summary, a_stats, data, valengine;
       data = Shadowcraft.Data;
       $summary = $("#summary .inner");
       a_stats = [];
+      if (data.options.general.patch) {
+        if (data.options.general.patch === 52) {
+          valengine = 5.3;
+        } else if (data.options.general.patch === 50) {
+          valengine = 5.1;
+        } else {
+          valengine = data.options.general.patch / 10;
+        }
+      } else {
+        valengine = "5.x";
+      }
+      valengine += " " + (data.options.general.pvp ? "(PvP)" : "(PvE)");
       a_stats.push({
-        name: "Mode",
-        val: data.options.general.pvp ? "PvP" : "PvE"
+        name: "Engine",
+        val: valengine
       });
       a_stats.push({
         name: "Spec",
@@ -5210,14 +5238,17 @@
         return ep[REFORGER_MAP[k]];
       });
       max = Math.max(ep.haste_rating, ep.mastery_rating, ep.crit_rating);
-      if (max < ep.expertise_rating && ep.agility < ep.expertise_rating) {
+      if (max < ep.expertise_rating && 2.5 < ep.expertise_rating) {
         diff = ep.expertise_rating - max;
         ep.expertise_rating = max + diff / 3;
         ep.mh_expertise_rating = ep.expertise_rating - ep.oh_expertise_rating;
       }
-      if (max < ep.yellow_hit && ep.agility < ep.yellow_hit) {
+      if (max < ep.yellow_hit && 2.5 < ep.yellow_hit) {
         diff = ep.yellow_hit - max;
         ep.yellow_hit = max + diff / 3;
+      }
+      if (ep.yellow_hit < ep.expertise_rating) {
+        ep.yellow_hit = ep.expertise_rating * 1.1;
       }
       if (override) {
         ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override;

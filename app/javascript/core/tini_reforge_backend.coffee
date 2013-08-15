@@ -126,13 +126,15 @@ class ShadowcraftTiniReforgeBackend
     # cases where exp/yellowhit EP and the secondary stats having big gapes
     # with reducing those big gaps the computation time drops significantly
     max = Math.max ep.haste_rating,ep.mastery_rating,ep.crit_rating
-    if max < ep.expertise_rating and ep.agility < ep.expertise_rating
+    if max < ep.expertise_rating and 2.5 < ep.expertise_rating
       diff = ep.expertise_rating - max
       ep.expertise_rating = max + diff / 3
       ep.mh_expertise_rating = ep.expertise_rating - ep.oh_expertise_rating
-    if max < ep.yellow_hit and ep.agility < ep.yellow_hit
+    if max < ep.yellow_hit and 2.5 < ep.yellow_hit
       diff = ep.yellow_hit - max
       ep.yellow_hit = max + diff / 3
+    if ep.yellow_hit < ep.expertise_rating
+      ep.yellow_hit = ep.expertise_rating * 1.1
 
     if override
       ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override

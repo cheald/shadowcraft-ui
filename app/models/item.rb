@@ -164,19 +164,19 @@ class Item
       suffixes = (-381..-377).to_a + (-390..-386).to_a # 1.5 socket cost ilvl 496
       random_item_ids = [101862, 101863, 101864, 101865, 101866, 101867, 101868, 101869] # armor
       random_item_ids += [101827, 101828, 101829] # neck, ring, cloak
-      puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 496)"
-      random_item_ids.each do |id|
-        import id,[nil,1,2,3,4],suffixes
-      end
+      #puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 496)"
+      #random_item_ids.each do |id|
+      #  import id,[nil,1,2,3,4],suffixes
+      #end
 
       # ilvl 535
       suffixes = (-409..-405).to_a + (-418..-414).to_a # 0.5 socket cost ilvl 535
       random_item_ids = [101949, 101950, 101951, 101952, 101953, 101954, 101955, 101956]
       random_item_ids += [101916, 101917, 101918]
-      puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 535)"
-      random_item_ids.each do |id|
-        import id,[nil,1,2,3,4],suffixes
-      end
+      #puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 535)"
+      #random_item_ids.each do |id|
+      #  import id,[nil,1,2,3,4],suffixes
+      #end
 
       # TODO some items have 0.5 socket cost and others 1.5
       other_suffixes = (-437..-433).to_a + (-446..-442).to_a # 1.5 socket cost ilvl 535
@@ -203,7 +203,14 @@ class Item
       item_ids += [ 105082, 104833, 102302, 105331, 104584, 105580 ] # sigil_of_rampage    
       item_ids += [ 104974, 104725, 102292, 105223, 104476, 105472 ] # assurance_of_consequence
       item_ids += [ 105114, 104865, 102311, 105363, 104616, 105612 ] # ticking_ebon_detonator
+      item_ids += [ 105609, 104613, 105360, 102305, 104862, 105111 ] # thoks tail tip
       item_ids += [ 103686, 103986 ] # discipline of xuen timeless isle trinkets
+
+      # filter out not existing items and other class set items
+      item_ids -= [ 102312 ] # agi dps 5 trinket is basically discipline of xuen
+      item_ids -= [ 99322, 99326, 99327, 99328, 99329, 99419, 99420, 99421, 99422, 99423, 99163, 99164, 99165, 99166, 99170, 99180, 99181, 99182, 99183, 99184, 99589, 99599, 99600, 99610, 99622, 99623, 99624, 99632, 99633, 99664, 98978, 98981, 98999, 99000, 99001, 99022, 99041, 99042, 99043, 99044 ] # druid set
+      item_ids -= [ 99382, 99383, 99384, 99385, 99386, 99392, 99393, 99394, 99395, 99396, 99140, 99141, 99142, 99143, 99144, 99145, 99146, 99154, 99155, 99156, 99555, 99556, 99565, 99606, 99607, 99643, 99644, 99653, 99654, 99655, 99050, 99051, 99063, 99064, 99065, 99071, 99072, 99073, 99074, 99075 ] # monk set
+
     end
     puts "importing now #{item_ids.length} items"
     pos = 0

@@ -238,6 +238,9 @@ class ShadowcraftHistory
         if data.options.general.pvp then 1 else 0
         if data.options.general.show_upgrades then 1 else 0
         data.options.general.show_random_items || 502
+        data.options.general.num_boss_adds * 100 || 0
+        data.options.general.response_time * 100 || 50
+        data.options.general.time_in_execute_range * 100 || 35
       ]
       options.push base36Encode(general)
 
@@ -314,23 +317,26 @@ class ShadowcraftHistory
 
       general = base36Decode options[1]
       d.options.general =
-        level:                general[0]
-        race:                 unmap(general[1], raceMap)
-        duration:             general[2]
-        lethal_poison:        unmap(general[3], poisonMap)
-        utility_poison:       unmap(general[4], utilPoisonMap)
-        virmens_bite:         general[5] != 0
-        max_ilvl:             general[6] || 700
-        tricks:               general[7] != 0
-        receive_tricks:       general[8] != 0
-        prepot:               general[9] != 0
-        patch:                general[10] || 52
-        min_ilvl:             general[11] || 430
-        epic_gems:            general[12] || 0
-        stormlash:            general[13] || 0
-        pvp:                  general[14] || 0
-        show_upgrades:        general[15] || 0
-        show_random_items:    general[16] || 0
+        level:                  general[0]
+        race:                   unmap(general[1], raceMap)
+        duration:               general[2]
+        lethal_poison:          unmap(general[3], poisonMap)
+        utility_poison:         unmap(general[4], utilPoisonMap)
+        virmens_bite:           general[5] != 0
+        max_ilvl:               general[6] || 700
+        tricks:                 general[7] != 0
+        receive_tricks:         general[8] != 0
+        prepot:                 general[9] != 0
+        patch:                  general[10] || 52
+        min_ilvl:               general[11] || 430
+        epic_gems:              general[12] || 0
+        stormlash:              general[13] || 0
+        pvp:                    general[14] || 0
+        show_upgrades:          general[15] || 0
+        show_random_items:      general[16] || 0
+        num_boss_adds:          general[17] / 100 || 0
+        response_time:          general[18] / 100 || 0.5
+        time_in_execute_range:  general[19] / 100 || 0.35
 
       d.options.buffs = {}
       for v, i in options[2]
