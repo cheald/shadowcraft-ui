@@ -1436,7 +1436,7 @@
         num_boss_adds: {
           name: "Number of Boss Adds",
           desc: "Used for the Trinket Sigil of Rampage and the Legendary Cloak",
-          datatype: 'integer',
+          datatype: 'float',
           type: 'input',
           min: 0,
           max: 5,

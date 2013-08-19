@@ -159,27 +159,43 @@ class Item
     # 5.4 random enchantment items
     # TODO remove ptr tag for live version
     if prefix == "ptr"
+      suffixes = (-348..-344).to_a + (-357..-353).to_a # 0 sockets
+
       # ilvl 496
-      other_suffixes = (-465..-461).to_a + (-474..-470).to_a # 0.5 socket cost ilvl 496
-      suffixes = (-381..-377).to_a + (-390..-386).to_a # 1.5 socket cost ilvl 496
-      random_item_ids = [101862, 101863, 101864, 101865, 101866, 101867, 101868, 101869] # armor
-      random_item_ids += [101827, 101828, 101829] # neck, ring, cloak
-      #puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 496)"
-      #random_item_ids.each do |id|
-      #  import id,[nil,1,2,3,4],suffixes
-      #end
+      suffixes_05 = (-465..-461).to_a + (-474..-470).to_a # 0.5 socket cost ilvl 496
+      suffixes_15 = (-381..-377).to_a + (-390..-386).to_a # 1.5 socket cost ilvl 496
+      random_item_ids = [ 101862, 101863, 101865, 101868, 101869 ] # 0 socket items
+      random_item_ids += [ 101827, 101828, 101829 ] # neck, ring, cloak
+      random_item_ids_05 = [ 101864, 101867 ] # 1 socket items
+      random_item_ids_15 = [ 101866 ] # 2 socket items
+      puts "importing now #{random_item_ids.length+random_item_ids_05.length+random_item_ids_15.length} random items for 5.4 (ilvl 496)"
+      random_item_ids.each do |id|
+        import id,[nil,1,2,3,4],suffixes
+      end
+      random_item_ids_05.each do |id|
+        import id,[nil,1,2,3,4],suffixes_05
+      end
+      random_item_ids_15.each do |id|
+        import id,[nil,1,2,3,4],suffixes_15
+      end
 
       # ilvl 535
-      suffixes = (-409..-405).to_a + (-418..-414).to_a # 0.5 socket cost ilvl 535
-      random_item_ids = [101949, 101950, 101951, 101952, 101953, 101954, 101955, 101956]
-      random_item_ids += [101916, 101917, 101918]
-      #puts "importing now #{random_item_ids.length} random items for 5.4 (ilvl 535)"
-      #random_item_ids.each do |id|
-      #  import id,[nil,1,2,3,4],suffixes
-      #end
-
-      # TODO some items have 0.5 socket cost and others 1.5
-      other_suffixes = (-437..-433).to_a + (-446..-442).to_a # 1.5 socket cost ilvl 535
+      suffixes_05 = (-409..-405).to_a + (-418..-414).to_a # 0.5 socket cost ilvl 535
+      suffixes_15 = (-437..-433).to_a + (-446..-442).to_a # 1.5 socket cost ilvl 535
+      random_item_ids = [ 101949, 101950, 101952, 101955, 101956 ] # 0 sockets
+      random_item_ids += [ 101916, 101917, 101918 ] # neck, ring, cloak
+      random_item_ids_05 = [ 101951, 101954 ] # 1 socket items
+      random_item_ids_15 = [ 101953 ] # 2 socket items
+      puts "importing now #{random_item_ids.length+random_item_ids_05.length+random_item_ids_15.length} random items for 5.4 (ilvl 535)"
+      random_item_ids.each do |id|
+        import id,[nil,1,2,3,4],suffixes
+      end
+      random_item_ids_05.each do |id|
+        import id,[nil,1,2,3,4],suffixes_05
+      end
+      random_item_ids_15.each do |id|
+        import id,[nil,1,2,3,4],suffixes_15
+      end
     end
     
     item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=483;ub=4;cr=21;crs=1;crv=0"
