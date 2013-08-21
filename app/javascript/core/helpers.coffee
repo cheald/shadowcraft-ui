@@ -171,7 +171,7 @@ showPopup = (popup) ->
   ttlib.hide()
   body = popup.find(".body")
   $(".popup #filter input").val("")
-  unless window.Touch
+  unless Modernizr.touch
     $(".popup #filter input").focus()
   ot = popup.find(".active").get(0)
   if ot

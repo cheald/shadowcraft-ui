@@ -49,7 +49,7 @@ class ShadowcraftTalents
     checkForWarnings("talents")
 
   hoverTalent = ->
-    return if window.Touch?
+    return if Modernizr.touch
     points = $.data(this, "points")
     talent = $.data(this, "talent")
     rank = if talent.rank.length then talent.rank[points.cur - 1] else talent.rank
@@ -201,8 +201,7 @@ class ShadowcraftTalents
       $.data(this, "icons", {grey: $this.css("backgroundImage"), normal: $this.css("backgroundImage").replace(/\/grey\//, "/")})
     ).mousedown((e) ->
       #return if !$(this).hasClass("active")
-      return if window.Touch?
-
+      return if Modernizr.touch
       switch(e.button)
         when 0
           Shadowcraft.update() if applyTalentToButton(this, 1)

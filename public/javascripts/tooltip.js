@@ -1,6 +1,6 @@
 var ttlib = {
   init: function() {
-    if(window.Touch) { return; }
+    if(Modernizr.touch) { return; }
     var tooltip = document.createElement("div");
     tooltip.className = "ea-tooltip";
     ttlib.jstooltip = tooltip;

@@ -1182,7 +1182,7 @@
     ttlib.hide();
     body = popup.find(".body");
     $(".popup #filter input").val("");
-    if (!window.Touch) {
+    if (!Modernizr.touch) {
       $(".popup #filter input").focus();
     }
     ot = popup.find(".active").get(0);
@@ -1960,7 +1960,7 @@
     };
     hoverTalent = function() {
       var nextRank, points, pos, rank, talent;
-      if (window.Touch != null) {
+      if (Modernizr.touch) {
         return;
       }
       points = $.data(this, "points");
@@ -2162,7 +2162,7 @@
           normal: $this.css("backgroundImage").replace(/\/grey\//, "/")
         });
       }).mousedown(function(e) {
-        if (window.Touch != null) {
+        if (Modernizr.touch) {
           return;
         }
         switch (e.button) {
