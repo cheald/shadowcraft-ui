@@ -107,7 +107,7 @@ class ShadowcraftOptions
     data = Shadowcraft.Data
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Patch/Engine", 'default': 52, datatype: 'integer', options: {50: '5.1', 52: '5.3'}},
+      patch: {type: "select", name: "Patch/Engine", 'default': 52, datatype: 'integer', options: {52: '5.3', 54: '5.4 PTR'}, desc: '5.4 PTR reflects Build 17314'},
       level: {type: "input", name: "Level", 'default': 90, datatype: 'integer', min: 85, max: 90},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
@@ -120,7 +120,7 @@ class ShadowcraftOptions
       epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
       show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
       show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this ilevel in gear lists", datatype: 'integer', type: 'input', min: 430, max: 700, 'default': 502}
-      num_boss_adds: {name: "Number of Boss Adds", desc: "Used for the Trinket Sigil of Rampage and the Legendary Cloak", datatype: 'float', type: 'input', min: 0, max: 5, 'default': 0}
+      num_boss_adds: {name: "Number of Boss Adds", desc: "Used for Blade Flurry / Trinket Sigil of Rampage / Legendary Cloak", datatype: 'float', type: 'input', min: 0, max: 5, 'default': 0}
     })
 
     @setup("#settings #professions", "professions", {
@@ -183,7 +183,7 @@ class ShadowcraftOptions
       revealing_strike_pooling: {type: "check", name: "Pool for Revealing Strike", right: true, default: true, datatype: 'bool'}
       stack_cds: {type: "check", name: "Stack Cooldowns", desc: "Use Adrenaline Rush and Shadow Blades together", right: true, default: true, datatype: 'bool'}
       blade_flurry: {type: "check", name: "Blade Flurry", right: true, desc: "Use Blade Flurry", default: false, datatype: 'bool'}
-      bf_targets: {type: "select", name: "Blade Flurry Targets", options: [0,1,2,3,4], 'default': 1, datatype: 'integer', min: 0, max: 4}
+      bf_targets: {type: "select", name: "Blade Flurry Targets", options: [0,1,2,3,4], desc: "With 5.4 you need to use the Option 'Number of Boss Adds' under General Settings", 'default': 1, datatype: 'integer', min: 0, max: 4}
       opener_name_combat: {type: "select", name: "Opener Name", options: {'sinister_strike': "Sinister Strike", 'revealing_strike': "Revealing Strike", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
       opener_use_combat: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })

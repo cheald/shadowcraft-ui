@@ -1175,7 +1175,7 @@ class ShadowcraftGear
       name: "Blade Flurry"
       val: 
         if data.options.rotation.blade_flurry 
-          "ON " + data.options.rotation.bf_targets + " Target/s"
+          "ON " + if data.options.general.num_boss_adds? then data.options.general.num_boss_adds + " Target/s" else ""
         else 
           "OFF"
       }
@@ -2051,7 +2051,7 @@ class ShadowcraftGear
     Shadowcraft.Options.bind "update", (opt, val) ->
       if opt in ['professions.enchanting', 'professions.blacksmithing','rotation.use_hemorrhage','general.pvp']
         app.updateDisplay()
-      if opt in ['rotation.blade_flurry','rotation.bf_targets']
+      if opt in ['rotation.blade_flurry','general.num_boss_adds']
         app.updateSummaryWindow()
 
     checkForWarnings('options')

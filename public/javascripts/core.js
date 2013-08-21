@@ -1083,6 +1083,12 @@
       if (parseInt(data.options.general.patch) < 52) {
         Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to the newest Patch and/or clear all saved data and refresh from armory.", null, 'warn', 'options');
       }
+      if (parseInt(data.options.general.patch) < 54) {
+        Shadowcraft.Console.warn({}, "5.4 PTR Version now available. Feel free to play with it.", "Please report every error or bug you encounter.", 'warn', 'options');
+      }
+      if (parseInt(data.options.general.patch) === 54) {
+        Shadowcraft.Console.warn({}, "You are using 5.4 PTR: Feel free to play with it.", "Please report every error or bug you encounter.", 'warn', 'options');
+      }
     }
     if (section === void 0 || section === "glyphs") {
       Shadowcraft.Console.remove(".glyphs");
@@ -1326,8 +1332,10 @@
           datatype: 'integer',
           options: {
             50: '5.1',
-            52: '5.3'
-          }
+            52: '5.3',
+            54: '5.4 PTR'
+          },
+          desc: '5.4 PTR reflects Build 17314'
         },
         level: {
           type: "input",
@@ -1435,7 +1443,7 @@
         },
         num_boss_adds: {
           name: "Number of Boss Adds",
-          desc: "Used for the Trinket Sigil of Rampage and the Legendary Cloak",
+          desc: "Used for Blade Flurry / Trinket Sigil of Rampage / Legendary Cloak",
           datatype: 'float',
           type: 'input',
           min: 0,
@@ -1722,6 +1730,7 @@
           type: "select",
           name: "Blade Flurry Targets",
           options: [0, 1, 2, 3, 4],
+          desc: "With 5.4 you need to use the Option 'Number of Boss Adds' under General Settings",
           'default': 1,
           datatype: 'integer',
           min: 0,
@@ -4031,7 +4040,7 @@
       if (ShadowcraftTalents.GetActiveSpecName() === "Combat") {
         a_stats.push({
           name: "Blade Flurry",
-          val: data.options.rotation.blade_flurry ? "ON " + data.options.rotation.bf_targets + " Target/s" : "OFF"
+          val: data.options.rotation.blade_flurry ? "ON " + (data.options.general.num_boss_adds != null ? data.options.general.num_boss_adds + " Target/s" : "") : "OFF"
         });
       } else if (ShadowcraftTalents.GetActiveSpecName() === "Subtlety") {
         a_stats.push({
@@ -5069,7 +5078,7 @@
         if (opt === 'professions.enchanting' || opt === 'professions.blacksmithing' || opt === 'rotation.use_hemorrhage' || opt === 'general.pvp') {
           app.updateDisplay();
         }
-        if (opt === 'rotation.blade_flurry' || opt === 'rotation.bf_targets') {
+        if (opt === 'rotation.blade_flurry' || opt === 'general.num_boss_adds') {
           return app.updateSummaryWindow();
         }
       });

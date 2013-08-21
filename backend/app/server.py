@@ -289,7 +289,7 @@ class ShadowcraftComputation:
                 'use_hemorrhage'
             ]
         ]
-    elif __builtin__.shadowcraft_engine_version in [5.2,5.4]:
+    elif __builtin__.shadowcraft_engine_version == 5.2:
         validCycleKeys = [[
                 'min_envenom_size_non_execute',
                 'min_envenom_size_execute',
@@ -302,6 +302,22 @@ class ShadowcraftComputation:
                 'blade_flurry',
                 'stack_cds',
                 'bf_targets'
+            ], [
+                'use_hemorrhage'
+            ]
+        ]
+    elif __builtin__.shadowcraft_engine_version == 5.4:
+        validCycleKeys = [[
+                'min_envenom_size_non_execute',
+                'min_envenom_size_execute',
+                'prioritize_rupture_uptime_non_execute',
+                'prioritize_rupture_uptime_execute'
+            ], [
+                'use_rupture',
+                'revealing_strike_pooling',
+                'ksp_immediately',
+                'blade_flurry',
+                'stack_cds'
             ], [
                 'use_hemorrhage'
             ]
