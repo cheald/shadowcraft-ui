@@ -1331,7 +1331,6 @@
           'default': 52,
           datatype: 'integer',
           options: {
-            50: '5.1',
             52: '5.3',
             54: '5.4 PTR'
           },

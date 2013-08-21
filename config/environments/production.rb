@@ -50,5 +50,5 @@ Roguesim::Application.configure do
   config.middleware.use ::ExceptionNotifier,
     :email_prefix => "[ShadowCraft] ",
     :sender_address => %{"notifier" <notifier@mmo-mumble.com>},
-    :exception_recipients => %w{cheald+shadowcraft@gmail.com}    
+    :exception_recipients => %w{cheald+shadowcraft@gmail.com indzlord+shadowcraft@gmail.com}    
 end
