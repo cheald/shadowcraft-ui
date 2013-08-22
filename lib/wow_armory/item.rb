@@ -258,7 +258,7 @@ module WowArmory
       self.icon = doc.css("icon").text.downcase
       self.tag = ""
       tooltip = doc.css("htmlTooltip").text
-      tag = tooltip.match(/<span style=\"color: #00FF00\">(Heroic|Heroic Thunderforged|Heroic Warforged|Thunderforged|Warforged|Timeless|Flexible|Raid Finder|Season \d+)<\/span>/)
+      tag = tooltip.match(/<span style=\"color: #00FF00\">(Heroic|Heroic Thunderforged|Heroic Warforged|Thunderforged|Warforged|Timeless|Flexible|Raid Finder|Season \d+ Elite|Season \d+|Elite)<\/span>/)
       unless tag.nil?
         self.tag = tag[1]
       end

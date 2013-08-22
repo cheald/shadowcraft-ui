@@ -2766,7 +2766,6 @@
         }
         upgrade_level = item.upgrade_level != null ? item.upgrade_level : 0;
         if (c.trinket_ranking[get_item_id(item)]) {
-          console.log(item.name, upgrade_level, c.trinket_ranking[get_item_id(item)][upgrade_level]);
           if (c.trinket_ranking[get_item_id(item)][upgrade_level]) {
             total += c.trinket_ranking[get_item_id(item)][upgrade_level];
           } else {
