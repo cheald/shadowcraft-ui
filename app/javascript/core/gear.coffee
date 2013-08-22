@@ -220,7 +220,10 @@ class ShadowcraftGear
 
       upgrade_level = if item.upgrade_level? then item.upgrade_level else 0
       if c.trinket_ranking[get_item_id(item)]
-        total += c.trinket_ranking[get_item_id(item)][upgrade_level]
+        if c.trinket_ranking[get_item_id(item)][upgrade_level]
+          total += c.trinket_ranking[get_item_id(item)][upgrade_level]
+        else
+          total += c.trinket_ranking[get_item_id(item)][0]
 
     total
 
@@ -708,7 +711,6 @@ class ShadowcraftGear
 
       item = ItemLookup[gear.item_id]
       gem_offset = statOffset(gear, FACETS.GEMS)
-
       fudgeOffsets(gem_offset)
 
       if item

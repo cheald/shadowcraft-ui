@@ -294,7 +294,8 @@ module WowArmory
         self.dps = (eqstats["mledps"] || eqstats["dps"]).to_f
         self.subclass = stats["subclass"].to_i
       end
-      if self.ilevel >= 458
+
+      if not stats["upgrades"].nil? and self.ilevel >= 458
         self.upgradable = true
       else
         self.upgradable = false
