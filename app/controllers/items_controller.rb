@@ -28,7 +28,11 @@ class ItemsController < ApplicationController
 
   def rebuild
     char = Character.criteria.id(params[:c]).first
-    filename = "items-#{char.properties['player_class'].downcase}.js"
+    player_class = "unknown"
+    unless char.nil? or char.properties['player_class'].nil?
+      player_class = char.properties['player_class']
+    end
+    filename = "items-#{player_class.downcase}.js"
     first_item = Item.desc(:created_at).first
     anchor = flash[:reload].blank? ? nil : "reload"
     f = File.join(Rails.root, "public", filename)

@@ -28,7 +28,7 @@ module WowArmory
           when "tw"
             "http://tw.battle.net/"
           when "cn"
-            "http://cn.battle.net/"
+            "http://www.battlenet.com.cn"
           else
             "http://us.battle.net/"
         end
