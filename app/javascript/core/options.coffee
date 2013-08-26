@@ -115,12 +115,15 @@ class ShadowcraftOptions
       time_in_execute_range: {type: "input", name: "Time in Execute Range", desc: "Only used in Assassination Spec", 'default': 0.35, datatype: 'float', min: 0, max: 1}
       lethal_poison: {name: "Lethal Poison", type: 'select', options: {'dp': 'Deadly Poison', 'wp': 'Wound Poison'}, 'default': 'dp'}
       utility_poison: {name: "Utility Poison", type: 'select', options: {'lp': 'Leeching Poison', 'n': 'Other/None'}, 'default': 'lp'}
+      num_boss_adds: {name: "Number of Boss Adds", desc: "Used for Blade Flurry / Trinket Sigil of Rampage / Legendary Cloak", datatype: 'float', type: 'input', min: 0, max: 5, 'default': 0}
+    })
+
+    @setup("#settings #generalFilter", "general", {
       max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this ilevel in gear lists", 'default': 700, datatype: 'integer', min: 430, max: 700}
       min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this ilevel in gear lists", 'default': 430, datatype: 'integer', min: 430, max: 700},
-      epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
-      show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
       show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this ilevel in gear lists", datatype: 'integer', type: 'input', min: 430, max: 700, 'default': 502}
-      num_boss_adds: {name: "Number of Boss Adds", desc: "Used for Blade Flurry / Trinket Sigil of Rampage / Legendary Cloak", datatype: 'float', type: 'input', min: 0, max: 5, 'default': 0}
+      show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
+      epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
     })
 
     @setup("#settings #professions", "professions", {
@@ -198,6 +201,10 @@ class ShadowcraftOptions
       mh_expertise_rating_override: {name: "MH Expertise", type: "input", desc: "Override MH expertise EP value", 'default': 0.7, datatype: 'float', min: 0.1, max: 5.0}
       oh_expertise_rating_override: {name: "OH Expertise", type: "input", desc: "Override OH expertise EP value", 'default': 0.3, datatype: 'float', min: 0.1, max: 5.0}
       force_mastery_over_haste: {name: "Force Mastery > Haste", type: "check", desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP * 1.05", datatype: 'bool', 'default': false}
+    })
+    @setup("#settings #advancedSettings", "advanced", {
+      latency: {type: "input", name: "Latency", 'default': 0.03, datatype: 'float', min: 0.0, max: 5}
+      adv_params: {type: "input", name: "Advanced Parameters", default: "", datatype: 'string'}
     })
 
   changeOption = (elem, inputType, val) ->

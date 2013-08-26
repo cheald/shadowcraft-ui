@@ -470,7 +470,9 @@
           time_in_execute_range: data.options.general.time_in_execute_range,
           stormlash: data.options.general.stormlash,
           pvp: data.options.general.pvp,
-          num_boss_adds: data.options.general.num_boss_adds
+          num_boss_adds: data.options.general.num_boss_adds,
+          latency: data.options.advanced.latency,
+          adv_params: data.options.advanced.adv_params
         },
         spec: data.activeSpec,
         t: talentString,
@@ -1393,6 +1395,17 @@
           },
           'default': 'lp'
         },
+        num_boss_adds: {
+          name: "Number of Boss Adds",
+          desc: "Used for Blade Flurry / Trinket Sigil of Rampage / Legendary Cloak",
+          datatype: 'float',
+          type: 'input',
+          min: 0,
+          max: 5,
+          'default': 0
+        }
+      });
+      this.setup("#settings #generalFilter", "general", {
         max_ilvl: {
           name: "Max ILevel",
           type: "input",
@@ -1411,14 +1424,14 @@
           min: 430,
           max: 700
         },
-        epic_gems: {
-          name: "Recommend Epic Gems",
+        show_random_items: {
+          name: "Min ILvL (Random Items)",
+          desc: "Don't show random items under this ilevel in gear lists",
           datatype: 'integer',
-          type: 'select',
-          options: {
-            1: 'Yes',
-            0: 'No'
-          }
+          type: 'input',
+          min: 430,
+          max: 700,
+          'default': 502
         },
         show_upgrades: {
           name: "Show Upgrades",
@@ -1431,23 +1444,14 @@
           },
           'default': 0
         },
-        show_random_items: {
-          name: "Min ILvL (Random Items)",
-          desc: "Don't show random items under this ilevel in gear lists",
+        epic_gems: {
+          name: "Recommend Epic Gems",
           datatype: 'integer',
-          type: 'input',
-          min: 430,
-          max: 700,
-          'default': 502
-        },
-        num_boss_adds: {
-          name: "Number of Boss Adds",
-          desc: "Used for Blade Flurry / Trinket Sigil of Rampage / Legendary Cloak",
-          datatype: 'float',
-          type: 'input',
-          min: 0,
-          max: 5,
-          'default': 0
+          type: 'select',
+          options: {
+            1: 'Yes',
+            0: 'No'
+          }
         }
       });
       this.setup("#settings #professions", "professions", {
@@ -1793,7 +1797,7 @@
           datatype: 'string'
         }
       });
-      return this.setup("#advanced #advancedReforge", "advanced", {
+      this.setup("#advanced #advancedReforge", "advanced", {
         mh_expertise_rating_override: {
           name: "MH Expertise",
           type: "input",
@@ -1818,6 +1822,22 @@
           desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP * 1.05",
           datatype: 'bool',
           'default': false
+        }
+      });
+      return this.setup("#settings #advancedSettings", "advanced", {
+        latency: {
+          type: "input",
+          name: "Latency",
+          'default': 0.03,
+          datatype: 'float',
+          min: 0.0,
+          max: 5
+        },
+        adv_params: {
+          type: "input",
+          name: "Advanced Parameters",
+          "default": "",
+          datatype: 'string'
         }
       });
     };
@@ -2732,7 +2752,7 @@
       }
       delete stats;
       c = Shadowcraft.lastCalculation;
-      if (c) {
+      if (c && key !== "socketbonus") {
         if (item.dps) {
           if (slot === 15) {
             total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed];
@@ -4464,7 +4484,7 @@
           ttrand: ttrand,
           ttupgd: ttupgd,
           desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : "") + " " + (l.__setBonusEP > 0 ? "/ " + l.__setBonusEP.toFixed(1) + " set" : "") + " ",
-          search: escape(l.name + l.tag),
+          search: escape(l.name + " " + l.tag),
           percent: Math.max((iEP - minIEP) / maxIEP * 100, 0.01),
           ep: iEP.toFixed(1)
         });

@@ -180,7 +180,7 @@ class ShadowcraftGear
 
     delete stats
     c = Shadowcraft.lastCalculation
-    if c
+    if c and key != "socketbonus"
       if item.dps
         if slot == 15
           total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed]
@@ -1514,7 +1514,7 @@ class ShadowcraftGear
         ttrand: ttrand
         ttupgd: ttupgd
         desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" } #{if l.__setBonusEP > 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
-        search: escape(l.name + l.tag)
+        search: escape(l.name + " " + l.tag)
         percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01
         ep: iEP.toFixed(1)
       )

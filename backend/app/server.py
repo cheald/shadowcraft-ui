@@ -569,6 +569,8 @@ class ShadowcraftComputation:
             use_opener = rotation_keys["opener_use"],
             stormlash = _opt.get("stormlash", False),
             is_pvp = _opt.get("pvp", False),
+            latency = _opt.get("latency", 0.03),
+            adv_params = _opt.get("adv_params", ''),
             **settings_options
         )
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)

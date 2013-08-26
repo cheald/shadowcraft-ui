@@ -78,6 +78,8 @@ class ShadowcraftBackend
         stormlash: data.options.general.stormlash
         pvp: data.options.general.pvp
         num_boss_adds: data.options.general.num_boss_adds
+        latency: data.options.advanced.latency
+        adv_params: data.options.advanced.adv_params
       }
       spec: data.activeSpec,
       t: talentString,
