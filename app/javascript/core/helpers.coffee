@@ -76,9 +76,9 @@ checkForWarnings = (section) ->
     if parseInt(data.options.general.patch) < 52
       Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to the newest Patch and/or clear all saved data and refresh from armory.", null, 'warn', 'options')
     if parseInt(data.options.general.patch) < 54
-      Shadowcraft.Console.warn({}, "5.4 PTR Version now available. Feel free to play with it.", "Please report every error or bug you encounter.", 'warn', 'options')
+      Shadowcraft.Console.warn({}, "5.4 PTR Version now available. You can switch to 5.4 in the settings tab.", "Please report every error or bug you encounter.", 'warn', 'options')
     if parseInt(data.options.general.patch) == 54
-      Shadowcraft.Console.warn({}, "You are using 5.4 PTR: Feel free to play with it.", "Please report every error or bug you encounter.", 'warn', 'options')
+      Shadowcraft.Console.warn({}, "5.4 (PTR 17331) active: Feel free to play with it.", "Please report every error or bug you encounter.", 'warn', 'options')
 
   if section == undefined or section == "glyphs"
     # Warn glyphs

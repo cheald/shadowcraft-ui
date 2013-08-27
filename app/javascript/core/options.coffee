@@ -107,7 +107,7 @@ class ShadowcraftOptions
     data = Shadowcraft.Data
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Patch/Engine", 'default': 52, datatype: 'integer', options: {52: '5.3', 54: '5.4 PTR'}, desc: '5.4 PTR reflects Build 17314'},
+      patch: {type: "select", name: "Patch/Engine", 'default': 52, datatype: 'integer', options: {52: '5.3', 54: '5.4 PTR'}, desc: '5.4 PTR reflects Build 17331'},
       level: {type: "input", name: "Level", 'default': 90, datatype: 'integer', min: 85, max: 90},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
@@ -198,8 +198,8 @@ class ShadowcraftOptions
     })
 
     @setup("#advanced #advancedReforge", "advanced", {
-      mh_expertise_rating_override: {name: "MH Expertise", type: "input", desc: "Override MH expertise EP value", 'default': 0.7, datatype: 'float', min: 0.1, max: 5.0}
-      oh_expertise_rating_override: {name: "OH Expertise", type: "input", desc: "Override OH expertise EP value", 'default': 0.3, datatype: 'float', min: 0.1, max: 5.0}
+      mh_expertise_rating_override: {name: "MH Expertise", type: "input", desc: "Override MH expertise EP value", 'default': 1.4, datatype: 'float', min: 0.1, max: 5.0}
+      oh_expertise_rating_override: {name: "OH Expertise", type: "input", desc: "Override OH expertise EP value", 'default': 0.6, datatype: 'float', min: 0.1, max: 5.0}
       force_mastery_over_haste: {name: "Force Mastery > Haste", type: "check", desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP * 1.05", datatype: 'bool', 'default': false}
     })
     @setup("#settings #advancedSettings", "advanced", {
