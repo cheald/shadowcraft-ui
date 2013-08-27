@@ -214,6 +214,7 @@ class Item
     item_ids += [ 96741, 96781] # heroic thunderforged, rune of reorigination and talisman of bloodlust still missing
     item_ids += [ 98148 ] # ilvl 600 cloak 5.3
     if prefix == "ptr"
+      item_ids += [ 98604, 98613 ] # 5.4 crafting items
       item_ids += [ 102248 ] # ilvl 600 legendary cloak 5.4
       item_ids += [ 105029, 104780, 102301, 105278, 104531, 105527 ] # haromms_talisman
       item_ids += [ 105082, 104833, 102302, 105331, 104584, 105580 ] # sigil_of_rampage    
