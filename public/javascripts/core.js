@@ -1932,8 +1932,8 @@
         spec: "Z"
       },
       "Stock Subtlety": {
-        talents: "221002",
-        glyphs: [42970],
+        talents: "121002",
+        glyphs: [42970, 63420],
         spec: "b"
       }
     };
