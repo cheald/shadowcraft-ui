@@ -1089,7 +1089,7 @@
         Shadowcraft.Console.warn({}, "5.4 PTR Version now available. You can switch to 5.4 in the settings tab.", "Please report every error or bug you encounter.", 'warn', 'options');
       }
       if (parseInt(data.options.general.patch) === 54) {
-        Shadowcraft.Console.warn({}, "5.4 (PTR 17331) active: Feel free to play with it.", "Please report every error or bug you encounter.", 'warn', 'options');
+        Shadowcraft.Console.warn({}, "5.4 (PTR 17337) active: Feel free to play with it.", "Please report every error or bug you encounter.", 'warn', 'options');
       }
     }
     if (section === void 0 || section === "glyphs") {
@@ -1336,7 +1336,7 @@
             52: '5.3',
             54: '5.4 PTR'
           },
-          desc: '5.4 PTR reflects Build 17331'
+          desc: '5.4 PTR reflects Build 17337'
         },
         level: {
           type: "input",

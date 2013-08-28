@@ -107,7 +107,7 @@ class ShadowcraftOptions
     data = Shadowcraft.Data
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Patch/Engine", 'default': 52, datatype: 'integer', options: {52: '5.3', 54: '5.4 PTR'}, desc: '5.4 PTR reflects Build 17331'},
+      patch: {type: "select", name: "Patch/Engine", 'default': 52, datatype: 'integer', options: {52: '5.3', 54: '5.4 PTR'}, desc: '5.4 PTR reflects Build 17337'},
       level: {type: "input", name: "Level", 'default': 90, datatype: 'integer', min: 85, max: 90},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
