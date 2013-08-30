@@ -1177,7 +1177,7 @@ class ShadowcraftGear
       name: "Blade Flurry"
       val: 
         if data.options.rotation.blade_flurry 
-          "ON " + if data.options.general.num_boss_adds? then data.options.general.num_boss_adds + " Target/s" else ""
+          "ON " + if data.options.general.num_boss_adds? then Math.min(4, data.options.general.num_boss_adds) + " Target/s" else ""
         else 
           "OFF"
       }
@@ -1605,17 +1605,15 @@ class ShadowcraftGear
         otherGearGems.push data.gear[slot]["g" + i]
 
     for gem in GemList
-      gem.__ep = get_ep(gem) + (if gem[item.sockets[gemSlot]] then socketEPBonus else 0)
+      gem.__ep = get_ep(gem)
+      if item.sockets[gemSlot] != "Prismatic"
+        gem.__ep += (if gem[item.sockets[gemSlot]] then socketEPBonus else 0)
     GemList.sort(__epSort)
 
     buffer = ""
-    gemCt = 0
     usedNames = {}
     max = null
     for gem in GemList
-      gemCt += 1
-      break if gemCt > 50
-
       if usedNames[gem.name]
         if gem.id == selected_id
           selected_id = usedNames[gem.name]
@@ -1631,7 +1629,7 @@ class ShadowcraftGear
 
       continue if gEP < 1
 
-      if gem[item.sockets[gemSlot]]
+      if gem[item.sockets[gemSlot]] and item.sockets[gemSlot] != "Prismatic"
         desc += " (+#{socketEPBonus.toFixed(1)} bonus)"
 
       buffer += Templates.itemSlot

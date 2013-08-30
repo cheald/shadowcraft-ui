@@ -4063,7 +4063,7 @@
       if (ShadowcraftTalents.GetActiveSpecName() === "Combat") {
         a_stats.push({
           name: "Blade Flurry",
-          val: data.options.rotation.blade_flurry ? "ON " + (data.options.general.num_boss_adds != null ? data.options.general.num_boss_adds + " Target/s" : "") : "OFF"
+          val: data.options.rotation.blade_flurry ? "ON " + (data.options.general.num_boss_adds != null ? Math.min(4, data.options.general.num_boss_adds) + " Target/s" : "") : "OFF"
         });
       } else if (ShadowcraftTalents.GetActiveSpecName() === "Subtlety") {
         a_stats.push({
@@ -4557,7 +4557,7 @@
       return false;
     };
     clickSlotGem = function() {
-      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemCt, gemSlot, gemType, i, item, max, otherGearGems, selected_id, slot, socketEPBonus, socketlength, usedNames, _i, _j, _len, _len2;
+      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemSlot, gemType, i, item, max, otherGearGems, selected_id, slot, socketEPBonus, socketlength, usedNames, _i, _j, _len, _len2;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       GemList = Shadowcraft.ServerData.GEMS;
       data = Shadowcraft.Data;
@@ -4585,19 +4585,17 @@
       }
       for (_i = 0, _len = GemList.length; _i < _len; _i++) {
         gem = GemList[_i];
-        gem.__ep = get_ep(gem) + (gem[item.sockets[gemSlot]] ? socketEPBonus : 0);
+        gem.__ep = get_ep(gem);
+        if (item.sockets[gemSlot] !== "Prismatic") {
+          gem.__ep += (gem[item.sockets[gemSlot]] ? socketEPBonus : 0);
+        }
       }
       GemList.sort(__epSort);
       buffer = "";
-      gemCt = 0;
       usedNames = {};
       max = null;
       for (_j = 0, _len2 = GemList.length; _j < _len2; _j++) {
         gem = GemList[_j];
-        gemCt += 1;
-        if (gemCt > 50) {
-          break;
-        }
         if (usedNames[gem.name]) {
           if (gem.id === selected_id) {
             selected_id = usedNames[gem.name];
@@ -4620,7 +4618,7 @@
         if (gEP < 1) {
           continue;
         }
-        if (gem[item.sockets[gemSlot]]) {
+        if (gem[item.sockets[gemSlot]] && item.sockets[gemSlot] !== "Prismatic") {
           desc += " (+" + (socketEPBonus.toFixed(1)) + " bonus)";
         }
         buffer += Templates.itemSlot({
