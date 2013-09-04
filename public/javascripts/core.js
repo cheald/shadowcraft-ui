@@ -3574,6 +3574,38 @@
       });
       return list;
     };
+    ShadowcraftGear.prototype.setGems = function(_gems) {
+      var ItemLookup, g, gear, gem, gems, i, id, item, model, s, slot, _i, _len, _len2, _ref;
+      Shadowcraft.Console.purgeOld();
+      model = Shadowcraft.Data;
+      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
+      for (id in _gems) {
+        gems = _gems[id];
+        gear = null;
+        _ref = id.split("-"), id = _ref[0], s = _ref[1];
+        id = parseInt(id, 10);
+        for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
+          slot = SLOT_ORDER[_i];
+          g = model.gear[slot];
+          if (g.item_id === id && slot === s) {
+            gear = g;
+            break;
+          }
+        }
+        if (gear) {
+          item = ItemLookup[gear.item_id];
+          for (i = 0, _len2 = gems.length; i < _len2; i++) {
+            gem = gems[i];
+            if (gem === 0) {
+              continue;
+            }
+            gear["g" + i] = gem;
+          }
+        }
+      }
+      Shadowcraft.update();
+      return Shadowcraft.Gear.updateDisplay();
+    };
     /*
       # Upgrade helpers
       */
@@ -4782,6 +4814,12 @@
         }
         return TiniReforger.buildRequest(override = true);
       });
+      $("#reforgeNew").click(function() {
+        if (window._gaq) {
+          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
+        }
+        return TiniReforger.buildRequest(false, true);
+      });
       $("#optimizeGems").click(function() {
         if (window._gaq) {
           window._gaq.push(['_trackEvent', "Character", "Optimize Gems"]);
@@ -5112,9 +5150,10 @@
     return ShadowcraftGear;
   })();
   ShadowcraftTiniReforgeBackend = (function() {
-    var ENGINE, ENGINES, REFORGABLE, REFORGER_MAP, deferred;
+    var ENGINE, ENGINE2, ENGINES, REFORGABLE, REFORGER_MAP, deferred;
     ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"];
     ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
+    ENGINE2 = "http://localhost:8888/calc";
     REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"];
     REFORGER_MAP = {
       "spirit": "spirit",
@@ -5184,10 +5223,18 @@
         contentType: "application/json"
       });
     };
-    ShadowcraftTiniReforgeBackend.prototype.buildRequest = function(override) {
+    ShadowcraftTiniReforgeBackend.prototype.buildRequest = function(override, newmethod) {
       var ItemLookup, caps, diff, ep, ep_new_sorted, ep_sorted, f, items, k, max, req, revert, stats, v, _ep, _stats;
       if (override == null) {
         override = false;
+      }
+      if (newmethod == null) {
+        newmethod = false;
+      }
+      if (newmethod) {
+        ENGINE = ENGINE2;
+      } else {
+        ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
       }
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       f = ShadowcraftGear.FACETS;
@@ -5267,18 +5314,20 @@
       ep_sorted = _.sortBy(REFORGABLE, function(k) {
         return ep[REFORGER_MAP[k]];
       });
-      max = Math.max(ep.haste_rating, ep.mastery_rating, ep.crit_rating);
-      if (max < ep.expertise_rating && 2.5 < ep.expertise_rating) {
-        diff = ep.expertise_rating - max;
-        ep.expertise_rating = max + diff / 3;
-        ep.mh_expertise_rating = ep.expertise_rating - ep.oh_expertise_rating;
-      }
-      if (max < ep.yellow_hit && 2.5 < ep.yellow_hit) {
-        diff = ep.yellow_hit - max;
-        ep.yellow_hit = max + diff / 3;
-      }
-      if (ep.yellow_hit < ep.expertise_rating) {
-        ep.yellow_hit = ep.expertise_rating * 1.1;
+      if (!newmethod) {
+        max = Math.max(ep.haste_rating, ep.mastery_rating, ep.crit_rating);
+        if (max < ep.expertise_rating && 2.5 < ep.expertise_rating) {
+          diff = ep.expertise_rating - max;
+          ep.expertise_rating = max + diff / 3;
+          ep.mh_expertise_rating = ep.expertise_rating - ep.oh_expertise_rating;
+        }
+        if (max < ep.yellow_hit && 2.5 < ep.yellow_hit) {
+          diff = ep.yellow_hit - max;
+          ep.yellow_hit = max + diff / 3;
+        }
+        if (ep.yellow_hit < ep.expertise_rating) {
+          ep.yellow_hit = ep.expertise_rating * 1.1;
+        }
       }
       if (override) {
         ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override;

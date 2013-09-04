@@ -8,6 +8,7 @@ class ShadowcraftTiniReforgeBackend
   #  ENGINE = "http://#{window.location.hostname}/calc"
   ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"]
   ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)]
+  ENGINE2 = "http://localhost:8888/calc" # TODO for testing purpose
   REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"]
   REFORGER_MAP =
     "spirit": "spirit"
@@ -68,7 +69,11 @@ class ShadowcraftTiniReforgeBackend
       dataType: "json",
       contentType: "application/json"
 
-  buildRequest: (override = false) ->
+  buildRequest: (override = false,newmethod = false) ->
+    if newmethod
+      ENGINE = ENGINE2
+    else
+      ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)]
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     f = ShadowcraftGear.FACETS
     _stats = @gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT)
@@ -125,16 +130,17 @@ class ShadowcraftTiniReforgeBackend
     # Temporary? fix for long computation time until the reforging service covers the
     # cases where exp/yellowhit EP and the secondary stats having big gapes
     # with reducing those big gaps the computation time drops significantly
-    max = Math.max ep.haste_rating,ep.mastery_rating,ep.crit_rating
-    if max < ep.expertise_rating and 2.5 < ep.expertise_rating
-      diff = ep.expertise_rating - max
-      ep.expertise_rating = max + diff / 3
-      ep.mh_expertise_rating = ep.expertise_rating - ep.oh_expertise_rating
-    if max < ep.yellow_hit and 2.5 < ep.yellow_hit
-      diff = ep.yellow_hit - max
-      ep.yellow_hit = max + diff / 3
-    if ep.yellow_hit < ep.expertise_rating
-      ep.yellow_hit = ep.expertise_rating * 1.1
+    if not newmethod
+      max = Math.max ep.haste_rating,ep.mastery_rating,ep.crit_rating
+      if max < ep.expertise_rating and 2.5 < ep.expertise_rating
+        diff = ep.expertise_rating - max
+        ep.expertise_rating = max + diff / 3
+        ep.mh_expertise_rating = ep.expertise_rating - ep.oh_expertise_rating
+      if max < ep.yellow_hit and 2.5 < ep.yellow_hit
+        diff = ep.yellow_hit - max
+        ep.yellow_hit = max + diff / 3
+      if ep.yellow_hit < ep.expertise_rating
+        ep.yellow_hit = ep.expertise_rating * 1.1
 
     if override
       ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override

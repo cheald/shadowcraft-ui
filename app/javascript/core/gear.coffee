@@ -787,6 +787,27 @@ class ShadowcraftGear
       b.normal_ep - a.normal_ep
     list
 
+  setGems: (_gems) ->
+    Shadowcraft.Console.purgeOld()
+    model = Shadowcraft.Data
+    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+    for id, gems of _gems
+      gear = null
+      [id, s] = id.split "-"
+      id = parseInt(id, 10)
+      for slot in SLOT_ORDER
+        g = model.gear[slot]
+        if g.item_id == id and slot == s
+          gear = g
+          break
+      if gear
+        item = ItemLookup[gear.item_id]
+        for gem, i in gems
+          continue if gem == 0
+          gear["g" + i] = gem
+    Shadowcraft.update()
+    Shadowcraft.Gear.updateDisplay()
+
   ###
   # Upgrade helpers
   ###
@@ -1789,6 +1810,11 @@ class ShadowcraftGear
       # Shadowcraft.Gear.reforgeAll()
       window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
       TiniReforger.buildRequest(override = true)
+
+    $("#reforgeNew").click ->
+      # Shadowcraft.Gear.reforgeAll()
+      window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
+      TiniReforger.buildRequest(false,true)
 
     $("#optimizeGems").click ->
       window._gaq.push ['_trackEvent', "Character", "Optimize Gems"] if window._gaq
