@@ -882,8 +882,18 @@ img.upgrade
     font-weight: bold
     position: relative
     width: 399px
-    .inner
-      display: inline
+    height: 34px
+    .spec-name
+      padding-left: 40px
+    .spec-icon
+      position: absolute
+      width: 36px
+      height: 36px
+      left: 3px
+      top: 3px
+      border: 1px solid #434445
+      +border-radius(3px)
+      box-shadow: 0 0 4px 0 #000000
 
   #talentframe
     padding: 3px
@@ -936,6 +946,7 @@ img.upgrade
     .talent
       cursor: pointer
       border: 2px solid #111
+      box-shadow: 0 0 4px 0 #000000
       background-color: rgba(0,0,0, 0.4)
       background-position: center center
       position: relative

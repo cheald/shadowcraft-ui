@@ -4,6 +4,11 @@ class ShadowcraftTalents
   TREE_SIZE = 6
   ALWAYS_SHOW_GLYPHS = []
   CHARACTER_SPEC = ""
+  SPEC_ICONS = 
+    "a": "ability_rogue_eviscerate"
+    "Z": "ability_backstab"
+    "b": "ability_stealth"
+    "": "class_rogue"
   DEFAULT_SPECS =
     "Stock Assassination":
       talents: "221102"
@@ -29,8 +34,10 @@ class ShadowcraftTalents
       return "Assassination"
     else if s == "Z"
       return "Combat"
-    else
+    else if s == "b"
       return "Subtlety"
+    else
+      return "Rogue"
 
   updateTalentAvailability = (selector) ->
     talents = if selector then selector.find(".talent") else $("#talentframe .tree .talent")
@@ -98,7 +105,11 @@ class ShadowcraftTalents
 
   setSpec = (str) ->
     data = Shadowcraft.Data
-    $("#specactive").html(getSpecName(str))
+    buffer = Templates.specActive({
+      name: getSpecName(str)
+      icon: SPEC_ICONS[str]
+    })
+    $("#specactive").get(0).innerHTML = buffer
     data.activeSpec = str
 
   getSpec = ->

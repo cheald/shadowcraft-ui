@@ -354,6 +354,7 @@
       input: Handlebars.compile($("#template-input").html()),
       talentTree: Handlebars.compile($("#template-tree").html()),
       talentTier: Handlebars.compile($("#template-tier").html()),
+      specActive: Handlebars.compile($("#template-specactive").html()),
       tooltip: Handlebars.compile($("#template-tooltip").html()),
       talentSet: Handlebars.compile($("#template-talent_set").html()),
       log: Handlebars.compile($("#template-log").html()),
@@ -1914,12 +1915,18 @@
     return ShadowcraftOptions;
   })();
   ShadowcraftTalents = (function() {
-    var ALWAYS_SHOW_GLYPHS, CHARACTER_SPEC, DEFAULT_SPECS, MAX_TALENT_POINTS, TREE_SIZE, applyTalentToButton, getSpec, getSpecName, getTalents, glyphRankCount, hoverTalent, resetTalents, setGlyph, setSpec, setTalents, talentsSpent, toggleGlyph, updateGlyphWeights, updateTalentAvailability, updateTalentContribution;
+    var ALWAYS_SHOW_GLYPHS, CHARACTER_SPEC, DEFAULT_SPECS, MAX_TALENT_POINTS, SPEC_ICONS, TREE_SIZE, applyTalentToButton, getSpec, getSpecName, getTalents, glyphRankCount, hoverTalent, resetTalents, setGlyph, setSpec, setTalents, talentsSpent, toggleGlyph, updateGlyphWeights, updateTalentAvailability, updateTalentContribution;
     talentsSpent = 0;
     MAX_TALENT_POINTS = 6;
     TREE_SIZE = 6;
     ALWAYS_SHOW_GLYPHS = [];
     CHARACTER_SPEC = "";
+    SPEC_ICONS = {
+      "a": "ability_rogue_eviscerate",
+      "Z": "ability_backstab",
+      "b": "ability_stealth",
+      "": "class_rogue"
+    };
     DEFAULT_SPECS = {
       "Stock Assassination": {
         talents: "221102",
@@ -1950,8 +1957,10 @@
         return "Assassination";
       } else if (s === "Z") {
         return "Combat";
-      } else {
+      } else if (s === "b") {
         return "Subtlety";
+      } else {
+        return "Rogue";
       }
     };
     updateTalentAvailability = function(selector) {
@@ -2041,9 +2050,13 @@
       return talent_rows.join('');
     };
     setSpec = function(str) {
-      var data;
+      var buffer, data;
       data = Shadowcraft.Data;
-      $("#specactive").html(getSpecName(str));
+      buffer = Templates.specActive({
+        name: getSpecName(str),
+        icon: SPEC_ICONS[str]
+      });
+      $("#specactive").get(0).innerHTML = buffer;
       return data.activeSpec = str;
     };
     getSpec = function() {
