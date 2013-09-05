@@ -193,6 +193,7 @@ class ShadowcraftOptions
 
     @setup("#settings section.subtlety .settings", "rotation", {
       use_hemorrhage: {type: "select", name: "CP Builder", options: {'never': "Backstab", 'always': "Hemorrhage", '24': "Use Backstab and apply Hemorrhage every 24sec"}, default: '24', datatype: 'string'}
+      sub_sb_timing: {type: "select", name: "Use Shadow Blades on", options: {'shd': "Shadow Dance", 'fw': "Find Weakness", 'other': "None of above"}, default: 'shd', datatype: 'string'}
       opener_name_subtlety: {type: "select", name: "Opener Name", options: {'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
       opener_use_subtlety: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })

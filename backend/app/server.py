@@ -319,7 +319,8 @@ class ShadowcraftComputation:
                 'blade_flurry',
                 'stack_cds'
             ], [
-                'use_hemorrhage'
+                'use_hemorrhage',
+                'sub_sb_timing'
             ]
         ]
     
