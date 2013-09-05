@@ -13,7 +13,7 @@ class Glyph
       :rank => rank,
       :icon => icon.downcase,
       :id   => glyph_id,
-      # :spell => spell_id,
+      :spell => spell_id,
       :ename => name.downcase.gsub(/glyph of /, "").gsub(/ /, "_")
     }
   end
