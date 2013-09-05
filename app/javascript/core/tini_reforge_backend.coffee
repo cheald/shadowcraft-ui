@@ -7,8 +7,8 @@ class ShadowcraftTiniReforgeBackend
   # else
   #  ENGINE = "http://#{window.location.hostname}/calc"
   ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"]
+  ENGINES2 = ["http://shadowref4.appspot.com/calc", "http://shadowref3.appspot.com/calc"]
   ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)]
-  ENGINE2 = "http://localhost:8888/calc" # TODO for testing purpose
   REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"]
   REFORGER_MAP =
     "spirit": "spirit"
@@ -71,7 +71,7 @@ class ShadowcraftTiniReforgeBackend
 
   buildRequest: (override = false,newmethod = false) ->
     if newmethod
-      ENGINE = ENGINE2
+      ENGINE = ENGINES2[Math.floor(Math.random() * ENGINES2.length)]
     else
       ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)]
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
@@ -124,9 +124,6 @@ class ShadowcraftTiniReforgeBackend
       else
         ep[k] = v
 
-    ep_sorted = _.sortBy REFORGABLE, (k) -> 
-      return ep[REFORGER_MAP[k]]
-
     # Temporary? fix for long computation time until the reforging service covers the
     # cases where exp/yellowhit EP and the secondary stats having big gapes
     # with reducing those big gaps the computation time drops significantly
@@ -150,11 +147,6 @@ class ShadowcraftTiniReforgeBackend
         if ep.haste_rating > ep.mastery_rating
           ep.mastery_rating = ep.haste_rating * 1.05
 
-    ep_new_sorted = _.sortBy REFORGABLE, (k) -> 
-      return ep[REFORGER_MAP[k]]
-    if not override and not _.isEqual(ep_sorted, ep_new_sorted)
-      Shadowcraft.Console.remove(".error")
-      Shadowcraft.Console.warn {}, "It is possible the reforger does not gave correct results. Please send a report with your region, realm and character name", null, "error", "error"
     req =
       items: items
       ep: ep

@@ -1809,7 +1809,7 @@ class ShadowcraftGear
     $("#reforgeAllExp").click ->
       # Shadowcraft.Gear.reforgeAll()
       window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
-      TiniReforger.buildRequest(override = true)
+      TiniReforger.buildRequest(true,true)
 
     $("#reforgeNew").click ->
       # Shadowcraft.Gear.reforgeAll()

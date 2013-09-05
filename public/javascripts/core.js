@@ -4832,11 +4832,10 @@
         return TiniReforger.buildRequest();
       });
       $("#reforgeAllExp").click(function() {
-        var override;
         if (window._gaq) {
           window._gaq.push(['_trackEvent', "Character", "Reforge"]);
         }
-        return TiniReforger.buildRequest(override = true);
+        return TiniReforger.buildRequest(true, true);
       });
       $("#reforgeNew").click(function() {
         if (window._gaq) {
@@ -5174,10 +5173,10 @@
     return ShadowcraftGear;
   })();
   ShadowcraftTiniReforgeBackend = (function() {
-    var ENGINE, ENGINE2, ENGINES, REFORGABLE, REFORGER_MAP, deferred;
+    var ENGINE, ENGINES, ENGINES2, REFORGABLE, REFORGER_MAP, deferred;
     ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"];
+    ENGINES2 = ["http://shadowref4.appspot.com/calc", "http://shadowref3.appspot.com/calc"];
     ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
-    ENGINE2 = "http://localhost:8888/calc";
     REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"];
     REFORGER_MAP = {
       "spirit": "spirit",
@@ -5248,7 +5247,7 @@
       });
     };
     ShadowcraftTiniReforgeBackend.prototype.buildRequest = function(override, newmethod) {
-      var ItemLookup, caps, diff, ep, ep_new_sorted, ep_sorted, f, items, k, max, req, revert, stats, v, _ep, _stats;
+      var ItemLookup, caps, diff, ep, f, items, k, max, req, revert, stats, v, _ep, _stats;
       if (override == null) {
         override = false;
       }
@@ -5256,7 +5255,7 @@
         newmethod = false;
       }
       if (newmethod) {
-        ENGINE = ENGINE2;
+        ENGINE = ENGINES2[Math.floor(Math.random() * ENGINES2.length)];
       } else {
         ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
       }
@@ -5335,9 +5334,6 @@
           ep[k] = v;
         }
       }
-      ep_sorted = _.sortBy(REFORGABLE, function(k) {
-        return ep[REFORGER_MAP[k]];
-      });
       if (!newmethod) {
         max = Math.max(ep.haste_rating, ep.mastery_rating, ep.crit_rating);
         if (max < ep.expertise_rating && 2.5 < ep.expertise_rating) {
@@ -5362,13 +5358,6 @@
             ep.mastery_rating = ep.haste_rating * 1.05;
           }
         }
-      }
-      ep_new_sorted = _.sortBy(REFORGABLE, function(k) {
-        return ep[REFORGER_MAP[k]];
-      });
-      if (!override && !_.isEqual(ep_sorted, ep_new_sorted)) {
-        Shadowcraft.Console.remove(".error");
-        Shadowcraft.Console.warn({}, "It is possible the reforger does not gave correct results. Please send a report with your region, realm and character name", null, "error", "error");
       }
       req = {
         items: items,
