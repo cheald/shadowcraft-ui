@@ -368,13 +368,13 @@
     get_engine = function() {
       var endpoint, port;
       switch (Shadowcraft.Data.options.general.patch) {
-        case 54:
+        case 52:
           port = 8880;
-          endpoint = "engine-5.4";
+          endpoint = "engine-5.2";
           return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
         default:
           port = 8881;
-          endpoint = "engine-5.2";
+          endpoint = "engine-5.4";
           if (window.location.host.match(/:/)) {
             return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
           } else {
@@ -1083,14 +1083,8 @@
     EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
     if (section === void 0 || section === "options") {
       Shadowcraft.Console.remove(".options");
-      if (parseInt(data.options.general.patch) < 52) {
-        Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to the newest Patch and/or clear all saved data and refresh from armory.", null, 'warn', 'options');
-      }
       if (parseInt(data.options.general.patch) < 54) {
-        Shadowcraft.Console.warn({}, "5.4 PTR Version now available. You can switch to 5.4 in the settings tab.", "Please report every error or bug you encounter.", 'warn', 'options');
-      }
-      if (parseInt(data.options.general.patch) === 54) {
-        Shadowcraft.Console.warn({}, "5.4 (PTR 17337) active: Feel free to play with it.", "Please report every error or bug you encounter.", 'warn', 'options');
+        Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to the newest Patch and/or clear all saved data and refresh from armory.", null, 'warn', 'options');
       }
     }
     if (section === void 0 || section === "glyphs") {
@@ -1331,13 +1325,12 @@
         patch: {
           type: "select",
           name: "Patch/Engine",
-          'default': 52,
+          'default': 54,
           datatype: 'integer',
           options: {
             52: '5.3',
-            54: '5.4 PTR'
-          },
-          desc: '5.4 PTR reflects Build 17337'
+            54: '5.4'
+          }
         },
         level: {
           type: "input",
@@ -1828,15 +1821,35 @@
           min: 0.1,
           max: 5.0
         },
-        force_mastery_over_haste: {
-          name: "Force Mastery > Haste",
-          type: "check",
-          desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP * 1.05",
-          datatype: 'bool',
-          'default': false
+        haste_override: {
+          name: "Haste",
+          type: "input",
+          desc: "Override haste EP value",
+          'default': 1.3,
+          datatype: 'float',
+          min: 0.1,
+          max: 5.0
+        },
+        mastery_override: {
+          name: "Mastery",
+          type: "input",
+          desc: "Override mastery EP value",
+          'default': 1.2,
+          datatype: 'float',
+          min: 0.1,
+          max: 5.0
+        },
+        crit_override: {
+          name: "Crit",
+          type: "input",
+          desc: "Override crit EP value",
+          'default': 1.1,
+          datatype: 'float',
+          min: 0.1,
+          max: 5.0
         }
       });
-      return this.setup("#settings #advancedSettings", "advanced", {
+      this.setup("#settings #advancedSettings", "advanced", {
         latency: {
           type: "input",
           name: "Latency",
@@ -1850,6 +1863,24 @@
           name: "Advanced Parameters",
           "default": "",
           datatype: 'string'
+        }
+      });
+      return this.setup("#advanced #advancedStatPriority", "advanced", {
+        force_priority: {
+          name: "Force Priority",
+          type: "select",
+          options: {
+            'nochange': "Use ShadowCraft\'s Priority",
+            'mhc': "Mastery > Haste > Crit",
+            'mch': "Mastery > Crit > Haste",
+            'hmc': "Haste > Mastery > Crit",
+            'hcm': "Haste > Crit > Mastery",
+            'chm': "Crit > Haste > Mastery",
+            'cmh': "Crit > Mastery > Haste"
+          },
+          desc: "Swap the EP Values to your priority",
+          datatype: 'string',
+          "default": 'nochange'
         }
       });
     };
@@ -1876,7 +1907,9 @@
       }
       data.options[ns][name] = val;
       Shadowcraft.Options.trigger("update", ns + "." + name, val);
-      return Shadowcraft.update();
+      if ((ns !== 'advanced') || (name === 'latency' || name === 'adv_params')) {
+        return Shadowcraft.update();
+      }
     };
     changeCheck = function() {
       var $this;
@@ -4827,21 +4860,21 @@
       });
       $("#reforgeAll").click(function() {
         if (window._gaq) {
-          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
+          window._gaq.push(['_trackEvent', "Character", "Reforge", "Normal"]);
         }
         return TiniReforger.buildRequest();
       });
-      $("#reforgeAllExp").click(function() {
+      $("#reforgeWeights").click(function() {
         if (window._gaq) {
-          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
+          window._gaq.push(['_trackEvent', "Character", "Reforge", "Weights"]);
         }
-        return TiniReforger.buildRequest(true, true);
+        return TiniReforger.buildRequest("weights");
       });
-      $("#reforgeNew").click(function() {
+      $("#reforgePriority").click(function() {
         if (window._gaq) {
-          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
+          window._gaq.push(['_trackEvent', "Character", "Reforge", "Priority"]);
         }
-        return TiniReforger.buildRequest(false, true);
+        return TiniReforger.buildRequest("priority");
       });
       $("#optimizeGems").click(function() {
         if (window._gaq) {
@@ -5173,9 +5206,8 @@
     return ShadowcraftGear;
   })();
   ShadowcraftTiniReforgeBackend = (function() {
-    var ENGINE, ENGINES, ENGINES2, REFORGABLE, REFORGER_MAP, deferred;
-    ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"];
-    ENGINES2 = ["http://shadowref4.appspot.com/calc", "http://shadowref3.appspot.com/calc"];
+    var ENGINE, ENGINES, REFORGABLE, REFORGER_MAP, deferred;
+    ENGINES = ["http://shadowref4.appspot.com/calc", "http://shadowref3.appspot.com/calc"];
     ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
     REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"];
     REFORGER_MAP = {
@@ -5246,18 +5278,10 @@
         contentType: "application/json"
       });
     };
-    ShadowcraftTiniReforgeBackend.prototype.buildRequest = function(override, newmethod) {
-      var ItemLookup, caps, diff, ep, f, items, k, max, req, revert, stats, v, _ep, _stats;
+    ShadowcraftTiniReforgeBackend.prototype.buildRequest = function(override) {
+      var ItemLookup, caps, char, decoder, ep, ep_num_ranking, ep_ranking, f, index, items, k, prio, rank, req, revert, stat, stats, v, _ep, _i, _len, _len2, _ref, _stats;
       if (override == null) {
         override = false;
-      }
-      if (newmethod == null) {
-        newmethod = false;
-      }
-      if (newmethod) {
-        ENGINE = ENGINES2[Math.floor(Math.random() * ENGINES2.length)];
-      } else {
-        ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
       }
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       f = ShadowcraftGear.FACETS;
@@ -5334,28 +5358,34 @@
           ep[k] = v;
         }
       }
-      if (!newmethod) {
-        max = Math.max(ep.haste_rating, ep.mastery_rating, ep.crit_rating);
-        if (max < ep.expertise_rating && 2.5 < ep.expertise_rating) {
-          diff = ep.expertise_rating - max;
-          ep.expertise_rating = max + diff / 3;
-          ep.mh_expertise_rating = ep.expertise_rating - ep.oh_expertise_rating;
-        }
-        if (max < ep.yellow_hit && 2.5 < ep.yellow_hit) {
-          diff = ep.yellow_hit - max;
-          ep.yellow_hit = max + diff / 3;
-        }
-        if (ep.yellow_hit < ep.expertise_rating) {
-          ep.yellow_hit = ep.expertise_rating * 1.1;
-        }
-      }
-      if (override) {
+      if (override && override === "weights") {
         ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override;
         ep.oh_expertise_rating = Shadowcraft.Data.options.advanced.oh_expertise_rating_override;
         ep.expertise_rating = ep.mh_expertise_rating + ep.oh_expertise_rating;
-        if (Shadowcraft.Data.options.advanced.force_mastery_over_haste) {
-          if (ep.haste_rating > ep.mastery_rating) {
-            ep.mastery_rating = ep.haste_rating * 1.05;
+        ep.haste_rating = Shadowcraft.Data.options.advanced.haste_override;
+        ep.mastery_rating = Shadowcraft.Data.options.advanced.mastery_override;
+        ep.crit_rating = Shadowcraft.Data.options.advanced.crit_override;
+      } else if (override && override === "priority") {
+        prio = Shadowcraft.Data.options.advanced.force_priority;
+        if (prio && prio !== 'nochange') {
+          ep_ranking = _.sortBy(["crit", "haste", "mastery"], function(k) {
+            return ep[REFORGER_MAP[k]];
+          });
+          ep_num_ranking = [ep[REFORGER_MAP[ep_ranking[0]]], ep[REFORGER_MAP[ep_ranking[1]]], ep[REFORGER_MAP[ep_ranking[2]]]];
+          decoder = {
+            'h': "haste",
+            'm': "mastery",
+            "c": "crit"
+          };
+          rank = [];
+          _ref = prio.split('').reverse();
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            char = _ref[_i];
+            rank.push(decoder[char]);
+          }
+          for (index = 0, _len2 = rank.length; index < _len2; index++) {
+            stat = rank[index];
+            ep[REFORGER_MAP[stat]] = ep_num_ranking[index];
           }
         }
       }

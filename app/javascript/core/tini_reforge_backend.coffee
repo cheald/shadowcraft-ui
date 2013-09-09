@@ -6,8 +6,8 @@ class ShadowcraftTiniReforgeBackend
   #  ENGINE = "http://shadowref.appspot.com/calc"
   # else
   #  ENGINE = "http://#{window.location.hostname}/calc"
-  ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"]
-  ENGINES2 = ["http://shadowref4.appspot.com/calc", "http://shadowref3.appspot.com/calc"]
+  #ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"]
+  ENGINES = ["http://shadowref4.appspot.com/calc", "http://shadowref3.appspot.com/calc"]
   ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)]
   REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"]
   REFORGER_MAP =
@@ -69,11 +69,7 @@ class ShadowcraftTiniReforgeBackend
       dataType: "json",
       contentType: "application/json"
 
-  buildRequest: (override = false,newmethod = false) ->
-    if newmethod
-      ENGINE = ENGINES2[Math.floor(Math.random() * ENGINES2.length)]
-    else
-      ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)]
+  buildRequest: (override = false) ->
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     f = ShadowcraftGear.FACETS
     _stats = @gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT)
@@ -127,25 +123,37 @@ class ShadowcraftTiniReforgeBackend
     # Temporary? fix for long computation time until the reforging service covers the
     # cases where exp/yellowhit EP and the secondary stats having big gapes
     # with reducing those big gaps the computation time drops significantly
-    if not newmethod
-      max = Math.max ep.haste_rating,ep.mastery_rating,ep.crit_rating
-      if max < ep.expertise_rating and 2.5 < ep.expertise_rating
-        diff = ep.expertise_rating - max
-        ep.expertise_rating = max + diff / 3
-        ep.mh_expertise_rating = ep.expertise_rating - ep.oh_expertise_rating
-      if max < ep.yellow_hit and 2.5 < ep.yellow_hit
-        diff = ep.yellow_hit - max
-        ep.yellow_hit = max + diff / 3
-      if ep.yellow_hit < ep.expertise_rating
-        ep.yellow_hit = ep.expertise_rating * 1.1
+    #if not newmethod
+    #  max = Math.max ep.haste_rating,ep.mastery_rating,ep.crit_rating
+    #  if max < ep.expertise_rating and 2.5 < ep.expertise_rating
+    #    diff = ep.expertise_rating - max
+    #    ep.expertise_rating = max + diff / 3
+    #    ep.mh_expertise_rating = ep.expertise_rating - ep.oh_expertise_rating
+    #  if max < ep.yellow_hit and 2.5 < ep.yellow_hit
+    #    diff = ep.yellow_hit - max
+    #    ep.yellow_hit = max + diff / 3
+    #  if ep.yellow_hit < ep.expertise_rating
+    #    ep.yellow_hit = ep.expertise_rating * 1.1
 
-    if override
+    if override and override == "weights"
       ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override
       ep.oh_expertise_rating = Shadowcraft.Data.options.advanced.oh_expertise_rating_override
       ep.expertise_rating = ep.mh_expertise_rating + ep.oh_expertise_rating
-      if Shadowcraft.Data.options.advanced.force_mastery_over_haste
-        if ep.haste_rating > ep.mastery_rating
-          ep.mastery_rating = ep.haste_rating * 1.05
+      ep.haste_rating = Shadowcraft.Data.options.advanced.haste_override
+      ep.mastery_rating = Shadowcraft.Data.options.advanced.mastery_override
+      ep.crit_rating = Shadowcraft.Data.options.advanced.crit_override
+    else if override and override == "priority"
+      prio = Shadowcraft.Data.options.advanced.force_priority
+      if prio and prio != 'nochange'
+        ep_ranking = _.sortBy ["crit", "haste", "mastery"], (k) -> 
+          return ep[REFORGER_MAP[k]]
+        ep_num_ranking = [ep[REFORGER_MAP[ep_ranking[0]]],ep[REFORGER_MAP[ep_ranking[1]]],ep[REFORGER_MAP[ep_ranking[2]]]]
+        decoder = {'h': "haste", 'm': "mastery", "c": "crit" }
+        rank = []
+        for char in prio.split('').reverse()
+          rank.push(decoder[char])
+        for stat,index in rank # bad -> good
+          ep[REFORGER_MAP[stat]] = ep_num_ranking[index]
 
     req =
       items: items

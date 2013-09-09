@@ -12,7 +12,7 @@ from twisted.application import service, internet
 from twisted.web import static, server
 from app.server import *
 
-def getWebService(port = 8881):
+def getWebService(port = 8880):
     site = WebSocketSite(ShadowcraftSite())
     site.addHandler("/engine", ShadowcraftSocket)
     return internet.TCPServer(port, site)

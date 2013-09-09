@@ -107,7 +107,7 @@ class ShadowcraftOptions
     data = Shadowcraft.Data
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Patch/Engine", 'default': 52, datatype: 'integer', options: {52: '5.3', 54: '5.4 PTR'}, desc: '5.4 PTR reflects Build 17337'},
+      patch: {type: "select", name: "Patch/Engine", 'default': 54, datatype: 'integer', options: {52: '5.3', 54: '5.4'}},
       level: {type: "input", name: "Level", 'default': 90, datatype: 'integer', min: 85, max: 90},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
@@ -201,11 +201,16 @@ class ShadowcraftOptions
     @setup("#advanced #advancedReforge", "advanced", {
       mh_expertise_rating_override: {name: "MH Expertise", type: "input", desc: "Override MH expertise EP value", 'default': 1.4, datatype: 'float', min: 0.1, max: 5.0}
       oh_expertise_rating_override: {name: "OH Expertise", type: "input", desc: "Override OH expertise EP value", 'default': 0.6, datatype: 'float', min: 0.1, max: 5.0}
-      force_mastery_over_haste: {name: "Force Mastery > Haste", type: "check", desc: "Sets the EP Value of Mastery higher than Haste: Mastery EP = Haste EP * 1.05", datatype: 'bool', 'default': false}
+      haste_override: {name: "Haste", type: "input", desc: "Override haste EP value", 'default': 1.3, datatype: 'float', min: 0.1, max: 5.0}
+      mastery_override: {name: "Mastery", type: "input", desc: "Override mastery EP value", 'default': 1.2, datatype: 'float', min: 0.1, max: 5.0}
+      crit_override: {name: "Crit", type: "input", desc: "Override crit EP value", 'default': 1.1, datatype: 'float', min: 0.1, max: 5.0}
     })
     @setup("#settings #advancedSettings", "advanced", {
       latency: {type: "input", name: "Latency", 'default': 0.03, datatype: 'float', min: 0.0, max: 5}
       adv_params: {type: "input", name: "Advanced Parameters", default: "", datatype: 'string'}
+    })
+    @setup("#advanced #advancedStatPriority", "advanced", {
+      force_priority: {name: "Force Priority", type: "select", options: {'nochange': "Use ShadowCraft\'s Priority", 'mhc': "Mastery > Haste > Crit", 'mch': "Mastery > Crit > Haste", 'hmc': "Haste > Mastery > Crit", 'hcm': "Haste > Crit > Mastery", 'chm': "Crit > Haste > Mastery", 'cmh': "Crit > Mastery > Haste"}, desc: "Swap the EP Values to your priority", datatype: 'string', default: 'nochange'}
     })
 
   changeOption = (elem, inputType, val) ->
@@ -228,8 +233,9 @@ class ShadowcraftOptions
 
     data.options[ns][name] = val
     Shadowcraft.Options.trigger("update", ns + "." + name, val)
-    Shadowcraft.update()
-
+    if ns not in ['advanced'] or name in ['latency','adv_params']
+      Shadowcraft.update()
+    
   changeCheck = ->
     $this = $(this)
     changeOption($this, "check", not $this.attr("checked")?)

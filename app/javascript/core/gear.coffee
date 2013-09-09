@@ -1803,18 +1803,18 @@ class ShadowcraftGear
 
     $("#reforgeAll").click ->
       # Shadowcraft.Gear.reforgeAll()
-      window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
+      window._gaq.push ['_trackEvent', "Character", "Reforge", "Normal"] if window._gaq
       TiniReforger.buildRequest()
 
-    $("#reforgeAllExp").click ->
+    $("#reforgeWeights").click ->
       # Shadowcraft.Gear.reforgeAll()
-      window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
-      TiniReforger.buildRequest(true,true)
+      window._gaq.push ['_trackEvent', "Character", "Reforge", "Weights"] if window._gaq
+      TiniReforger.buildRequest("weights")
 
-    $("#reforgeNew").click ->
+    $("#reforgePriority").click ->
       # Shadowcraft.Gear.reforgeAll()
-      window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
-      TiniReforger.buildRequest(false,true)
+      window._gaq.push ['_trackEvent', "Character", "Reforge", "Priority"] if window._gaq
+      TiniReforger.buildRequest("priority")
 
     $("#optimizeGems").click ->
       window._gaq.push ['_trackEvent', "Character", "Optimize Gems"] if window._gaq

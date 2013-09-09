@@ -3,13 +3,13 @@ class ShadowcraftBackend
 
   get_engine = ->
     switch Shadowcraft.Data.options.general.patch
-      when 54
+      when 52
         port = 8880
-        endpoint = "engine-5.4"
+        endpoint = "engine-5.2"
         return "http://#{window.location.hostname}:#{port}/#{endpoint}"
       else
         port = 8881
-        endpoint = "engine-5.2"
+        endpoint = "engine-5.4"
         if window.location.host.match(/:/)
           return "http://#{window.location.hostname}:#{port}/#{endpoint}"
         else
