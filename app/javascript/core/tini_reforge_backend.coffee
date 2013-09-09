@@ -150,8 +150,8 @@ class ShadowcraftTiniReforgeBackend
         ep_num_ranking = [ep[REFORGER_MAP[ep_ranking[0]]],ep[REFORGER_MAP[ep_ranking[1]]],ep[REFORGER_MAP[ep_ranking[2]]]]
         decoder = {'h': "haste", 'm': "mastery", "c": "crit" }
         rank = []
-        for char in prio.split('').reverse()
-          rank.push(decoder[char])
+        for cha in prio.split('').reverse()
+          rank.push(decoder[cha])
         for stat,index in rank # bad -> good
           ep[REFORGER_MAP[stat]] = ep_num_ranking[index]
 

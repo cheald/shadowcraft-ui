@@ -5279,7 +5279,7 @@
       });
     };
     ShadowcraftTiniReforgeBackend.prototype.buildRequest = function(override) {
-      var ItemLookup, caps, char, decoder, ep, ep_num_ranking, ep_ranking, f, index, items, k, prio, rank, req, revert, stat, stats, v, _ep, _i, _len, _len2, _ref, _stats;
+      var ItemLookup, caps, cha, decoder, ep, ep_num_ranking, ep_ranking, f, index, items, k, prio, rank, req, revert, stat, stats, v, _ep, _i, _len, _len2, _ref, _stats;
       if (override == null) {
         override = false;
       }
@@ -5380,8 +5380,8 @@
           rank = [];
           _ref = prio.split('').reverse();
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            char = _ref[_i];
-            rank.push(decoder[char]);
+            cha = _ref[_i];
+            rank.push(decoder[cha]);
           }
           for (index = 0, _len2 = rank.length; index < _len2; index++) {
             stat = rank[index];
