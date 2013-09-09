@@ -4860,19 +4860,19 @@
       });
       $("#reforgeAll").click(function() {
         if (window._gaq) {
-          window._gaq.push(['_trackEvent', "Character", "Reforge", "Normal"]);
+          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
         }
         return TiniReforger.buildRequest();
       });
       $("#reforgeWeights").click(function() {
         if (window._gaq) {
-          window._gaq.push(['_trackEvent', "Character", "Reforge", "Weights"]);
+          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
         }
         return TiniReforger.buildRequest("weights");
       });
       $("#reforgePriority").click(function() {
         if (window._gaq) {
-          window._gaq.push(['_trackEvent', "Character", "Reforge", "Priority"]);
+          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
         }
         return TiniReforger.buildRequest("priority");
       });
