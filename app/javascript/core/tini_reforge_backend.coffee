@@ -6,8 +6,7 @@ class ShadowcraftTiniReforgeBackend
   #  ENGINE = "http://shadowref.appspot.com/calc"
   # else
   #  ENGINE = "http://#{window.location.hostname}/calc"
-  #ENGINES = ["http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"]
-  ENGINES = ["http://shadowref4.appspot.com/calc", "http://shadowref3.appspot.com/calc"]
+  ENGINES = ["http://shadowref4.appspot.com/calc", "http://shadowref3.appspot.com/calc", "http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"]
   ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)]
   REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"]
   REFORGER_MAP =

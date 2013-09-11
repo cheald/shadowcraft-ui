@@ -5207,7 +5207,7 @@
   })();
   ShadowcraftTiniReforgeBackend = (function() {
     var ENGINE, ENGINES, REFORGABLE, REFORGER_MAP, deferred;
-    ENGINES = ["http://shadowref4.appspot.com/calc", "http://shadowref3.appspot.com/calc"];
+    ENGINES = ["http://shadowref4.appspot.com/calc", "http://shadowref3.appspot.com/calc", "http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"];
     ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
     REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"];
     REFORGER_MAP = {
