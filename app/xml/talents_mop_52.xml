@@ -13,7 +13,7 @@
       <talent column="0" icon="inv_throwingknife_06" spell="26679" key="1827" name="Deadly Throw" tier="1">
         <rank description="Finishing move that reduces the movement speed of the target by 50% for 6 sec. If performed with 3 combo points, also interrupts spellcasting and prevents any spell in that school from being cast for a period of time." lvl="1"/>
       </talent>
-      <talent column="1" icon="rogue_nerve-_strike" spell="108210" key="222" name="Nerve Strike" tier="1">
+      <talent column="1" icon="rogue_nerve_strike" spell="108210" key="222" name="Nerve Strike" tier="1">
         <rank description="A successful Kidney Shot or Cheap Shot also reduces the damage dealt by the target by 50% and healing done by the target by 10% for 6 sec seconds after the effect fades." lvl="1"/>
       </talent>
       <talent column="2" icon="ability_rogue_combatreadiness" spell="74001" key="1122" name="Combat Readiness" tier="1">

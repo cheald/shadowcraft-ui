@@ -11,7 +11,7 @@
 - mustache "tree" do
   .tree
     {{#talents}}
-    .talent.tt{:class => "row-{{tier}} col-{{column}}", :"data-tooltip-type" => "spell", :"data-tooltip-id" => "{{spell}}", :style => "background-image: url(http://wow.zamimg.com/images/wow/icons/large/{{icon}}.jpg);"}
+    .talent.tt{:class => "row-{{tier}} col-{{column}}", :"data-tooltip-type" => "spell", :"data-tooltip-id" => "{{spell}}", :style => "background-image: url(http://us.media.blizzard.com/wow/icons/56/{{icon}}.jpg);"}
       .grey
       //.points 0/{{maxRank}}
     {{/talents}}
@@ -84,8 +84,8 @@
     .image<
       {{#item}}
       {{#icon}}
-      %img{:src => "http://static.wowhead.com/images/wow/icons/large/{{.}}.jpg"}
-      -#%img{:src => "http://us.media.blizzard.com/wow/icons/56/{{.}}.jpg"}
+      -#%img{:src => "http://static.wowhead.com/images/wow/icons/large/{{.}}.jpg"}
+      %img{:src => "http://us.media.blizzard.com/wow/icons/56/{{.}}.jpg"}
       {{/icon}}
       {{/item}}
 
@@ -178,7 +178,7 @@
 - mustache("glyph_slot") do
   %div.glyph_slot{:"data-id" => "{{id}}", :"data-tooltip-type" => "spell", :"data-tooltip-id" => "{{spell}}"}
     %span.img<
-      %img{:src => "http://static.wowhead.com/images/wow/icons/medium/{{icon}}.jpg"}
+      %img{:src => "http://us.media.blizzard.com/wow/icons/56/{{icon}}.jpg"}
     {{name}}
     .pct
       .label
