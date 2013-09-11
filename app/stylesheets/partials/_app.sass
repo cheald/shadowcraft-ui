@@ -910,7 +910,7 @@ img.upgrade
         top: (70px * $i) + 10px
         left: 10px
     .level
-      border: 0px solid #111
+      border: 1px solid #333
       background-color: rgba(0,0,0, 0.4)
       background-position: center center
       position: relative
@@ -923,11 +923,8 @@ img.upgrade
       font-size: 2em
       color: rgba(255, 255, 255, 0.8)
       background: rgba(0, 0, 0, 0.6)
-      +border-radius
-      padding: 0.5em
-      width: 40px
-      height: 40px
-      line-height: 40px
+      +border-radius(3px)
+      line-height: 52px
       text-align: center
   .tree
     +inline-block
@@ -945,7 +942,7 @@ img.upgrade
 
     .talent
       cursor: pointer
-      border: 2px solid #111
+      border: 1px solid #333
       box-shadow: 0 0 4px 0 #000000
       background-color: rgba(0,0,0, 0.4)
       background-position: center center
