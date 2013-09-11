@@ -159,8 +159,9 @@ module WowArmory
     include Document
     ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable
     attr_accessor *ACCESSORS
-    def initialize(id, source = "wowapi", name = nil)
+    def initialize(id, source = "wowapi", name = nil, override_ilvl = nil)
       self.name = name
+      self.ilevel = override_ilvl
 
       if id == :empty or id == 0 or id.nil?
         @id = :empty
@@ -202,7 +203,7 @@ module WowArmory
       self.name ||= @json["name"]
       self.quality = @json["quality"]
       self.equip_location = @json["inventoryType"]
-      self.ilevel = @json["itemLevel"]
+      self.ilevel ||= @json["itemLevel"]
       self.icon = @json["icon"]
 
       if @json["hasSockets"]
@@ -254,7 +255,7 @@ module WowArmory
       self.name ||= doc.css("name").text
       self.quality = doc.xpath("//quality").attr("id").text.to_i
       self.equip_location = doc.xpath("//inventorySlot").attr("id").text.to_i
-      self.ilevel = doc.css("level").text.to_i
+      self.ilevel ||= doc.css("level").text.to_i
       self.icon = doc.css("icon").text.downcase
       self.tag = ""
       tooltip = doc.css("htmlTooltip").text
@@ -309,7 +310,7 @@ module WowArmory
       self.quality = title.attr("class").value().match(/q(\d)/)[1].to_i
       dds = doc.css(".db-tooltip dd")
       self.equip_location = dds.map{|e| EQUIP_LOCATIONS[e.text.strip.downcase.gsub(' ','-')] }.compact.first
-      self.ilevel = doc.css(".j-item-level").text.to_i
+      self.ilevel ||= doc.css(".j-item-level").text.to_i
       self.icon = doc.css(".db-image > .icon-56").attr("src").value().match(/large\/(\w*)/)[1]
       if bonus = doc.css(".q0").text.try(:strip)
        self.socket_bonus = scan_str(bonus)

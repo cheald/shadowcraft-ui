@@ -276,7 +276,7 @@ class Item
     populate_from_wowhead "http://www.wowhead.com/items=16.4", :is_glyph => true
   end
 
-  def self.import(id, upgrade_levels = [nil,1,2,3,4], random_suffixes = nil, source = @source)
+  def self.import(id, upgrade_levels = [nil,1,2,3,4], random_suffixes = nil, source = @source, override_ilvl = nil)
     source = "wowapi" if source.nil?
     # options need to be upgrade_level = [nil,1,2,3,4]
     # same for random_suffix
@@ -292,7 +292,7 @@ class Item
           db_item = Item.find_or_initialize_by options
           if db_item.properties.nil?
             if item.nil?
-              item = WowArmory::Item.new(id, source)
+              item = WowArmory::Item.new(id, source, nil, override_ilvl)
             end
             db_item.properties = item.as_json.with_indifferent_access
             item_stats = WowArmory::Itemstats.new(db_item.properties, suffix, level)
