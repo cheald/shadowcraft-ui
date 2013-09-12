@@ -3954,7 +3954,7 @@
       # View helpers
       */
     ShadowcraftGear.prototype.updateDisplay = function(skipUpdate) {
-      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, curr_level, data, enchant, enchantable, from, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, restid, slotIndex, slotSet, socket, ssi, stat, to, upgradable, upgrade, _base, _i, _len, _len2, _len3, _ref, _ref2;
+      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, curr_level, data, enchant, enchantable, from, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, slotIndex, slotSet, socket, ssi, stat, to, upgradable, upgrade, _base, _i, _len, _len2, _len3, _ref, _ref2;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
       EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
@@ -4043,16 +4043,7 @@
           opt = {};
           opt.item = item;
           if (item) {
-            restid = item.id;
-            if (item.id > 100000000) {
-              opt.ttid = Math.floor(item.id / 1000000);
-              restid = Math.floor(item.id / 1000);
-            }
-            if (restid > 1000000) {
-              opt.ttid = Math.floor(restid / 1000);
-            } else {
-              opt.ttid = item.id;
-            }
+            opt.ttid = get_item_id(item);
           }
           opt.ttrand = item ? item.suffix : null;
           opt.ttupgd = item ? item.upgrade_level : null;

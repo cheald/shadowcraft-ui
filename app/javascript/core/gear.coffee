@@ -1102,15 +1102,7 @@ class ShadowcraftGear
 
         opt = {}
         opt.item = item
-        if item
-          restid = item.id
-          if item.id > 100000000 # it is an upgraded item
-            opt.ttid = Math.floor(item.id / 1000000)
-            restid = Math.floor(item.id / 1000)
-          if restid > 1000000 # It has a random component
-            opt.ttid = Math.floor(restid / 1000)
-          else
-            opt.ttid = item.id
+        opt.ttid = get_item_id(item) if item
         opt.ttrand = if item then item.suffix else null
         opt.ttupgd = if item then item.upgrade_level else null
         opt.ep = if item then get_ep(item, null, i).toFixed(1) else 0
