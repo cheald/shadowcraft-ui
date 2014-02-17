@@ -24,7 +24,11 @@
           =image_tag "browser/ie.png"
           %span Internet Explorer
           %em Good
-
+    = flash.each do |key, value|
+      .alert{ :class => "alert-#{key}" }
+      %button.close{ :data => { :dismiss => "alert" } } x
+      %strong
+        = value
     =error_messages_for :character, :header_message => "Oops - something's not quite right!", :message => ""
     =form_for @character do |f|
       %span

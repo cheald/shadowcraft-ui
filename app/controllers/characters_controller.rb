@@ -42,6 +42,10 @@ class CharactersController < ApplicationController
       @character.update_from_armory!(true) unless @character.nil?
     end
 
+    if @character.properties["player_class"] == "unknown"
+      return new
+    end
+
     if @character.nil? or !@character.valid?
       params[:character] = {
         :realm => params[:realm],

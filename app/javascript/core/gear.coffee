@@ -5,7 +5,6 @@ class ShadowcraftGear
   JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"]
   CHAPTER_2_ACHIEVEMENTS = [7534, 8008]
   LEGENDARY_META_GEM_QUESTS = [32595]
-  REFORGE_FACTOR = 0.4
   DEFAULT_BOSS_DODGE = 7.5
   DEFAULT_BOSS_MISS = 7.5
   DEFAULT_DW_PENALTY = 19.0
@@ -16,22 +15,10 @@ class ShadowcraftGear
     ITEM: 1
     GEMS: 2
     ENCHANT: 4
-    REFORGE: 8,
     ALL: 255
   }
   @FACETS = FACETS
 
-  REFORGE_STATS = [
-    # {key: "spirit", val: "Spirit"}
-    {key: "expertise", val: "Expertise"}
-    {key: "hit", val: "Hit"}
-    {key: "haste", val: "Haste"}
-    {key: "crit", val: "Crit"}
-    {key: "mastery", val: "Mastery"}
-  ]
-  REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"]
-  @REFORGABLE = REFORGABLE
-  REFORGE_CONST = 112
   SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"]
   SLOT_ORDER_OPTIMIZE_GEMS = ["0", "1", "2", "14", "4", "6", "7", "10", "11", "12", "13", "15", "16", "5", "8", "9"]
   SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13"]]
@@ -43,9 +30,6 @@ class ShadowcraftGear
     4444: "dancing_steel"
     5125: "dancing_steel"
     4894: "swordguard_embroidery"
-
-  @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
-  @LEGENDARY_META_GEM = 95346
 
   Sets =
     T14:
@@ -62,14 +46,8 @@ class ShadowcraftGear
     attack_power: 1
     agility: 2.66
     crit: 0.87
-    spell_hit: 1.3
-    hit: 1.02
-    expertise: 1.51
-    mh_expertise: 1.0
-    oh_expertise: 0.51
     haste: 1.44
     mastery: 1.15
-    yellow_hit: 1.79
     strength: 1.05
     pvp_power: 0
 
@@ -94,26 +72,7 @@ class ShadowcraftGear
       15: "mainhand"
       16: "offhand"
 
-  SLOT_REFORGENAME =
-      0: "Head",
-      1: "Neck",
-      2: "Shoulders",
-      14: "Back",
-      4: "Chest",
-      8: "Wrists",
-      9: "Hands",
-      5: "Waist",
-      6: "Legs",
-      7: "Feet",
-      10: "Ring1",
-      11: "Ring2",
-      12: "Trinket1",
-      13: "Trinket2",
-      15: "MainHand",
-      16: "OffHand"
-
   EP_PRE_REGEM = null
-  EP_PRE_REFORGE = null
   EP_TOTAL = null
   $slots = null
   $altslots = null
@@ -124,40 +83,6 @@ class ShadowcraftGear
     if gear
       Shadowcraft.Gear.sumSlot(gear, offsets, facet)
     return offsets
-
-  reforgeAmount = (item, stat) ->
-    Math.floor(item.stats[stat] * REFORGE_FACTOR)
-
-  getReforgeFrom = (n) ->
-    base = n - REFORGE_CONST - 1
-    from = Math.floor(base / 7)
-    return REFORGABLE[from]
-
-  getReforgeTo = (n) ->
-    base = n - REFORGE_CONST - 1
-    from = Math.floor(base / 7)
-    to = base % 7
-    to++ if from <= to
-    return REFORGABLE[to]
-
-  reforgeToHash = (ref, amt) ->
-    return {} if !ref or ref == 0
-    r = {}
-    r[getReforgeFrom(ref)] = -amt
-    r[getReforgeTo(ref)] = amt
-    r
-
-  compactReforge = (from, to) ->
-    f = REFORGABLE.indexOf(from)
-    t = REFORGABLE.indexOf(to)
-    t++ if t < f
-    return REFORGE_CONST + (f * 7) + t
-
-  # console.log getReforgeFrom(161), getReforgeTo(161), "should be expertise to mastery"
-  # console.log getReforgeFrom(113), getReforgeTo(113), "should be spirit to dodge"
-  # console.log getReforgeFrom(134), getReforgeTo(134), "should be hit to spirit"
-  # console.log compactReforge("spirit", "dodge"), "should be 113"
-  # console.log compactReforge("hit", "spirit"), "should be 134"
 
   sumItem = (s, i, key) ->
     key ||= "stats"
@@ -180,11 +105,10 @@ class ShadowcraftGear
 
     delete stats
     c = Shadowcraft.lastCalculation
-    if c and key != "socketbonus"
+    if c
       if item.dps
         if slot == 15
           total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed]
-          total += racialExpertiseBonus(item) * Weights.mh_expertise
         else if slot == 16
           #if Shadowcraft.Data.activeSpec == "Z"
           #  mod = 1
@@ -199,11 +123,6 @@ class ShadowcraftGear
           #else
           total += (item.dps * c.oh_ep.oh_dps)
           total += c.oh_speed_ep["oh_" + item.speed]
-          total += racialExpertiseBonus(item) * Weights.oh_expertise
-      else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
-        total += c.meta.chaotic_metagem
-      else if ShadowcraftGear.LEGENDARY_META_GEM == item.id
-        total += c.meta.legendary_capacitive_meta || 0
       else if PROC_ENCHANTS[get_item_id(item)]
         switch slot
           when 14
@@ -227,15 +146,6 @@ class ShadowcraftGear
 
     total
 
-  sumReforge = (stats, item, reforge) ->
-    from = getReforgeFrom(reforge)
-    to = getReforgeTo(reforge)
-    amt = reforgeAmount(item, from)
-    stats[from] ||= 0
-    stats[from] -= amt
-    stats[to] ||= 0
-    stats[to] += amt
-
   sumSlot: (gear, out, facets) ->
     return unless gear?.item_id?
     facets ||= FACETS.ALL
@@ -251,19 +161,11 @@ class ShadowcraftGear
       sumItem(out, item)
 
     if (facets & FACETS.GEMS) == FACETS.GEMS
-      matchesAllSockets = item.sockets and item.sockets.length > 0
       for socketIndex, socket of item.sockets
           gid = gear["g" + socketIndex]
           if gid and gid > 0
             gem = Gems[gid]
             sumItem(out, gem) if(gem)
-          matchesAllSockets = false if !gem or !gem[socket]
-
-      if matchesAllSockets
-        sumItem(out, item, "socketbonus")
-
-    if (facets & FACETS.REFORGE) == FACETS.REFORGE and gear.reforge
-      sumReforge(out, item, gear.reforge)
 
     if (facets & FACETS.ENCHANT) == FACETS.ENCHANT
       enchant_id = gear.enchant
@@ -281,107 +183,10 @@ class ShadowcraftGear
     @statSum = stats
     return stats
 
-  racialExpertiseBonus = (item, mh_type) ->
-    return 0 unless item? or mh_type?
-    if item?
-      mh_type = item.subclass
-
-    if mh_type instanceof Array
-      m = 0
-      for t in mh_type
-        n = racialExpertiseBonus(null, t)
-        m = if n > m then n else m
-      return m
-
-    race = Shadowcraft.Data.options.general.race
-
-    if(race == "Human" && (mh_type == 7 || mh_type == 4))
-      Shadowcraft._R("expertise")
-    else if(race == "Gnome" && (mh_type == 7 || mh_type == 15))
-      Shadowcraft._R("expertise")
-    else if(race == "Dwarf" && (mh_type == 4))
-      Shadowcraft._R("expertise")
-    else if(race == "Orc" && (mh_type == 0 || mh_type == 13))
-      Shadowcraft._R("expertise")
-    else
-      0
-
-  racialHitBonus = (key) ->
-    if Shadowcraft.Data.race == "Draenei" then Shadowcraft._R(key) else 0
-
   getStat: (stat) ->
     this.sumStats() if !@statSum
     (@statSum[stat] || 0)
 
-  getDodge: (hand) ->
-    data = Shadowcraft.Data
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-    expertise = @statSum.expertise
-    dodge_chance = if data.options.general.pvp then DEFAULT_PVP_DODGE else DEFAULT_BOSS_DODGE
-    if (!hand? or hand == "main") and data.gear[15] and data.gear[15].item_id
-      expertise += racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
-    else if (hand == "off") and data.gear[16] and data.gear[16].item_id
-      expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id])
-    return dodge_chance - expertise / Shadowcraft._R("expertise")
-
-  getHitEP = ->
-    data = Shadowcraft.Data
-    miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
-    yellowHitCap = Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit")
-    spellHitCap = Shadowcraft._R("spell_hit")  * miss_chance - racialHitBonus("spell_hit")
-    whiteHitCap = Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit")
-    exist = Shadowcraft.Gear.getStat("hit")
-    if exist < yellowHitCap
-      Weights.yellow_hit
-    else if exist < spellHitCap
-      Weights.spell_hit
-    else if exist < whiteHitCap
-      Weights.hit
-    else
-      0
-
-  getCaps: ->
-    data = Shadowcraft.Data
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-
-    dodge_chance = if data.options.general.pvp then DEFAULT_PVP_DODGE else DEFAULT_BOSS_DODGE
-    miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
-
-    exp_base = Shadowcraft._R("expertise") * dodge_chance
-    caps =
-      yellowHitCap: Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit")
-      spellHitCap: Shadowcraft._R("hit")  * miss_chance - racialHitBonus("hit")
-      whiteHitCap: Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit")
-      mh_exp: exp_base
-      oh_exp: exp_base
-    if data.gear[15]
-      caps.mh_exp = exp_base - racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
-    if data.gear[16]
-      caps.oh_exp = exp_base - racialExpertiseBonus(ItemLookup[data.gear[16].item_id])
-    caps
-
-  getMiss: (cap) ->
-    data = Shadowcraft.Data
-    miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
-    switch cap
-      when "yellow"
-        r = Shadowcraft._R("hit")
-        hitCap = r * miss_chance - racialHitBonus("hit")
-      when "spell"
-        r = Shadowcraft._R("hit")
-        hitCap = r * miss_chance - racialHitBonus("hit")
-      when "white"
-        r = Shadowcraft._R("hit")
-        hitCap = r * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit")
-    if r? and hitCap?
-      hasHit = @statSum.hit || 0
-      if hasHit < hitCap or cap == "white"
-        return (hitCap - hasHit) / r
-      else
-        return 0
-    return -99
-
-  # TODO: Adjust for racial bonuses.
   # Stat to get the real weight for, the amount of the stat, and a hash of {stat: amount} to ignore (like if swapping out a reforge or whatnot; nil the existing reforge for calcs)
   getStatWeight = (stat, num, ignore, ignoreAll) ->
     data = Shadowcraft.Data
@@ -396,55 +201,6 @@ class ShadowcraftGear
 
     neg = if num < 0 then -1 else 1
     num = Math.abs(num)
-
-    switch(stat)
-      when "expertise"
-        dodge_chance = if data.options.general.pvp then DEFAULT_PVP_DODGE else DEFAULT_BOSS_DODGE
-        mhCap = Shadowcraft._R("expertise") * dodge_chance
-        ohCap = mhCap
-        if data.gear[15] and data.gear[15].item_id
-          mhCap -= racialExpertiseBonus(ItemLookup[data.gear[15].item_id])
-        if data.gear[16] and data.gear[16].item_id
-          ohCap -= racialExpertiseBonus(ItemLookup[data.gear[16].item_id])
-
-        total = 0
-        if mhCap > exist
-          usable = mhCap - exist
-          usable = num if usable > num
-          total += usable * Weights.mh_expertise
-        if ohCap > exist
-          usable = ohCap - exist
-          usable = num if usable > num
-          total += usable * Weights.oh_expertise
-
-        return total * neg
-      when "hit"
-        miss_chance = if data.options.general.pvp then DEFAULT_PVP_MISS else DEFAULT_BOSS_MISS
-        yellowHitCap = Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit")
-        spellHitCap = Shadowcraft._R("hit")  * miss_chance - racialHitBonus("hit")
-        whiteHitCap = Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit")
-
-        total = 0
-        remaining = num
-        if remaining > 0 and exist < yellowHitCap
-          delta = if (yellowHitCap - exist) > remaining then remaining else (yellowHitCap - exist)
-          total += delta * Weights.yellow_hit
-          remaining -= delta
-          exist += delta
-
-        if remaining > 0 and exist < spellHitCap
-          delta = if (spellHitCap - exist) > remaining then remaining else (spellHitCap - exist)
-          total += delta * Weights.spell_hit
-          remaining -= delta
-          exist += delta
-
-        if remaining > 0 && exist < whiteHitCap
-          delta = if (whiteHitCap - exist) > remaining then remaining else (whiteHitCap - exist)
-          total += delta * Weights.hit
-          remaining -= delta
-          exist += delta
-
-        return total * neg
 
     return (Weights[stat] || 0) * num * neg
 
@@ -539,6 +295,7 @@ class ShadowcraftGear
       return false unless Shadowcraft.Data.options.professions[gem.requires.profession]
       return false if isProfessionalGem(gem, 'jewelcrafting') and getProfessionalGemCount('jewelcrafting', pendingChanges, ignoreSlotIndex) >= MAX_JEWELCRAFTING_GEMS
     
+    return false if not gem[gemType]
     return false if gem.slot == "Cogwheel" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
     return false if gem.slot == "Hydraulic" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
     return false if (gemType == "Meta" or gemType == "Cogwheel" or gemType == "Hydraulic") and gem.slot != gemType
@@ -649,7 +406,6 @@ class ShadowcraftGear
         return 0
 
     straightGemEP = 0
-    matchedGemEP = get_ep(item, "socketbonus", null, offset)
     if returnFull
       sGems = []
       mGems = []
@@ -664,29 +420,11 @@ class ShadowcraftGear
         break
       sGems.push null if !broke and returnFull
 
-    for gemType in item.sockets
-      broke = false
-      for gem in gem_list
-        continue unless canUseGem gem, gemType, mGems, ignoreSlotIndex
-        continue if gem.id == ShadowcraftGear.LEGENDARY_META_GEM and not canUseLegendaryMetaGem(item)
-        if gem[gemType]
-          matchedGemEP += getRegularGemEpValue(gem, offset)
-          mGems.push gem.id if returnFull
-          broke = true
-          break
-      mGems.push null if !broke and returnFull
-
-    bonus = false
-    if matchedGemEP > straightGemEP
-      epValue = matchedGemEP
-      gems = mGems
-      bonus = true
-    else
-      epValue = straightGemEP
-      gems = sGems
+    epValue = straightGemEP
+    gems = sGems
 
     if returnFull
-      return {ep: epValue, takeBonus: bonus, gems: gems}
+      return {ep: epValue, gems: gems}
     else
       return epValue
 
@@ -711,7 +449,6 @@ class ShadowcraftGear
 
       item = ItemLookup[gear.item_id]
       gem_offset = statOffset(gear, FACETS.GEMS)
-      fudgeOffsets(gem_offset)
 
       if item
         rec = getGemmingRecommendation(gem_list, item, true, slotIndex, gem_offset)
@@ -897,140 +634,11 @@ class ShadowcraftGear
   getSimpleEPForUpgrade = (slot, item) ->
     return 0 unless item
 
-    reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
     gear_offset = statOffset(gear[slot], FACETS.ITEM)
-    fudgeOffsets(reforge_offset)
-
-    rec = recommendReforge(item, reforge_offset)
-    if rec
-      reforgeEP = reforgeEp(rec, item, reforge_offset)
-    else
-      reforgeEP = 0
 
     gearEP = get_ep(item, null, slot, gear_offset)
     gearEP = 0 if isNaN gearEP
-    return gearEP + reforgeEP
-
-  ###
-  # Reforge helpers
-  ###
-
-  canReforge = (item) ->
-    return false if item.ilvl < 200
-    for stat of item.stats
-      return true if REFORGABLE.indexOf(stat) >= 0
-    return false
-
-  sourceStats = (stats) ->
-    source = []
-    for stat of stats
-      if REFORGABLE.indexOf(stat) >= 0
-        source.push {
-          key: stat,
-          name: titleize(stat),
-          value: stats[stat],
-          use: Math.floor(stats[stat] * REFORGE_FACTOR)
-        }
-    source
-
-  recommendReforge = (item, offset) ->
-    return 0 if item.stats == null
-    best = 0
-    bestFrom = null
-    bestTo = null
-
-    for stat, value of item.stats
-      ramt = Math.floor(value * REFORGE_FACTOR)
-      if REFORGABLE.indexOf(stat) >= 0
-        loss = getStatWeight(stat, -ramt, offset)
-        for dstat in REFORGABLE
-          if not item.stats[dstat]?
-            gain = getStatWeight(dstat, ramt, offset)
-            if gain + loss > best
-              best = gain + loss
-              bestFrom = stat
-              bestTo = dstat
-
-    if bestFrom? and bestTo?
-      return compactReforge(bestFrom, bestTo)
-    else
-      return 0
-
-  reforgeEp = (reforge, item, offset) ->
-    stat = getReforgeFrom(reforge)
-    amt = Math.floor(item.stats[stat] * REFORGE_FACTOR)
-    loss = getStatWeight(stat, -amt, offset)
-    fstat = stat
-
-    stat = getReforgeTo(reforge)
-    gain = getStatWeight(stat, amt, offset)
-
-    return gain + loss
-
-  setReforges: (reforges) ->
-    Shadowcraft.Console.purgeOld()
-    model = Shadowcraft.Data
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-    for id, reforge of reforges
-      gear = null
-      [id, s] = id.split "-"
-      id = parseInt(id, 10)
-      reforge = parseInt(reforge, 10)
-      reforge = null if reforge == 0
-      for slot in SLOT_ORDER
-        g = model.gear[slot]
-        if g.item_id == id and slot == s
-          gear = g
-          break
-      if gear and gear.reforge != reforge
-        item = ItemLookup[gear.item_id]
-        if reforge == null
-          if gear.reforge
-            Shadowcraft.Console.log "Removed reforge from #{item.name}"
-          delete gear.reforge
-        else
-          from = getReforgeFrom(reforge)
-          to = getReforgeTo(reforge)
-          amt = reforgeAmount(item, from)
-          gear.reforge = reforge
-          Shadowcraft.Console.log "Reforged #{item.name} to <span class='neg'>-#{amt} #{titleize(from)}</span> / <span class='pos'>+#{amt} #{titleize(to)}</span>"
-    Shadowcraft.update()
-    Shadowcraft.Gear.updateDisplay()
-
-  clearReforge = ->
-    Shadowcraft.Console.purgeOld()
-    data = Shadowcraft.Data
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-
-    slot = $.data(document.body, "selecting-slot")
-    gear = data.gear[slot]
-    return unless gear
-    delete gear.reforge if gear.reforge
-    Shadowcraft.Console.log "Removing reforge on " + ItemLookup[gear.item_id].name
-    Shadowcraft.update()
-    Shadowcraft.Gear.updateDisplay()
-    $("#reforge").removeClass("visible")
-
-  doReforge: ->
-    Shadowcraft.Console.purgeOld()
-    data = Shadowcraft.Data
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-
-    slot = $.data(document.body, "selecting-slot")
-    from = $("#reforge input[name='oldstat']:checked").val()
-    to = $("#reforge input[name='newstat']:checked").val()
-    gear = data.gear[slot]
-    return unless gear
-    item = ItemLookup[gear.item_id]
-    amt = reforgeAmount(item, from)
-
-    if from? and to?
-      gear.reforge = compactReforge(from, to)
-      Shadowcraft.Console.log "Reforging #{item.name} to <span class='neg'>-#{amt} #{titleize(from)}</span> / <span class='pos'>+#{amt} #{titleize(to)}</span>"
-
-    $("#reforge").removeClass("visible")
-    Shadowcraft.update()
-    Shadowcraft.Gear.updateDisplay()
+    return gearEP
 
   ###
   # View helpers
@@ -1064,32 +672,13 @@ class ShadowcraftGear
           if (!data.options.professions.enchanting && item.equip_location == 11) || item.equip_location == "ranged"
             enchantable = false
             delete gear.enchant
-          allSlotsMatch = item.sockets && item.sockets.length > 0
           for socket in item.sockets
             gem = Gems[gear["g" + gems.length]]
             gems[gems.length] = {socket: socket, gem: gem}
-            continue if socket == "Prismatic" # prismatic sockets don't contribute to socket bonus
-            if !gem or !gem[socket]
-              allSlotsMatch = false
-
-          if allSlotsMatch
-            bonuses = []
-            for stat, amt of item.socketbonus
-              bonuses[bonuses.length] = {stat: titleize(stat), amount: amt}
 
           if enchant and !enchant.desc
             enchant.desc = statsToDesc(enchant)
 
-          reforgable = canReforge item
-          if reforgable and gear.reforge
-            from = getReforgeFrom(gear.reforge)
-            to = getReforgeTo(gear.reforge)
-            amt = reforgeAmount(item, from)
-            reforge = {
-              value: amt
-              from: titleize(from)
-              to: titleize(to)
-            }
           if item.upgradable
             curr_level = "0"
             curr_level = gear.upgrade_level if gear.upgrade_level?
@@ -1108,7 +697,6 @@ class ShadowcraftGear
         opt.ep = if item then get_ep(item, null, i).toFixed(1) else 0
         opt.slot = i + ''
         opt.gems = gems
-        opt.socketbonus = bonuses
         opt.reforgable = reforgable
         opt.reforge = reforge
         opt.sockets = if item then item.sockets else null
@@ -1220,23 +808,6 @@ class ShadowcraftGear
         # ep: Math.floor(weight)
       }
 
-    a_stats.push {
-      name: "Dodge"
-      val: pctColor(this.getDodge("main"), redWhite) + " " + pctColor(this.getDodge("off"), redWhite)
-    }
-    a_stats.push {
-      name: "Yellow Miss"
-      val: pctColor this.getMiss("yellow"), redWhite, -1
-    }
-    #a_stats.push {
-    #  name: "Spell Miss"
-    #  val: pctColor this.getMiss("spell"), redWhite
-    #}
-    a_stats.push {
-      name: "White Miss"
-      val: pctColor this.getMiss("white"), redWhite
-    }
-
     EP_TOTAL = total
     $stats.get(0).innerHTML = Templates.stats {stats: a_stats}
 
@@ -1244,15 +815,9 @@ class ShadowcraftGear
     data = Shadowcraft.Data
     Weights.agility = source.ep.agi
     Weights.crit = source.ep.crit
-    Weights.hit = source.ep.white_hit
-    Weights.spell_hit = source.ep.spell_hit || source.ep.white_hit
     Weights.strength = source.ep.str
     Weights.mastery = source.ep.mastery
-    Weights.haste= source.ep.haste
-    Weights.expertise = source.ep.dodge_exp || source.ep.mh_dodge_exp + source.ep.oh_dodge_exp
-    Weights.mh_expertise = source.ep.mh_dodge_exp
-    Weights.oh_expertise = source.ep.oh_dodge_exp
-    Weights.yellow_hit = source.ep.yellow_hit
+    Weights.haste = source.ep.haste
     Weights.pvp_power = source.ep.pvp_power || 0
 
     other =
@@ -1282,10 +847,8 @@ class ShadowcraftGear
         $.data(exist.get(0), "sortkey", 0)
         if key in ["mainhand_dps","offhand_dps"]
           $.data(exist.get(0), "sortkey", 1)
-        else if key in ["mh_expertise","oh_expertise"]
-          $.data(exist.get(0), "sortkey", 2)
         else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc","t16_2pc","t16_4pc"]
-          $.data(exist.get(0), "sortkey", 3)
+          $.data(exist.get(0), "sortkey", 2)
       $.data(exist.get(0), "weight", weight)
 
     $("#weights .stat").sortElements (a, b) ->
@@ -1387,23 +950,6 @@ class ShadowcraftGear
     $.data(document.body, "selecting-prop", prop)
     return [$slot, slotIndex]
 
-  # This artificially deflates stats if you're around, to give room for a calculated reforge to be effective.
-  # This is a really nasty hack, but it works nicely for the purposes of gear ranking
-  fudgeOffsets = (offsets) ->
-    caps = Shadowcraft.Gear.getCaps()
-    stats = Shadowcraft.Gear.sumStats()
-    offsets.hit ||= 0
-    offsets.expertise ||= 0
-    if stats.hit > (caps.whiteHitCap * 0.9) and stats.hit < (caps.whiteHitCap * 1.1)
-      offsets.hit += stats.hit - caps.yellowHitCap - 1
-    else if stats.hit > (caps.yellowHitCap * 0.9) and stats.hit < (caps.yellowHitCap * 1.1)
-      offsets.hit += stats.hit - caps.yellowHitCap - 1
-
-    lowest_exp = if caps.mh_exp < caps.oh_exp then caps.mh_exp else caps.oh_exp
-    if stats.expertise > (lowest_exp * 0.8)
-      offsets.expertise += stats.expertise - lowest_exp
-    offsets
-
   patch_max_ilevel = (patch) ->
     switch patch
       when 50
@@ -1459,10 +1005,8 @@ class ShadowcraftGear
 
     #slot = parseInt($(this).parent().data("slot"), 10)
 
-    reforge_offset = statOffset(gear[slot], FACETS.REFORGE)
     gear_offset = statOffset(gear[slot], FACETS.ITEM)
     gem_offset = statOffset(gear[slot], FACETS.GEMS)
-    fudgeOffsets(reforge_offset)
     epSort(GemList) # Needed for gemming recommendations
 
     # set bonus
@@ -1474,11 +1018,6 @@ class ShadowcraftGear
     for l in loc
       addAchievementBonuses(l)
       l.__gemRec = getGemmingRecommendation(GemList, l, true, slot, gem_offset)
-      rec = recommendReforge(l, reforge_offset)
-      if rec
-        l.__reforgeEP = reforgeEp(rec, l, reforge_offset)
-      else
-        l.__reforgeEP = 0
       l.__setBonusEP = 0
       for set_name, set of Sets
         if set.ids.indexOf(get_item_id(l)) >= 0
@@ -1487,7 +1026,7 @@ class ShadowcraftGear
       l.__gearEP = get_ep(l, null, slot, gear_offset)
       l.__gearEP = 0 if isNaN l.__gearEP
       l.__setBonusEP = 0 if isNaN l.__setBonusEP
-      l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP + l.__setBonusEP
+      l.__ep = l.__gearEP + l.__gemRec.ep + l.__setBonusEP
 
 
     loc.sort(__epSort)
@@ -1527,7 +1066,7 @@ class ShadowcraftGear
         ttid: ttid
         ttrand: ttrand
         ttupgd: ttupgd
-        desc: "#{l.__gearEP.toFixed(1)} base / #{l.__reforgeEP.toFixed(1)} reforge / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__gemRec.takeBonus then "(Match gems)" else "" } #{if l.__setBonusEP > 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
+        desc: "#{l.__gearEP.toFixed(1)} base / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__setBonusEP > 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
         search: escape(l.name + " " + l.tag)
         percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01
         ep: iEP.toFixed(1)
@@ -1602,11 +1141,6 @@ class ShadowcraftGear
     slot = buf[1]
 
     item = ItemLookup[parseInt($slot.attr("id"), 10)]
-    # prismatic sockets should not devalue gems who contribute to the socketbonus
-    socketlength = item.sockets.length
-    if item.socketbonus and item.sockets[item.sockets.length-1] == "Prismatic"
-      socketlength--
-    socketEPBonus = (if item.socketbonus then get_ep(item, "socketbonus") else 0) / socketlength
     gemSlot = $slot.find(".gem").index(this)
     $.data(document.body, "gem-slot", gemSlot)
     gemType = item.sockets[gemSlot]
@@ -1620,8 +1154,6 @@ class ShadowcraftGear
 
     for gem in GemList
       gem.__ep = get_ep(gem)
-      if item.sockets[gemSlot] != "Prismatic"
-        gem.__ep += (if gem[item.sockets[gemSlot]] then socketEPBonus else 0)
     GemList.sort(__epSort)
 
     buffer = ""
@@ -1643,9 +1175,6 @@ class ShadowcraftGear
 
       continue if gEP < 1
 
-      if gem[item.sockets[gemSlot]] and item.sockets[gemSlot] != "Prismatic"
-        desc += " (+#{socketEPBonus.toFixed(1)} bonus)"
-
       buffer += Templates.itemSlot
         item: gem
         ep: gEP.toFixed(1)
@@ -1665,46 +1194,6 @@ class ShadowcraftGear
     $altslots.get(0).innerHTML = buffer
     $altslots.find(".slot[id='" + selected_id + "']").addClass("active")
     showPopup($popup) # TODO
-    false
-
-  clickSlotReforge = ->
-    clickSlot(this, "reforge")
-    $(".slot").removeClass("active")
-    $(this).addClass("active")
-    data = Shadowcraft.Data
-
-    $slot = $(this).closest(".slot")
-    slot = parseInt($slot.data("slot"), 10)
-    $.data(document.body, "selecting-slot", slot)
-
-    id = $slot.attr("id")
-    item = Shadowcraft.ServerData.ITEM_LOOKUP[id]
-
-    offset = statOffset(Shadowcraft.Data.gear[slot], FACETS.REFORGE)
-
-    rec = recommendReforge(item, offset)
-    recommended = null
-    if rec
-      from = getReforgeFrom(rec)
-      to   = getReforgeTo(rec)
-      amt  = reforgeAmount(item, from)
-      recommended = {
-        from: titleize(from)
-        to: titleize(to)
-        amount: amt
-      }
-
-    source = sourceStats(item.stats)
-    targetStats = _.select(REFORGE_STATS, (s) -> item.stats[s.key] == undefined)
-    $.data(document.body, "reforge-recommendation", rec)
-    $.data(document.body, "reforge-item", item)
-    $("#reforge").html Templates.reforge
-      stats: source
-      newstats: targetStats
-      recommended: recommended
-
-    $("#reforge .pct").hide()
-    showPopup $("#reforge.popup") # TODO
     false
 
   clickWowhead = (e) ->
@@ -1767,9 +1256,9 @@ class ShadowcraftGear
     item = ItemLookup[gear.item_id]
     if item
       if data.gear[slot].locked
-        Shadowcraft.Console.log("Locking " + item.name + " for Auto-Reforge and Optimize Gems")
+        Shadowcraft.Console.log("Locking " + item.name + " for Optimize Gems")
       else
-        Shadowcraft.Console.log("Unlocking " + item.name + " for Auto-Reforge and Optimize Gems")
+        Shadowcraft.Console.log("Unlocking " + item.name + " for Optimize Gems")
     #Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
     true
@@ -1779,8 +1268,6 @@ class ShadowcraftGear
     $slots = $(".slots")
     $popup = $(".alternatives")
     $altslots = $(".alternatives .body")
-
-    TiniReforger = new ShadowcraftTiniReforgeBackend(app)
 
     Shadowcraft.Backend.bind("recompute", updateStatWeights)
     Shadowcraft.Backend.bind("recompute", -> Shadowcraft.Gear )
@@ -1794,30 +1281,9 @@ class ShadowcraftGear
     Shadowcraft.bind "loadData", ->
       app.updateDisplay()
 
-    $("#reforgeAll").click ->
-      # Shadowcraft.Gear.reforgeAll()
-      window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
-      TiniReforger.buildRequest()
-
-    $("#reforgeWeights").click ->
-      # Shadowcraft.Gear.reforgeAll()
-      window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
-      TiniReforger.buildRequest("weights")
-
-    $("#reforgePriority").click ->
-      # Shadowcraft.Gear.reforgeAll()
-      window._gaq.push ['_trackEvent', "Character", "Reforge"] if window._gaq
-      TiniReforger.buildRequest("priority")
-
     $("#optimizeGems").click ->
       window._gaq.push ['_trackEvent', "Character", "Optimize Gems"] if window._gaq
       Shadowcraft.Gear.optimizeGems()
-
-    # Initialize UI handlers
-    $("#reforge").click $.delegate
-      ".label_radio"  : -> Shadowcraft.setupLabels("#reforge")
-      ".doReforge"    : this.doReforge
-      ".clearReforge" : clearReforge
 
     #  Change out an item
     $slots.click $.delegate
@@ -1827,7 +1293,6 @@ class ShadowcraftGear
       ".name"    : clickSlotName
       ".enchant" : clickSlotEnchant
       ".gem"     : clickSlotGem
-      ".reforge" : clickSlotReforge
 
     $(".slots, .popup").mouseover($.delegate
       ".tt": ttlib.requestTooltip
@@ -1878,12 +1343,7 @@ class ShadowcraftGear
       scale.MainHandSpeed = (Shadowcraft.lastCalculation.mh_speed_ep["mh_2.7"] - Shadowcraft.lastCalculation.mh_speed_ep["mh_2.6"]) * 10
       scale.OffHandDps = Shadowcraft.lastCalculation.oh_ep.oh_dps
       scale.OffHandSpeed = (Shadowcraft.lastCalculation.oh_speed_ep["oh_1.4"] - Shadowcraft.lastCalculation.oh_speed_ep["oh_1.3"]) * 10
-      scale.IsMace = racialExpertiseBonus(null, 4)
-      scale.IsSword = racialExpertiseBonus(null, 7)
-      scale.IsDagger = racialExpertiseBonus(null, 15)
-      scale.IsAxe = racialExpertiseBonus(null, 0)
-      scale.IsFist = racialExpertiseBonus(null, 13)
-      scale.MetaSocketEffect = Shadowcraft.lastCalculation.meta.chaotic_metagem
+      scale.MetaSocketEffect = 0
 
       stats = []
       for weight, val of scale
@@ -1950,32 +1410,6 @@ class ShadowcraftGear
         Shadowcraft.update()
         app.updateDisplay()
 
-    $("#reforge").change $.delegate(
-      ".oldstats input": ->
-        item = $.data(document.body, "reforge-item")
-        src = $(this).val()
-        amt = reforgeAmount(item, src)
-        max = 0
-        $("#reforge .pct").each(->
-          $this = $(this)
-          target = $this.closest(".stat").attr("data-stat")
-          c = compactReforge("expertise", "hit")
-
-          ep = Math.abs reforgeEp(compactReforge(src, target), item)
-          max = ep if ep > max
-        ).each(->
-          $this = $(this)
-          target = $this.closest(".stat").attr("data-stat")
-          ep = reforgeEp(compactReforge(src, target), item)
-          width = Math.abs(ep) / max * 50
-          inner = $this.find(".pct-inner")
-          inner.removeClass("reverse")
-          $this.find(".label").text(ep.toFixed(1))
-          inner.addClass("reverse") if(ep < 0)
-          inner.css({width: width + "%"})
-          $this.hide().fadeIn('normal')
-        )
-    )
     this.updateDisplay()
 
     $("input.search").keydown((e) ->
@@ -2042,30 +1476,9 @@ class ShadowcraftGear
       if e.keyCode == 27
         reset()
 
-    $("#filter, #reforge").click (e) ->
+    $("#filter").click (e) ->
       e.cancelBubble = true
       e.stopPropagation()
-
-    $("#exportReforging").click ->
-      data = Shadowcraft.Data
-      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-      reforge = []
-      for slot in SLOT_ORDER
-        gear = data.gear[slot]
-        if gear
-          item = ItemLookup[gear.item_id]
-          if gear.reforge
-            to = getReforgeTo(gear.reforge)
-            from = getReforgeFrom(gear.reforge)
-            amt = reforgeAmount(item, from)
-            reforge.push "#{SLOT_REFORGENAME[slot]}: #{formatreforge(from)} -> #{formatreforge(to)}"
-
-        cols = 40
-        for s in reforge
-          cols = s.length if s.length > cols
-      $("#generalDialog").html("<textarea rows='20' cols='#{cols}' style='width: auto; height: auto;'>#{reforge.join('\n')}</textarea>")
-      $("#generalDialog").dialog({ modal: true, width: 'auto', title: "Reforgerade Import String"})
-      false
 
     Shadowcraft.Options.bind "update", (opt, val) ->
       if opt in ['professions.enchanting', 'professions.blacksmithing','rotation.use_hemorrhage','general.pvp']

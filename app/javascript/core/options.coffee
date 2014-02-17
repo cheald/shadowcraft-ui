@@ -198,20 +198,11 @@ class ShadowcraftOptions
       opener_use_subtlety: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })
 
-    @setup("#advanced #advancedReforge", "advanced", {
-      mh_expertise_rating_override: {name: "MH Expertise", type: "input", desc: "Override MH expertise EP value", 'default': 1.4, datatype: 'float', min: 0.1, max: 5.0}
-      oh_expertise_rating_override: {name: "OH Expertise", type: "input", desc: "Override OH expertise EP value", 'default': 0.6, datatype: 'float', min: 0.1, max: 5.0}
-      haste_override: {name: "Haste", type: "input", desc: "Override haste EP value", 'default': 1.3, datatype: 'float', min: 0.1, max: 5.0}
-      mastery_override: {name: "Mastery", type: "input", desc: "Override mastery EP value", 'default': 1.2, datatype: 'float', min: 0.1, max: 5.0}
-      crit_override: {name: "Crit", type: "input", desc: "Override crit EP value", 'default': 1.1, datatype: 'float', min: 0.1, max: 5.0}
-    })
     @setup("#settings #advancedSettings", "advanced", {
       latency: {type: "input", name: "Latency", 'default': 0.03, datatype: 'float', min: 0.0, max: 5}
       adv_params: {type: "input", name: "Advanced Parameters", default: "", datatype: 'string'}
     })
-    @setup("#advanced #advancedStatPriority", "advanced", {
-      force_priority: {name: "Force Priority", type: "select", options: {'nochange': "Use ShadowCraft\'s Priority", 'mhc': "Mastery > Haste > Crit", 'mch': "Mastery > Crit > Haste", 'hmc': "Haste > Mastery > Crit", 'hcm': "Haste > Crit > Mastery", 'chm': "Crit > Haste > Mastery", 'cmh': "Crit > Mastery > Haste"}, desc: "Swap the EP Values to your priority", datatype: 'string', default: 'nochange'}
-    })
+
 
   changeOption = (elem, inputType, val) ->
     $this = $(elem)

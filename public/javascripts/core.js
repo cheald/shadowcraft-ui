@@ -1,5 +1,5 @@
 (function() {
-  var $, $doc, NOOP, ShadowcraftApp, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftDpsGraph, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, ShadowcraftTiniReforgeBackend, Templates, checkForWarnings, deepCopy, flash, formatreforge, hideFlash, json_encode, loadingSnapshot, modal, showPopup, stopWait, tip, titleize, tooltip, wait;
+  var $, $doc, NOOP, ShadowcraftApp, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftDpsGraph, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, Templates, checkForWarnings, deepCopy, flash, formatreforge, hideFlash, json_encode, loadingSnapshot, modal, showPopup, stopWait, tip, titleize, tooltip, wait;
   var __indexOf = Array.prototype.indexOf || function(item) {
     for (var i = 0, l = this.length; i < l; i++) {
       if (this[i] === item) return i;
@@ -8,53 +8,7 @@
   };
   $ = window.jQuery;
   ShadowcraftApp = (function() {
-    var RATING_CONVERSIONS, _update;
-    RATING_CONVERSIONS = {
-      80: {
-        hit: 30.7548,
-        expertise: 7.68869
-      },
-      81: {
-        hit: 40.3836,
-        expertise: 10.0959
-      },
-      82: {
-        hit: 53.0304,
-        expertise: 13.2576
-      },
-      83: {
-        hit: 69.6653,
-        expertise: 17.4163
-      },
-      84: {
-        hit: 91.4738,
-        expertise: 22.8685
-      },
-      85: {
-        hit: 120.109,
-        expertise: 30.0272
-      },
-      86: {
-        hit: 120.109,
-        expertise: 30.0272
-      },
-      87: {
-        hit: 120.109,
-        expertise: 30.0272
-      },
-      88: {
-        hit: 120.109,
-        expertise: 30.0272
-      },
-      89: {
-        hit: 120.109,
-        expertise: 30.0272
-      },
-      90: {
-        hit: 340,
-        expertise: 340
-      }
-    };
+    var _update;
     ShadowcraftApp.prototype.reload = function() {
       this.Options.initOptions();
       this.Talents.updateActiveTalents();
@@ -208,9 +162,6 @@
         return 0;
       }
       return parseInt(t, 10);
-    };
-    ShadowcraftApp.prototype._R = function(str) {
-      return RATING_CONVERSIONS[this.Data.options.general.level][str];
     };
     return ShadowcraftApp;
   })();
@@ -495,14 +446,6 @@
         item = [_item_id, g.upgrade_level ? g.upgrade_level : 0];
         if (_item_id) {
           gear_ids.push(item);
-        }
-        if (k === "0" && g.g0 && Gems[g.g0] && Gems[g.g0].Meta) {
-          if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(g.g0) !== -1) {
-            payload.mg = "chaotic";
-          }
-          if (ShadowcraftGear.LEGENDARY_META_GEM === g.g0) {
-            payload.mg = "capacitive";
-          }
         }
         if (k === "14" && g.enchant && g.enchant === 4894) {
           payload.se = "swordguard_embroidery";
@@ -1802,54 +1745,7 @@
           datatype: 'string'
         }
       });
-      this.setup("#advanced #advancedReforge", "advanced", {
-        mh_expertise_rating_override: {
-          name: "MH Expertise",
-          type: "input",
-          desc: "Override MH expertise EP value",
-          'default': 1.4,
-          datatype: 'float',
-          min: 0.1,
-          max: 5.0
-        },
-        oh_expertise_rating_override: {
-          name: "OH Expertise",
-          type: "input",
-          desc: "Override OH expertise EP value",
-          'default': 0.6,
-          datatype: 'float',
-          min: 0.1,
-          max: 5.0
-        },
-        haste_override: {
-          name: "Haste",
-          type: "input",
-          desc: "Override haste EP value",
-          'default': 1.3,
-          datatype: 'float',
-          min: 0.1,
-          max: 5.0
-        },
-        mastery_override: {
-          name: "Mastery",
-          type: "input",
-          desc: "Override mastery EP value",
-          'default': 1.2,
-          datatype: 'float',
-          min: 0.1,
-          max: 5.0
-        },
-        crit_override: {
-          name: "Crit",
-          type: "input",
-          desc: "Override crit EP value",
-          'default': 1.1,
-          datatype: 'float',
-          min: 0.1,
-          max: 5.0
-        }
-      });
-      this.setup("#settings #advancedSettings", "advanced", {
+      return this.setup("#settings #advancedSettings", "advanced", {
         latency: {
           type: "input",
           name: "Latency",
@@ -1863,24 +1759,6 @@
           name: "Advanced Parameters",
           "default": "",
           datatype: 'string'
-        }
-      });
-      return this.setup("#advanced #advancedStatPriority", "advanced", {
-        force_priority: {
-          name: "Force Priority",
-          type: "select",
-          options: {
-            'nochange': "Use ShadowCraft\'s Priority",
-            'mhc': "Mastery > Haste > Crit",
-            'mch': "Mastery > Crit > Haste",
-            'hmc': "Haste > Mastery > Crit",
-            'hcm': "Haste > Crit > Mastery",
-            'chm': "Crit > Haste > Mastery",
-            'cmh': "Crit > Mastery > Haste"
-          },
-          desc: "Swap the EP Values to your priority",
-          datatype: 'string',
-          "default": 'nochange'
         }
       });
     };
@@ -1961,8 +1839,8 @@
   ShadowcraftTalents = (function() {
     var ALWAYS_SHOW_GLYPHS, CHARACTER_SPEC, DEFAULT_SPECS, MAX_TALENT_POINTS, SPEC_ICONS, TREE_SIZE, applyTalentToButton, getSpec, getSpecName, getTalents, glyphRankCount, hoverTalent, resetTalents, setGlyph, setSpec, setTalents, talentsSpent, toggleGlyph, updateGlyphWeights, updateTalentAvailability, updateTalentContribution;
     talentsSpent = 0;
-    MAX_TALENT_POINTS = 6;
-    TREE_SIZE = 6;
+    MAX_TALENT_POINTS = 7;
+    TREE_SIZE = 7;
     ALWAYS_SHOW_GLYPHS = [];
     CHARACTER_SPEC = "";
     SPEC_ICONS = {
@@ -1973,17 +1851,17 @@
     };
     DEFAULT_SPECS = {
       "Stock Assassination": {
-        talents: "221102",
+        talents: "2211020",
         glyphs: [45761],
         spec: "a"
       },
       "Stock Combat": {
-        talents: "221102",
+        talents: "2211020",
         glyphs: [42972],
         spec: "Z"
       },
       "Stock Subtlety": {
-        talents: "121002",
+        talents: "1210020",
         glyphs: [42970, 63420],
         spec: "b"
       }
@@ -2082,7 +1960,7 @@
     getTalents = function() {
       var data, talent_rows;
       data = Shadowcraft.Data;
-      talent_rows = ['.', '.', '.', '.', '.', '.'];
+      talent_rows = ['.', '.', '.', '.', '.', '.', '.'];
       $("#talentframe .talent").each(function() {
         var points, position;
         position = $.data(this, "position");
@@ -2193,6 +2071,9 @@
           }, {
             tier: "5",
             level: "90"
+          }, {
+            tier: "6",
+            level: "100"
           }
         ]
       });
@@ -2225,7 +2106,7 @@
         });
         $.data(myTree, "info", {
           points: 0,
-          rowPoints: [0, 0, 0, 0, 0, 0]
+          rowPoints: [0, 0, 0, 0, 0, 0, 0]
         });
         $.data(this, "talent", talent);
         $.data(this, "points", {
@@ -2601,14 +2482,13 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REFORGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, REFORGABLE, REFORGE_CONST, REFORGE_FACTOR, REFORGE_STATS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, SLOT_REFORGENAME, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canReforge, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clearReforge, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickSlotReforge, clickWowhead, colorSpan, compactReforge, epSort, equalGemStats, fudgeOffsets, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getHitEP, getMaxUpgradeLevel, getProfessionalGemCount, getReforgeFrom, getReforgeTo, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, racialExpertiseBonus, racialHitBonus, recommendReforge, redGreen, redWhite, reforgeAmount, reforgeEp, reforgeToHash, setBonusEP, sourceStats, statOffset, statsToDesc, sumItem, sumReforge, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getMaxUpgradeLevel, getProfessionalGemCount, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
     CHAPTER_2_ACHIEVEMENTS = [7534, 8008];
     LEGENDARY_META_GEM_QUESTS = [32595];
-    REFORGE_FACTOR = 0.4;
     DEFAULT_BOSS_DODGE = 7.5;
     DEFAULT_BOSS_MISS = 7.5;
     DEFAULT_DW_PENALTY = 19.0;
@@ -2618,31 +2498,9 @@
       ITEM: 1,
       GEMS: 2,
       ENCHANT: 4,
-      REFORGE: 8,
       ALL: 255
     };
     ShadowcraftGear.FACETS = FACETS;
-    REFORGE_STATS = [
-      {
-        key: "expertise",
-        val: "Expertise"
-      }, {
-        key: "hit",
-        val: "Hit"
-      }, {
-        key: "haste",
-        val: "Haste"
-      }, {
-        key: "crit",
-        val: "Crit"
-      }, {
-        key: "mastery",
-        val: "Mastery"
-      }
-    ];
-    REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"];
-    ShadowcraftGear.REFORGABLE = REFORGABLE;
-    REFORGE_CONST = 112;
     SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"];
     SLOT_ORDER_OPTIMIZE_GEMS = ["0", "1", "2", "14", "4", "6", "7", "10", "11", "12", "13", "15", "16", "5", "8", "9"];
     SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13"]];
@@ -2655,8 +2513,6 @@
       5125: "dancing_steel",
       4894: "swordguard_embroidery"
     };
-    ShadowcraftGear.CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886];
-    ShadowcraftGear.LEGENDARY_META_GEM = 95346;
     Sets = {
       T14: {
         ids: [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128],
@@ -2684,14 +2540,8 @@
       attack_power: 1,
       agility: 2.66,
       crit: 0.87,
-      spell_hit: 1.3,
-      hit: 1.02,
-      expertise: 1.51,
-      mh_expertise: 1.0,
-      oh_expertise: 0.51,
       haste: 1.44,
       mastery: 1.15,
-      yellow_hit: 1.79,
       strength: 1.05,
       pvp_power: 0
     };
@@ -2716,26 +2566,7 @@
       15: "mainhand",
       16: "offhand"
     };
-    SLOT_REFORGENAME = {
-      0: "Head",
-      1: "Neck",
-      2: "Shoulders",
-      14: "Back",
-      4: "Chest",
-      8: "Wrists",
-      9: "Hands",
-      5: "Waist",
-      6: "Legs",
-      7: "Feet",
-      10: "Ring1",
-      11: "Ring2",
-      12: "Trinket1",
-      13: "Trinket2",
-      15: "MainHand",
-      16: "OffHand"
-    };
     EP_PRE_REGEM = null;
-    EP_PRE_REFORGE = null;
     EP_TOTAL = null;
     $slots = null;
     $altslots = null;
@@ -2747,44 +2578,6 @@
         Shadowcraft.Gear.sumSlot(gear, offsets, facet);
       }
       return offsets;
-    };
-    reforgeAmount = function(item, stat) {
-      return Math.floor(item.stats[stat] * REFORGE_FACTOR);
-    };
-    getReforgeFrom = function(n) {
-      var base, from;
-      base = n - REFORGE_CONST - 1;
-      from = Math.floor(base / 7);
-      return REFORGABLE[from];
-    };
-    getReforgeTo = function(n) {
-      var base, from, to;
-      base = n - REFORGE_CONST - 1;
-      from = Math.floor(base / 7);
-      to = base % 7;
-      if (from <= to) {
-        to++;
-      }
-      return REFORGABLE[to];
-    };
-    reforgeToHash = function(ref, amt) {
-      var r;
-      if (!ref || ref === 0) {
-        return {};
-      }
-      r = {};
-      r[getReforgeFrom(ref)] = -amt;
-      r[getReforgeTo(ref)] = amt;
-      return r;
-    };
-    compactReforge = function(from, to) {
-      var f, t;
-      f = REFORGABLE.indexOf(from);
-      t = REFORGABLE.indexOf(to);
-      if (t < f) {
-        t++;
-      }
-      return REFORGE_CONST + (f * 7) + t;
     };
     sumItem = function(s, i, key) {
       var stat;
@@ -2807,22 +2600,15 @@
         weight = getStatWeight(stat, value, ignore) || 0;
         total += weight;
       }
-      delete stats;
       c = Shadowcraft.lastCalculation;
-      if (c && key !== "socketbonus") {
+      if (c) {
         if (item.dps) {
           if (slot === 15) {
             total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed];
-            total += racialExpertiseBonus(item) * Weights.mh_expertise;
           } else if (slot === 16) {
             total += item.dps * c.oh_ep.oh_dps;
             total += c.oh_speed_ep["oh_" + item.speed];
-            total += racialExpertiseBonus(item) * Weights.oh_expertise;
           }
-        } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
-          total += c.meta.chaotic_metagem;
-        } else if (ShadowcraftGear.LEGENDARY_META_GEM === item.id) {
-          total += c.meta.legendary_capacitive_meta || 0;
         } else if (PROC_ENCHANTS[get_item_id(item)]) {
           switch (slot) {
             case 14:
@@ -2852,18 +2638,8 @@
       }
       return total;
     };
-    sumReforge = function(stats, item, reforge) {
-      var amt, from, to;
-      from = getReforgeFrom(reforge);
-      to = getReforgeTo(reforge);
-      amt = reforgeAmount(item, from);
-      stats[from] || (stats[from] = 0);
-      stats[from] -= amt;
-      stats[to] || (stats[to] = 0);
-      return stats[to] += amt;
-    };
     ShadowcraftGear.prototype.sumSlot = function(gear, out, facets) {
-      var EnchantLookup, Gems, ItemLookup, enchant, enchant_id, gem, gid, item, matchesAllSockets, socket, socketIndex, _ref;
+      var EnchantLookup, Gems, ItemLookup, enchant, enchant_id, gem, gid, item, socket, socketIndex, _ref;
       if ((gear != null ? gear.item_id : void 0) == null) {
         return;
       }
@@ -2879,7 +2655,6 @@
         sumItem(out, item);
       }
       if ((facets & FACETS.GEMS) === FACETS.GEMS) {
-        matchesAllSockets = item.sockets && item.sockets.length > 0;
         _ref = item.sockets;
         for (socketIndex in _ref) {
           socket = _ref[socketIndex];
@@ -2890,16 +2665,7 @@
               sumItem(out, gem);
             }
           }
-          if (!gem || !gem[socket]) {
-            matchesAllSockets = false;
-          }
         }
-        if (matchesAllSockets) {
-          sumItem(out, item, "socketbonus");
-        }
-      }
-      if ((facets & FACETS.REFORGE) === FACETS.REFORGE && gear.reforge) {
-        sumReforge(out, item, gear.reforge);
       }
       if ((facets & FACETS.ENCHANT) === FACETS.ENCHANT) {
         enchant_id = gear.enchant;
@@ -2922,131 +2688,14 @@
       this.statSum = stats;
       return stats;
     };
-    racialExpertiseBonus = function(item, mh_type) {
-      var m, n, race, t, _i, _len;
-      if (!((item != null) || (mh_type != null))) {
-        return 0;
-      }
-      if (item != null) {
-        mh_type = item.subclass;
-      }
-      if (mh_type instanceof Array) {
-        m = 0;
-        for (_i = 0, _len = mh_type.length; _i < _len; _i++) {
-          t = mh_type[_i];
-          n = racialExpertiseBonus(null, t);
-          m = n > m ? n : m;
-        }
-        return m;
-      }
-      race = Shadowcraft.Data.options.general.race;
-      if (race === "Human" && (mh_type === 7 || mh_type === 4)) {
-        return Shadowcraft._R("expertise");
-      } else if (race === "Gnome" && (mh_type === 7 || mh_type === 15)) {
-        return Shadowcraft._R("expertise");
-      } else if (race === "Dwarf" && (mh_type === 4)) {
-        return Shadowcraft._R("expertise");
-      } else if (race === "Orc" && (mh_type === 0 || mh_type === 13)) {
-        return Shadowcraft._R("expertise");
-      } else {
-        return 0;
-      }
-    };
-    racialHitBonus = function(key) {
-      if (Shadowcraft.Data.race === "Draenei") {
-        return Shadowcraft._R(key);
-      } else {
-        return 0;
-      }
-    };
     ShadowcraftGear.prototype.getStat = function(stat) {
       if (!this.statSum) {
         this.sumStats();
       }
       return this.statSum[stat] || 0;
     };
-    ShadowcraftGear.prototype.getDodge = function(hand) {
-      var ItemLookup, data, dodge_chance, expertise;
-      data = Shadowcraft.Data;
-      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-      expertise = this.statSum.expertise;
-      dodge_chance = data.options.general.pvp ? DEFAULT_PVP_DODGE : DEFAULT_BOSS_DODGE;
-      if ((!(hand != null) || hand === "main") && data.gear[15] && data.gear[15].item_id) {
-        expertise += racialExpertiseBonus(ItemLookup[data.gear[15].item_id]);
-      } else if ((hand === "off") && data.gear[16] && data.gear[16].item_id) {
-        expertise += racialExpertiseBonus(ItemLookup[data.gear[16].item_id]);
-      }
-      return dodge_chance - expertise / Shadowcraft._R("expertise");
-    };
-    getHitEP = function() {
-      var data, exist, miss_chance, spellHitCap, whiteHitCap, yellowHitCap;
-      data = Shadowcraft.Data;
-      miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
-      yellowHitCap = Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit");
-      spellHitCap = Shadowcraft._R("spell_hit") * miss_chance - racialHitBonus("spell_hit");
-      whiteHitCap = Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit");
-      exist = Shadowcraft.Gear.getStat("hit");
-      if (exist < yellowHitCap) {
-        return Weights.yellow_hit;
-      } else if (exist < spellHitCap) {
-        return Weights.spell_hit;
-      } else if (exist < whiteHitCap) {
-        return Weights.hit;
-      } else {
-        return 0;
-      }
-    };
-    ShadowcraftGear.prototype.getCaps = function() {
-      var ItemLookup, caps, data, dodge_chance, exp_base, miss_chance;
-      data = Shadowcraft.Data;
-      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-      dodge_chance = data.options.general.pvp ? DEFAULT_PVP_DODGE : DEFAULT_BOSS_DODGE;
-      miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
-      exp_base = Shadowcraft._R("expertise") * dodge_chance;
-      caps = {
-        yellowHitCap: Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit"),
-        spellHitCap: Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit"),
-        whiteHitCap: Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit"),
-        mh_exp: exp_base,
-        oh_exp: exp_base
-      };
-      if (data.gear[15]) {
-        caps.mh_exp = exp_base - racialExpertiseBonus(ItemLookup[data.gear[15].item_id]);
-      }
-      if (data.gear[16]) {
-        caps.oh_exp = exp_base - racialExpertiseBonus(ItemLookup[data.gear[16].item_id]);
-      }
-      return caps;
-    };
-    ShadowcraftGear.prototype.getMiss = function(cap) {
-      var data, hasHit, hitCap, miss_chance, r;
-      data = Shadowcraft.Data;
-      miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
-      switch (cap) {
-        case "yellow":
-          r = Shadowcraft._R("hit");
-          hitCap = r * miss_chance - racialHitBonus("hit");
-          break;
-        case "spell":
-          r = Shadowcraft._R("hit");
-          hitCap = r * miss_chance - racialHitBonus("hit");
-          break;
-        case "white":
-          r = Shadowcraft._R("hit");
-          hitCap = r * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit");
-      }
-      if ((r != null) && (hitCap != null)) {
-        hasHit = this.statSum.hit || 0;
-        if (hasHit < hitCap || cap === "white") {
-          return (hitCap - hasHit) / r;
-        } else {
-          return 0;
-        }
-      }
-      return -99;
-    };
     getStatWeight = function(stat, num, ignore, ignoreAll) {
-      var ItemLookup, data, delta, dodge_chance, exist, mhCap, miss_chance, neg, ohCap, remaining, spellHitCap, total, usable, whiteHitCap, yellowHitCap;
+      var ItemLookup, data, exist, neg;
       data = Shadowcraft.Data;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       exist = 0;
@@ -3058,60 +2707,6 @@
       }
       neg = num < 0 ? -1 : 1;
       num = Math.abs(num);
-      switch (stat) {
-        case "expertise":
-          dodge_chance = data.options.general.pvp ? DEFAULT_PVP_DODGE : DEFAULT_BOSS_DODGE;
-          mhCap = Shadowcraft._R("expertise") * dodge_chance;
-          ohCap = mhCap;
-          if (data.gear[15] && data.gear[15].item_id) {
-            mhCap -= racialExpertiseBonus(ItemLookup[data.gear[15].item_id]);
-          }
-          if (data.gear[16] && data.gear[16].item_id) {
-            ohCap -= racialExpertiseBonus(ItemLookup[data.gear[16].item_id]);
-          }
-          total = 0;
-          if (mhCap > exist) {
-            usable = mhCap - exist;
-            if (usable > num) {
-              usable = num;
-            }
-            total += usable * Weights.mh_expertise;
-          }
-          if (ohCap > exist) {
-            usable = ohCap - exist;
-            if (usable > num) {
-              usable = num;
-            }
-            total += usable * Weights.oh_expertise;
-          }
-          return total * neg;
-        case "hit":
-          miss_chance = data.options.general.pvp ? DEFAULT_PVP_MISS : DEFAULT_BOSS_MISS;
-          yellowHitCap = Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit");
-          spellHitCap = Shadowcraft._R("hit") * miss_chance - racialHitBonus("hit");
-          whiteHitCap = Shadowcraft._R("hit") * (miss_chance + DEFAULT_DW_PENALTY) - racialHitBonus("hit");
-          total = 0;
-          remaining = num;
-          if (remaining > 0 && exist < yellowHitCap) {
-            delta = (yellowHitCap - exist) > remaining ? remaining : yellowHitCap - exist;
-            total += delta * Weights.yellow_hit;
-            remaining -= delta;
-            exist += delta;
-          }
-          if (remaining > 0 && exist < spellHitCap) {
-            delta = (spellHitCap - exist) > remaining ? remaining : spellHitCap - exist;
-            total += delta * Weights.spell_hit;
-            remaining -= delta;
-            exist += delta;
-          }
-          if (remaining > 0 && exist < whiteHitCap) {
-            delta = (whiteHitCap - exist) > remaining ? remaining : whiteHitCap - exist;
-            total += delta * Weights.hit;
-            remaining -= delta;
-            exist += delta;
-          }
-          return total * neg;
-      }
       return (Weights[stat] || 0) * num * neg;
     };
     __epSort = function(a, b) {
@@ -3268,6 +2863,9 @@
           return false;
         }
       }
+      if (!gem[gemType]) {
+        return false;
+      }
       if (gem.slot === "Cogwheel" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS) {
         return false;
       }
@@ -3416,7 +3014,7 @@
       return true;
     };
     getGemmingRecommendation = function(gem_list, item, returnFull, ignoreSlotIndex, offset) {
-      var bonus, broke, data, epValue, gem, gemType, gems, mGems, matchedGemEP, sGems, straightGemEP, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref, _ref2;
+      var broke, data, epValue, gem, gemType, gems, mGems, sGems, straightGemEP, _i, _j, _len, _len2, _ref;
       data = Shadowcraft.Data;
       if (!item.sockets || item.sockets.length === 0) {
         if (returnFull) {
@@ -3429,7 +3027,6 @@
         }
       }
       straightGemEP = 0;
-      matchedGemEP = get_ep(item, "socketbonus", null, offset);
       if (returnFull) {
         sGems = [];
         mGems = [];
@@ -3457,44 +3054,11 @@
           sGems.push(null);
         }
       }
-      _ref2 = item.sockets;
-      for (_k = 0, _len3 = _ref2.length; _k < _len3; _k++) {
-        gemType = _ref2[_k];
-        broke = false;
-        for (_l = 0, _len4 = gem_list.length; _l < _len4; _l++) {
-          gem = gem_list[_l];
-          if (!canUseGem(gem, gemType, mGems, ignoreSlotIndex)) {
-            continue;
-          }
-          if (gem.id === ShadowcraftGear.LEGENDARY_META_GEM && !canUseLegendaryMetaGem(item)) {
-            continue;
-          }
-          if (gem[gemType]) {
-            matchedGemEP += getRegularGemEpValue(gem, offset);
-            if (returnFull) {
-              mGems.push(gem.id);
-            }
-            broke = true;
-            break;
-          }
-        }
-        if (!broke && returnFull) {
-          mGems.push(null);
-        }
-      }
-      bonus = false;
-      if (matchedGemEP > straightGemEP) {
-        epValue = matchedGemEP;
-        gems = mGems;
-        bonus = true;
-      } else {
-        epValue = straightGemEP;
-        gems = sGems;
-      }
+      epValue = straightGemEP;
+      gems = sGems;
       if (returnFull) {
         return {
           ep: epValue,
-          takeBonus: bonus,
           gems: gems
         };
       } else {
@@ -3526,7 +3090,6 @@
         }
         item = ItemLookup[gear.item_id];
         gem_offset = statOffset(gear, FACETS.GEMS);
-        fudgeOffsets(gem_offset);
         if (item) {
           rec = getGemmingRecommendation(gem_list, item, true, slotIndex, gem_offset);
           _ref = rec.gems;
@@ -3777,184 +3340,22 @@
       return ret;
     };
     getSimpleEPForUpgrade = function(slot, item) {
-      var gearEP, gear_offset, rec, reforgeEP, reforge_offset;
+      var gearEP, gear_offset;
       if (!item) {
         return 0;
       }
-      reforge_offset = statOffset(gear[slot], FACETS.REFORGE);
       gear_offset = statOffset(gear[slot], FACETS.ITEM);
-      fudgeOffsets(reforge_offset);
-      rec = recommendReforge(item, reforge_offset);
-      if (rec) {
-        reforgeEP = reforgeEp(rec, item, reforge_offset);
-      } else {
-        reforgeEP = 0;
-      }
       gearEP = get_ep(item, null, slot, gear_offset);
       if (isNaN(gearEP)) {
         gearEP = 0;
       }
-      return gearEP + reforgeEP;
-    };
-    /*
-      # Reforge helpers
-      */
-    canReforge = function(item) {
-      var stat;
-      if (item.ilvl < 200) {
-        return false;
-      }
-      for (stat in item.stats) {
-        if (REFORGABLE.indexOf(stat) >= 0) {
-          return true;
-        }
-      }
-      return false;
-    };
-    sourceStats = function(stats) {
-      var source, stat;
-      source = [];
-      for (stat in stats) {
-        if (REFORGABLE.indexOf(stat) >= 0) {
-          source.push({
-            key: stat,
-            name: titleize(stat),
-            value: stats[stat],
-            use: Math.floor(stats[stat] * REFORGE_FACTOR)
-          });
-        }
-      }
-      return source;
-    };
-    recommendReforge = function(item, offset) {
-      var best, bestFrom, bestTo, dstat, gain, loss, ramt, stat, value, _i, _len, _ref;
-      if (item.stats === null) {
-        return 0;
-      }
-      best = 0;
-      bestFrom = null;
-      bestTo = null;
-      _ref = item.stats;
-      for (stat in _ref) {
-        value = _ref[stat];
-        ramt = Math.floor(value * REFORGE_FACTOR);
-        if (REFORGABLE.indexOf(stat) >= 0) {
-          loss = getStatWeight(stat, -ramt, offset);
-          for (_i = 0, _len = REFORGABLE.length; _i < _len; _i++) {
-            dstat = REFORGABLE[_i];
-            if (!(item.stats[dstat] != null)) {
-              gain = getStatWeight(dstat, ramt, offset);
-              if (gain + loss > best) {
-                best = gain + loss;
-                bestFrom = stat;
-                bestTo = dstat;
-              }
-            }
-          }
-        }
-      }
-      if ((bestFrom != null) && (bestTo != null)) {
-        return compactReforge(bestFrom, bestTo);
-      } else {
-        return 0;
-      }
-    };
-    reforgeEp = function(reforge, item, offset) {
-      var amt, fstat, gain, loss, stat;
-      stat = getReforgeFrom(reforge);
-      amt = Math.floor(item.stats[stat] * REFORGE_FACTOR);
-      loss = getStatWeight(stat, -amt, offset);
-      fstat = stat;
-      stat = getReforgeTo(reforge);
-      gain = getStatWeight(stat, amt, offset);
-      return gain + loss;
-    };
-    ShadowcraftGear.prototype.setReforges = function(reforges) {
-      var ItemLookup, amt, from, g, gear, id, item, model, reforge, s, slot, to, _i, _len, _ref;
-      Shadowcraft.Console.purgeOld();
-      model = Shadowcraft.Data;
-      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-      for (id in reforges) {
-        reforge = reforges[id];
-        gear = null;
-        _ref = id.split("-"), id = _ref[0], s = _ref[1];
-        id = parseInt(id, 10);
-        reforge = parseInt(reforge, 10);
-        if (reforge === 0) {
-          reforge = null;
-        }
-        for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
-          slot = SLOT_ORDER[_i];
-          g = model.gear[slot];
-          if (g.item_id === id && slot === s) {
-            gear = g;
-            break;
-          }
-        }
-        if (gear && gear.reforge !== reforge) {
-          item = ItemLookup[gear.item_id];
-          if (reforge === null) {
-            if (gear.reforge) {
-              Shadowcraft.Console.log("Removed reforge from " + item.name);
-            }
-            delete gear.reforge;
-          } else {
-            from = getReforgeFrom(reforge);
-            to = getReforgeTo(reforge);
-            amt = reforgeAmount(item, from);
-            gear.reforge = reforge;
-            Shadowcraft.Console.log("Reforged " + item.name + " to <span class='neg'>-" + amt + " " + (titleize(from)) + "</span> / <span class='pos'>+" + amt + " " + (titleize(to)) + "</span>");
-          }
-        }
-      }
-      Shadowcraft.update();
-      return Shadowcraft.Gear.updateDisplay();
-    };
-    clearReforge = function() {
-      var ItemLookup, data, gear, slot;
-      Shadowcraft.Console.purgeOld();
-      data = Shadowcraft.Data;
-      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-      slot = $.data(document.body, "selecting-slot");
-      gear = data.gear[slot];
-      if (!gear) {
-        return;
-      }
-      if (gear.reforge) {
-        delete gear.reforge;
-      }
-      Shadowcraft.Console.log("Removing reforge on " + ItemLookup[gear.item_id].name);
-      Shadowcraft.update();
-      Shadowcraft.Gear.updateDisplay();
-      return $("#reforge").removeClass("visible");
-    };
-    ShadowcraftGear.prototype.doReforge = function() {
-      var ItemLookup, amt, data, from, gear, item, slot, to;
-      Shadowcraft.Console.purgeOld();
-      data = Shadowcraft.Data;
-      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-      slot = $.data(document.body, "selecting-slot");
-      from = $("#reforge input[name='oldstat']:checked").val();
-      to = $("#reforge input[name='newstat']:checked").val();
-      gear = data.gear[slot];
-      if (!gear) {
-        return;
-      }
-      item = ItemLookup[gear.item_id];
-      amt = reforgeAmount(item, from);
-      if ((from != null) && (to != null)) {
-        gear.reforge = compactReforge(from, to);
-        Shadowcraft.Console.log("Reforging " + item.name + " to <span class='neg'>-" + amt + " " + (titleize(from)) + "</span> / <span class='pos'>+" + amt + " " + (titleize(to)) + "</span>");
-      }
-      $("#reforge").removeClass("visible");
-      Shadowcraft.update();
-      return Shadowcraft.Gear.updateDisplay();
+      return gearEP;
     };
     /*
       # View helpers
       */
     ShadowcraftGear.prototype.updateDisplay = function(skipUpdate) {
-      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, curr_level, data, enchant, enchantable, from, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, slotIndex, slotSet, socket, ssi, stat, to, upgradable, upgrade, _base, _i, _len, _len2, _len3, _ref, _ref2;
+      var EnchantLookup, EnchantSlots, Gems, ItemLookup, bonuses, buffer, curr_level, data, enchant, enchantable, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, slotIndex, slotSet, socket, ssi, upgradable, upgrade, _base, _i, _len, _len2, _len3, _ref;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
       EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
@@ -3984,7 +3385,6 @@
               enchantable = false;
               delete gear.enchant;
             }
-            allSlotsMatch = item.sockets && item.sockets.length > 0;
             _ref = item.sockets;
             for (_i = 0, _len3 = _ref.length; _i < _len3; _i++) {
               socket = _ref[_i];
@@ -3993,37 +3393,9 @@
                 socket: socket,
                 gem: gem
               };
-              if (socket === "Prismatic") {
-                continue;
-              }
-              if (!gem || !gem[socket]) {
-                allSlotsMatch = false;
-              }
-            }
-            if (allSlotsMatch) {
-              bonuses = [];
-              _ref2 = item.socketbonus;
-              for (stat in _ref2) {
-                amt = _ref2[stat];
-                bonuses[bonuses.length] = {
-                  stat: titleize(stat),
-                  amount: amt
-                };
-              }
             }
             if (enchant && !enchant.desc) {
               enchant.desc = statsToDesc(enchant);
-            }
-            reforgable = canReforge(item);
-            if (reforgable && gear.reforge) {
-              from = getReforgeFrom(gear.reforge);
-              to = getReforgeTo(gear.reforge);
-              amt = reforgeAmount(item, from);
-              reforge = {
-                value: amt,
-                from: titleize(from),
-                to: titleize(to)
-              };
             }
             if (item.upgradable) {
               curr_level = "0";
@@ -4050,7 +3422,6 @@
           opt.ep = item ? get_ep(item, null, i).toFixed(1) : 0;
           opt.slot = i + '';
           opt.gems = gems;
-          opt.socketbonus = bonuses;
           opt.reforgable = reforgable;
           opt.reforge = reforge;
           opt.sockets = item ? item.sockets : null;
@@ -4180,18 +3551,6 @@
           val: this.statSum[stat]
         });
       }
-      a_stats.push({
-        name: "Dodge",
-        val: pctColor(this.getDodge("main"), redWhite) + " " + pctColor(this.getDodge("off"), redWhite)
-      });
-      a_stats.push({
-        name: "Yellow Miss",
-        val: pctColor(this.getMiss("yellow"), redWhite, -1)
-      });
-      a_stats.push({
-        name: "White Miss",
-        val: pctColor(this.getMiss("white"), redWhite)
-      });
       EP_TOTAL = total;
       return $stats.get(0).innerHTML = Templates.stats({
         stats: a_stats
@@ -4202,15 +3561,9 @@
       data = Shadowcraft.Data;
       Weights.agility = source.ep.agi;
       Weights.crit = source.ep.crit;
-      Weights.hit = source.ep.white_hit;
-      Weights.spell_hit = source.ep.spell_hit || source.ep.white_hit;
       Weights.strength = source.ep.str;
       Weights.mastery = source.ep.mastery;
       Weights.haste = source.ep.haste;
-      Weights.expertise = source.ep.dodge_exp || source.ep.mh_dodge_exp + source.ep.oh_dodge_exp;
-      Weights.mh_expertise = source.ep.mh_dodge_exp;
-      Weights.oh_expertise = source.ep.oh_dodge_exp;
-      Weights.yellow_hit = source.ep.yellow_hit;
       Weights.pvp_power = source.ep.pvp_power || 0;
       other = {
         mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps,
@@ -4245,10 +3598,8 @@
           $.data(exist.get(0), "sortkey", 0);
           if (key === "mainhand_dps" || key === "offhand_dps") {
             $.data(exist.get(0), "sortkey", 1);
-          } else if (key === "mh_expertise" || key === "oh_expertise") {
-            $.data(exist.get(0), "sortkey", 2);
           } else if (key === "t14_2pc" || key === "t14_4pc" || key === "t15_2pc" || key === "t15_4pc" || key === "t16_2pc" || key === "t16_4pc") {
-            $.data(exist.get(0), "sortkey", 3);
+            $.data(exist.get(0), "sortkey", 2);
           }
         }
         $.data(exist.get(0), "weight", weight);
@@ -4391,23 +3742,6 @@
       $.data(document.body, "selecting-prop", prop);
       return [$slot, slotIndex];
     };
-    fudgeOffsets = function(offsets) {
-      var caps, lowest_exp, stats;
-      caps = Shadowcraft.Gear.getCaps();
-      stats = Shadowcraft.Gear.sumStats();
-      offsets.hit || (offsets.hit = 0);
-      offsets.expertise || (offsets.expertise = 0);
-      if (stats.hit > (caps.whiteHitCap * 0.9) && stats.hit < (caps.whiteHitCap * 1.1)) {
-        offsets.hit += stats.hit - caps.yellowHitCap - 1;
-      } else if (stats.hit > (caps.yellowHitCap * 0.9) && stats.hit < (caps.yellowHitCap * 1.1)) {
-        offsets.hit += stats.hit - caps.yellowHitCap - 1;
-      }
-      lowest_exp = caps.mh_exp < caps.oh_exp ? caps.mh_exp : caps.oh_exp;
-      if (stats.expertise > (lowest_exp * 0.8)) {
-        offsets.expertise += stats.expertise - lowest_exp;
-      }
-      return offsets;
-    };
     patch_max_ilevel = function(patch) {
       switch (patch) {
         case 50:
@@ -4438,7 +3772,7 @@
       }
     };
     clickSlotName = function() {
-      var $slot, GemList, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, loc_all, maxIEP, max_level, minIEP, rec, reforge_offset, requireDagger, selected_id, set, setBonEP, setCount, set_name, slot, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _l, _len, _len2, _len3, _len4;
+      var $slot, GemList, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, loc_all, maxIEP, max_level, minIEP, requireDagger, selected_id, set, setBonEP, setCount, set_name, slot, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _l, _len, _len2, _len3, _len4;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -4479,10 +3813,8 @@
         }
         loc.push(l);
       }
-      reforge_offset = statOffset(gear[slot], FACETS.REFORGE);
       gear_offset = statOffset(gear[slot], FACETS.ITEM);
       gem_offset = statOffset(gear[slot], FACETS.GEMS);
-      fudgeOffsets(reforge_offset);
       epSort(GemList);
       setBonEP = {};
       for (set_name in Sets) {
@@ -4495,12 +3827,6 @@
         l = loc[_j];
         addAchievementBonuses(l);
         l.__gemRec = getGemmingRecommendation(GemList, l, true, slot, gem_offset);
-        rec = recommendReforge(l, reforge_offset);
-        if (rec) {
-          l.__reforgeEP = reforgeEp(rec, l, reforge_offset);
-        } else {
-          l.__reforgeEP = 0;
-        }
         l.__setBonusEP = 0;
         for (set_name in Sets) {
           set = Sets[set_name];
@@ -4515,7 +3841,7 @@
         if (isNaN(l.__setBonusEP)) {
           l.__setBonusEP = 0;
         }
-        l.__ep = l.__gearEP + l.__gemRec.ep + l.__reforgeEP + l.__setBonusEP;
+        l.__ep = l.__gearEP + l.__gemRec.ep + l.__setBonusEP;
       }
       loc.sort(__epSort);
       maxIEP = 1;
@@ -4564,7 +3890,7 @@
           ttid: ttid,
           ttrand: ttrand,
           ttupgd: ttupgd,
-          desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__reforgeEP.toFixed(1)) + " reforge / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__gemRec.takeBonus ? "(Match gems)" : "") + " " + (l.__setBonusEP > 0 ? "/ " + l.__setBonusEP.toFixed(1) + " set" : "") + " ",
+          desc: "" + (l.__gearEP.toFixed(1)) + " base / " + (l.__gemRec.ep.toFixed(1)) + " gem " + (l.__setBonusEP > 0 ? "/ " + l.__setBonusEP.toFixed(1) + " set" : "") + " ",
           search: escape(l.name + " " + l.tag),
           percent: Math.max((iEP - minIEP) / maxIEP * 100, 0.01),
           ep: iEP.toFixed(1)
@@ -4638,7 +3964,7 @@
       return false;
     };
     clickSlotGem = function() {
-      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemSlot, gemType, i, item, max, otherGearGems, selected_id, slot, socketEPBonus, socketlength, usedNames, _i, _j, _len, _len2;
+      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemSlot, gemType, i, item, max, otherGearGems, selected_id, slot, usedNames, _i, _j, _len, _len2;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       GemList = Shadowcraft.ServerData.GEMS;
       data = Shadowcraft.Data;
@@ -4646,11 +3972,6 @@
       $slot = buf[0];
       slot = buf[1];
       item = ItemLookup[parseInt($slot.attr("id"), 10)];
-      socketlength = item.sockets.length;
-      if (item.socketbonus && item.sockets[item.sockets.length - 1] === "Prismatic") {
-        socketlength--;
-      }
-      socketEPBonus = (item.socketbonus ? get_ep(item, "socketbonus") : 0) / socketlength;
       gemSlot = $slot.find(".gem").index(this);
       $.data(document.body, "gem-slot", gemSlot);
       gemType = item.sockets[gemSlot];
@@ -4667,9 +3988,6 @@
       for (_i = 0, _len = GemList.length; _i < _len; _i++) {
         gem = GemList[_i];
         gem.__ep = get_ep(gem);
-        if (item.sockets[gemSlot] !== "Prismatic") {
-          gem.__ep += (gem[item.sockets[gemSlot]] ? socketEPBonus : 0);
-        }
       }
       GemList.sort(__epSort);
       buffer = "";
@@ -4699,9 +4017,6 @@
         if (gEP < 1) {
           continue;
         }
-        if (gem[item.sockets[gemSlot]] && item.sockets[gemSlot] !== "Prismatic") {
-          desc += " (+" + (socketEPBonus.toFixed(1)) + " bonus)";
-        }
         buffer += Templates.itemSlot({
           item: gem,
           ep: gEP.toFixed(1),
@@ -4723,45 +4038,6 @@
       $altslots.get(0).innerHTML = buffer;
       $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
       showPopup($popup);
-      return false;
-    };
-    clickSlotReforge = function() {
-      var $slot, amt, data, from, id, item, offset, rec, recommended, slot, source, targetStats, to;
-      clickSlot(this, "reforge");
-      $(".slot").removeClass("active");
-      $(this).addClass("active");
-      data = Shadowcraft.Data;
-      $slot = $(this).closest(".slot");
-      slot = parseInt($slot.data("slot"), 10);
-      $.data(document.body, "selecting-slot", slot);
-      id = $slot.attr("id");
-      item = Shadowcraft.ServerData.ITEM_LOOKUP[id];
-      offset = statOffset(Shadowcraft.Data.gear[slot], FACETS.REFORGE);
-      rec = recommendReforge(item, offset);
-      recommended = null;
-      if (rec) {
-        from = getReforgeFrom(rec);
-        to = getReforgeTo(rec);
-        amt = reforgeAmount(item, from);
-        recommended = {
-          from: titleize(from),
-          to: titleize(to),
-          amount: amt
-        };
-      }
-      source = sourceStats(item.stats);
-      targetStats = _.select(REFORGE_STATS, function(s) {
-        return item.stats[s.key] === void 0;
-      });
-      $.data(document.body, "reforge-recommendation", rec);
-      $.data(document.body, "reforge-item", item);
-      $("#reforge").html(Templates.reforge({
-        stats: source,
-        newstats: targetStats,
-        recommended: recommended
-      }));
-      $("#reforge .pct").hide();
-      showPopup($("#reforge.popup"));
       return false;
     };
     clickWowhead = function(e) {
@@ -4823,21 +4099,20 @@
       item = ItemLookup[gear.item_id];
       if (item) {
         if (data.gear[slot].locked) {
-          Shadowcraft.Console.log("Locking " + item.name + " for Auto-Reforge and Optimize Gems");
+          Shadowcraft.Console.log("Locking " + item.name + " for Optimize Gems");
         } else {
-          Shadowcraft.Console.log("Unlocking " + item.name + " for Auto-Reforge and Optimize Gems");
+          Shadowcraft.Console.log("Unlocking " + item.name + " for Optimize Gems");
         }
       }
       Shadowcraft.Gear.updateDisplay();
       return true;
     };
     ShadowcraftGear.prototype.boot = function() {
-      var TiniReforger, app, defaultScale, reset;
+      var app, defaultScale, reset;
       app = this;
       $slots = $(".slots");
       $popup = $(".alternatives");
       $altslots = $(".alternatives .body");
-      TiniReforger = new ShadowcraftTiniReforgeBackend(app);
       Shadowcraft.Backend.bind("recompute", updateStatWeights);
       Shadowcraft.Backend.bind("recompute", function() {
         return Shadowcraft.Gear;
@@ -4850,45 +4125,19 @@
       Shadowcraft.bind("loadData", function() {
         return app.updateDisplay();
       });
-      $("#reforgeAll").click(function() {
-        if (window._gaq) {
-          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
-        }
-        return TiniReforger.buildRequest();
-      });
-      $("#reforgeWeights").click(function() {
-        if (window._gaq) {
-          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
-        }
-        return TiniReforger.buildRequest("weights");
-      });
-      $("#reforgePriority").click(function() {
-        if (window._gaq) {
-          window._gaq.push(['_trackEvent', "Character", "Reforge"]);
-        }
-        return TiniReforger.buildRequest("priority");
-      });
       $("#optimizeGems").click(function() {
         if (window._gaq) {
           window._gaq.push(['_trackEvent', "Character", "Optimize Gems"]);
         }
         return Shadowcraft.Gear.optimizeGems();
       });
-      $("#reforge").click($.delegate({
-        ".label_radio": function() {
-          return Shadowcraft.setupLabels("#reforge");
-        },
-        ".doReforge": this.doReforge,
-        ".clearReforge": clearReforge
-      }));
       $slots.click($.delegate({
         ".upgrade": clickItemUpgrade,
         ".lock": clickItemLock,
         ".wowhead": clickWowhead,
         ".name": clickSlotName,
         ".enchant": clickSlotEnchant,
-        ".gem": clickSlotGem,
-        ".reforge": clickSlotReforge
+        ".gem": clickSlotGem
       }));
       $(".slots, .popup").mouseover($.delegate({
         ".tt": ttlib.requestTooltip
@@ -4940,12 +4189,7 @@
         scale.MainHandSpeed = (Shadowcraft.lastCalculation.mh_speed_ep["mh_2.7"] - Shadowcraft.lastCalculation.mh_speed_ep["mh_2.6"]) * 10;
         scale.OffHandDps = Shadowcraft.lastCalculation.oh_ep.oh_dps;
         scale.OffHandSpeed = (Shadowcraft.lastCalculation.oh_speed_ep["oh_1.4"] - Shadowcraft.lastCalculation.oh_speed_ep["oh_1.3"]) * 10;
-        scale.IsMace = racialExpertiseBonus(null, 4);
-        scale.IsSword = racialExpertiseBonus(null, 7);
-        scale.IsDagger = racialExpertiseBonus(null, 15);
-        scale.IsAxe = racialExpertiseBonus(null, 0);
-        scale.IsFist = racialExpertiseBonus(null, 13);
-        scale.MetaSocketEffect = Shadowcraft.lastCalculation.meta.chaotic_metagem;
+        scale.MetaSocketEffect = 0;
         stats = [];
         for (weight in scale) {
           val = scale[weight];
@@ -5025,41 +4269,6 @@
           }
           Shadowcraft.update();
           return app.updateDisplay();
-        }
-      }));
-      $("#reforge").change($.delegate({
-        ".oldstats input": function() {
-          var amt, item, max, src;
-          item = $.data(document.body, "reforge-item");
-          src = $(this).val();
-          amt = reforgeAmount(item, src);
-          max = 0;
-          return $("#reforge .pct").each(function() {
-            var $this, c, ep, target;
-            $this = $(this);
-            target = $this.closest(".stat").attr("data-stat");
-            c = compactReforge("expertise", "hit");
-            ep = Math.abs(reforgeEp(compactReforge(src, target), item));
-            if (ep > max) {
-              return max = ep;
-            }
-          }).each(function() {
-            var $this, ep, inner, target, width;
-            $this = $(this);
-            target = $this.closest(".stat").attr("data-stat");
-            ep = reforgeEp(compactReforge(src, target), item);
-            width = Math.abs(ep) / max * 50;
-            inner = $this.find(".pct-inner");
-            inner.removeClass("reverse");
-            $this.find(".label").text(ep.toFixed(1));
-            if (ep < 0) {
-              inner.addClass("reverse");
-            }
-            inner.css({
-              width: width + "%"
-            });
-            return $this.hide().fadeIn('normal');
-          });
         }
       }));
       this.updateDisplay();
@@ -5144,42 +4353,9 @@
           return reset();
         }
       });
-      $("#filter, #reforge").click(function(e) {
+      $("#filter").click(function(e) {
         e.cancelBubble = true;
         return e.stopPropagation();
-      });
-      $("#exportReforging").click(function() {
-        var ItemLookup, amt, cols, data, from, gear, item, reforge, s, slot, to, _i, _j, _len, _len2;
-        data = Shadowcraft.Data;
-        ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-        reforge = [];
-        for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
-          slot = SLOT_ORDER[_i];
-          gear = data.gear[slot];
-          if (gear) {
-            item = ItemLookup[gear.item_id];
-            if (gear.reforge) {
-              to = getReforgeTo(gear.reforge);
-              from = getReforgeFrom(gear.reforge);
-              amt = reforgeAmount(item, from);
-              reforge.push("" + SLOT_REFORGENAME[slot] + ": " + (formatreforge(from)) + " -> " + (formatreforge(to)));
-            }
-          }
-          cols = 40;
-          for (_j = 0, _len2 = reforge.length; _j < _len2; _j++) {
-            s = reforge[_j];
-            if (s.length > cols) {
-              cols = s.length;
-            }
-          }
-        }
-        $("#generalDialog").html("<textarea rows='20' cols='" + cols + "' style='width: auto; height: auto;'>" + (reforge.join('\n')) + "</textarea>");
-        $("#generalDialog").dialog({
-          modal: true,
-          width: 'auto',
-          title: "Reforgerade Import String"
-        });
-        return false;
       });
       Shadowcraft.Options.bind("update", function(opt, val) {
         if (opt === 'professions.enchanting' || opt === 'professions.blacksmithing' || opt === 'rotation.use_hemorrhage' || opt === 'general.pvp') {
@@ -5196,203 +4372,6 @@
       this.app = app;
     }
     return ShadowcraftGear;
-  })();
-  ShadowcraftTiniReforgeBackend = (function() {
-    var ENGINE, ENGINES, REFORGABLE, REFORGER_MAP, deferred;
-    ENGINES = ["http://shadowref4.appspot.com/calc", "http://shadowref3.appspot.com/calc", "http://shadowref2.appspot.com/calc", "http://shadowref.appspot.com/calc"];
-    ENGINE = ENGINES[Math.floor(Math.random() * ENGINES.length)];
-    REFORGABLE = ["spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery"];
-    REFORGER_MAP = {
-      "spirit": "spirit",
-      "dodge": "dodge_rating",
-      "parry": "parry_rating",
-      "hit": "hit_rating",
-      "crit": "crit_rating",
-      "haste": "haste_rating",
-      "expertise": "expertise_rating",
-      "mastery": "mastery_rating",
-      "mh_expertise": "mh_expertise_rating",
-      "oh_expertise": "oh_expertise_rating"
-    };
-    deferred = null;
-    function ShadowcraftTiniReforgeBackend(gear) {
-      this.gear = gear;
-    }
-    ShadowcraftTiniReforgeBackend.prototype.request = function(req) {
-      deferred = $.Deferred();
-      wait('Optimizing reforges...');
-      Shadowcraft.Console.log("Starting reforge optimization...", "gold underline");
-      if ($.browser.msie && window.XDomainRequest) {
-        this.request_via_xdr(req);
-      } else {
-        this.request_via_ajax(req);
-      }
-      return deferred.promise();
-    };
-    ShadowcraftTiniReforgeBackend.prototype.request_via_xdr = function(req) {
-      var xdr;
-      xdr = new XDomainRequest();
-      xdr.open("post", ENGINE);
-      xdr.send(JSON.stringify(req));
-      xdr.onload = function() {
-        var data;
-        data = JSON.parse(xdr.responseText);
-        Shadowcraft.Gear.setReforges(data);
-        return deferred.resolve();
-      };
-      xdr.onerror = function() {
-        flash("Error contacting reforging service");
-        return false;
-      };
-      return xdr.ontimeout = function() {
-        flash("Timed out talking to reforging service");
-        return false;
-      };
-    };
-    ShadowcraftTiniReforgeBackend.prototype.request_via_ajax = function(req) {
-      return $.ajax({
-        type: "POST",
-        url: ENGINE,
-        data: json_encode(req),
-        complete: function() {
-          return deferred.resolve();
-        },
-        success: function(data) {
-          Shadowcraft.Gear.setReforges(data);
-          Shadowcraft.update();
-          return Shadowcraft.Gear.updateDisplay();
-        },
-        error: function(xhr, textStatus, error) {
-          Shadowcraft.Console.remove(".error");
-          return Shadowcraft.Console.warn({}, "Timed out talking to reforging service", null, "error", "error");
-        },
-        dataType: "json",
-        contentType: "application/json"
-      });
-    };
-    ShadowcraftTiniReforgeBackend.prototype.buildRequest = function(override) {
-      var ItemLookup, caps, cha, decoder, ep, ep_num_ranking, ep_ranking, f, index, items, k, prio, rank, req, revert, stat, stats, v, _ep, _i, _len, _len2, _ref, _stats;
-      if (override == null) {
-        override = false;
-      }
-      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
-      f = ShadowcraftGear.FACETS;
-      _stats = this.gear.sumStats(f.ITEM | f.GEMS | f.ENCHANT);
-      stats = {};
-      for (k in _stats) {
-        v = _stats[k];
-        if (__indexOf.call(REFORGABLE, k) < 0) {
-          continue;
-        }
-        stats[REFORGER_MAP[k]] = v;
-      }
-      items = _.map(Shadowcraft.Data.gear, function(e, k) {
-        var key, r, v, val, _name, _ref, _temp;
-        r = {
-          id: e.item_id + "-" + k
-        };
-        if (e.locked) {
-          _temp = {};
-          Shadowcraft.Gear.sumSlot(e, _temp, f.REFORGE);
-          for (k in _temp) {
-            v = _temp[k];
-            if (__indexOf.call(REFORGABLE, k) < 0) {
-              continue;
-            }
-            stats[_name = REFORGER_MAP[k]] || (stats[_name] = 0);
-            stats[REFORGER_MAP[k]] += v;
-          }
-          return r;
-        }
-        if (ItemLookup[e.item_id]) {
-          _ref = ItemLookup[e.item_id].stats;
-          for (key in _ref) {
-            val = _ref[key];
-            if (REFORGABLE.indexOf(key) !== -1) {
-              r[REFORGER_MAP[key]] = val;
-            }
-          }
-        }
-        return r;
-      });
-      revert = {};
-      for (k in REFORGER_MAP) {
-        v = REFORGER_MAP[k];
-        revert[v] = k;
-      }
-      items = _.select(items, function(i) {
-        var k, v;
-        for (k in i) {
-          v = i[k];
-          if (REFORGABLE.indexOf(revert[k]) !== -1) {
-            return true;
-          }
-        }
-        return false;
-      });
-      if (items.length < 2) {
-        Shadowcraft.Console.remove(".error");
-        Shadowcraft.Console.warn({}, "You must have at least two reforgable items to use the reforger", null, "error", "error");
-        return;
-      }
-      caps = this.gear.getCaps();
-      for (k in caps) {
-        v = caps[k];
-        caps[k] = Math.ceil(v);
-      }
-      _ep = this.gear.getWeights();
-      ep = {};
-      for (k in _ep) {
-        v = _ep[k];
-        if (__indexOf.call(_.keys(REFORGER_MAP), k) >= 0) {
-          ep[REFORGER_MAP[k]] = v;
-        } else {
-          ep[k] = v;
-        }
-      }
-      if (override && override === "weights") {
-        ep.mh_expertise_rating = Shadowcraft.Data.options.advanced.mh_expertise_rating_override;
-        ep.oh_expertise_rating = Shadowcraft.Data.options.advanced.oh_expertise_rating_override;
-        ep.expertise_rating = ep.mh_expertise_rating + ep.oh_expertise_rating;
-        ep.haste_rating = Shadowcraft.Data.options.advanced.haste_override;
-        ep.mastery_rating = Shadowcraft.Data.options.advanced.mastery_override;
-        ep.crit_rating = Shadowcraft.Data.options.advanced.crit_override;
-      } else if (override && override === "priority") {
-        prio = Shadowcraft.Data.options.advanced.force_priority;
-        if (prio && prio !== 'nochange') {
-          ep_ranking = _.sortBy(["crit", "haste", "mastery"], function(k) {
-            return ep[REFORGER_MAP[k]];
-          });
-          ep_num_ranking = [ep[REFORGER_MAP[ep_ranking[0]]], ep[REFORGER_MAP[ep_ranking[1]]], ep[REFORGER_MAP[ep_ranking[2]]]];
-          decoder = {
-            'h': "haste",
-            'm': "mastery",
-            "c": "crit"
-          };
-          rank = [];
-          _ref = prio.split('').reverse();
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            cha = _ref[_i];
-            rank.push(decoder[cha]);
-          }
-          for (index = 0, _len2 = rank.length; index < _len2; index++) {
-            stat = rank[index];
-            ep[REFORGER_MAP[stat]] = ep_num_ranking[index];
-          }
-        }
-      }
-      req = {
-        items: items,
-        ep: ep,
-        cap: caps,
-        ratings: stats
-      };
-      return this.request(req).then(function() {
-        stopWait();
-        return Shadowcraft.Console.log("Finished reforge optimization!", "gold underline");
-      });
-    };
-    return ShadowcraftTiniReforgeBackend;
   })();
   ShadowcraftDpsGraph = (function() {
     var MAX_POINTS;

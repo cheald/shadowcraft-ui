@@ -1,7 +1,7 @@
 class ShadowcraftTalents
   talentsSpent = 0
-  MAX_TALENT_POINTS = 6
-  TREE_SIZE = 6
+  MAX_TALENT_POINTS = 7
+  TREE_SIZE = 7
   ALWAYS_SHOW_GLYPHS = []
   CHARACTER_SPEC = ""
   SPEC_ICONS = 
@@ -11,15 +11,15 @@ class ShadowcraftTalents
     "": "class_rogue"
   DEFAULT_SPECS =
     "Stock Assassination":
-      talents: "221102"
+      talents: "2211020"
       glyphs: [45761]
       spec: "a"
     "Stock Combat":
-      talents: "221102"
+      talents: "2211020"
       glyphs: [42972]
       spec: "Z"
     "Stock Subtlety":
-      talents: "121002"
+      talents: "1210020"
       glyphs: [42970,63420]
       spec: "b"
 
@@ -95,7 +95,7 @@ class ShadowcraftTalents
 
   getTalents = ->
     data = Shadowcraft.Data
-    talent_rows = ['.','.','.','.','.','.']
+    talent_rows = ['.','.','.','.','.','.','.']
     $("#talentframe .talent").each ->
       position = $.data(this, "position")
       points = $.data(this, "points")
@@ -182,7 +182,7 @@ class ShadowcraftTalents
     buffer = ""
     buffer += Templates.talentTier({
       background: 1,
-      levels: [{tier:"0",level:"15"},{tier:"1",level:"30"},{tier:"2",level:"45"},{tier:"3",level:"60"},{tier:"4",level:"75"},{tier:"5",level:"90"}]
+      levels: [{tier:"0",level:"15"},{tier:"1",level:"30"},{tier:"2",level:"45"},{tier:"3",level:"60"},{tier:"4",level:"75"},{tier:"5",level:"90"},{tier:"6",level:"100"}]
     })
     for treeIndex, tree of Talents
       buffer += Templates.talentTree({
@@ -204,7 +204,7 @@ class ShadowcraftTalents
       tree = talentTrees.index(myTree)
       talent = TalentLookup[row + ":" + col]
       $.data(this, "position", {tree: myTree, treeIndex: tree, row: row, col: col})
-      $.data(myTree, "info", {points: 0, rowPoints: [0, 0, 0, 0, 0, 0]})
+      $.data(myTree, "info", {points: 0, rowPoints: [0, 0, 0, 0, 0, 0, 0]})
       $.data(this, "talent", talent)
       $.data(this, "points", {cur: 0, max: talent.maxRank})
       $.data(this, "pointsButton", $this.find(".points"))

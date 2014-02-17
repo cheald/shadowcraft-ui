@@ -280,6 +280,7 @@ module WowArmory
       unless eqstats["nsockets"].nil?
         self.sockets = []
         for num in 1..eqstats["nsockets"].to_i do
+          next if eqstats["socket#{num}"] == 1
           self.sockets.push(SOCKET_MAP[eqstats["socket#{num}"]])
         end
         unless eqstats["socketbonus"].nil?

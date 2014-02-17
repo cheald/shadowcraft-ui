@@ -48,9 +48,7 @@
         %section
           %h3 Toolbox
           .inner
-            %button#reforgeAll Auto-Reforge All
             %button#optimizeGems Optimize Gems
-            %button#exportReforging Export Reforging
       .panel-content
         #slots-left.slots.half<>
         #slots-right.slots.half<>
@@ -139,20 +137,7 @@
         %section#dpsbreakdown
           %h3 DPS Breakdown
           .inner
-        /*%section#upgraderankings*/
-        /*  %h3 Upgrade Rankings*/
-        /*  .inner */    
       .panel-content
-        %section.cluster
-          .option-list
-            %h3 Custom Stat Priority Reforge
-            #advancedStatPriority
-            %button#reforgePriority Custom Auto-Reforge All
-        %section.cluster
-          .option-list
-            %h3 Custom Stat Weights Reforge
-            #advancedReforge
-            %button#reforgeWeights Custom Auto-Reforge All
 
     #console-footer
       %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :target => "_blank", :class => @character.properties['race'].downcase.gsub(/ /, "_")}
