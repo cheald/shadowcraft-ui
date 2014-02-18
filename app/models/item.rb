@@ -210,8 +210,8 @@ class Item
     item_ids += [ 96174, 94511] # missing other trinkets
     item_ids += [ 96741, 96781] # heroic thunderforged, rune of reorigination and talisman of bloodlust still missing
     item_ids += [ 98148 ] # ilvl 600 cloak 5.3
-    
-    # Patch 5.4
+
+    # 5.4
     item_ids += [ 98604, 98613 ] # 5.4 crafting items
     item_ids += [ 102248 ] # ilvl 600 legendary cloak 5.4
     item_ids += [ 105029, 104780, 102301, 105278, 104531, 105527 ] # haromms_talisman
@@ -225,7 +225,7 @@ class Item
     item_ids -= [ 102312 ] # agi dps 5 trinket is basically discipline of xuen
     item_ids -= [ 99322, 99326, 99327, 99328, 99329, 99419, 99420, 99421, 99422, 99423, 99163, 99164, 99165, 99166, 99170, 99180, 99181, 99182, 99183, 99184, 99589, 99599, 99600, 99610, 99622, 99623, 99624, 99632, 99633, 99664, 98978, 98981, 98999, 99000, 99001, 99022, 99041, 99042, 99043, 99044 ] # druid set
     item_ids -= [ 99382, 99383, 99384, 99385, 99386, 99392, 99393, 99394, 99395, 99396, 99140, 99141, 99142, 99143, 99144, 99145, 99146, 99154, 99155, 99156, 99555, 99556, 99565, 99606, 99607, 99643, 99644, 99653, 99654, 99655, 99050, 99051, 99063, 99064, 99065, 99071, 99072, 99073, 99074, 99075 ] # monk set
-  
+
     puts "importing now #{item_ids.length} items"
     pos = 0
     item_ids.each do |id|
@@ -325,13 +325,13 @@ class Item
   end
 
   def self.get_ids_from_wowhead(url)
-    doc = open(url).read
+    doc = open(url, 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
     ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i
     ids
   end
 
   def self.populate_from_wowhead(url, options = {})
-    doc = open(url).read
+    doc = open(url, 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
     gem_ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i
     gem_ids.each do |id|
       puts id

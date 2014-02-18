@@ -213,7 +213,7 @@ module WowArmory
     end
 
     def populate_weapon_stats!
-      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @properties[:id]).read
+      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @properties[:id], 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
       eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
       stats = JSON::load("{%s}" % doc.css("json").text)
       unless eqstats["mlespeed"].blank? and eqstats["speed"].blank?
@@ -225,7 +225,7 @@ module WowArmory
 
     def get_item_stats_wowhead
       stats = {}
-      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @properties[:id]).read
+      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @properties[:id], 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
       eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
       stats1 = JSON::load("{%s}" % doc.css("json").text)
       eqstats.each do |stat, val|
@@ -239,7 +239,7 @@ module WowArmory
     end
 
     def is_hydraulic_gem
-      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @properties[:id]).read
+      doc = Nokogiri::XML open("http://www.wowhead.com/item=%d&xml" % @properties[:id], 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
       eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
       stats1 = JSON::load("{%s}" % doc.css("json").text)
       ret = false

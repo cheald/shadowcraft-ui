@@ -59,7 +59,6 @@ class ItemsController < ApplicationController
     @alt_items.reject! {|item| bad_classes.include? item.properties['armor_class'] }
     @alt_items.reject! {|item| item.properties['armor_class'] == "Cloth" && item.equip_location != 16 }
     @alt_items.reject! {|item| item.properties['name'].match(/DONTUSE/) }
-    @alt_items.reject! {|item| !item.properties['tag'].nil? and item.properties['tag'].match(/Season 15/) } # Season 15 gear is not yet available
     @alt_items.reject! {|item| !item.properties['upgradable'] and [1,2,3,4].include? item.properties['upgrade_level'] } # reject items which are upgrades but are not allowed
     @alt_items.reject! {|item| item.properties['quality'] == 3 and [2,3,4].include? item.properties['upgrade_level'] } # reject blue items with upgrade_level >= 2
 
