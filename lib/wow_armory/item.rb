@@ -246,7 +246,7 @@ module WowArmory
     end
 
     def populate_base_data_wowhead(prefix = "www")
-      doc = Nokogiri::XML open("http://#{prefix}.wowhead.com/item=%d&xml" % @id).read
+      doc = Nokogiri::XML open("http://#{prefix}.wowhead.com/item=%d&xml" % @id, 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
       eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
       stats = JSON::load("{%s}" % doc.css("json").text)
       unless doc.css("error").blank?
@@ -290,6 +290,9 @@ module WowArmory
           self.socket_bonus[STAT_LOOKUP[stat]] = enchant_row[11].to_i
         end
       end
+      unless eqstats["reqskill"].nil?
+        self.requirement = PROF_MAP[eqstats["reqskill"]]
+      end
       unless eqstats["mlespeed"].blank? and eqstats["speed"].blank?
         self.speed = (eqstats["mlespeed"] || eqstats["speed"]).to_f
         self.dps = (eqstats["mledps"] || eqstats["dps"]).to_f
@@ -304,7 +307,7 @@ module WowArmory
     end
 
     def populate_base_data_wowdb(prefix = "www")
-      doc = Nokogiri::HTML open("http://#{prefix}.wowdb.com/items/%d" % @id).read
+      doc = Nokogiri::HTML open("http://#{prefix}.wowdb.com/items/%d" % @id, 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
       title = doc.css(".db-title")
       self.name ||= title.text.try(:strip)
       self.quality = title.attr("class").value().match(/q(\d)/)[1].to_i

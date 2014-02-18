@@ -1448,6 +1448,19 @@
           }
         }
       });
+      this.setup("#settings #generalFilter", "advanced", {
+        show_exp_gems: {
+          name: "Show Expertise Gems",
+          desc: "Show expertise gems in gem lists",
+          datatype: 'integer',
+          type: 'select',
+          options: {
+            1: 'Yes',
+            0: 'No'
+          },
+          'default': 0
+        }
+      });
       this.setup("#settings #professions", "professions", {
         alchemy: {
           'default': false,
@@ -4687,7 +4700,7 @@
         if (gem.name.indexOf("Perfect") === 0 && selected_id !== gem.id) {
           continue;
         }
-        if (gem.stats["expertise"] > 0) {
+        if (gem.stats["expertise"] > 0 && !Shadowcraft.Data.options.advanced.show_exp_gems && selected_id !== gem.id) {
           continue;
         }
         if (!canUseGem(gem, gemType, otherGearGems, slot)) {

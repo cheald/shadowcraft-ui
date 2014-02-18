@@ -1635,7 +1635,7 @@ class ShadowcraftGear
 
       usedNames[gem.name] = gem.id
       continue if gem.name.indexOf("Perfect") == 0 and selected_id != gem.id
-      continue if gem.stats["expertise"] > 0
+      continue if gem.stats["expertise"] > 0 and not Shadowcraft.Data.options.advanced.show_exp_gems and selected_id != gem.id
       continue unless canUseGem gem, gemType, otherGearGems, slot
       max ||= gem.__ep
       gEP = gem.__ep

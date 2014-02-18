@@ -125,6 +125,10 @@ class ShadowcraftOptions
       show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
       epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
     })
+    
+    @setup("#settings #generalFilter", "advanced", {
+      show_exp_gems: {name: "Show Expertise Gems", desc: "Show expertise gems in gem lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
+    })
 
     @setup("#settings #professions", "professions", {
       alchemy:        {'default': false, datatype: 'bool', name: "Alchemy"}
