@@ -186,7 +186,7 @@ class ShadowcraftHistory
   unmap = (value, m) ->
     m[value]
 
-  compress_handlers =
+  compress_handlers =  
     "1": (data) ->
       ret = [DATA_VERSION]
 
@@ -328,7 +328,7 @@ class ShadowcraftHistory
         tricks:                 general[7] != 0
         receive_tricks:         general[8] != 0
         prepot:                 general[9] != 0
-        patch:                  general[10] || 52
+        patch:                  general[10] || 60
         min_ilvl:               general[11] || 430
         epic_gems:              general[12] || 0
         stormlash:              general[13] || 0

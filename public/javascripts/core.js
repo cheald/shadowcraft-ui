@@ -319,9 +319,9 @@
     get_engine = function() {
       var endpoint, port;
       switch (Shadowcraft.Data.options.general.patch) {
-        case 52:
+        case 60:
           port = 8880;
-          endpoint = "engine-5.2";
+          endpoint = "engine-6.0";
           return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
         default:
           port = 8881;
@@ -428,7 +428,7 @@
         },
         spec: data.activeSpec,
         t: talentString,
-        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit || 0, statSummary.hit || 0, statSummary.expertise || 0, statSummary.haste || 0, statSummary.mastery || 0, statSummary.resilience || 0, statSummary.pvp_power || 0],
+        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit || 0, statSummary.haste || 0, statSummary.mastery || 0, statSummary.amplify || 0, statSummary.multistrike || 0, statSummary.readiness || 0, statSummary.resilience || 0, statSummary.pvp_power || 0],
         gly: glyph_list,
         pro: professions
       };
@@ -899,7 +899,7 @@
           tricks: general[7] !== 0,
           receive_tricks: general[8] !== 0,
           prepot: general[9] !== 0,
-          patch: general[10] || 52,
+          patch: general[10] || 60,
           min_ilvl: general[11] || 430,
           epic_gems: general[12] || 0,
           stormlash: general[13] || 0,
@@ -1268,10 +1268,10 @@
         patch: {
           type: "select",
           name: "Patch/Engine",
-          'default': 54,
+          'default': 60,
           datatype: 'integer',
           options: {
-            52: '5.3',
+            60: '6.0 (Level 90)',
             54: '5.4'
           }
         },
@@ -1280,8 +1280,8 @@
           name: "Level",
           'default': 90,
           datatype: 'integer',
-          min: 85,
-          max: 90
+          min: 90,
+          max: 100
         },
         race: {
           type: "select",
@@ -2058,6 +2058,10 @@
           Talents = Shadowcraft.ServerData.TALENTS;
           TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP;
           break;
+        case 60:
+          Talents = Shadowcraft.ServerData.TALENTS_WOD;
+          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD;
+          break;
         default:
           Talents = Shadowcraft.ServerData.TALENTS_52;
           TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52;
@@ -2495,18 +2499,16 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_BOSS_DODGE, DEFAULT_BOSS_MISS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, DEFAULT_PVP_MISS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getMaxUpgradeLevel, getProfessionalGemCount, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_DW_PENALTY, DEFAULT_GEAR_SET, DEFAULT_PVP_DODGE, EP_PRE_REGEM, EP_TOTAL, FACETS, GEAR, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getMaxUpgradeLevel, getProfessionalGemCount, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
     CHAPTER_2_ACHIEVEMENTS = [7534, 8008];
     LEGENDARY_META_GEM_QUESTS = [32595];
-    DEFAULT_BOSS_DODGE = 7.5;
-    DEFAULT_BOSS_MISS = 7.5;
     DEFAULT_DW_PENALTY = 19.0;
     DEFAULT_PVP_DODGE = 3.0;
-    DEFAULT_PVP_MISS = 3.0;
+    DEFAULT_GEAR_SET = 1;
     FACETS = {
       ITEM: 1,
       GEMS: 2,
@@ -2584,6 +2586,11 @@
     $slots = null;
     $altslots = null;
     $popup = null;
+    GEAR = function() {
+      var SET;
+      SET = false || DEFAULT_GEAR_SET;
+      return Shadowcraft.Data.GearSet[SET];
+    };
     statOffset = function(gear, facet) {
       var offsets;
       offsets = {};
@@ -2613,6 +2620,7 @@
         weight = getStatWeight(stat, value, ignore) || 0;
         total += weight;
       }
+      delete stats;
       c = Shadowcraft.lastCalculation;
       if (c) {
         if (item.dps) {
@@ -3698,8 +3706,9 @@
       });
     };
     updateDpsBreakdown = function() {
-      var buffer, dps_breakdown, exist, max, name, pct, rankings, skill, target, val;
+      var buffer, dps_breakdown, exist, max, name, pct, pct_dps, rankings, skill, target, total_dps, val;
       dps_breakdown = Shadowcraft.lastCalculation.breakdown;
+      total_dps = Shadowcraft.lastCalculation.total_dps;
       max = null;
       buffer = "";
       target = $("#dpsbreakdown .inner");
@@ -3718,9 +3727,10 @@
           val = 0;
         }
         pct = val / max * 100 + 0.01;
+        pct_dps = val / total_dps * 100;
         if (exist.length === 0) {
           buffer = Templates.talentContribution({
-            name: name,
+            name: name + " (" + val.toFixed(1) + ")",
             raw_name: skill,
             val: val.toFixed(1),
             width: pct
@@ -3732,7 +3742,7 @@
         exist.show().find(".pct-inner").css({
           width: pct + "%"
         });
-        exist.find(".label").text(val.toFixed(1));
+        exist.find(".label").text(pct_dps.toFixed(2) + "%");
       }
       return $("#dpsbreakdown .talent_contribution").sortElements(function(a, b) {
         var ad, bd;

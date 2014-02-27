@@ -306,7 +306,7 @@ class ShadowcraftComputation:
                 'use_hemorrhage'
             ]
         ]
-    elif __builtin__.shadowcraft_engine_version == 5.4:
+    elif __builtin__.shadowcraft_engine_version == 5.4 or __builtin__.shadowcraft_engine_version == 6.0:
         validCycleKeys = [[
                 'min_envenom_size_non_execute',
                 'min_envenom_size_execute',
@@ -519,13 +519,14 @@ class ShadowcraftComputation:
             0,
             s[2], # AP
             s[3], # Crit
-            s[4], # Hit
-            s[5], # Expertise
-            s[6], # Haste
-            s[7], # Mastery
+            s[4], # Haste
+            s[5], # Mastery
+            s[6], # Amplify
+            s[7], # Multistrike
+            s[8], # Readiness
             _level,
-            s[9], # PvP Power
-            s[8], # Resilience Rating
+            s[10], # PvP Power
+            s[9], # Resilience Rating
             pvp_target_armor = _opt.get("pvp_target_armor", 10000))
         # ##################################################################################
 
@@ -536,7 +537,7 @@ class ShadowcraftComputation:
         # Glyphs
         _glyphs = glyphs.Glyphs("rogue", *input.get("gly", []))
 	
-	_spec = input.get("spec", 'a')
+        _spec = input.get("spec", 'a')
         if _spec == "a":
             tree = 0
         elif _spec == "Z":
@@ -588,7 +589,7 @@ class ShadowcraftComputation:
 
             # Get EP Values
             default_ep_stats = ['white_hit', 'yellow_hit', 'str', 'agi', 'haste',
-                'crit', 'mastery', 'spell_hit', 'ap', 'mh_dodge_exp', 'oh_dodge_exp']
+                'crit', 'mastery', 'ap']
             _opt = input.get("settings", {})
             is_pvp = _opt.get("pvp", False)
             if is_pvp:

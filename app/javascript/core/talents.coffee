@@ -175,6 +175,9 @@ class ShadowcraftTalents
       when 50
         Talents = Shadowcraft.ServerData.TALENTS
         TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP
+      when 60
+        Talents = Shadowcraft.ServerData.TALENTS_WOD
+        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD
       else
         Talents = Shadowcraft.ServerData.TALENTS_52
         TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52

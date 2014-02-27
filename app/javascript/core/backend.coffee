@@ -3,9 +3,9 @@ class ShadowcraftBackend
 
   get_engine = ->
     switch Shadowcraft.Data.options.general.patch
-      when 52
+      when 60
         port = 8880
-        endpoint = "engine-5.2"
+        endpoint = "engine-6.0"
         return "http://#{window.location.hostname}:#{port}/#{endpoint}"
       else
         port = 8881
@@ -88,10 +88,11 @@ class ShadowcraftBackend
         statSummary.agility || 0,
         statSummary.attack_power || 0,
         statSummary.crit || 0,
-        statSummary.hit || 0,
-        statSummary.expertise || 0,
         statSummary.haste || 0,
         statSummary.mastery || 0,
+        statSummary.amplify || 0,
+        statSummary.multistrike || 0,
+        statSummary.readiness || 0,
         statSummary.resilience || 0,
         statSummary.pvp_power || 0
       ],
