@@ -79,6 +79,7 @@ class Item
   def as_json(options={})
     json = {
       :id => uid.to_i,
+      :oid => remote_id,
       :n => properties["name"],
       :i => icon.gsub(/\.(tga|jpg|png)$/i, ""),
       :q => properties["quality"],

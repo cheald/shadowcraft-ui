@@ -922,7 +922,7 @@ class ShadowcraftGear
       pct_dps = val / total_dps * 100
       if exist.length == 0
         buffer = Templates.talentContribution({
-          name: name + " (" + val.toFixed(1) + ")",
+          name: "#{name} (#{val.toFixed 1})",
           raw_name: skill,
           val: val.toFixed(1),
           width: pct
@@ -931,7 +931,7 @@ class ShadowcraftGear
       exist = $("#dpsbreakdown #talent-weight-" + skill)
       $.data(exist.get(0), "val", val)
       exist.show().find(".pct-inner").css({width: pct + "%"})
-      exist.find(".label").text(pct_dps.toFixed(2)+ "%")
+      exist.find(".label").text(pct_dps.toFixed(2) + "%")
 
     $("#dpsbreakdown .talent_contribution").sortElements (a, b) ->
       ad = $.data(a, "val")
@@ -997,8 +997,8 @@ class ShadowcraftGear
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
       #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
-      continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and l.id != selected_id
-      continue if l.upgrade_level > getMaxUpgradeLevel(l)
+      #continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and l.id != selected_id
+      continue if l.upgrade_level != getMaxUpgradeLevel(l)
       continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and l.id != selected_id
       loc.push l
 

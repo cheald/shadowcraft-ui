@@ -164,7 +164,7 @@ class ShadowcraftBackend
       @ws.send "m", payload
 
   recompute_via_post: (payload) ->
-   if $.browser.msie and window.XDomainRequest
+   if /msie/.test(navigator.userAgent.toLowerCase()) and window.XDomainRequest
       this.recompute_via_xdr payload
     else
       this.recompute_via_xhr payload

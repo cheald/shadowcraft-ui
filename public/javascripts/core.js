@@ -499,7 +499,7 @@
       }
     };
     ShadowcraftBackend.prototype.recompute_via_post = function(payload) {
-      if ($.browser.msie && window.XDomainRequest) {
+      if (/msie/.test(navigator.userAgent.toLowerCase()) && window.XDomainRequest) {
         return this.recompute_via_xdr(payload);
       } else {
         return this.recompute_via_xhr(payload);
@@ -2499,7 +2499,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_DW_PENALTY, DEFAULT_GEAR_SET, DEFAULT_PVP_DODGE, EP_PRE_REGEM, EP_TOTAL, FACETS, GEAR, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getMaxUpgradeLevel, getProfessionalGemCount, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getMaxUpgradeLevel, getProfessionalGemCount, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_JEWELCRAFTING_GEMS = 2;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
@@ -2508,7 +2508,6 @@
     LEGENDARY_META_GEM_QUESTS = [32595];
     DEFAULT_DW_PENALTY = 19.0;
     DEFAULT_PVP_DODGE = 3.0;
-    DEFAULT_GEAR_SET = 1;
     FACETS = {
       ITEM: 1,
       GEMS: 2,
@@ -2586,11 +2585,6 @@
     $slots = null;
     $altslots = null;
     $popup = null;
-    GEAR = function() {
-      var SET;
-      SET = false || DEFAULT_GEAR_SET;
-      return Shadowcraft.Data.GearSet[SET];
-    };
     statOffset = function(gear, facet) {
       var offsets;
       offsets = {};
@@ -3730,7 +3724,7 @@
         pct_dps = val / total_dps * 100;
         if (exist.length === 0) {
           buffer = Templates.talentContribution({
-            name: name + " (" + val.toFixed(1) + ")",
+            name: "" + name + " (" + (val.toFixed(1)) + ")",
             raw_name: skill,
             val: val.toFixed(1),
             width: pct
@@ -3825,10 +3819,7 @@
         if ((slot === 15) && combatSpec && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
           continue;
         }
-        if (l.upgrade_level && !Shadowcraft.Data.options.general.show_upgrades && l.id !== selected_id) {
-          continue;
-        }
-        if (l.upgrade_level > getMaxUpgradeLevel(l)) {
+        if (l.upgrade_level !== getMaxUpgradeLevel(l)) {
           continue;
         }
         if (l.suffix && Shadowcraft.Data.options.general.show_random_items > l.ilvl && l.id !== selected_id) {

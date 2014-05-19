@@ -32,6 +32,7 @@
         item.name = item.n;
         item.icon = item.i;
         item.item_id = item.id;
+        item.original_id = item.oid;
         item.sockets = item.so;
         item.equip_location = item.e;
         item.requires = item.rq;
@@ -39,6 +40,7 @@
         delete item.q;
         delete item.n;
         delete item.i;
+        delete item.oid;
         delete item.so;
         delete item.e;
         delete item.sb;
@@ -144,4 +146,5 @@
         R.GLYPH_LOOKUP[R.GLYPHS[i].id] = R.GLYPHS[i];
         R.GLYPHNAME_LOOKUP[R.GLYPHS[i].ename] = R.GLYPHS[i];
       }
+      delete R.ITEMS;
     })(window.ShadowcraftData);
