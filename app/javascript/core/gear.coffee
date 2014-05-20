@@ -1422,10 +1422,11 @@ class ShadowcraftGear
     if item.quality == 3
       return 1
     else
-        if Shadowcraft.region in ["KR", "TW", "CN"]
-          return 4
-        else
-          return 2
+      return 4
+      #if Shadowcraft.region in ["KR", "TW", "CN"]
+      #  return 4
+      #else
+      #  return 2
 
   # Click a name in a slot, for binding to event delegation
   clickSlotName = ->
