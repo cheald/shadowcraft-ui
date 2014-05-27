@@ -4439,10 +4439,15 @@
       return item.id;
     };
     getMaxUpgradeLevel = function(item) {
+      var _ref;
       if (item.quality === 3) {
         return 1;
       } else {
-        return 4;
+        if ((_ref = Shadowcraft.region) === "KR" || _ref === "TW" || _ref === "CN") {
+          return 6;
+        } else {
+          return 4;
+        }
       }
     };
     clickSlotName = function() {

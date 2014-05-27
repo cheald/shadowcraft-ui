@@ -135,7 +135,7 @@ class Item
     random_item_ids += (93049..93056).to_a
     puts "importing now #{random_item_ids.length} random items"
     random_item_ids.each do |id|
-      import id,[nil,1,2,3,4],suffixes
+      import id,[nil,1,2,3,4,5,6],suffixes
     end
 
     # 5.2 random enchantment items
@@ -143,7 +143,7 @@ class Item
     random_item_ids = [ 94979, 95796, 96168, 96540, 96912 ]
     puts "importing now #{random_item_ids.length} random items for 5.2"
     random_item_ids.each do |id|
-      import id,[nil,1,2,3,4],suffixes
+      import id,[nil,1,2,3,4,5,6],suffixes
     end
 
     # 5.3 random enchantment items
@@ -153,7 +153,7 @@ class Item
     random_item_ids += [ 97663, 97647, 97682, 97633, 97655, 97639, 97675 ] # disowner ilvl 502
     puts "importing now #{random_item_ids.length} random items for 5.3"
     random_item_ids.each do |id|
-      import id,[nil,1,2,3,4],suffixes
+      import id,[nil,1,2,3,4,5,6],suffixes
     end
 
     # 5.4 random enchantment items
@@ -168,13 +168,13 @@ class Item
     random_item_ids_15 = [ 101866 ] # 2 socket items
     puts "importing now #{random_item_ids.length+random_item_ids_05.length+random_item_ids_15.length} random items for 5.4 (ilvl 496)"
     random_item_ids.each do |id|
-      import id,[nil,1,2,3,4],suffixes
+      import id,[nil,1,2,3,4,5,6],suffixes
     end
     random_item_ids_05.each do |id|
-      import id,[nil,1,2,3,4],suffixes_05
+      import id,[nil,1,2,3,4,5,6],suffixes_05
     end
     random_item_ids_15.each do |id|
-      import id,[nil,1,2,3,4],suffixes_15
+      import id,[nil,1,2,3,4,5,6],suffixes_15
     end
 
     # ilvl 535
@@ -186,13 +186,13 @@ class Item
     random_item_ids_15 = [ 101953 ] # 2 socket items
     puts "importing now #{random_item_ids.length+random_item_ids_05.length+random_item_ids_15.length} random items for 5.4 (ilvl 535)"
     random_item_ids.each do |id|
-      import id,[nil,1,2,3,4],suffixes
+      import id,[nil,1,2,3,4,5,6],suffixes
     end
     random_item_ids_05.each do |id|
-      import id,[nil,1,2,3,4],suffixes_05
+      import id,[nil,1,2,3,4,5,6],suffixes_05
     end
     random_item_ids_15.each do |id|
-      import id,[nil,1,2,3,4],suffixes_15
+      import id,[nil,1,2,3,4,5,6],suffixes_15
     end
     
     item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=483;ub=4;cr=21;crs=1;crv=0"
@@ -231,7 +231,7 @@ class Item
     item_ids.each do |id|
       pos = pos + 1
       puts "item #{pos} of #{item_ids.length}" if pos % 10 == 0
-      import id,[nil,1,2,3,4]
+      import id,[nil,1,2,3,4,5,6]
     end
     true
   end
@@ -273,9 +273,9 @@ class Item
     populate_from_wowhead "http://www.wowhead.com/items=16.4", :is_glyph => true
   end
 
-  def self.import(id, upgrade_levels = [nil,1,2,3,4], random_suffixes = nil, source = @source, override_ilvl = nil)
+  def self.import(id, upgrade_levels = [nil,1,2,3,4,5,6], random_suffixes = nil, source = @source, override_ilvl = nil)
     source = "wowapi" if source.nil?
-    # options need to be upgrade_level = [nil,1,2,3,4]
+    # options need to be upgrade_level = [nil,1,2,3,4,5,6]
     # same for random_suffix
     random_suffixes = [nil] if random_suffixes.nil?
     item = nil

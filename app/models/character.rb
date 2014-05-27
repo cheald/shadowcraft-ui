@@ -65,7 +65,7 @@ class Character
       self.portrait = char.portrait
 
       properties["gear"].each do |slot, item|
-        Item.import item["item_id"].to_i,[nil,1,2,3,4],[item["suffix"]]
+        Item.import item["item_id"].to_i,[nil,1,2,3,4,5,6],[item["suffix"]]
         [item["g0"],item["g1"],item["g2"]].each do |gemid|
           unless gemid.nil?
             db_item = Item.find_or_initialize_by(:remote_id => gemid.to_i)
