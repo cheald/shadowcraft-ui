@@ -1342,6 +1342,7 @@ class ShadowcraftGear
 
   updateDpsBreakdown = ->
     dps_breakdown = Shadowcraft.lastCalculation.breakdown
+    total_dps = Shadowcraft.lastCalculation.total_dps
     max = null
     buffer = ""
     target = $("#dpsbreakdown .inner")
@@ -1358,9 +1359,10 @@ class ShadowcraftGear
         name += " (NYI)"
         val = 0
       pct = val / max * 100 + 0.01
+      pct_dps = val / total_dps * 100
       if exist.length == 0
         buffer = Templates.talentContribution({
-          name: name,
+          name: "#{name} (#{val.toFixed 1} DPS)",
           raw_name: skill,
           val: val.toFixed(1),
           width: pct
@@ -1369,7 +1371,7 @@ class ShadowcraftGear
       exist = $("#dpsbreakdown #talent-weight-" + skill)
       $.data(exist.get(0), "val", val)
       exist.show().find(".pct-inner").css({width: pct + "%"})
-      exist.find(".label").text(val.toFixed(1))
+      exist.find(".label").text(pct_dps.toFixed(2) + "%")
 
     $("#dpsbreakdown .talent_contribution").sortElements (a, b) ->
       ad = $.data(a, "val")

@@ -4347,8 +4347,9 @@
       });
     };
     updateDpsBreakdown = function() {
-      var buffer, dps_breakdown, exist, max, name, pct, rankings, skill, target, val;
+      var buffer, dps_breakdown, exist, max, name, pct, pct_dps, rankings, skill, target, total_dps, val;
       dps_breakdown = Shadowcraft.lastCalculation.breakdown;
+      total_dps = Shadowcraft.lastCalculation.total_dps;
       max = null;
       buffer = "";
       target = $("#dpsbreakdown .inner");
@@ -4367,9 +4368,10 @@
           val = 0;
         }
         pct = val / max * 100 + 0.01;
+        pct_dps = val / total_dps * 100;
         if (exist.length === 0) {
           buffer = Templates.talentContribution({
-            name: name,
+            name: "" + name + " (" + (val.toFixed(1)) + " DPS)",
             raw_name: skill,
             val: val.toFixed(1),
             width: pct
@@ -4381,7 +4383,7 @@
         exist.show().find(".pct-inner").css({
           width: pct + "%"
         });
-        exist.find(".label").text(val.toFixed(1));
+        exist.find(".label").text(pct_dps.toFixed(2) + "%");
       }
       return $("#dpsbreakdown .talent_contribution").sortElements(function(a, b) {
         var ad, bd;
