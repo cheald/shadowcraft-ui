@@ -3724,7 +3724,7 @@
         pct_dps = val / total_dps * 100;
         if (exist.length === 0) {
           buffer = Templates.talentContribution({
-            name: "" + name + " (" + (val.toFixed(1)) + ")",
+            name: "" + name + " (" + (val.toFixed(1)) + " DPS)",
             raw_name: skill,
             val: val.toFixed(1),
             width: pct
@@ -3782,9 +3782,9 @@
         return 1;
       } else {
         if ((_ref = Shadowcraft.region) === "KR" || _ref === "TW" || _ref === "CN") {
-          return 4;
+          return 6;
         } else {
-          return 2;
+          return 4;
         }
       }
     };

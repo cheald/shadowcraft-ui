@@ -47,6 +47,7 @@ GEM
     compass (0.10.6)
       haml (>= 3.0.4)
     curb (0.8.5)
+    dynamic_form (1.1.4)
     erubis (2.7.0)
     execjs (1.2.0)
       multi_json (~> 1.0)
@@ -134,6 +135,7 @@ DEPENDENCIES
   coffee-script
   compass (>= 0.10.5)
   curb
+  dynamic_form
   exception_notification!
   fastercsv
   formtastic

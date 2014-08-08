@@ -4,6 +4,7 @@ gem 'rails', '3.1.12'
 gem 'nokogiri'
 gem "compass", ">= 0.10.5"
 gem "formtastic"
+gem 'dynamic_form'
 gem "haml"
 gem "bson_ext"
 gem "mongo"

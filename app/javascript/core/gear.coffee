@@ -922,7 +922,7 @@ class ShadowcraftGear
       pct_dps = val / total_dps * 100
       if exist.length == 0
         buffer = Templates.talentContribution({
-          name: "#{name} (#{val.toFixed 1})",
+          name: "#{name} (#{val.toFixed 1} DPS)",
           raw_name: skill,
           val: val.toFixed(1),
           width: pct
@@ -967,10 +967,10 @@ class ShadowcraftGear
     if item.quality == 3
       return 1
     else
-        if Shadowcraft.region in ["KR", "TW", "CN"]
-          return 4
-        else
-          return 2
+      if Shadowcraft.region in ["KR", "TW", "CN"]
+        return 6
+      else
+        return 4
 
   # Click a name in a slot, for binding to event delegation
   clickSlotName = ->

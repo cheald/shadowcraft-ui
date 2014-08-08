@@ -97,7 +97,7 @@ module WowArmory
     end
 
     def normalize_realm(realm)
-      realm.downcase.gsub(/[']/, "").gsub(/ /, "-")
+      realm.downcase.gsub(/['’]/, "").gsub(/ /, "-").gsub(/[àáâãäå]/, "a").gsub(/[ö]/, "o")
     end
 
     def normalize_character(character)
