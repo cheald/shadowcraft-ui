@@ -1065,7 +1065,7 @@
           Shadowcraft.Console.warn(item, "is not fully supported but also bad for rogues.", "It is recommended to not use this trinket.", "warn", "items");
         }
         enchant = EnchantLookup[gear.enchant];
-        enchantable = EnchantSlots[item.equip_location] !== void 0;
+        enchantable = EnchantSlots[item.equip_location] !== void 0 && EnchantSlots[item.equip_location].length > 0;
         if (!data.options.professions.enchanting && item.equip_location === 11) {
           enchantable = false;
         }
@@ -3317,7 +3317,7 @@
           if (item) {
             addTradeskillBonuses(item);
             addAchievementBonuses(item);
-            enchantable = EnchantSlots[item.equip_location] != null;
+            enchantable = (EnchantSlots[item.equip_location] != null) && EnchantSlots[item.equip_location].length > 0;
             if ((!data.options.professions.enchanting && item.equip_location === 11) || item.equip_location === "ranged") {
               enchantable = false;
               delete gear.enchant;

@@ -665,7 +665,7 @@ class ShadowcraftGear
         if item
           addTradeskillBonuses(item)
           addAchievementBonuses(item)
-          enchantable = EnchantSlots[item.equip_location]?
+          enchantable = EnchantSlots[item.equip_location]? && EnchantSlots[item.equip_location].length > 0
           if (!data.options.professions.enchanting && item.equip_location == 11) || item.equip_location == "ranged"
             enchantable = false
             delete gear.enchant

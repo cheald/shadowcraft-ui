@@ -103,26 +103,7 @@ checkForWarnings = (section) ->
       if item.name.indexOf("Rune of Re-Origination") != -1
         Shadowcraft.Console.warn(item, "is not fully supported but also bad for rogues.", "It is recommended to not use this trinket.", "warn", "items")
       enchant = EnchantLookup[gear.enchant]
-      enchantable = EnchantSlots[item.equip_location] != undefined
-      if (!data.options.professions.enchanting && item.equip_location == 11)
-        enchantable = false
-
-      #if Shadowcraft.Gear.canReforge item
-      #  rec = Shadowcraft.Gear.recommendReforge(item, if gear.reforge then gear.reforge.stats else null)
-      #  delta = if rec then Math.round(rec[rec.source.key + "_to_" + rec.dest.key] * 100) / 100 else 0
-      #  if delta > 0
-      #    if !gear.reforge
-      #      Shadowcraft.Console.warn(item, "needs to be reforged", null, null, "items")
-      #    else
-      #      if rec and (gear.reforge.from.stat != rec.source.name || gear.reforge.to.stat != rec.dest.name)
-      #        if !bestOptionalReforge || bestOptionalReforge < delta
-      #          bestOptionalReforge = delta;
-      #          Shadowcraft.Console.warn(item,
-      #            "is not using an optimal reforge",
-      #            "Using " + gear.reforge.from.stat + " &Rightarrow; " + gear.reforge.to.stat + ", recommend " + rec.source.name + " &Rightarrow; " + rec.dest.name + " (+" + delta + ")",
-      #            "reforgeWarning",
-      #            "items"
-      #          );
+      enchantable = EnchantSlots[item.equip_location] != undefined && EnchantSlots[item.equip_location].length > 0
 
       if !enchant and enchantable
         Shadowcraft.Console.warn(item, "needs an enchantment", null, "warn", "items")
