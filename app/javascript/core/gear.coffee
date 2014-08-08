@@ -4,8 +4,6 @@ class ShadowcraftGear
   JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"]
   CHAPTER_2_ACHIEVEMENTS = [7534, 8008]
   LEGENDARY_META_GEM_QUESTS = [32595]
-  DEFAULT_DW_PENALTY = 19.0
-  DEFAULT_PVP_DODGE = 3.0
 
   FACETS = {
     ITEM: 1
@@ -16,7 +14,6 @@ class ShadowcraftGear
   @FACETS = FACETS
 
   SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"]
-  SLOT_ORDER_OPTIMIZE_GEMS = ["0", "1", "2", "14", "4", "6", "7", "10", "11", "12", "13", "15", "16", "5", "8", "9"]
   SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13"]]
   PROC_ENCHANTS =
     4099: "landslide"
@@ -40,10 +37,12 @@ class ShadowcraftGear
 
   Weights =
     attack_power: 1
-    agility: 2.66
+    agility: 1.05
     crit: 0.87
     haste: 1.44
     mastery: 1.15
+    multistrike: 1.12
+    versatility: 1.2
     strength: 1.05
     pvp_power: 0
 
@@ -393,7 +392,7 @@ class ShadowcraftGear
     madeChanges = false
     gem_list = getGemRecommendationList()
 
-    for slotIndex in SLOT_ORDER_OPTIMIZE_GEMS
+    for slotIndex in SLOT_ORDER
       slotIndex = parseInt(slotIndex, 10)
       gear = data.gear[slotIndex]
       continue unless gear

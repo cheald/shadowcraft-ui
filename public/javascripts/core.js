@@ -755,7 +755,7 @@
     poisonMap = ["dp", "wp"];
     utilPoisonMap = ["lp", "n"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"];
-    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "bf_targets", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"];
+    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"];
     rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike', 'opener'];
     map = function(value, m) {
       return m.indexOf(value);
@@ -1332,7 +1332,7 @@
           datatype: 'float',
           type: 'input',
           min: 0,
-          max: 5,
+          max: 20,
           'default': 0
         }
       });
@@ -1608,16 +1608,6 @@
           desc: "Use Blade Flurry",
           "default": false,
           datatype: 'bool'
-        },
-        bf_targets: {
-          type: "select",
-          name: "Blade Flurry Targets",
-          options: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-          desc: "With 5.4 you need to use the Option 'Number of Boss Adds' under General Settings",
-          'default': 1,
-          datatype: 'integer',
-          min: 0,
-          max: 9
         },
         opener_name_combat: {
           type: "select",
@@ -2418,14 +2408,12 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getMaxUpgradeLevel, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getMaxUpgradeLevel, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
     CHAPTER_2_ACHIEVEMENTS = [7534, 8008];
     LEGENDARY_META_GEM_QUESTS = [32595];
-    DEFAULT_DW_PENALTY = 19.0;
-    DEFAULT_PVP_DODGE = 3.0;
     FACETS = {
       ITEM: 1,
       GEMS: 2,
@@ -2434,7 +2422,6 @@
     };
     ShadowcraftGear.FACETS = FACETS;
     SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"];
-    SLOT_ORDER_OPTIMIZE_GEMS = ["0", "1", "2", "14", "4", "6", "7", "10", "11", "12", "13", "15", "16", "5", "8", "9"];
     SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13"]];
     PROC_ENCHANTS = {
       4099: "landslide",
@@ -2470,10 +2457,12 @@
     };
     Weights = {
       attack_power: 1,
-      agility: 2.66,
+      agility: 1.05,
       crit: 0.87,
       haste: 1.44,
       mastery: 1.15,
+      multistrike: 1.12,
+      versatility: 1.2,
       strength: 1.05,
       pvp_power: 0
     };
@@ -2953,8 +2942,8 @@
       }
       madeChanges = false;
       gem_list = getGemRecommendationList();
-      for (_i = 0, _len = SLOT_ORDER_OPTIMIZE_GEMS.length; _i < _len; _i++) {
-        slotIndex = SLOT_ORDER_OPTIMIZE_GEMS[_i];
+      for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
+        slotIndex = SLOT_ORDER[_i];
         slotIndex = parseInt(slotIndex, 10);
         gear = data.gear[slotIndex];
         if (!gear) {

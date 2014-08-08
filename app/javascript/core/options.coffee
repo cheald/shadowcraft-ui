@@ -113,7 +113,7 @@ class ShadowcraftOptions
       time_in_execute_range: {type: "input", name: "Time in Execute Range", desc: "Only used in Assassination Spec", 'default': 0.35, datatype: 'float', min: 0, max: 1}
       lethal_poison: {name: "Lethal Poison", type: 'select', options: {'dp': 'Deadly Poison', 'wp': 'Wound Poison'}, 'default': 'dp'}
       utility_poison: {name: "Utility Poison", type: 'select', options: {'lp': 'Leeching Poison', 'n': 'Other/None'}, 'default': 'lp'}
-      num_boss_adds: {name: "Number of Boss Adds", desc: "Used for Blade Flurry / Trinket Sigil of Rampage / Legendary Cloak", datatype: 'float', type: 'input', min: 0, max: 5, 'default': 0}
+      num_boss_adds: {name: "Number of Boss Adds", desc: "Used for Blade Flurry / Trinket Sigil of Rampage / Legendary Cloak", datatype: 'float', type: 'input', min: 0, max: 20, 'default': 0}
     })
 
     @setup("#settings #generalFilter", "general", {
@@ -174,7 +174,6 @@ class ShadowcraftOptions
       ksp_immediately: {type: "select", name: "Killing Spree", options: {'true': "Killing Spree on cooldown", 'false': "Wait for Bandit's Guile before using Killing Spree"}, 'default': 'true', datatype: 'string'}
       revealing_strike_pooling: {type: "check", name: "Pool for Revealing Strike",  default: true, datatype: 'bool'}
       blade_flurry: {type: "check", name: "Blade Flurry", desc: "Use Blade Flurry", default: false, datatype: 'bool'}
-      bf_targets: {type: "select", name: "Blade Flurry Targets", options: [0,1,2,3,4,5,6,7,8,9], desc: "With 5.4 you need to use the Option 'Number of Boss Adds' under General Settings", 'default': 1, datatype: 'integer', min: 0, max: 9}
       opener_name_combat: {type: "select", name: "Opener Name", options: {'sinister_strike': "Sinister Strike", 'revealing_strike': "Revealing Strike", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
       opener_use_combat: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })

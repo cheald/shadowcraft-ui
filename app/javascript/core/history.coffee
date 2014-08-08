@@ -173,7 +173,7 @@ class ShadowcraftHistory
   raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"]
   rotationOptionsMap = [
     "min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute",
-    "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "bf_targets",
+    "ksp_immediately", "revealing_strike_pooling", "blade_flurry",
     "use_hemorrhage",
     "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use",
   ]
