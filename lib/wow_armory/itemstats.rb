@@ -128,16 +128,23 @@ module WowArmory
       base = rand_prop_points[@properties[:ilevel].to_s]
 
       self.stats = {}
+      # wod offset
+      offset = -1;
       10.times do |i|
-        break if row[17+i] == "-1"
-        enchantid = row[17+i]
-        multiplier = row[37+i].to_f
-        socket_mult = row[47+i].to_f
+        break if row[17+offset+i] == "-1"
+        enchantid = row[17+offset+i]
+        multiplier = row[37+offset+i].to_f
         basevalue = base[1+quality_index(@properties[:quality])*5+slot_index(@properties[:equip_location])]
         if enchantid != "0"
           stat = enchantid.to_i
-          value = (multiplier/10000.0) * basevalue.to_f - socket_mult * ITEM_SOCKET_COST
-          #puts value
+          
+          value = (multiplier/10000.0) * basevalue.to_f
+          if value < 0
+            puts enchantid
+            puts multiplier
+            puts basevalue
+            abort('lol')
+          end
           self.stats[STAT_LOOKUP[stat]] = value.round
           #puts STAT_LOOKUP[stat]
           #puts self.stats[STAT_LOOKUP[stat]]
@@ -182,7 +189,7 @@ module WowArmory
 
     def item_enchants
       @@item_enchants ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantments.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_SpellItemEnchantments.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -190,7 +197,7 @@ module WowArmory
 
     def rand_prop_points
       @@rand_prop_points ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "RandPropPoints.dbc.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_RandPropPoints.dbc.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -198,7 +205,7 @@ module WowArmory
 
     def item_data
       @@item_data ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "item_data.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_item_data.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -206,7 +213,7 @@ module WowArmory
 
     def item_damage_one_hand
       @@item_damage_one_hand ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "ItemDamageOneHand.dbc.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_ItemDamageOneHand.dbc.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end

@@ -181,6 +181,8 @@ module WowArmory
         populate_base_data_wowhead
       elsif source == "wowhead_ptr"
         populate_base_data_wowhead("ptr")
+      elsif source == "wowhead_wod"
+        populate_base_data_wowhead("wod")
       end
     end
 
@@ -250,7 +252,11 @@ module WowArmory
       eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
       stats = JSON::load("{%s}" % doc.css("json").text)
       unless doc.css("error").blank?
-        raise Exception.new "Item not found on wowhead id #{@id}"
+        puts prefix
+        puts doc.inspect
+        puts "Item not found on wowhead id #{@id}"
+        return
+        #raise Exception.new "Item not found on wowhead id #{@id}"
       end
       self.name ||= doc.css("name").text
       self.quality = doc.xpath("//quality").attr("id").text.to_i
@@ -338,8 +344,8 @@ module WowArmory
       end
     end
 
-    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "hit", "expertise",
-                       "haste", "mastery", "pvp resilience", "pvp power", "all stats", "dodge", "block", "parry"
+    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike",
+                       "haste", "mastery", "pvp resilience", "pvp power", "all stats"
     ]
     SCAN_OVERRIDE = { "critical strike" => "crit", 
                         #"hit" => "hit rating",
@@ -400,7 +406,7 @@ module WowArmory
 
     def item_enchants
       @@item_enchants ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantments.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_SpellItemEnchantments.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
