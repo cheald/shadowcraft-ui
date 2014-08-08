@@ -105,7 +105,7 @@ var ttlib = {
     var upgd = $this.data("tooltip-upgd");
     if(!id) { return; }
     var t = $this.data("tooltip-type") || "item";
-    var url = "http://www.wowhead.com/" + t + "=" + id + "&power";
+    var url = "http://wod.wowhead.com/" + t + "=" + id + "&power";
     if(rand && rand != "0") {
       url += "&rand=" + rand;
     }
@@ -144,7 +144,7 @@ var ttlib = {
 
   // Wowhead fun!
   wowheadTooltip: function(id, showIcon, data) {
-    data.tooltip = data.tooltip_enus;
+    data.tooltip = data.tooltip_enus || data.tooltip_beta;
     ttlib.showData(data);
   }
 };
