@@ -233,15 +233,13 @@ class ShadowcraftComputation:
         'short_term_haste_buff',
         'stat_multiplier_buff',
         'crit_chance_buff',
-        'mastery_buff',
-        'melee_haste_buff',
+        'haste_buff',
+        'multistrike_buff',
         'attack_power_buff',
-        'armor_debuff',
-        'physical_vulnerability_debuff',
-        'spell_damage_debuff',
+        'mastery_buff',
+        'versatility_buff',
         'agi_flask_mop',
-        'food_300_agi',
-        'spell_haste_buff'
+        'food_300_agi'
     ]
     
     if __builtin__.shadowcraft_engine_version == 4.1:
@@ -381,6 +379,8 @@ class ShadowcraftComputation:
         for b in input.get("b", []):
             b = int(b)
             if b >= 0 and b < __max:
+                if self.buffMap[b] == 'versatility_buff': 
+                  continue
                 buff_list.append(self.buffMap[b])
 
         _buffs = buffs.Buffs(*buff_list, level=_level)
@@ -475,7 +475,7 @@ class ShadowcraftComputation:
             if k in gear:
                 for gd in gear_data:
                     if gd[0] == k:
-                        proclist.append((self.gearProcs[k],gd[1]))
+                        #proclist.append((self.gearProcs[k],gd[1]))
                         break
         
         if len(self.tier11IDS & gear) >= 4:
@@ -562,14 +562,12 @@ class ShadowcraftComputation:
         # test_settings = settings.Settings(test_cycle, response_time=.5, duration=360, dmg_poison='dp', utl_poison='lp', is_pvp=charInfo['pvp'],stormlash=charInfo['stormlash'], shiv_interval=charInfo['shiv'])
         _settings = settings.Settings(_cycle,
             time_in_execute_range = _opt.get("time_in_execute_range", 0.35),
-            tricks_on_cooldown = _opt.get("tricks", False),
             response_time = _opt.get("response_time", 0.5),
             duration = duration,
             dmg_poison = _opt.get("dmg_poison", 'dp'),
             utl_poison = _opt.get("utl_poison", None),
             opener_name = rotation_keys["opener_name"],
             use_opener = rotation_keys["opener_use"],
-            stormlash = _opt.get("stormlash", False),
             is_pvp = _opt.get("pvp", False),
             latency = _opt.get("latency", 0.03),
             adv_params = _opt.get("adv_params", ''),
@@ -588,8 +586,7 @@ class ShadowcraftComputation:
             out["total_dps"] = sum(entry[1] for entry in out["breakdown"].items())
 
             # Get EP Values
-            default_ep_stats = ['white_hit', 'yellow_hit', 'str', 'agi', 'haste',
-                'crit', 'mastery', 'ap']
+            default_ep_stats = ['str', 'agi', 'haste', 'crit', 'mastery', 'multistrike', 'versatility', 'ap']
             _opt = input.get("settings", {})
             is_pvp = _opt.get("pvp", False)
             if is_pvp:
@@ -600,9 +597,9 @@ class ShadowcraftComputation:
             out["glyph_ranking"] = [] # calculator.get_glyphs_ranking(input.get("gly", []))
             
             out["meta"] = calculator.get_other_ep(['chaotic_metagem','legendary_capacitive_meta'])
-            out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc','rogue_t16_2pc','rogue_t16_4pc'])
+            out["other_ep"] = calculator.get_other_ep(['rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc','rogue_t16_2pc','rogue_t16_4pc'])
             
-            trinket_rankings = calculator.get_upgrades_ep_fast(self.trinkets)
+            trinket_rankings = [] # calculator.get_upgrades_ep_fast(self.trinkets)
             trinketMapReverse = dict((v,k) for k,v in self.trinketMap.iteritems())
             out["trinket_ranking"] = {}
             for k in trinket_rankings:

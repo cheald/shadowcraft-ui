@@ -319,13 +319,13 @@
     get_engine = function() {
       var endpoint, port;
       switch (Shadowcraft.Data.options.general.patch) {
-        case 60:
+        case 61:
           port = 8880;
-          endpoint = "engine-6.0";
+          endpoint = "engine-6.1";
           return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
         default:
           port = 8881;
-          endpoint = "engine-5.4";
+          endpoint = "engine-6.0";
           if (window.location.host.match(/:/)) {
             return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
           } else {
@@ -755,8 +755,8 @@
     poisonMap = ["dp", "wp"];
     utilPoisonMap = ["lp", "n"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"];
-    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "use_rupture", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "bf_targets", "stack_cds", "clip_recuperate", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use", "sub_sb_timing"];
-    rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'sometimes', 'pool', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike', 'opener', 'shd', 'fw', 'other'];
+    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "bf_targets", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"];
+    rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike', 'opener'];
     map = function(value, m) {
       return m.indexOf(value);
     };
@@ -803,7 +803,7 @@
           }
         }
         options.push(professions);
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.virmens_bite ? 1 : 0, data.options.general.max_ilvl, data.options.general.tricks ? 1 : 0, data.options.general.receive_tricks ? 1 : 0, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.stormlash ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 502, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.virmens_bite ? 1 : 0, data.options.general.max_ilvl, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 502, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35];
         options.push(base36Encode(general));
         buffs = [];
         _ref3 = ShadowcraftOptions.buffMap;
@@ -896,19 +896,16 @@
           utility_poison: unmap(general[4], utilPoisonMap),
           virmens_bite: general[5] !== 0,
           max_ilvl: general[6] || 700,
-          tricks: general[7] !== 0,
-          receive_tricks: general[8] !== 0,
-          prepot: general[9] !== 0,
-          patch: general[10] || 60,
-          min_ilvl: general[11] || 430,
-          epic_gems: general[12] || 0,
-          stormlash: general[13] || 0,
-          pvp: general[14] || 0,
-          show_upgrades: general[15] || 0,
-          show_random_items: general[16] || 0,
-          num_boss_adds: general[17] / 100 || 0,
-          response_time: general[18] / 100 || 0.5,
-          time_in_execute_range: general[19] / 100 || 0.35
+          prepot: general[7] !== 0,
+          patch: general[8] || 60,
+          min_ilvl: general[9] || 430,
+          epic_gems: general[10] || 0,
+          pvp: general[11] || 0,
+          show_upgrades: general[12] || 0,
+          show_random_items: general[13] || 0,
+          num_boss_adds: general[14] / 100 || 0,
+          response_time: general[15] / 100 || 0.5,
+          time_in_execute_range: general[16] / 100 || 0.35
         };
         d.options.buffs = {};
         _ref3 = options[2];
@@ -1139,7 +1136,7 @@
   };
   ShadowcraftOptions = (function() {
     var cast, changeCheck, changeInput, changeOption, changeSelect, enforceBounds;
-    ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'mastery_buff', 'melee_haste_buff', 'attack_power_buff', 'armor_debuff', 'physical_vulnerability_debuff', 'spell_damage_debuff', 'agi_flask_mop', 'food_300_agi', 'spell_haste_buff'];
+    ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'haste_buff', 'multistrike_buff', 'attack_power_buff', 'mastery_buff', 'versatility_buff', 'agi_flask_mop', 'food_300_agi'];
     cast = function(val, dtype) {
       switch (dtype) {
         case "integer":
@@ -1391,19 +1388,6 @@
           }
         }
       });
-      this.setup("#settings #generalFilter", "advanced", {
-        show_exp_gems: {
-          name: "Show Expertise Gems",
-          desc: "Show expertise gems in gem lists",
-          datatype: 'integer',
-          type: 'select',
-          options: {
-            1: 'Yes',
-            0: 'No'
-          },
-          'default': 0
-        }
-      });
       this.setup("#settings #professions", "professions", {
         alchemy: {
           'default': false,
@@ -1492,9 +1476,15 @@
           'default': true,
           datatype: 'bool'
         },
-        melee_haste_buff: {
-          name: "10% Haste",
+        haste_buff: {
+          name: "5% Haste",
           desc: "Unleashed Rage/Unholy Aura/Swiftblade's Cunning",
+          'default': true,
+          datatype: 'bool'
+        },
+        multistrike_buff: {
+          name: "5% Multistrike",
+          desc: "Swiftblade's Cunning",
           'default': true,
           datatype: 'bool'
         },
@@ -1510,29 +1500,9 @@
           'default': true,
           datatype: 'bool'
         },
-        spell_haste_buff: {
-          name: "5% Spell Haste",
-          desc: "Moonkin Form/Shadowform/Elemental Oath",
-          'default': true,
-          datatype: 'bool'
-        }
-      });
-      this.setup("#settings #targetDebuffs", "buffs", {
-        armor_debuff: {
-          name: "-12% Armor",
-          desc: "Weakened Armor/Sunder Armor/Faerie Fire/Expose Armor",
-          'default': true,
-          datatype: 'bool'
-        },
-        physical_vulnerability_debuff: {
-          name: "+4% Physical Damage",
-          desc: "Brittle Bones/Colossus Smash/Judgments of the Bold/Ebon Plaguebringer",
-          'default': true,
-          datatype: 'bool'
-        },
-        spell_damage_debuff: {
-          name: "+5% Spell Damage",
-          desc: "Curse of the Elements/Master Poisoner",
+        versatility_buff: {
+          name: "3% Versatility",
+          desc: "PH",
           'default': true,
           datatype: 'bool'
         }
@@ -1549,32 +1519,13 @@
           name: "Combat potion (Virmen's Bite)",
           'default': true,
           datatype: 'bool'
-        },
-        tricks: {
-          type: "check",
-          name: "Tricks of the Trade on cooldown",
-          'default': false,
-          datatype: 'bool'
-        },
-        receive_tricks: {
-          type: "check",
-          name: "Receiving Tricks on cooldown from another rogue",
-          'default': false,
-          datatype: 'bool'
-        },
-        stormlash: {
-          type: "check",
-          name: "Stormlash Totem",
-          desc: "10sec / 5min cooldown",
-          'default': false,
-          datatype: 'bool'
         }
       });
       this.setup("#settings #pvp", "general", {
         pvp: {
           type: "check",
           name: "PvP Mode",
-          desc: "Activate the PvP Mode (Exp Cap = 3%, Hit Cap = 3%)",
+          desc: "Activate the PvP Mode",
           'default': false,
           datatype: 'bool'
         }
@@ -1603,7 +1554,6 @@
         prioritize_rupture_uptime_non_execute: {
           type: "check",
           name: "Prioritize Rupture (>35%)",
-          right: true,
           desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate",
           "default": true,
           datatype: 'bool'
@@ -1611,7 +1561,6 @@
         prioritize_rupture_uptime_execute: {
           type: "check",
           name: "Prioritize Rupture (<35%)",
-          right: true,
           desc: "Prioritize Rupture over Envenom when your CP builder is Dispatch",
           "default": true,
           datatype: 'bool'
@@ -1640,12 +1589,6 @@
         }
       });
       this.setup("#settings section.combat .settings", "rotation", {
-        use_rupture: {
-          type: "check",
-          name: "Use Rupture?",
-          right: true,
-          "default": true
-        },
         ksp_immediately: {
           type: "select",
           name: "Killing Spree",
@@ -1659,22 +1602,12 @@
         revealing_strike_pooling: {
           type: "check",
           name: "Pool for Revealing Strike",
-          right: true,
-          "default": true,
-          datatype: 'bool'
-        },
-        stack_cds: {
-          type: "check",
-          name: "Stack Cooldowns",
-          desc: "Use Adrenaline Rush and Shadow Blades together",
-          right: true,
           "default": true,
           datatype: 'bool'
         },
         blade_flurry: {
           type: "check",
           name: "Blade Flurry",
-          right: true,
           desc: "Use Blade Flurry",
           "default": false,
           datatype: 'bool'
@@ -1682,12 +1615,12 @@
         bf_targets: {
           type: "select",
           name: "Blade Flurry Targets",
-          options: [0, 1, 2, 3, 4],
+          options: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
           desc: "With 5.4 you need to use the Option 'Number of Boss Adds' under General Settings",
           'default': 1,
           datatype: 'integer',
           min: 0,
-          max: 4
+          max: 9
         },
         opener_name_combat: {
           type: "select",
@@ -1723,17 +1656,6 @@
             '24': "Use Backstab and apply Hemorrhage every 24sec"
           },
           "default": '24',
-          datatype: 'string'
-        },
-        sub_sb_timing: {
-          type: "select",
-          name: "Use Shadow Blades on",
-          options: {
-            'shd': "Shadow Dance",
-            'fw': "Find Weakness",
-            'other': "None of above"
-          },
-          "default": 'shd',
           datatype: 'string'
         },
         opener_name_subtlety: {
