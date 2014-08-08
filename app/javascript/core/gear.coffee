@@ -511,7 +511,6 @@ class ShadowcraftGear
     bestJewelcrafterGem = getBestJewelcrafterGem()
     for gem in copy
       continue if gem.quality == 4 and gem.requires == undefined and not use_epic_gems
-      continue if gem.stats["expertise"] > 0
       continue if gem.requires?.profession == "jewelcrafting" and gem.id != bestJewelcrafterGem.id
       gem.normal_ep = getRegularGemEpValue(gem)
       if gem.normal_ep and gem.normal_ep > 1
@@ -815,6 +814,8 @@ class ShadowcraftGear
     Weights.strength = source.ep.str
     Weights.mastery = source.ep.mastery
     Weights.haste = source.ep.haste
+    Weights.multistrike = source.ep.multistrike
+    Weights.versatility = source.ep.versatility
     Weights.pvp_power = source.ep.pvp_power || 0
 
     other =
@@ -834,7 +835,6 @@ class ShadowcraftGear
     for key, weight of all
       continue if isNaN weight
       continue if weight == 0
-      continue if key == "spell_hit"
       exist = $(".stat#weight_" + key)
       if exist.length > 0
         exist.find("val").text weight.toFixed(3)
@@ -1166,7 +1166,6 @@ class ShadowcraftGear
 
       usedNames[gem.name] = gem.id
       continue if gem.name.indexOf("Perfect") == 0 and selected_id != gem.id
-      continue if gem.stats["expertise"] > 0 and not Shadowcraft.Data.options.advanced.show_exp_gems and selected_id != gem.id
       continue unless canUseGem gem, gemType, otherGearGems, slot
       max ||= gem.__ep
       gEP = gem.__ep
@@ -1331,11 +1330,9 @@ class ShadowcraftGear
 
     $("#getPawnString").click ->
       scale = _.extend({}, defaultScale)
-      scale.ExpertiseRating = Weights.expertise
       scale.MasteryRating = Weights.mastery
       scale.CritRating = Weights.crit
       scale.HasteRating = Weights.haste
-      scale.HitRating = getHitEP()
       scale.Agility = Weights.agility
       scale.Strength = Weights.strength
       scale.MainHandDps = Shadowcraft.lastCalculation.mh_ep.mh_dps

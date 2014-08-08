@@ -1066,9 +1066,6 @@
         }
         enchant = EnchantLookup[gear.enchant];
         enchantable = EnchantSlots[item.equip_location] !== void 0 && EnchantSlots[item.equip_location].length > 0;
-        if (!data.options.professions.enchanting && item.equip_location === 11) {
-          enchantable = false;
-        }
         _results.push(!enchant && enchantable ? Shadowcraft.Console.warn(item, "needs an enchantment", null, "warn", "items") : void 0);
       }
       return _results;
@@ -3501,6 +3498,8 @@
       Weights.strength = source.ep.str;
       Weights.mastery = source.ep.mastery;
       Weights.haste = source.ep.haste;
+      Weights.multistrike = source.ep.multistrike;
+      Weights.versatility = source.ep.versatility;
       Weights.pvp_power = source.ep.pvp_power || 0;
       other = {
         mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps,
