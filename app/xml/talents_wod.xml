@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page globalSearch="1" lang="en_us" requestUrl="/talent-tree.xml">
+   <talents>
+      <talent column="0" icon="ability_stealth" spell="14062" key="6395" name="Nightstalker" tier="0">
+        <rank description="Increases your movement speed while stealthed by 20%, and the damage your abilities deal while stealthed by 50%." lvl="1"/>
+      </talent>
+      <talent column="1" icon="rogue_subterfuge" spell="108208" key="201" name="Subterfuge" tier="0">
+        <rank description="Your Stealth breaks 3 sec after dealing or receiving hostile actions, rather than doing so immediately." lvl="1"/>
+      </talent>
+      <talent column="2" icon="rogue_shadowfocus" spell="108209" key="181" name="Shadow Focus" tier="0">
+        <rank description="Abilities cost 75% less Energy while you are stealthed." lvl="1"/>
+      </talent>
+      <talent column="0" icon="inv_throwingknife_06" spell="26679" key="1827" name="Deadly Throw" tier="1">
+        <rank description="Finishing move that reduces the movement speed of the target by 50% for 6 sec. If performed with 3 combo points, also interrupts spellcasting and prevents any spell in that school from being cast for a period of time." lvl="1"/>
+      </talent>
+      <talent column="1" icon="rogue_nerve_strike" spell="108210" key="222" name="Nerve Strike" tier="1">
+        <rank description="A successful Kidney Shot or Cheap Shot also reduces the damage dealt by the target by 50% and healing done by the target by 10% for 6 sec seconds after the effect fades." lvl="1"/>
+      </talent>
+      <talent column="2" icon="ability_rogue_combatreadiness" spell="74001" key="1122" name="Combat Readiness" tier="1">
+        <rank description="Enter into a state of heightened awareness, deflecting enemy weapon strikes with increasing effectiveness.  Successive attacks will deal 10% less damage per application, stacking 5 times. Lasts for 20 sec, but if 10 sec elapse without any incoming weapon strikes, this state will end." lvl="1"/>
+      </talent>
+      <talent column="0" icon="ability_rogue_cheatdeath" spell="31230" key="186" name="Cheat Death" tier="2">
+        <rank description="An attack that would otherwise be fatal will instead reduce you no lower than 10% of your maximum health, and damage taken will be reduced by 85% for 3 sec.  This effect cannot occur more than once per 90 seconds." lvl="1"/>
+      </talent>
+      <talent column="1" icon="rogue_leeching_poison" spell="108211" key="11171" name="Leeching Poison" tier="2">
+        <rank description="Coats your weapons with a Non-Lethal Poison that lasts for 1 hour.  Your melee attacks have a 50% chance to poison the target, and all your subsequent weapon strikes against the poisoned target will heal you for 10% of damage dealt." lvl="1"/>
+      </talent>
+      <talent column="2" icon="ability_rogue_turnthetables" spell="79008" key="6511" name="Elusiveness" tier="2">
+        <rank description="Your Feint ability also reduces all damage taken by 30% for 5 sec." lvl="1"/>
+      </talent>
+      <talent column="0" icon="ability_rogue_unfairadvantage" spell="138106" key="203" name="Cloak and Dagger" tier="3">
+        <rank description="Your Ambush, Garrote, and Cheap Shot abilities can now be used from 40 yards away, and will cause you to appear behind your target." lvl="1"/>
+      </talent>
+      <talent column="1" icon="ability_rogue_shadowstep" spell="36554" key="203" name="Shadowstep" tier="3">
+        <rank description="Step through the shadows and appear behind a target.  Movement speed is increased by 70% for 2 sec afterwards." lvl="1"/>
+      </talent>
+      <talent column="2" icon="rogue_burstofspeed" spell="108212" key="203" name="Burst of Speed" tier="3">
+        <rank description="Increases movement speed by 70% for 4 sec and removes any movement-slowing effects. Does not break stealth." lvl="1"/>
+      </talent>
+       <talent column="0" icon="ability_rogue_preyontheweak" spell="131511" key="203" name="Prey on the Weak" tier="4">
+        <rank description="When you disable an enemy with Kidney Shot, Cheap Shot, Gouge, Sap, or Blind, they suffer 10% increased damage from all sources for the duration of the effect." lvl="1"/>
+      </talent>
+      <talent column="1" icon="rogue_paralytic_poison" spell="108215" key="203" name="Paralytic Poison" tier="4">
+        <rank description="Coats your weapons with a Non-Lethal Poison that lasts for 1 hour.  Each strike has a 20% chance of poisoning the enemy for 15 sec.  Stacks up to 4 times on a single target, and upon a fifth application, the enemy will be stunned for 4 seconds." lvl="1"/>
+      </talent>
+      <talent column="2" icon="ability_rogue_dirtydeeds" spell="108216" key="203" name="Dirty Tricks" tier="4">
+        <rank description="Your Gouge and Blind no longer have an Energy cost, and no longer break from damage dealt by your Poison and Bleed effects." lvl="1"/>
+      </talent>
+      <talent column="0" icon="inv_throwingknife_07" spell="114014" key="203" name="Shuriken Toss" tier="5">
+        <rank description="A ranged attack that deals [ 2,493 + 60% of AP ] Physical damage to an enemy target. If the enemy is farther than 10 yards away, your autoattacks will be replaced with ranged shuriken for up to 10 sec, granting them a 30 yd range. Shurikens are coated in your Lethal Poison. Awards 1 combo points.  Replaces Throw." lvl="1"/>
+      </talent>
+      <talent column="1" icon="achievement_bg_killingblow_berserker" spell="137619" key="203" name="Marked for Death" tier="5">
+        <rank description="Mark the target, instantly generating 5 combo points on them. When the target dies, Marked for Death's cooldown is reset." lvl="1"/>
+      </talent>
+      <talent column="2" icon="ability_rogue_slaughterfromtheshadows" spell="114015" key="203" name="Anticipation" tier="5">
+        <rank description="When one of your attacks generates a combo point on a target that already has 5 combo points, you gain an Anticipation charge, up to a maximum of 5. When you perform an offensive finishing move on an enemy, any Anticipation charges are consumed to grant you an equal number of combo points on that target." lvl="1"/>
+      </talent>
+      <talent column="0" icon="rogue_venomzest" spell="152152" name="Venom Zest" tier="6">
+        <rank description="Increases your maximum energy by 15. Increases your energy regeneration rate by 5% for every enemy you have poisoned, up to 3." lvl="1"/>
+      </talent>
+      <talent column="1" icon="rogue_shadow_reflection" spell="152151" name="Shadow Reflection" tier="6">
+        <rank description="Summon a shadow of yourself on the target that will watch you and memorize your offensive ability usage for the next 8 sec. After this time, it will mimic the memorized abilities on its target over the next 8 sec." lvl="1"/>
+      </talent>
+      <talent column="2" icon="spell_rogue_deathfromabove" spell="152150" name="Death from Above" tier="6">
+        <rank description="Finishing move that consumes combo points on the target to empower your weapons with shadow energy and perform a devastating two-part attack. You whirl around, dealing up to (66% of Attack power) damage to all enemies within 8 yds, then leap into the air and Eviscerate your target on the way back down, with such force that it deals an additional 50% damage." lvl="1"/>
+      </talent>
+   </talents>
+</page>
