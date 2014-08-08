@@ -2418,8 +2418,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, MAX_JEWELCRAFTING_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, Sets, Weights, addAchievementBonuses, addTradeskillBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestJewelcrafterGem, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getMaxUpgradeLevel, getProfessionalGemCount, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
-    MAX_JEWELCRAFTING_GEMS = 2;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, DEFAULT_DW_PENALTY, DEFAULT_PVP_DODGE, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, SLOT_ORDER_OPTIMIZE_GEMS, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getMaxUpgradeLevel, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
@@ -2725,37 +2724,6 @@
       }
       return count;
     };
-    getProfessionalGemCount = function(profession, pendingChanges, ignoreSlotIndex) {
-      var Gems, count, g, gear, gem, i, slot, _i, _j, _len, _len2;
-      count = 0;
-      Gems = Shadowcraft.ServerData.GEM_LOOKUP;
-      for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
-        slot = SLOT_ORDER[_i];
-        if (parseInt(slot, 10) === ignoreSlotIndex) {
-          continue;
-        }
-        gear = Shadowcraft.Data.gear[slot];
-        for (i = 0; i <= 2; i++) {
-          gem = (gear["g" + i] != null) && Gems[gear["g" + i]];
-          if (!gem) {
-            continue;
-          }
-          if (isProfessionalGem(gem, profession)) {
-            count++;
-          }
-        }
-      }
-      if (pendingChanges != null) {
-        for (_j = 0, _len2 = pendingChanges.length; _j < _len2; _j++) {
-          g = pendingChanges[_j];
-          gem = Gems[g];
-          if (isProfessionalGem(gem, profession)) {
-            count++;
-          }
-        }
-      }
-      return count;
-    };
     getGemTypeCount = function(gemType, pendingChanges, ignoreSlotIndex) {
       var Gems, count, g, gear, gem, i, slot, _i, _j, _len, _len2;
       count = 0;
@@ -2793,7 +2761,7 @@
         if (!Shadowcraft.Data.options.professions[gem.requires.profession]) {
           return false;
         }
-        if (isProfessionalGem(gem, 'jewelcrafting') && getProfessionalGemCount('jewelcrafting', pendingChanges, ignoreSlotIndex) >= MAX_JEWELCRAFTING_GEMS) {
+        if (isProfessionalGem(gem, 'jewelcrafting')) {
           return false;
         }
       }
@@ -2815,7 +2783,7 @@
       return true;
     };
     getRegularGemEpValue = function(gem, offset) {
-      var bestGem, equiv_ep, name, _i, _len, _ref;
+      var equiv_ep, _ref;
       equiv_ep = get_ep(gem, false, null, offset);
       if (((_ref = gem.requires) != null ? _ref.profession : void 0) == null) {
         return equiv_ep;
@@ -2823,34 +2791,7 @@
       if (gem.__reg_ep) {
         return gem.__reg_ep;
       }
-      bestGem = getBestNormalGem();
-      for (_i = 0, _len = JC_ONLY_GEMS.length; _i < _len; _i++) {
-        name = JC_ONLY_GEMS[_i];
-        if (gem.name.indexOf(name) >= 0) {
-          if (bestGem) {
-            equiv_ep = bestGem.__color_ep || get_ep(bestGem, false, null, offset);
-            equiv_ep;
-            gem.__reg_ep = equiv_ep += 0.0001;
-          }
-          if (gem.__reg_ep) {
-            break;
-          }
-        }
-      }
       return gem.__reg_ep;
-    };
-    addTradeskillBonuses = function(item) {
-      var blacksmith, last;
-      item.sockets || (item.sockets = []);
-      blacksmith = Shadowcraft.Data.options.professions.blacksmithing;
-      if (item.equip_location === 9 || item.equip_location === 10) {
-        last = item.sockets[item.sockets.length - 1];
-        if (last !== "Prismatic" && blacksmith) {
-          return item.sockets.push("Prismatic");
-        } else if (!blacksmith && last === "Prismatic") {
-          return item.sockets.pop();
-        }
-      }
     };
     addAchievementBonuses = function(item) {
       var chapter2, last, _ref;
@@ -3060,26 +3001,6 @@
         return this.optimizeGems(depth + 1);
       }
     };
-    getBestJewelcrafterGem = function() {
-      var Gems, copy, gem, list, _i, _len, _ref;
-      Gems = Shadowcraft.ServerData.GEMS;
-      copy = $.extend(true, [], Gems);
-      list = [];
-      for (_i = 0, _len = copy.length; _i < _len; _i++) {
-        gem = copy[_i];
-        if (!((gem.requires != null) || ((_ref = gem.requires) != null ? _ref.profession : void 0) === "jewelcrafting")) {
-          continue;
-        }
-        gem.__color_ep = gem.__color_ep || get_ep(gem);
-        if (gem.__color_ep && gem.__color_ep > 1) {
-          list.push(gem);
-        }
-      }
-      list.sort(function(a, b) {
-        return b.__color_ep - a.__color_ep;
-      });
-      return list[0];
-    };
     getBestNormalGem = function() {
       var Gems, copy, gem, list, _i, _len, _ref;
       Gems = Shadowcraft.ServerData.GEMS;
@@ -3101,21 +3022,14 @@
       return list[0];
     };
     getGemRecommendationList = function() {
-      var Gems, bestJewelcrafterGem, copy, gem, list, use_epic_gems, _i, _len, _ref;
+      var Gems, copy, gem, list, use_epic_gems, _i, _len;
       Gems = Shadowcraft.ServerData.GEMS;
       copy = $.extend(true, [], Gems);
       list = [];
       use_epic_gems = Shadowcraft.Data.options.general.epic_gems === 1;
-      bestJewelcrafterGem = getBestJewelcrafterGem();
       for (_i = 0, _len = copy.length; _i < _len; _i++) {
         gem = copy[_i];
         if (gem.quality === 4 && gem.requires === void 0 && !use_epic_gems) {
-          continue;
-        }
-        if (gem.stats["expertise"] > 0) {
-          continue;
-        }
-        if (((_ref = gem.requires) != null ? _ref.profession : void 0) === "jewelcrafting" && gem.id !== bestJewelcrafterGem.id) {
           continue;
         }
         gem.normal_ep = getRegularGemEpValue(gem);
@@ -3312,13 +3226,8 @@
           reforgable = null;
           upgradable = null;
           if (item) {
-            addTradeskillBonuses(item);
             addAchievementBonuses(item);
             enchantable = (EnchantSlots[item.equip_location] != null) && EnchantSlots[item.equip_location].length > 0;
-            if ((!data.options.professions.enchanting && item.equip_location === 11) || item.equip_location === "ranged") {
-              enchantable = false;
-              delete gear.enchant;
-            }
             _ref = item.sockets;
             for (_i = 0, _len3 = _ref.length; _i < _len3; _i++) {
               socket = _ref[_i];
@@ -3520,9 +3429,6 @@
           continue;
         }
         if (weight === 0) {
-          continue;
-        }
-        if (key === "spell_hit") {
           continue;
         }
         exist = $(".stat#weight_" + key);
@@ -3940,9 +3846,6 @@
         if (gem.name.indexOf("Perfect") === 0 && selected_id !== gem.id) {
           continue;
         }
-        if (gem.stats["expertise"] > 0 && !Shadowcraft.Data.options.advanced.show_exp_gems && selected_id !== gem.id) {
-          continue;
-        }
         if (!canUseGem(gem, gemType, otherGearGems, slot)) {
           continue;
         }
@@ -4113,11 +4016,9 @@
       $("#getPawnString").click(function() {
         var name, pawnstr, scale, stats, val, weight;
         scale = _.extend({}, defaultScale);
-        scale.ExpertiseRating = Weights.expertise;
         scale.MasteryRating = Weights.mastery;
         scale.CritRating = Weights.crit;
         scale.HasteRating = Weights.haste;
-        scale.HitRating = getHitEP();
         scale.Agility = Weights.agility;
         scale.Strength = Weights.strength;
         scale.MainHandDps = Shadowcraft.lastCalculation.mh_ep.mh_dps;

@@ -1,5 +1,4 @@
 class ShadowcraftGear
-  MAX_JEWELCRAFTING_GEMS = 2
   MAX_ENGINEERING_GEMS = 1
   MAX_HYDRAULIC_GEMS = 1
   JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"]
@@ -184,7 +183,7 @@ class ShadowcraftGear
     this.sumStats() if !@statSum
     (@statSum[stat] || 0)
 
-  # Stat to get the real weight for, the amount of the stat, and a hash of {stat: amount} to ignore (like if swapping out a reforge or whatnot; nil the existing reforge for calcs)
+  # Stat to get the real weight for, the amount of the stat, and a hash of {stat: amount} to ignore (like if swapping out a enchant or whatnot; nil the existing enchant for calcs)
   getStatWeight = (stat, num, ignore, ignoreAll) ->
     data = Shadowcraft.Data
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
@@ -249,25 +248,6 @@ class ShadowcraftGear
         count++ if g == gem.id
     return count
 
-  getProfessionalGemCount = (profession, pendingChanges, ignoreSlotIndex) ->
-    count = 0
-    Gems = Shadowcraft.ServerData.GEM_LOOKUP
-
-    for slot in SLOT_ORDER
-      continue if parseInt(slot, 10) == ignoreSlotIndex
-      gear = Shadowcraft.Data.gear[slot]
-      for i in [0..2]
-        gem = gear["g" + i]? and Gems[gear["g" + i]]
-        continue unless gem
-        if isProfessionalGem(gem, profession)
-          count++
-
-    if pendingChanges?
-      for g in pendingChanges
-        gem = Gems[g]
-        count++ if isProfessionalGem(gem, profession)
-    return count
-
   getGemTypeCount = (gemType, pendingChanges, ignoreSlotIndex) ->
     count = 0
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
@@ -290,7 +270,7 @@ class ShadowcraftGear
   canUseGem = (gem, gemType, pendingChanges, ignoreSlotIndex) ->
     if gem.requires?.profession?
       return false unless Shadowcraft.Data.options.professions[gem.requires.profession]
-      return false if isProfessionalGem(gem, 'jewelcrafting') and getProfessionalGemCount('jewelcrafting', pendingChanges, ignoreSlotIndex) >= MAX_JEWELCRAFTING_GEMS
+      return false if isProfessionalGem(gem, 'jewelcrafting')
     
     return false if not gem[gemType]
     return false if gem.slot == "Cogwheel" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
@@ -299,40 +279,15 @@ class ShadowcraftGear
     return false if (gem.slot == "Meta" or gem.slot == "Cogwheel" or gem.slot == "Hydraulic") and gem.slot != gemType
     true
 
-  # Returns the EP value of a gem.  If it happens to require JC, it'll return
-  # the regular EP value for the same quality gem, if found.
+  # Returns the EP value of a gem.
   getRegularGemEpValue = (gem, offset) ->
     equiv_ep = get_ep(gem, false, null, offset)
-
+    
+    # TODO profession gems shouldn't exist anymore
     return equiv_ep unless gem.requires?.profession?
     return gem.__reg_ep if gem.__reg_ep
 
-    bestGem = getBestNormalGem()
-    for name in JC_ONLY_GEMS
-      if gem.name.indexOf(name) >= 0
-        if bestGem
-          equiv_ep = bestGem.__color_ep || get_ep(bestGem, false, null, offset)
-          equiv_ep
-          gem.__reg_ep = equiv_ep += 0.0001
-        #prefix = gem.name.replace(name, "")
-        #for j, reg of Shadowcraft.ServerData.GEMS
-        #  if reg.item_id != gem.item_id and !reg.requires?.profession? and reg.name.indexOf(prefix) == 0 and reg.ilvl == gem.ilvl and reg.slot != "Cogwheel"
-        #    equiv_ep = reg.__ep || get_ep(reg, offset)
-        #    equiv_ep
-        #    gem.__reg_ep = equiv_ep += 0.0001
-        #    break
-        break if gem.__reg_ep
     return gem.__reg_ep
-
-  addTradeskillBonuses = (item) ->
-    item.sockets ||= []
-    blacksmith = Shadowcraft.Data.options.professions.blacksmithing
-    if item.equip_location == 9 or item.equip_location == 10
-      last = item.sockets[item.sockets.length - 1]
-      if last != "Prismatic" and blacksmith
-        item.sockets.push "Prismatic"
-      else if !blacksmith and last == "Prismatic"
-        item.sockets.pop()
 
   addAchievementBonuses = (item) ->
     item.sockets ||= []
@@ -471,20 +426,6 @@ class ShadowcraftGear
     else
       this.optimizeGems depth + 1
 
-  getBestJewelcrafterGem = ->
-    Gems = Shadowcraft.ServerData.GEMS
-    copy = $.extend(true, [], Gems)
-    list = []
-    for gem in copy
-      continue unless gem.requires? or gem.requires?.profession == "jewelcrafting"
-      gem.__color_ep = gem.__color_ep || get_ep(gem)
-      if gem.__color_ep and gem.__color_ep > 1
-        list.push gem
-
-    list.sort (a, b) ->
-      b.__color_ep - a.__color_ep
-    list[0]
-
   getBestNormalGem = ->
     Gems = Shadowcraft.ServerData.GEMS
     copy = $.extend(true, [], Gems)
@@ -508,10 +449,8 @@ class ShadowcraftGear
     copy = $.extend(true, [], Gems)
     list = []
     use_epic_gems = Shadowcraft.Data.options.general.epic_gems == 1
-    bestJewelcrafterGem = getBestJewelcrafterGem()
     for gem in copy
       continue if gem.quality == 4 and gem.requires == undefined and not use_epic_gems
-      continue if gem.requires?.profession == "jewelcrafting" and gem.id != bestJewelcrafterGem.id
       gem.normal_ep = getRegularGemEpValue(gem)
       if gem.normal_ep and gem.normal_ep > 1
         list.push gem
@@ -662,12 +601,8 @@ class ShadowcraftGear
         reforgable = null
         upgradable = null
         if item
-          addTradeskillBonuses(item)
           addAchievementBonuses(item)
           enchantable = EnchantSlots[item.equip_location]? && EnchantSlots[item.equip_location].length > 0
-          if (!data.options.professions.enchanting && item.equip_location == 11) || item.equip_location == "ranged"
-            enchantable = false
-            delete gear.enchant
           for socket in item.sockets
             gem = Gems[gear["g" + gems.length]]
             gems[gems.length] = {socket: socket, gem: gem}
