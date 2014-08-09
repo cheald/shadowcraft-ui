@@ -2287,14 +2287,13 @@
     };
     updateTalentContribution = function(LC) {
       var buffer, exist, k, max, name, pct, rankings, s, setKey, setVal, sets, target, val;
-      if (!LC.talent_ranking_main) {
+      if (!LC.talent_ranking) {
         return;
       }
       sets = {
-        "Primary": LC.talent_ranking_main,
-        "Secondary": LC.talent_ranking_off
+        "Primary": LC.talent_ranking
       };
-      rankings = _.extend({}, LC.talent_ranking_main, LC.talent_ranking_off);
+      rankings = _.extend({}, LC.talent_ranking);
       max = _.max(rankings);
       $("#talentrankings .talent_contribution").hide();
       for (setKey in sets) {
@@ -2546,7 +2545,7 @@
           if (c.trinket_ranking[get_item_id(item)][item_level]) {
             total += c.trinket_ranking[get_item_id(item)][item_level];
           } else {
-            console.warn("error in trinket_ranking doing", item_level);
+            console.warn("error in trinket_ranking", item_level, item);
             total += c.trinket_ranking[get_item_id(item)][0];
           }
         }

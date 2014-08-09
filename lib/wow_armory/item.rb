@@ -36,7 +36,8 @@ module WowArmory
       43=>:mana_every_5_seconds,
       73=>:agility,
       40=>:versatility,
-      59=>:multistrike
+      59=>:multistrike,
+      58=>:amplify
     }
 
     WOWHEAD_MAP = {
@@ -156,7 +157,7 @@ module WowArmory
       "dagger" => 15,
     }
 
-    ENCHANT_SCALING = 8.0 # for lvl 90 // lvl100 = 80
+    ENCHANT_SCALING = 10.0 # for lvl 90 // lvl100 = 80
 
     include Document
     ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable
@@ -266,10 +267,8 @@ module WowArmory
       self.ilevel ||= doc.css("level").text.to_i
       self.icon = doc.css("icon").text.downcase
       self.tag = ""
-      tooltip = doc.css("htmlTooltip").text
-      tag = tooltip.match(/<span style=\"color: #00FF00\">(Heroic|Heroic Thunderforged|Heroic Warforged|Thunderforged|Warforged|Timeless|Flexible|Raid Finder|Season \d+ Elite|Season \d+|Elite)<\/span>/)
-      unless tag.nil?
-        self.tag = tag[1]
+      unless stats["namedesc"].nil?
+        self.tag = stats["namedesc"]
       end
       if stats["classs"] == 3 # gem
         puts "Gem = True"
@@ -288,6 +287,7 @@ module WowArmory
       unless eqstats["nsockets"].nil?
         self.sockets = []
         for num in 1..eqstats["nsockets"].to_i do
+
           next if eqstats["socket#{num}"] == 1
           self.sockets.push(SOCKET_MAP[eqstats["socket#{num}"]])
         end
@@ -296,7 +296,8 @@ module WowArmory
           enchant_row = item_enchants[eqstats["socketbonus"].to_s]
           # TODO if socketbonus includes more than 1 stat update this
           stat = enchant_row[14].to_i
-          self.socket_bonus[STAT_LOOKUP[stat]] = enchant_row[17].to_f * ENCHANT_SCALING
+          value = enchant_row[17].to_f * ENCHANT_SCALING
+          self.socket_bonus[STAT_LOOKUP[stat]] = value.round
         end
       end
       unless eqstats["reqskill"].nil?

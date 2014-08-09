@@ -40,7 +40,8 @@ module WowArmory
       43=>:mana_every_5_seconds,
       73=>:agility,
       40=>:versatility,
-      59=>:multistrike
+      59=>:multistrike,
+      58=>:amplify
     }
 
     WOWHEAD_MAP = {
@@ -141,8 +142,8 @@ module WowArmory
         if enchantid != "0"
           stat = enchantid.to_i
           
-          value = (multiplier/10000.0) * basevalue.to_f - socket_mult * ITEM_SOCKET_COST
-          self.stats[STAT_LOOKUP[stat]] = value.round
+          value = ((multiplier/10000.0) * basevalue.to_f).round - (socket_mult * ITEM_SOCKET_COST).round
+          self.stats[STAT_LOOKUP[stat]] = value
           #puts STAT_LOOKUP[stat]
           #puts self.stats[STAT_LOOKUP[stat]]
         end
@@ -299,7 +300,7 @@ module WowArmory
       puts self.stats.inspect
     end
 
-    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "hit", "expertise",
+    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "versatility", "multistrike",
                        "haste", "mastery", "pvp resilience", "pvp power", "all stats", "dodge", "block", "parry"
     ]
     SCAN_OVERRIDE = { "critical strike" => "crit", 
