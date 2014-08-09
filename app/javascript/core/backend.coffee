@@ -69,13 +69,11 @@ class ShadowcraftBackend
       b: buffList
       ro: data.options.rotation,
       settings: {
-        tricks: data.options.general.tricks
         dmg_poison: data.options.general.lethal_poison
         utl_poison: data.options.general.utility_poison if data.options.general.utility_poison != 'n'
         duration: data.options.general.duration
         response_time: data.options.general.response_time
         time_in_execute_range: data.options.general.time_in_execute_range
-        stormlash: data.options.general.stormlash
         pvp: data.options.general.pvp
         num_boss_adds: data.options.general.num_boss_adds
         latency: data.options.advanced.latency
@@ -90,9 +88,8 @@ class ShadowcraftBackend
         statSummary.crit || 0,
         statSummary.haste || 0,
         statSummary.mastery || 0,
-        statSummary.amplify || 0,
         statSummary.multistrike || 0,
-        statSummary.readiness || 0,
+        statSummary.versatility || 0,
         statSummary.resilience || 0,
         statSummary.pvp_power || 0
       ],
@@ -123,8 +120,6 @@ class ShadowcraftBackend
       ]
       if _item_id
         gear_ids.push(item)
-      if k == "14" && g.enchant && g.enchant == 4894
-        payload.se = "swordguard_embroidery"
 
     payload.g = gear_ids
     payload
@@ -139,8 +134,6 @@ class ShadowcraftBackend
       Shadowcraft.Console.warn {}, data.error, null, "error", "error"
       return
 
-    if Shadowcraft.Data.options.general.receive_tricks
-      data.total_dps *= 1.03
     @app.lastCalculation = data
     #this.trigger("recompute2", data)
     this.trigger("recompute", data)

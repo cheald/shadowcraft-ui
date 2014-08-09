@@ -521,13 +521,13 @@ class ShadowcraftComputation:
             s[3], # Crit
             s[4], # Haste
             s[5], # Mastery
-            s[6], # Amplify
-            s[7], # Multistrike
-            s[8], # Readiness
+            0,
+            s[6], # Multistrike
+            s[7], # Versatility
             _level,
-            s[10], # PvP Power
-            s[9], # Resilience Rating
-            pvp_target_armor = _opt.get("pvp_target_armor", 10000))
+            s[9], # PvP Power
+            s[8], # Resilience Rating
+            pvp_target_armor = _opt.get("pvp_target_armor", 1500))
         # ##################################################################################
 
         # Talents
@@ -559,7 +559,7 @@ class ShadowcraftComputation:
             _cycle = settings.CombatCycle(**rotation_options)
         else:
             _cycle = settings.SubtletyCycle(5, **rotation_options)
-        # test_settings = settings.Settings(test_cycle, response_time=.5, duration=360, dmg_poison='dp', utl_poison='lp', is_pvp=charInfo['pvp'],stormlash=charInfo['stormlash'], shiv_interval=charInfo['shiv'])
+        # test_settings = settings.Settings(test_cycle, response_time=.5, duration=360, dmg_poison='dp', utl_poison='lp', is_pvp=charInfo['pvp'], shiv_interval=charInfo['shiv'])
         _settings = settings.Settings(_cycle,
             time_in_execute_range = _opt.get("time_in_execute_range", 0.35),
             response_time = _opt.get("response_time", 0.5),
