@@ -2523,7 +2523,7 @@
       }
       delete stats;
       c = Shadowcraft.lastCalculation;
-      if (c) {
+      if (c && key !== "socketbonus") {
         if (item.dps) {
           if (slot === 15) {
             total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed];
@@ -2561,7 +2561,7 @@
       return total;
     };
     ShadowcraftGear.prototype.sumSlot = function(gear, out, facets) {
-      var EnchantLookup, Gems, ItemLookup, enchant, enchant_id, gem, gid, item, socket, socketIndex, _ref;
+      var EnchantLookup, Gems, ItemLookup, enchant, enchant_id, gem, gid, item, matchesAllSockets, socket, socketIndex, _ref;
       if ((gear != null ? gear.item_id : void 0) == null) {
         return;
       }
@@ -2577,6 +2577,7 @@
         sumItem(out, item);
       }
       if ((facets & FACETS.GEMS) === FACETS.GEMS) {
+        matchesAllSockets = item.sockets && item.sockets.length > 0;
         _ref = item.sockets;
         for (socketIndex in _ref) {
           socket = _ref[socketIndex];
@@ -2587,6 +2588,12 @@
               sumItem(out, gem);
             }
           }
+          if (!gem || !gem[socket]) {
+            matchesAllSockets = false;
+          }
+        }
+        if (matchesAllSockets) {
+          sumItem(out, item, "socketbonus");
         }
       }
       if ((facets & FACETS.ENCHANT) === FACETS.ENCHANT) {
@@ -2878,7 +2885,7 @@
       return true;
     };
     getGemmingRecommendation = function(gem_list, item, returnFull, ignoreSlotIndex, offset) {
-      var broke, data, epValue, gem, gemType, gems, mGems, sGems, straightGemEP, _i, _j, _len, _len2, _ref;
+      var bonus, broke, data, epValue, gem, gemType, gems, sGems, straightGemEP, _i, _j, _len, _len2, _ref;
       data = Shadowcraft.Data;
       if (!item.sockets || item.sockets.length === 0) {
         if (returnFull) {
@@ -2893,7 +2900,6 @@
       straightGemEP = 0;
       if (returnFull) {
         sGems = [];
-        mGems = [];
       }
       _ref = item.sockets;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -2920,9 +2926,11 @@
       }
       epValue = straightGemEP;
       gems = sGems;
+      bonus = returnFull;
       if (returnFull) {
         return {
           ep: epValue,
+          takeBonus: bonus,
           gems: gems
         };
       } else {
@@ -3192,7 +3200,7 @@
       # View helpers
       */
     ShadowcraftGear.prototype.updateDisplay = function(skipUpdate) {
-      var EnchantLookup, EnchantSlots, Gems, ItemLookup, bonuses, buffer, curr_level, data, enchant, enchantable, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, slotIndex, slotSet, socket, ssi, upgradable, upgrade, _base, _i, _len, _len2, _len3, _ref;
+      var EnchantLookup, EnchantSlots, Gems, ItemLookup, allSlotsMatch, amt, bonuses, buffer, curr_level, data, enchant, enchantable, gear, gem, gems, i, item, max_level, opt, reforgable, reforge, slotIndex, slotSet, socket, ssi, stat, upgradable, upgrade, _base, _i, _len, _len2, _len3, _ref, _ref2;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
       EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
@@ -3217,6 +3225,7 @@
           if (item) {
             addAchievementBonuses(item);
             enchantable = (EnchantSlots[item.equip_location] != null) && EnchantSlots[item.equip_location].length > 0;
+            allSlotsMatch = item.sockets && item.sockets.length > 0;
             _ref = item.sockets;
             for (_i = 0, _len3 = _ref.length; _i < _len3; _i++) {
               socket = _ref[_i];
@@ -3225,6 +3234,23 @@
                 socket: socket,
                 gem: gem
               };
+              if (socket === "Prismatic") {
+                continue;
+              }
+              if (!gem || !gem[socket]) {
+                allSlotsMatch = false;
+              }
+            }
+            if (allSlotsMatch) {
+              bonuses = [];
+              _ref2 = item.socketbonus;
+              for (stat in _ref2) {
+                amt = _ref2[stat];
+                bonuses[bonuses.length] = {
+                  stat: titleize(stat),
+                  amount: amt
+                };
+              }
             }
             if (enchant && !enchant.desc) {
               enchant.desc = statsToDesc(enchant);
@@ -3254,6 +3280,7 @@
           opt.ep = item ? get_ep(item, null, i).toFixed(1) : 0;
           opt.slot = i + '';
           opt.gems = gems;
+          opt.socketbonus = bonuses;
           opt.reforgable = reforgable;
           opt.reforge = reforge;
           opt.sockets = item ? item.sockets : null;

@@ -100,7 +100,7 @@ class ShadowcraftGear
 
     delete stats
     c = Shadowcraft.lastCalculation
-    if c
+    if c and key != "socketbonus"
       if item.dps
         if slot == 15
           total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed]
@@ -156,11 +156,16 @@ class ShadowcraftGear
       sumItem(out, item)
 
     if (facets & FACETS.GEMS) == FACETS.GEMS
+      matchesAllSockets = item.sockets and item.sockets.length > 0
       for socketIndex, socket of item.sockets
           gid = gear["g" + socketIndex]
           if gid and gid > 0
             gem = Gems[gid]
             sumItem(out, gem) if(gem)
+          matchesAllSockets = false if !gem or !gem[socket]
+      
+      if matchesAllSockets
+        sumItem(out, item, "socketbonus")
 
     if (facets & FACETS.ENCHANT) == FACETS.ENCHANT
       enchant_id = gear.enchant
@@ -345,9 +350,7 @@ class ShadowcraftGear
         return false
     return true
 
-  # Assumes gem_list is already sorted preferred order.  Also, normalizes
-  # JC-only gem EP to their non-JC-only values to prevent the algorithm from
-  # picking up those gems over the socket bonus.
+  # Assumes gem_list is already sorted preferred order.
   getGemmingRecommendation = (gem_list, item, returnFull, ignoreSlotIndex, offset) ->
     data = Shadowcraft.Data
     if !item.sockets or item.sockets.length == 0
@@ -359,7 +362,6 @@ class ShadowcraftGear
     straightGemEP = 0
     if returnFull
       sGems = []
-      mGems = []
     for gemType in item.sockets
       broke = false
       for gem in gem_list
@@ -373,13 +375,16 @@ class ShadowcraftGear
 
     epValue = straightGemEP
     gems = sGems
+    # if all sockets are filled with gems the bonus always applies
+    # and returnFull is true
+    bonus = returnFull
 
     if returnFull
-      return {ep: epValue, gems: gems}
+      return {ep: epValue, takeBonus: bonus, gems: gems}
     else
       return epValue
 
-  optimizeGems: (depth)->
+  optimizeGems: (depth) ->
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
     data = Shadowcraft.Data
@@ -602,9 +607,19 @@ class ShadowcraftGear
         if item
           addAchievementBonuses(item)
           enchantable = EnchantSlots[item.equip_location]? && EnchantSlots[item.equip_location].length > 0
+          
+          allSlotsMatch = item.sockets && item.sockets.length > 0
           for socket in item.sockets
             gem = Gems[gear["g" + gems.length]]
             gems[gems.length] = {socket: socket, gem: gem}
+            continue if socket == "Prismatic" # prismatic sockets don't contribute to socket bonus
+            if !gem or !gem[socket]
+              allSlotsMatch = false
+          
+          if allSlotsMatch
+            bonuses = []
+            for stat, amt of item.socketbonus
+              bonuses[bonuses.length] = {stat: titleize(stat), amount: amt}
 
           if enchant and !enchant.desc
             enchant.desc = statsToDesc(enchant)
@@ -627,6 +642,7 @@ class ShadowcraftGear
         opt.ep = if item then get_ep(item, null, i).toFixed(1) else 0
         opt.slot = i + ''
         opt.gems = gems
+        opt.socketbonus = bonuses
         opt.reforgable = reforgable
         opt.reforge = reforge
         opt.sockets = if item then item.sockets else null

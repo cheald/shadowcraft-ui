@@ -4,37 +4,39 @@ module WowArmory
 
     @item_enchants = nil
 
-    STAT_INDEX = {
-      :damage_done                      => 41,
-      :dodge                            => 13,
-      :spirit                           => 6,
-      :block_value                      => 48,
-      :critical_strike_avoidance        => 34,
-      :healing_done                     => 42,
-      :parry                            => 14,
-      :stamina                          => 7,
-      :mastery                          => 49,
-      :haste                            => 36,
-      :mana_every_5_seconds             => 43,
-      :shield_block                     => 15,
-      :intellect                        => 5,
-      :attack_power                     => 38,
-      :pvp_resilience                   => 35,
-      :pvp_power                        => 57,
-      :armor_penetration                => 44,
-      :hit                              => 31,
-      :expertise                        => 37,
-      :agility                          => 3,
-      :mana                             => 2,
-      :health                           => 1,
-      :health_every_5_seconds           => 46,
-      :crit                             => 32,
-      :feral_attack_power               => 40,
-      :power                            => 45,
-      :defense                          => 12,
-      :strength                         => 4,
-      :penetration                      => 47,
-      :hit_avoidance                    => 33
+    STAT_LOOKUP = {
+      49=>:mastery, 
+      38=>:attack_power, 
+      5=>:intellect,
+      44=>:armor_penetration,
+      33=>:hit_avoidance,
+      6=>:spirit,
+      12=>:defense,
+      45=>:power,
+      34=>:critical_strike_avoidance,
+      1=>:health,
+      7=>:stamina,
+      3=>:agility,
+      2=>:mana,
+      13=>:dodge,
+      46=>:health_every_5_seconds,
+      57=>:pvp_power,
+      35=>:pvp_resilience,
+      41=>:damage_done,
+      14=>:parry,
+      36=>:haste,
+      47=>:penetration,
+      31=>:hit,
+      42=>:healing_done,
+      4=>:strength, 
+      37=>:expertise,
+      15=>:shield_block,
+      48=>:block_value,
+      32=>:crit,
+      43=>:mana_every_5_seconds,
+      73=>:agility,
+      40=>:versatility,
+      59=>:multistrike
     }
 
     WOWHEAD_MAP = {
@@ -154,7 +156,7 @@ module WowArmory
       "dagger" => 15,
     }
 
-    STAT_LOOKUP = Hash[*STAT_INDEX.map {|k, v| [v, k]}.flatten]
+    ENCHANT_SCALING = 8.0 # for lvl 90 // lvl100 = 80
 
     include Document
     ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable
@@ -292,9 +294,9 @@ module WowArmory
         unless eqstats["socketbonus"].nil?
           self.socket_bonus = {}
           enchant_row = item_enchants[eqstats["socketbonus"].to_s]
-          # TODO if socketbonus includes more than 1 stat this should be supported
+          # TODO if socketbonus includes more than 1 stat update this
           stat = enchant_row[14].to_i
-          self.socket_bonus[STAT_LOOKUP[stat]] = enchant_row[11].to_i
+          self.socket_bonus[STAT_LOOKUP[stat]] = enchant_row[17].to_f * ENCHANT_SCALING
         end
       end
       unless eqstats["reqskill"].nil?
