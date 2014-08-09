@@ -7,38 +7,40 @@ module WowArmory
     @rand_prop_points = nil
     @item_data = nil
     @item_damage_one_hand = nil
-
-    STAT_INDEX = {
-      :damage_done                      => 41,
-      :dodge                            => 13,
-      :spirit                           => 6,
-      :block_value                      => 48,
-      :critical_strike_avoidance        => 34,
-      :healing_done                     => 42,
-      :parry                            => 14,
-      :stamina                          => 7,
-      :mastery                          => 49,
-      :haste                            => 36,
-      :mana_every_5_seconds             => 43,
-      :shield_block                     => 15,
-      :intellect                        => 5,
-      :attack_power                     => 38,
-      :pvp_resilience                   => 35,
-      :pvp_power                        => 57,
-      :armor_penetration                => 44,
-      :hit                              => 31,
-      :expertise                        => 37,
-      :agility                          => 3,
-      :mana                             => 2,
-      :health                           => 1,
-      :health_every_5_seconds           => 46,
-      :crit                             => 32,
-      :feral_attack_power               => 40,
-      :power                            => 45,
-      :defense                          => 12,
-      :strength                         => 4,
-      :penetration                      => 47,
-      :hit_avoidance                    => 33
+    
+    STAT_LOOKUP = {
+      49=>:mastery, 
+      38=>:attack_power, 
+      5=>:intellect,
+      44=>:armor_penetration,
+      33=>:hit_avoidance,
+      6=>:spirit,
+      12=>:defense,
+      45=>:power,
+      34=>:critical_strike_avoidance,
+      1=>:health,
+      7=>:stamina,
+      3=>:agility,
+      2=>:mana,
+      13=>:dodge,
+      46=>:health_every_5_seconds,
+      57=>:pvp_power,
+      35=>:pvp_resilience,
+      41=>:damage_done,
+      14=>:parry,
+      36=>:haste,
+      47=>:penetration,
+      31=>:hit,
+      42=>:healing_done,
+      4=>:strength, 
+      37=>:expertise,
+      15=>:shield_block,
+      48=>:block_value,
+      32=>:crit,
+      43=>:mana_every_5_seconds,
+      73=>:agility,
+      40=>:versatility,
+      59=>:multistrike
     }
 
     WOWHEAD_MAP = {
@@ -50,7 +52,9 @@ module WowArmory
       "agi" => "agility",
       "sta" => "stamina",
       "pvppower" => "pvp_power",
-      "resirtng" => "pvp_resilience"
+      "resirtng" => "pvp_resilience",
+      "multistrike" => "multistrike",
+      "versatility" => "versatility"
     }
 
     SUFFIX_NAME_MAP = {
@@ -76,9 +80,7 @@ module WowArmory
       357 => "of the Zephyr", # 5.3 Zephyr - Agi
     }
 
-    ITEM_SOCKET_COST = 160.0 # 160 is for every item from mop
-
-    STAT_LOOKUP = Hash[*STAT_INDEX.map {|k, v| [v, k]}.flatten]
+    ITEM_SOCKET_COST = 8.0 # lvl 100 = 30.
 
     ACCESSORS = :stats, :name, :dps, :random_suffix, :upgrade_level
     attr_accessor *ACCESSORS
@@ -129,22 +131,17 @@ module WowArmory
 
       self.stats = {}
       # wod offset
-      offset = -1;
+      offset = 0
       10.times do |i|
-        break if row[17+offset+i] == "-1"
-        enchantid = row[17+offset+i]
-        multiplier = row[37+offset+i].to_f
+        break if row[16+offset+i] == "-1"
+        enchantid = row[16+offset+i] # more or less stat-id
+        multiplier = row[36+offset+i].to_f
+        socket_mult  = row[46+offset+i].to_f
         basevalue = base[1+quality_index(@properties[:quality])*5+slot_index(@properties[:equip_location])]
         if enchantid != "0"
           stat = enchantid.to_i
           
-          value = (multiplier/10000.0) * basevalue.to_f
-          if value < 0
-            puts enchantid
-            puts multiplier
-            puts basevalue
-            abort('lol')
-          end
+          value = (multiplier/10000.0) * basevalue.to_f - socket_mult * ITEM_SOCKET_COST
           self.stats[STAT_LOOKUP[stat]] = value.round
           #puts STAT_LOOKUP[stat]
           #puts self.stats[STAT_LOOKUP[stat]]

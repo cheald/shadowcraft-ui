@@ -237,9 +237,9 @@ class Item
     true
   end
 
-  def self.populate_gems(source = "wowapi")
-    gem_ids = get_ids_from_wowhead "http://www.wowhead.com/items=3?filter=qu=2:3;minle=86;maxle=90"
-    gem_ids += get_ids_from_wowhead  "http://www.wowhead.com/items=3?filter=qu=2:3:4;minle=86;maxle=90;cr=99;crs=11;crv=0"
+  def self.populate_gems(prefix = "www", source = "wowapi")
+    gem_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=3?filter=qu=2:3;minle=86;maxle=90"
+    gem_ids += get_ids_from_wowhead  "http://#{prefix}.wowhead.com/items=3?filter=qu=2:3:4;minle=86;maxle=90;cr=99;crs=11;crv=0"
 
     gem_ids += [89873] # 500agi gem
     gem_ids += [95346] # legendary meta gem
