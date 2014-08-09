@@ -394,12 +394,11 @@ class ShadowcraftTalents
     Shadowcraft.update()
 
   updateTalentContribution = (LC) ->
-    return unless LC.talent_ranking_main
+    return unless LC.talent_ranking
     sets = {
-      "Primary": LC.talent_ranking_main,
-      "Secondary": LC.talent_ranking_off
+      "Primary": LC.talent_ranking,
     }
-    rankings = _.extend({}, LC.talent_ranking_main, LC.talent_ranking_off)
+    rankings = _.extend({}, LC.talent_ranking)
     max = _.max(rankings)
     $("#talentrankings .talent_contribution").hide()
     for setKey, setVal of sets

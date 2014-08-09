@@ -114,11 +114,11 @@ class ShadowcraftBackend
     gear_ids = []
     for k, g of data.gear
       _item_id = if g.upgrade_level then Math.floor(g.item_id / 1000000) else g.item_id
-      item = [
-        _item_id,
-        if g.upgrade_level then g.upgrade_level else 0
-      ]
       if _item_id
+        item = [
+          _item_id,
+          ItemLookup[g.item_id].ilvl
+        ]
         gear_ids.push(item)
 
     payload.g = gear_ids

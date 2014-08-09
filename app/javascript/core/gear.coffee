@@ -132,11 +132,12 @@ class ShadowcraftGear
         else if pre and enchant
           total += c[pre + "ep"][pre + enchant]
 
-      upgrade_level = if item.upgrade_level? then item.upgrade_level else 0
+      item_level = item.ilvl
       if c.trinket_ranking[get_item_id(item)]
-        if c.trinket_ranking[get_item_id(item)][upgrade_level]
-          total += c.trinket_ranking[get_item_id(item)][upgrade_level]
+        if c.trinket_ranking[get_item_id(item)][item_level]
+          total += c.trinket_ranking[get_item_id(item)][item_level]
         else
+          console.warn "error in trinket_ranking", item_level, item
           total += c.trinket_ranking[get_item_id(item)][0]
 
     total

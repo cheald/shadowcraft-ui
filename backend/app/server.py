@@ -2,6 +2,7 @@ import sys
 import json
 import __builtin__
 
+from collections import defaultdict
 from math import floor
 from twisted.application import service, internet
 from twisted.internet import threads
@@ -88,82 +89,92 @@ class ShadowcraftComputation:
         #72897: 'arrow_of_time',
 
         # 5.0
-        81125: "windswept_pages",
-        79328: "relic_of_xuen",
-        86332: "terror_in_the_mists",
-        87167: "heroic_terror_in_the_mists",
-        86890: "lfr_terror_in_the_mists",
-        86132: "bottle_of_infinite_stars",
-        87057: "heroic_bottle_of_infinite_stars",
-        86791: "lfr_bottle_of_infinite_stars",
-        81267: "searing_words",
-        87574: "corens_cold_chromium_coaster",
+        #81125: "windswept_pages",
+        #79328: "relic_of_xuen",
+        #86332: "terror_in_the_mists",
+        #87167: "heroic_terror_in_the_mists",
+        #86890: "lfr_terror_in_the_mists",
+        #86132: "bottle_of_infinite_stars",
+        #87057: "heroic_bottle_of_infinite_stars",
+        #86791: "lfr_bottle_of_infinite_stars",
+        #81267: "searing_words",
+        #87574: "corens_cold_chromium_coaster",
         #84072: "braid_of_ten_songs",
-        75274: "zen_alchemist_stone",
+        #75274: "zen_alchemist_stone",
 
         # 5.2
-        95665: 'lfr_bad_juju',
-        94523: 'bad_juju',
-        96037: 'thunder_bad_juju',
-        96409: 'heroic_bad_juju',
-        96781: 'heroic_thunder_bad_juju',
-        95802: 'lfr_rune_of_re_origination',
-        94532: 'rune_of_re_origination',
-        96174: 'thunder_rune_of_re_origination',
-        96546: 'heroic_rune_of_re_origination',
-        96918: 'heroic_thunder_rune_of_re_origination',
-        95748: 'lfr_talisman_of_bloodlust',
-        94522: 'talisman_of_bloodlust',
-        96120: 'thunder_talisman_of_bloodlust',
-        96492: 'heroic_talisman_of_bloodlust',
-        96864: 'heroic_thunder_talisman_of_bloodlust',
-        95625: 'lfr_renatakis_soul_charm',
-        94512: 'renatakis_soul_charm',
-        95997: 'thunder_renatakis_soul_charm',
-        96369: 'heroic_renatakis_soul_charm',
-        96741: 'heroic_thunder_renatakis_soul_charm',
-        94511: 'vicious_talisman_of_the_shado-pan_assault',
+        #95665: 'lfr_bad_juju',
+        #94523: 'bad_juju',
+        #96037: 'thunder_bad_juju',
+        #96409: 'heroic_bad_juju',
+        #96781: 'heroic_thunder_bad_juju',
+        #95802: 'lfr_rune_of_re_origination',
+        #94532: 'rune_of_re_origination',
+        #96174: 'thunder_rune_of_re_origination',
+        #96546: 'heroic_rune_of_re_origination',
+        #96918: 'heroic_thunder_rune_of_re_origination',
+        #95748: 'lfr_talisman_of_bloodlust',
+        #94522: 'talisman_of_bloodlust',
+        #96120: 'thunder_talisman_of_bloodlust',
+        #96492: 'heroic_talisman_of_bloodlust',
+        #96864: 'heroic_thunder_talisman_of_bloodlust',
+        #95625: 'lfr_renatakis_soul_charm',
+        #94512: 'renatakis_soul_charm',
+        #95997: 'thunder_renatakis_soul_charm',
+        #96369: 'heroic_renatakis_soul_charm',
+        #96741: 'heroic_thunder_renatakis_soul_charm',
+        #94511: 'vicious_talisman_of_the_shado-pan_assault',
 
         # 5.4
-        102248: 'fury_of_xuen', # legendary cloak proc
+        #102248: 'fury_of_xuen', # legendary cloak proc
 
         103686: 'discipline_of_xuen',
-        103986: 'timeless_discipline_of_xuen',
+        103986: 'discipline_of_xuen',
 
-        105029: 'lfr_haromms_talisman',
-        104780: 'flex_haromms_talisman',
+        105029: 'haromms_talisman',
+        104780: 'haromms_talisman',
         102301: 'haromms_talisman',
-        105278: 'war_haromms_talisman',
-        104531: 'heroic_haromms_talisman',
-        105527: 'heroic_war_haromms_talisman',
+        105278: 'haromms_talisman',
+        104531: 'haromms_talisman',
+        105527: 'haromms_talisman',
         
-        105082: 'lfr_sigil_of_rampage',
-        104833: 'flex_sigil_of_rampage',
+        105082: 'sigil_of_rampage',
+        104833: 'sigil_of_rampage',
         102302: 'sigil_of_rampage',
-        105331: 'war_sigil_of_rampage',
-        104584: 'heroic_sigil_of_rampage',
-        105580: 'heroic_war_sigil_of_rampage',
+        105331: 'sigil_of_rampage',
+        104584: 'sigil_of_rampage',
+        105580: 'sigil_of_rampage',
         
-        104974: 'lfr_assurance_of_consequence',
-        104725: 'flex_assurance_of_consequence',
+        104974: 'assurance_of_consequence',
+        104725: 'assurance_of_consequence',
         102292: 'assurance_of_consequence',
-        105223: 'war_assurance_of_consequence',
-        104476: 'heroic_assurance_of_consequence',
-        105472: 'heroic_war_assurance_of_consequence',
+        105223: 'assurance_of_consequence',
+        104476: 'assurance_of_consequence',
+        105472: 'assurance_of_consequence',
 
-        105114: 'lfr_ticking_ebon_detonator',
-        104865: 'flex_ticking_ebon_detonator',
+        105114: 'ticking_ebon_detonator',
+        104865: 'ticking_ebon_detonator',
         102311: 'ticking_ebon_detonator',
-        105363: 'war_ticking_ebon_detonator',
-        104616: 'heroic_ticking_ebon_detonator',
-        105612: 'heroic_war_ticking_ebon_detonator',
+        105363: 'ticking_ebon_detonator',
+        104616: 'ticking_ebon_detonator',
+        105612: 'ticking_ebon_detonator',
 
-        105111: 'lfr_thoks_tail_tip',
-        104862: 'flex_thoks_tail_tip',
+        105111: 'thoks_tail_tip',
+        104862: 'thoks_tail_tip',
         102305: 'thoks_tail_tip',
-        105360: 'war_thoks_tail_tip',
-        104613: 'heroic_thoks_tail_tip',
-        105609: 'heroic_war_thoks_tail_tip',
+        105360: 'thoks_tail_tip',
+        104613: 'thoks_tail_tip',
+        105609: 'thoks_tail_tip',
+    }
+    
+    # used for rankings
+    trinketGroups = {
+      'assurance_of_consequence': [(528,532,536,540,544),(540,544,548,552,556),(553,557,561,565,569),(559,563,567,571,575),(566,570,574,578,582),(572,576,580,584,588)],
+      'haromms_talisman': [(528,532,536,540,544),(540,544,548,552,556),(553,557,561,565,569),(559,563,567,571,575),(566,570,574,578,582),(572,576,580,584,588)],
+      'sigil_of_rampage': [(528,532,536,540,544),(540,544,548,552,556),(553,557,561,565,569),(559,563,567,571,575),(566,570,574,578,582),(572,576,580,584,588)],
+      'ticking_ebon_detonator': [(528,532,536,540,544),(540,544,548,552,556),(553,557,561,565,569),(559,563,567,571,575),(566,570,574,578,582),(572,576,580,584,588)],
+      'thoks_tail_tip': [(528,532,536,540,544),(540,544,548,552,556),(553,557,561,565,569),(559,563,567,571,575),(566,570,574,578,582),(572,576,580,584,588)],
+      'discipline_of_xuen': [(496,500,504,508,512),(535,539,543,547,551)],
     }
     
     gearBoosts = {
@@ -193,8 +204,12 @@ class ShadowcraftComputation:
         93258: "woundripper_medallion"
     }
     
+    # combines gearProcs and gearBoosts
     trinketMap = dict(gearProcs, **gearBoosts)
-    trinkets = trinketMap.values()
+
+    trinketMapReverse = defaultdict(list)
+    for key,value in trinketMap.iteritems():
+      trinketMapReverse[value].append(key)
 
     tier11IDS = frozenset([60298, 65240, 60299, 65241, 60300, 65242, 60302, 65243, 60301, 65239])
     tier12IDS = frozenset([71046, 71538, 71047, 71539, 71048, 71540, 71049, 71541, 71045, 71537])
@@ -599,16 +614,20 @@ class ShadowcraftComputation:
             out["meta"] = calculator.get_other_ep(['chaotic_metagem','legendary_capacitive_meta'])
             out["other_ep"] = calculator.get_other_ep(['rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc','rogue_t16_2pc','rogue_t16_4pc'])
             
-            trinket_rankings = [] # calculator.get_upgrades_ep_fast(self.trinkets)
-            trinketMapReverse = dict((v,k) for k,v in self.trinketMap.iteritems())
+            trinket_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
+                        
             out["trinket_ranking"] = {}
+            # TODO not super crazy good, need some more work to not send duplicate data
+            # send trinket_ranking directly and the mapping of itemid and proc_name
+            # and when applying the ep to an item use both tables
             for k in trinket_rankings:
-                if k in trinketMapReverse:
-                    id = trinketMapReverse[k]
-                    try:
-                        out["trinket_ranking"][id] = [floor(float(x) * 10) / 10 for x in trinket_rankings[k]]
-                    except ValueError:
-                        pass
+                if k in self.trinketMapReverse:
+                    ids = self.trinketMapReverse[k]
+                    for id in ids:
+                      try:
+                          out["trinket_ranking"][id] = trinket_rankings[k]
+                      except ValueError:
+                          pass
             
             # Compute weapon ep
             out["mh_ep"], out["oh_ep"] = calculator.get_weapon_ep(dps=True, enchants=True)
@@ -619,7 +638,7 @@ class ShadowcraftComputation:
             #    out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
             
             # Talent ranking is slow. This is done last per a note from nextormento.
-            out["talent_ranking_main"] = [] # calculator.get_talents_ranking()      
+            out["talent_ranking"] = [] # calculator.get_talents_ranking()      
 
             return out
         except (InputNotModeledException, exceptions.InvalidInputException) as e:

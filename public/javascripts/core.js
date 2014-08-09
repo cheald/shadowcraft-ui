@@ -441,8 +441,8 @@
       for (k in _ref3) {
         g = _ref3[k];
         _item_id = g.upgrade_level ? Math.floor(g.item_id / 1000000) : g.item_id;
-        item = [_item_id, g.upgrade_level ? g.upgrade_level : 0];
         if (_item_id) {
+          item = [_item_id, ItemLookup[g.item_id].ilvl];
           gear_ids.push(item);
         }
       }
@@ -2502,7 +2502,7 @@
       return null;
     };
     get_ep = function(item, key, slot, ignore) {
-      var c, data, enchant, pre, stat, stats, total, upgrade_level, value, weight, weights;
+      var c, data, enchant, item_level, pre, stat, stats, total, value, weight, weights;
       data = Shadowcraft.Data;
       weights = Weights;
       stats = {};
@@ -2541,11 +2541,12 @@
             total += c[pre + "ep"][pre + enchant];
           }
         }
-        upgrade_level = item.upgrade_level != null ? item.upgrade_level : 0;
+        item_level = item.ilvl;
         if (c.trinket_ranking[get_item_id(item)]) {
-          if (c.trinket_ranking[get_item_id(item)][upgrade_level]) {
-            total += c.trinket_ranking[get_item_id(item)][upgrade_level];
+          if (c.trinket_ranking[get_item_id(item)][item_level]) {
+            total += c.trinket_ranking[get_item_id(item)][item_level];
           } else {
+            console.warn("error in trinket_ranking doing", item_level);
             total += c.trinket_ranking[get_item_id(item)][0];
           }
         }
