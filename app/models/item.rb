@@ -41,6 +41,8 @@ class Item
     true
   end
 
+  # Unique Item idenfitifer
+  # TODO subject to change
   def uid
     # a bit silly
     uid = remote_id
