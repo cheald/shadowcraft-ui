@@ -24,6 +24,9 @@ class ShadowcraftGear
     5125: "dancing_steel"
     4894: "swordguard_embroidery"
 
+  @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
+  @LEGENDARY_META_GEM = 95346
+
   Sets =
     T14:
       ids: [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128]
@@ -118,6 +121,10 @@ class ShadowcraftGear
           #else
           total += (item.dps * c.oh_ep.oh_dps)
           total += c.oh_speed_ep["oh_" + item.speed]
+        else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
+          total += c.meta.chaotic_metagem
+        else if ShadowcraftGear.LEGENDARY_META_GEM == item.id
+          total += c.meta.legendary_capacitive_meta || 0
       else if PROC_ENCHANTS[get_item_id(item)]
         switch slot
           when 14
