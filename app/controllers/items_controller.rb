@@ -15,6 +15,8 @@ class ItemsController < ApplicationController
     end
   end
 
+  # Create a new item
+  # Is it used anywhere?
   def create
     item = Item.find_or_create_by(:remote_id => params[:item][:remote_id])
 
@@ -26,6 +28,7 @@ class ItemsController < ApplicationController
     end
   end
 
+  # Rebuild the item database based on the given character hash
   def rebuild
     char = Character.criteria.id(params[:c]).first
     player_class = "unknown"
@@ -36,15 +39,20 @@ class ItemsController < ApplicationController
     first_item = Item.desc(:created_at).first
     anchor = flash[:reload].blank? ? nil : "reload"
     f = File.join(Rails.root, "public", filename)
+    # If file not exists or an Item from Database is newer then the file creation time
     if !File.exists?(f) or File.mtime(f) < first_item.created_at
+      # initiate indexing
       index
+      # render everything to a file, whatever here happens?
       render_to_string :action => "index.js"
     end
+    # finally go back to the character page
     redirect_to params[:c].blank? ? :back : character_path(character_options(char).merge(:anchor => anchor))
   end
 
   private
 
+  # Get all items, gems, etc. and filter out not needed ones for rogues
   def index_rogue
     @alt_items = []
     VALID_SLOTS.each do |i|

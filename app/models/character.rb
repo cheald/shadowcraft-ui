@@ -27,6 +27,8 @@ class Character
   validates_uniqueness_of :uid
   validates_presence_of :uid
   validates_presence_of :properties, :message => 'empty: could not load character from the Armory.'
+  validate :is_supported_class?
+  validate :is_supported_level?
 
   before_validation :update_from_armory!
   before_validation :write_uid
@@ -154,17 +156,20 @@ class Character
   end
 
   def is_supported_class?
+    return false unless properties
+    return false unless properties["player_class"]
     unless CLASSES.include? properties["player_class"].downcase
-      errors.add :character, "The #{properties["player_class"]} class is not currently supported by Shadowcraft."
+      errors.add :character, "class '#{properties["player_class"]}' is not supported by Shadowcraft. Only rogues are supported."
       return false
     end
     return true
   end
 
   def is_supported_level?
+    return false unless properties
+    return false unless properties["level"]
     unless properties["level"] >= 90
-      errors.add :character, "Rogues under level 90 are not currently supported by Shadowcraft."
-      #raise WowArmory::ArmoryError.new "Rogues under level 90 are not currently supported by Shadowcraft.", 404
+      errors.add :character, "under level 90 are not supported by Shadowcraft."
       return false
     end
     return true

@@ -4,24 +4,30 @@ class ApplicationController < ActionController::Base
   
   before_filter :recompile_coffeescript
 
+  # Render an error page on 500 Status code
   def error
     render :template => "errors/500"
   end
 
+  # Render an error page on 404 Status code
   def missing
     render :template => "errors/404"
   end
 
   private
 
+  # When cookie defect show an bad auth page
   def cookie_warning
     render :template => "errors/bad_auth"
   end
 
+  # Returns normalized character data including char name, realm, and region
   def character_options(char)
     {:region => char.region.downcase, :realm => char.normalize_realm(char.realm), :name => char.normalize_character(char.name)}
   end
-  
+
+  # Recompiles the coffeescript files in development mode.
+  # Productive Mode uses the generated core.js file.
   def recompile_coffeescript
     return unless Rails.env.development?
     
