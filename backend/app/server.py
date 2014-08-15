@@ -394,8 +394,6 @@ class ShadowcraftComputation:
         for b in input.get("b", []):
             b = int(b)
             if b >= 0 and b < __max:
-                if self.buffMap[b] == 'versatility_buff': 
-                  continue
                 buff_list.append(self.buffMap[b])
 
         _buffs = buffs.Buffs(*buff_list, level=_level)
