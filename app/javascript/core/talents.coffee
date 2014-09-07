@@ -94,7 +94,6 @@ class ShadowcraftTalents
     updateTalentAvailability(null)
 
   getTalents = ->
-    data = Shadowcraft.Data
     talent_rows = ['.','.','.','.','.','.','.']
     $("#talentframe .talent").each ->
       position = $.data(this, "position")
@@ -143,15 +142,7 @@ class ShadowcraftTalents
       talentsSpent += dir
       tree.rowPoints[position.row] += dir
 
-      #Shadowcraft.Data["tree" + position.treeIndex] = tree.points
       $.data(button, "spentButton").text(tree.points)
-      #$points = $.data(button, "pointsButton")
-      #$points.get(0).className = "points"
-      #if points.cur == points.max
-      #  $points.addClass("full")
-      #else if points.cur > 0
-      #  $points.addClass("partial")
-      #$points.text(points.cur + "/" + points.max)
       unless skipUpdate
         data.activeTalents = getTalents()
         updateTalentAvailability $(button).parent()
@@ -169,23 +160,23 @@ class ShadowcraftTalents
 
   initTalentTree: ->
     switch Shadowcraft.Data.options.general.patch
-      when 52,54
-        Talents = Shadowcraft.ServerData.TALENTS_52
-        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52
-      when 50
-        Talents = Shadowcraft.ServerData.TALENTS
-        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP
       when 60
         Talents = Shadowcraft.ServerData.TALENTS_WOD
         TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD
       else
-        Talents = Shadowcraft.ServerData.TALENTS_52
-        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52
+        Talents = Shadowcraft.ServerData.TALENTS_WOD
+        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD
 
     buffer = ""
+
+    talentTiers = [{tier:"0",level:"15"},{tier:"1",level:"30"},{tier:"2",level:"45"},{tier:"3",level:"60"},{tier:"4",level:"75"},{tier:"5",level:"90"},{tier:"6",level:"100"}]
+    _.filter(talentTiers, (tier) ->
+      return tier.level <= (Shadowcraft.Data.options.general.level || 100)
+    )
+
     buffer += Templates.talentTier({
       background: 1,
-      levels: [{tier:"0",level:"15"},{tier:"1",level:"30"},{tier:"2",level:"45"},{tier:"3",level:"60"},{tier:"4",level:"75"},{tier:"5",level:"90"},{tier:"6",level:"100"}]
+      levels: talentTiers
     })
     for treeIndex, tree of Talents
       buffer += Templates.talentTree({
@@ -250,7 +241,7 @@ class ShadowcraftTalents
 
   initTalentsPane: ->
     this.initTalentTree()
-    
+
     data = Shadowcraft.Data
     buffer = ""
     for talent in data.talents
@@ -271,7 +262,6 @@ class ShadowcraftTalents
 
     $("#talentsets").get(0).innerHTML = buffer
     this.updateActiveTalents()
-    initTalentsPane = ->
 
   setGlyphs: (glyphs) ->
     Shadowcraft.Data.glyphs = glyphs
@@ -353,13 +343,9 @@ class ShadowcraftTalents
     count
 
   setGlyph = (e, active) ->
-    GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
-    data = Shadowcraft.Data
-
     $e = $(e)
     $set = $e.parents(".glyphset")
     id = parseInt($e.data("id"), 10)
-    glyph = GlyphLookup[id]
     if active
       $e.addClass("activated")
     else
@@ -371,13 +357,11 @@ class ShadowcraftTalents
       $set.removeClass("full")
 
   toggleGlyph = (e, override) ->
-    GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
     data = Shadowcraft.Data
 
     $e = $(e)
     $set = $e.parents(".glyphset")
     id = parseInt($e.data("id"), 10)
-    glyph = GlyphLookup[id]
     if $e.hasClass("activated")
       $e.removeClass("activated")
       data.glyphs = _.without(data.glyphs, id)

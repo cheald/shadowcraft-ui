@@ -21,8 +21,6 @@
       R.GEMS = #{raw gem_json.to_json};
       R.ITEMS = #{raw item_json.to_json};
       R.ENCHANTS = #{raw enchant_json.to_json};
-      R.TALENTS = #{raw @talents.to_json};
-      R.TALENTS_52 = #{raw @talents_52.to_json};
       R.TALENTS_WOD = #{raw @talents_wod.to_json};
       R.GLYPHS = #{raw @glyphs.to_json};
 
@@ -104,6 +102,7 @@
         R.ENCHANT_SLOTS[s][R.ENCHANT_SLOTS[s].length] = enchant;
         R.ENCHANT_LOOKUP[enchant.id] = enchant;
       }
+      R.ITEM_LOOKUP2 = {};
       R.ITEM_LOOKUP = {};
       for(i = 0; i < R.ITEMS.length; i++) {
         var item = R.ITEMS[i];
@@ -116,25 +115,13 @@
         }
 
         if(item.equip_location == 21 || item.equip_location == 13) {
-          R.SLOT_CHOICES.offhand[R.SLOT_CHOICES.offhand.length] = item;   // Dual-hand items get added to offhands, too.
+          R.SLOT_CHOICES.offhand[R.SLOT_CHOICES.offhand.length] = item.id;   // Dual-hand items get added to offhands, too.
         }
         item.equip_location = getRealSlot(item.equip_location, true);
 
         if(R.SLOT_CHOICES[item.equip_location] === undefined) { R.SLOT_CHOICES[item.equip_location] = []; }
-        R.SLOT_CHOICES[item.equip_location][R.SLOT_CHOICES[item.equip_location].length] = item;
+        R.SLOT_CHOICES[item.equip_location][R.SLOT_CHOICES[item.equip_location].length] = item.id;
         R.ITEM_LOOKUP[item.id] = item;
-      }
-      R.TALENT_LOOKUP = {};
-        for(var talent = 0; talent < R.TALENTS.talent.length; talent++) {
-          var t = R.TALENTS.talent[talent];
-          t.maxRank = t.rank.length || 1;
-          R.TALENT_LOOKUP[t.tier + ":" + t.column] = t;
-      }
-      R.TALENT_LOOKUP_52 = {};
-        for(var talent = 0; talent < R.TALENTS_52.talent.length; talent++) {
-          var t = R.TALENTS_52.talent[talent];
-          t.maxRank = t.rank.length || 1;
-          R.TALENT_LOOKUP_52[t.tier + ":" + t.column] = t;
       }
       R.TALENT_LOOKUP_WOD = {};
         for(var talent = 0; talent < R.TALENTS_WOD.talent.length; talent++) {

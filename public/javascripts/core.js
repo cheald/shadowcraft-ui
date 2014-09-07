@@ -1880,8 +1880,7 @@
       return updateTalentAvailability(null);
     };
     getTalents = function() {
-      var data, talent_rows;
-      data = Shadowcraft.Data;
+      var talent_rows;
       talent_rows = ['.', '.', '.', '.', '.', '.', '.'];
       $("#talentframe .talent").each(function() {
         var points, position;
@@ -1956,52 +1955,47 @@
       return this.setGlyphs(data.glyphs);
     };
     ShadowcraftTalents.prototype.initTalentTree = function() {
-      var TalentLookup, Talents, buffer, talentTrees, talentframe, tframe, tree, treeIndex;
+      var TalentLookup, Talents, buffer, talentTiers, talentTrees, talentframe, tframe, tree, treeIndex;
       switch (Shadowcraft.Data.options.general.patch) {
-        case 52:
-        case 54:
-          Talents = Shadowcraft.ServerData.TALENTS_52;
-          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52;
-          break;
-        case 50:
-          Talents = Shadowcraft.ServerData.TALENTS;
-          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP;
-          break;
         case 60:
           Talents = Shadowcraft.ServerData.TALENTS_WOD;
           TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD;
           break;
         default:
-          Talents = Shadowcraft.ServerData.TALENTS_52;
-          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52;
+          Talents = Shadowcraft.ServerData.TALENTS_WOD;
+          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD;
       }
       buffer = "";
+      talentTiers = [
+        {
+          tier: "0",
+          level: "15"
+        }, {
+          tier: "1",
+          level: "30"
+        }, {
+          tier: "2",
+          level: "45"
+        }, {
+          tier: "3",
+          level: "60"
+        }, {
+          tier: "4",
+          level: "75"
+        }, {
+          tier: "5",
+          level: "90"
+        }, {
+          tier: "6",
+          level: "100"
+        }
+      ];
+      _.filter(talentTiers, function(tier) {
+        return tier.level <= (Shadowcraft.Data.options.general.level || 100);
+      });
       buffer += Templates.talentTier({
         background: 1,
-        levels: [
-          {
-            tier: "0",
-            level: "15"
-          }, {
-            tier: "1",
-            level: "30"
-          }, {
-            tier: "2",
-            level: "45"
-          }, {
-            tier: "3",
-            level: "60"
-          }, {
-            tier: "4",
-            level: "75"
-          }, {
-            tier: "5",
-            level: "90"
-          }, {
-            tier: "6",
-            level: "100"
-          }
-        ]
+        levels: talentTiers
       });
       for (treeIndex in Talents) {
         tree = Talents[treeIndex];
@@ -2094,7 +2088,7 @@
       });
     };
     ShadowcraftTalents.prototype.initTalentsPane = function() {
-      var buffer, data, initTalentsPane, talent, talentName, talentSet, _i, _len, _ref;
+      var buffer, data, talent, talentName, talentSet, _i, _len, _ref;
       this.initTalentTree();
       data = Shadowcraft.Data;
       buffer = "";
@@ -2118,8 +2112,7 @@
         });
       }
       $("#talentsets").get(0).innerHTML = buffer;
-      this.updateActiveTalents();
-      return initTalentsPane = function() {};
+      return this.updateActiveTalents();
     };
     ShadowcraftTalents.prototype.setGlyphs = function(glyphs) {
       Shadowcraft.Data.glyphs = glyphs;
@@ -2247,13 +2240,10 @@
       return count;
     };
     setGlyph = function(e, active) {
-      var $e, $set, GlyphLookup, data, glyph, id;
-      GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP;
-      data = Shadowcraft.Data;
+      var $e, $set, id;
       $e = $(e);
       $set = $e.parents(".glyphset");
       id = parseInt($e.data("id"), 10);
-      glyph = GlyphLookup[id];
       if (active) {
         $e.addClass("activated");
       } else {
@@ -2267,13 +2257,11 @@
       }
     };
     toggleGlyph = function(e, override) {
-      var $e, $set, GlyphLookup, data, glyph, id;
-      GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP;
+      var $e, $set, data, id;
       data = Shadowcraft.Data;
       $e = $(e);
       $set = $e.parents(".glyphset");
       id = parseInt($e.data("id"), 10);
-      glyph = GlyphLookup[id];
       if ($e.hasClass("activated")) {
         $e.removeClass("activated");
         data.glyphs = _.without(data.glyphs, id);
@@ -2407,7 +2395,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getMaxUpgradeLevel, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getItem, getItems, getMaxUpgradeLevel, getRegularGemEpValue, getSimpleEPForUpgrade, getStatWeight, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
@@ -2428,8 +2416,7 @@
       4441: "windsong",
       4443: "elemental_force",
       4444: "dancing_steel",
-      5125: "dancing_steel",
-      4894: "swordguard_embroidery"
+      5125: "dancing_steel"
     };
     ShadowcraftGear.CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886];
     ShadowcraftGear.LEGENDARY_META_GEM = 95346;
@@ -2453,6 +2440,13 @@
         bonuses: {
           4: "rogue_t16_4pc",
           2: "rogue_t16_2pc"
+        }
+      },
+      T17: {
+        ids: [115570, 115571, 115572, 115573, 115574],
+        bonuses: {
+          4: "rogue_t17_4pc",
+          2: "rogue_t17_2pc"
         }
       }
     };
@@ -2503,7 +2497,9 @@
     };
     sumItem = function(s, i, key) {
       var stat;
-      key || (key = "stats");
+      if (key == null) {
+        key = "stats";
+      }
       for (stat in i[key]) {
         s[stat] || (s[stat] = 0);
         s[stat] += i[key][stat];
@@ -2511,9 +2507,7 @@
       return null;
     };
     get_ep = function(item, key, slot, ignore) {
-      var c, data, enchant, item_level, pre, stat, stats, total, value, weight, weights;
-      data = Shadowcraft.Data;
-      weights = Weights;
+      var c, enchant, item_level, pre, stat, stats, total, value, weight;
       stats = {};
       sumItem(stats, item, key);
       total = 0;
@@ -2630,9 +2624,7 @@
       return this.statSum[stat] || 0;
     };
     getStatWeight = function(stat, num, ignore, ignoreAll) {
-      var ItemLookup, data, exist, neg;
-      data = Shadowcraft.Data;
-      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
+      var exist, neg;
       exist = 0;
       if (!ignoreAll) {
         exist = Shadowcraft.Gear.getStat(stat);
@@ -2891,8 +2883,7 @@
       return true;
     };
     getGemmingRecommendation = function(gem_list, item, returnFull, ignoreSlotIndex, offset) {
-      var bonus, broke, data, epValue, gem, gemType, gems, sGems, straightGemEP, _i, _j, _len, _len2, _ref;
-      data = Shadowcraft.Data;
+      var bonus, broke, epValue, gem, gemType, gems, sGems, straightGemEP, _i, _j, _len, _len2, _ref;
       if (!item.sockets || item.sockets.length === 0) {
         if (returnFull) {
           return {
@@ -3046,10 +3037,9 @@
       return list;
     };
     ShadowcraftGear.prototype.setGems = function(_gems) {
-      var ItemLookup, g, gear, gem, gems, i, id, item, model, s, slot, _i, _len, _len2, _ref;
+      var g, gear, gem, gems, i, id, model, s, slot, _i, _len, _len2, _ref;
       Shadowcraft.Console.purgeOld();
       model = Shadowcraft.Data;
-      ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP;
       for (id in _gems) {
         gems = _gems[id];
         gear = null;
@@ -3064,7 +3054,6 @@
           }
         }
         if (gear) {
-          item = ItemLookup[gear.item_id];
           for (i = 0, _len2 = gems.length; i < _len2; i++) {
             gem = gems[i];
             if (gem === 0) {
@@ -3422,8 +3411,7 @@
       });
     };
     updateStatWeights = function(source) {
-      var $weights, all, data, e, exist, key, other, weight;
-      data = Shadowcraft.Data;
+      var $weights, all, exist, key, other, weight;
       Weights.agility = source.ep.agi;
       Weights.crit = source.ep.crit;
       Weights.strength = source.ep.str;
@@ -3440,7 +3428,9 @@
         t15_2pc: source.other_ep.rogue_t15_2pc || 0,
         t15_4pc: source.other_ep.rogue_t15_4pc || 0,
         t16_2pc: source.other_ep.rogue_t16_2pc || 0,
-        t16_4pc: source.other_ep.rogue_t16_4pc || 0
+        t16_4pc: source.other_ep.rogue_t16_4pc || 0,
+        t17_2pc: source.other_ep.rogue_t17_2pc || 0,
+        t17_4pc: source.other_ep.rogue_t17_4pc || 0
       };
       all = _.extend(Weights, other);
       $weights = $("#weights .inner");
@@ -3457,12 +3447,12 @@
         if (exist.length > 0) {
           exist.find("val").text(weight.toFixed(3));
         } else {
-          e = $weights.append("<div class='stat' id='weight_" + key + "'><span class='key'>" + (titleize(key)) + "</span><span class='val'>" + (Weights[key].toFixed(3)) + "</span></div>");
+          $weights.append("<div class='stat' id='weight_" + key + "'><span class='key'>" + (titleize(key)) + "</span><span class='val'>" + (Weights[key].toFixed(3)) + "</span></div>");
           exist = $(".stat#weight_" + key);
           $.data(exist.get(0), "sortkey", 0);
           if (key === "mainhand_dps" || key === "offhand_dps") {
             $.data(exist.get(0), "sortkey", 1);
-          } else if (key === "t14_2pc" || key === "t14_4pc" || key === "t15_2pc" || key === "t15_4pc" || key === "t16_2pc" || key === "t16_4pc") {
+          } else if (key === "t14_2pc" || key === "t14_4pc" || key === "t15_2pc" || key === "t15_4pc" || key === "t16_2pc" || key === "t16_4pc" || key === "t17_2pc" || key === "t17_4pc") {
             $.data(exist.get(0), "sortkey", 2);
           }
         }
@@ -3561,7 +3551,7 @@
       for (skill in dps_breakdown) {
         val = dps_breakdown[skill];
         skill = skill.replace('(', '').replace(')', '').split(' ').join('_');
-        val = parseFloat(val, 10);
+        val = parseFloat(val);
         name = titleize(skill);
         skill = skill.replace(/\./g, '_');
         exist = $("#dpsbreakdown #talent-weight-" + skill);
@@ -3610,10 +3600,10 @@
     };
     patch_max_ilevel = function(patch) {
       switch (patch) {
-        case 50:
-          return 600;
+        case 60:
+          return 1000;
         default:
-          return 500;
+          return 1000;
       }
     };
     get_item_id = function(item) {
@@ -3624,6 +3614,22 @@
         return Math.floor(item.id / 1000);
       }
       return item.id;
+    };
+    getItem = function(itemId, upgradeLevel, suffix) {
+      var arm, item, itemString;
+      arm = [itemId, upgradeLevel || 0, suffix || 0];
+      itemString = arm.join(':');
+      item = Shadowcraft.ServerData.ITEM_LOOKUP2[itemString];
+      if (!(item != null)) {
+        console.warn("item not found", arm);
+      }
+      return item;
+    };
+    getItems = function(filter) {
+      if (filter == null) {
+        filter = {};
+      }
+      return _.where(Shadowcraft.ServerData.ITEM_LOOKUP2, filter);
     };
     getMaxUpgradeLevel = function(item) {
       var _ref;
@@ -3638,7 +3644,7 @@
       }
     };
     clickSlotName = function() {
-      var $slot, GemList, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, loc, loc_all, maxIEP, max_level, minIEP, requireDagger, selected_id, set, setBonEP, setCount, set_name, slot, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _l, _len, _len2, _len3, _len4;
+      var $slot, GemList, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, lid, loc, loc_all, maxIEP, max_level, minIEP, requireDagger, selected_id, set, setBonEP, setCount, set_name, slot, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _l, _len, _len2, _len3, _len4;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -3651,7 +3657,8 @@
       loc_all = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
       loc = [];
       for (_i = 0, _len = loc_all.length; _i < _len; _i++) {
-        l = loc_all[_i];
+        lid = loc_all[_i];
+        l = ShadowcraftData.ITEM_LOOKUP[lid];
         if (l.id === selected_id) {
           loc.push(l);
           continue;

@@ -22,7 +22,6 @@ class ShadowcraftGear
     4443: "elemental_force"
     4444: "dancing_steel"
     5125: "dancing_steel"
-    4894: "swordguard_embroidery"
 
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
   @LEGENDARY_META_GEM = 95346
@@ -37,6 +36,9 @@ class ShadowcraftGear
     T16:
       ids: [99006, 99007, 99008, 99009, 99010, 99112, 99113, 99114, 99115, 99116, 99348, 99349, 99350, 99355, 99356, 99629, 99630, 99631, 99634, 99635]
       bonuses: {4: "rogue_t16_4pc", 2: "rogue_t16_2pc"}
+    T17:
+      ids: [115570, 115571, 115572, 115573, 115574]
+      bonuses: {4: "rogue_t17_4pc", 2: "rogue_t17_2pc"}
 
   Weights =
     attack_power: 1
@@ -82,16 +84,13 @@ class ShadowcraftGear
       Shadowcraft.Gear.sumSlot(gear, offsets, facet)
     return offsets
 
-  sumItem = (s, i, key) ->
-    key ||= "stats"
+  sumItem = (s, i, key = "stats") ->
     for stat of i[key]
       s[stat] ||= 0
       s[stat] += i[key][stat]
     null
 
   get_ep = (item, key, slot, ignore) ->
-    data = Shadowcraft.Data
-    weights = Weights
 
     stats = {}
     sumItem(stats, item, key)
@@ -197,9 +196,6 @@ class ShadowcraftGear
 
   # Stat to get the real weight for, the amount of the stat, and a hash of {stat: amount} to ignore (like if swapping out a enchant or whatnot; nil the existing enchant for calcs)
   getStatWeight = (stat, num, ignore, ignoreAll) ->
-    data = Shadowcraft.Data
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-
     exist = 0
     unless ignoreAll
       exist = Shadowcraft.Gear.getStat(stat)
@@ -360,7 +356,6 @@ class ShadowcraftGear
 
   # Assumes gem_list is already sorted preferred order.
   getGemmingRecommendation = (gem_list, item, returnFull, ignoreSlotIndex, offset) ->
-    data = Shadowcraft.Data
     if !item.sockets or item.sockets.length == 0
       if returnFull
         return {ep: 0, gems: []}
@@ -474,7 +469,6 @@ class ShadowcraftGear
   setGems: (_gems) ->
     Shadowcraft.Console.purgeOld()
     model = Shadowcraft.Data
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     for id, gems of _gems
       gear = null
       [id, s] = id.split "-"
@@ -485,7 +479,6 @@ class ShadowcraftGear
           gear = g
           break
       if gear
-        item = ItemLookup[gear.item_id]
         for gem, i in gems
           continue if gem == 0
           gear["g" + i] = gem
@@ -605,6 +598,7 @@ class ShadowcraftGear
         data.gear[i] ||= {}
         gear = data.gear[i]
         item = ItemLookup[gear.item_id]
+#        item2 = getItem(gear.item_id, gear.upgrade_level, gear.suffix)
         gems = []
         bonuses = null
         enchant = EnchantLookup[gear.enchant]
@@ -766,7 +760,6 @@ class ShadowcraftGear
     $stats.get(0).innerHTML = Templates.stats {stats: a_stats}
 
   updateStatWeights = (source) ->
-    data = Shadowcraft.Data
     Weights.agility = source.ep.agi
     Weights.crit = source.ep.crit
     Weights.strength = source.ep.str
@@ -785,6 +778,8 @@ class ShadowcraftGear
       t15_4pc: source.other_ep.rogue_t15_4pc || 0
       t16_2pc: source.other_ep.rogue_t16_2pc || 0
       t16_4pc: source.other_ep.rogue_t16_4pc || 0
+      t17_2pc: source.other_ep.rogue_t17_2pc || 0
+      t17_4pc: source.other_ep.rogue_t17_4pc || 0
 
     all = _.extend(Weights, other)
 
@@ -797,12 +792,12 @@ class ShadowcraftGear
       if exist.length > 0
         exist.find("val").text weight.toFixed(3)
       else
-        e = $weights.append("<div class='stat' id='weight_#{key}'><span class='key'>#{titleize(key)}</span><span class='val'>#{Weights[key].toFixed(3)}</span></div>")
+        $weights.append("<div class='stat' id='weight_#{key}'><span class='key'>#{titleize(key)}</span><span class='val'>#{Weights[key].toFixed(3)}</span></div>")
         exist = $(".stat#weight_" + key)
         $.data(exist.get(0), "sortkey", 0)
         if key in ["mainhand_dps","offhand_dps"]
           $.data(exist.get(0), "sortkey", 1)
-        else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc","t16_2pc","t16_4pc"]
+        else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc","t16_2pc","t16_4pc","t17_2pc","t17_4pc"]
           $.data(exist.get(0), "sortkey", 2)
       $.data(exist.get(0), "weight", weight)
 
@@ -869,7 +864,7 @@ class ShadowcraftGear
     $("#dpsbreakdown .talent_contribution").hide()
     for skill, val of dps_breakdown
       skill = skill.replace('(','').replace(')','').split(' ').join('_')
-      val = parseFloat(val, 10)
+      val = parseFloat(val)
       name = titleize(skill)
       skill = skill.replace(/\./g,'_')
       exist = $("#dpsbreakdown #talent-weight-" + skill)
@@ -909,10 +904,10 @@ class ShadowcraftGear
 
   patch_max_ilevel = (patch) ->
     switch patch
-      when 50
-        600
+      when 60
+        1000
       else
-        500
+        1000
 
   get_item_id = (item) ->
     if item.upgrade_level
@@ -920,6 +915,17 @@ class ShadowcraftGear
     if item.suffix
       return Math.floor(item.id / 1000)
     item.id
+
+  getItem = (itemId, upgradeLevel, suffix) ->
+    arm = [itemId, upgradeLevel || 0, suffix || 0]
+    itemString = arm.join(':')
+    item = Shadowcraft.ServerData.ITEM_LOOKUP2[itemString]
+    if not item?
+      console.warn "item not found", arm
+    return item
+
+  getItems = (filter = {}) ->
+    _.where(Shadowcraft.ServerData.ITEM_LOOKUP2, filter);
 
   getMaxUpgradeLevel = (item) ->
     if item.quality == 3
@@ -946,7 +952,8 @@ class ShadowcraftGear
 
     loc_all = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
     loc = []
-    for l in loc_all
+    for lid in loc_all
+      l = ShadowcraftData.ITEM_LOOKUP[lid]
       if l.id == selected_id # always show equiped item
         loc.push l
         continue
