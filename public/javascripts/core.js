@@ -2507,7 +2507,7 @@
       return null;
     };
     get_ep = function(item, key, slot, ignore) {
-      var c, enchant, item_level, pre, stat, stats, total, value, weight;
+      var c, enchant, item_level, pre, proc_name, stat, stats, total, value, weight;
       stats = {};
       sumItem(stats, item, key);
       total = 0;
@@ -2549,12 +2549,12 @@
           }
         }
         item_level = item.ilvl;
-        if (c.trinket_ranking[get_item_id(item)]) {
-          if (c.trinket_ranking[get_item_id(item)][item_level]) {
-            total += c.trinket_ranking[get_item_id(item)][item_level];
+        if (c.trinket_map[get_item_id(item)]) {
+          proc_name = c.trinket_map[get_item_id(item)];
+          if (c.proc_ep[proc_name][item_level]) {
+            total += c.proc_ep[proc_name][item_level];
           } else {
-            console.warn("error in trinket_ranking", item_level, item);
-            total += c.trinket_ranking[get_item_id(item)][0];
+            console.warn("error in trinket_ranking", item_level, item.name);
           }
         }
       }

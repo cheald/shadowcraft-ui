@@ -207,10 +207,6 @@ class ShadowcraftComputation:
     # combines gearProcs and gearBoosts
     trinketMap = dict(gearProcs, **gearBoosts)
 
-    trinketMapReverse = defaultdict(list)
-    for key,value in trinketMap.iteritems():
-      trinketMapReverse[value].append(key)
-
     tier11IDS = frozenset([60298, 65240, 60299, 65241, 60300, 65242, 60302, 65243, 60301, 65239])
     tier12IDS = frozenset([71046, 71538, 71047, 71539, 71048, 71540, 71049, 71541, 71045, 71537])
     tier13IDS = frozenset([78664, 78679, 78699, 78708, 78738, 77023, 77024, 77025, 77026, 77027, 78759, 78774, 78794, 78803, 78833])
@@ -254,7 +250,7 @@ class ShadowcraftComputation:
         'mastery_buff',
         'versatility_buff',
         'agi_flask_mop',
-        'food_300_agi'
+        'food_mop_agi'
     ]
     
     if __builtin__.shadowcraft_engine_version == 4.1:
@@ -613,19 +609,9 @@ class ShadowcraftComputation:
             out["other_ep"] = calculator.get_other_ep(['rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc','rogue_t16_2pc','rogue_t16_4pc'])
             
             trinket_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
-                        
-            out["trinket_ranking"] = {}
-            # TODO not super crazy good, need some more work to not send duplicate data
-            # send trinket_ranking directly and the mapping of itemid and proc_name
-            # and when applying the ep to an item use both tables
-            for k in trinket_rankings:
-                if k in self.trinketMapReverse:
-                    ids = self.trinketMapReverse[k]
-                    for id in ids:
-                      try:
-                          out["trinket_ranking"][id] = trinket_rankings[k]
-                      except ValueError:
-                          pass
+
+            out["proc_ep"] = trinket_rankings
+            out["trinket_map"] = self.trinketMap
             
             # Compute weapon ep
             out["mh_ep"], out["oh_ep"] = calculator.get_weapon_ep(dps=True, enchants=True)
