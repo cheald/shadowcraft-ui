@@ -2554,7 +2554,7 @@
         item_level = item.ilvl;
         if (c.trinket_map[get_item_id(item)]) {
           proc_name = c.trinket_map[get_item_id(item)];
-          if (c.proc_ep[proc_name][item_level]) {
+          if (c.proc_ep[proc_name] && c.proc_ep[proc_name][item_level]) {
             total += c.proc_ep[proc_name][item_level];
           } else {
             console.warn("error in trinket_ranking", item_level, item.name);
