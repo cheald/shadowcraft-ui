@@ -1990,7 +1990,7 @@
           level: "100"
         }
       ];
-      _.filter(talentTiers, function(tier) {
+      talentTiers = _.filter(talentTiers, function(tier) {
         return tier.level <= (Shadowcraft.Data.options.general.level || 100);
       });
       buffer += Templates.talentTier({
@@ -1999,6 +1999,9 @@
       });
       for (treeIndex in Talents) {
         tree = Talents[treeIndex];
+        tree = _.filter(tree, function(talent) {
+          return parseInt(talent.tier, 10) <= (talentTiers.length - 1);
+        });
         buffer += Templates.talentTree({
           background: 1,
           talents: tree
@@ -2372,7 +2375,7 @@
         return app.updateActiveTalents();
       });
       Shadowcraft.Options.bind("update", function(opt, val) {
-        if (opt === 'general.patch') {
+        if (opt === 'general.patch' || opt === 'general.level') {
           app.initTalentTree();
           app.updateActiveTalents();
           return checkForWarnings('options');

@@ -170,7 +170,7 @@ class ShadowcraftTalents
     buffer = ""
 
     talentTiers = [{tier:"0",level:"15"},{tier:"1",level:"30"},{tier:"2",level:"45"},{tier:"3",level:"60"},{tier:"4",level:"75"},{tier:"5",level:"90"},{tier:"6",level:"100"}]
-    _.filter(talentTiers, (tier) ->
+    talentTiers = _.filter(talentTiers, (tier) ->
       return tier.level <= (Shadowcraft.Data.options.general.level || 100)
     )
 
@@ -179,6 +179,9 @@ class ShadowcraftTalents
       levels: talentTiers
     })
     for treeIndex, tree of Talents
+      tree = _.filter(tree, (talent) ->
+        return parseInt(talent.tier, 10) <= (talentTiers.length-1)
+      )
       buffer += Templates.talentTree({
         background: 1,
         talents: tree
@@ -453,7 +456,7 @@ class ShadowcraftTalents
       #app.updateGlyphDisplay()
 
     Shadowcraft.Options.bind "update", (opt, val) ->
-      if opt in ['general.patch']
+      if opt in ['general.patch','general.level']
         app.initTalentTree()
         app.updateActiveTalents()
         checkForWarnings('options')
