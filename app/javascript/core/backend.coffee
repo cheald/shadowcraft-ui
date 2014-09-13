@@ -43,8 +43,6 @@ class ShadowcraftBackend
     for key, val of data.options.buffs
       if val
         buffList.push ShadowcraftOptions.buffMap.indexOf(key)
-
-    professions = _.compact( _.map(data.options.professions, (v, k) -> if v then k else null ) )
     
     talentArray = data.activeTalents.split ""
     for val, key in talentArray
@@ -90,8 +88,7 @@ class ShadowcraftBackend
         statSummary.resilience || 0,
         statSummary.pvp_power || 0
       ],
-      gly: glyph_list,
-      pro: professions
+      gly: glyph_list
 
     if mh?
       payload.mh = [

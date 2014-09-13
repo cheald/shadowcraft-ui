@@ -280,7 +280,6 @@ class ShadowcraftGear
 
   canUseGem = (gem, gemType, pendingChanges, ignoreSlotIndex) ->
     if gem.requires?.profession?
-      return false unless Shadowcraft.Data.options.professions[gem.requires.profession]
       return false if isProfessionalGem(gem, 'jewelcrafting')
     
     return false if not gem[gemType]
@@ -1423,7 +1422,7 @@ class ShadowcraftGear
       e.stopPropagation()
 
     Shadowcraft.Options.bind "update", (opt, val) ->
-      if opt in ['professions.enchanting', 'professions.blacksmithing','rotation.use_hemorrhage','general.pvp']
+      if opt in ['rotation.use_hemorrhage','general.pvp']
         app.updateDisplay()
       if opt in ['rotation.blade_flurry','general.num_boss_adds']
         app.updateSummaryWindow()

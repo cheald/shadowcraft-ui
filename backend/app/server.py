@@ -378,7 +378,6 @@ class ShadowcraftComputation:
     def setup(self, input):
         gear_data = input.get("g", [])
         gear = frozenset([x[0] for x in gear_data])
-        professions = input.get("pro", {})
         
         i18n.set_language('local')
 
@@ -456,25 +455,9 @@ class ShadowcraftComputation:
         if len(self.arenaSeason9SetIds & gear) >= 4:
             agi_bonus += 90
 
-        # If engineer
-        if "engineering" in professions:
-            buff_list.append('synapse_springs')
-
         for k in self.gearBoosts:
             if k in gear:
                 buff_list.append(self.gearBoosts[k])
-            
-        # If alchemist
-        if "alchemy" in professions:
-            buff_list.append('mixology')
-
-        # If herbalist
-        if "herbalism" in professions:
-            buff_list.append('lifeblood')
-
-        # If skinner
-        if "skinning" in professions:
-            buff_list.append('master_of_anatomy')
 
         _gear_buffs = stats.GearBuffs(*buff_list)
 
@@ -499,10 +482,6 @@ class ShadowcraftComputation:
 
         if len(self.legendary_tier_3 & gear) >= 2:
             proclist.append('fangs_of_the_father')
-
-        # if tailor
-        if "tailoring" in professions and input.get("se") == 'swordguard_embroidery':
-            proclist.append('swordguard_embroidery')
 
         if input.get("mg") == "capacitive":
             proclist.append('legendary_capacitive_meta')

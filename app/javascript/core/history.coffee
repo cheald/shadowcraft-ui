@@ -167,7 +167,6 @@ class ShadowcraftHistory
 
     decompress_handlers[version](data)
 
-  professionMap = [ "enchanting", "engineering", "blacksmithing", "inscription", "jewelcrafting", "leatherworking", "tailoring", "alchemy", "skinning", "herbalism", "mining" ]
   poisonMap = [ "dp", "wp" ]
   utilPoisonMap = [ "lp", "n" ]
   raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"]
@@ -217,10 +216,6 @@ class ShadowcraftHistory
 
       # Options
       options = []
-      professions = []
-      for profession, val of data.options.professions
-        professions.push map(profession, professionMap) if val
-      options.push professions
 
       # General options
       general = [
@@ -314,11 +309,7 @@ class ShadowcraftHistory
           delete d.gear[slot][k] if v == 0
 
       options = data[7]
-      d.options.professions = {}
-      for v, i in options[0]
-        d.options.professions[unmap(v, professionMap)] = true
-
-      general = base36Decode options[1]
+      general = base36Decode options[0]
       d.options.general =
         level:                  general[0]
         race:                   unmap(general[1], raceMap)
@@ -339,10 +330,10 @@ class ShadowcraftHistory
         time_in_execute_range:  general[16] / 100 || 0.35
 
       d.options.buffs = {}
-      for v, i in options[2]
+      for v, i in options[1]
         d.options.buffs[ShadowcraftOptions.buffMap[i]] = v == 1
 
-      rotation = base36Decode options[3]
+      rotation = base36Decode options[2]
       d.options.rotation = {}
       for v, i in rotation by 2
         d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i+1], rotationValueMap)

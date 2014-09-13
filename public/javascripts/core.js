@@ -53,6 +53,7 @@
         wait();
         if (confirm("An unrecoverable error has occurred. Reset data and reload?")) {
           $.jStorage.flush();
+          window.location.hash = "";
           return location.reload(true);
         } else {
           throw error;
@@ -69,7 +70,6 @@
         try {
           this.Data = this.History.load(data);
           if (patch) {
-            this.Data.options.professions = {};
             data.options = Object.deepExtend(this.Data.options, data.options);
             this.Data = _.extend(this.Data, data);
             this.Data.active = data.active;
@@ -347,7 +347,7 @@
       return this;
     };
     ShadowcraftBackend.prototype.buildPayload = function() {
-      var Gems, GlyphLookup, buffList, data, g, gear_ids, glyph, glyph_list, item, k, key, mh, oh, payload, professions, specName, statSummary, talentArray, talentString, val, _i, _len, _len2, _ref, _ref2, _ref3;
+      var Gems, GlyphLookup, buffList, data, g, gear_ids, glyph, glyph_list, item, k, key, mh, oh, payload, specName, statSummary, talentArray, talentString, val, _i, _len, _len2, _ref, _ref2, _ref3;
       data = Shadowcraft.Data;
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP;
@@ -374,13 +374,6 @@
           buffList.push(ShadowcraftOptions.buffMap.indexOf(key));
         }
       }
-      professions = _.compact(_.map(data.options.professions, function(v, k) {
-        if (v) {
-          return k;
-        } else {
-          return null;
-        }
-      }));
       talentArray = data.activeTalents.split("");
       for (key = 0, _len2 = talentArray.length; key < _len2; key++) {
         val = talentArray[key];
@@ -424,8 +417,7 @@
         spec: data.activeSpec,
         t: talentString,
         sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit || 0, statSummary.haste || 0, statSummary.mastery || 0, statSummary.multistrike || 0, statSummary.versatility || 0, statSummary.resilience || 0, statSummary.pvp_power || 0],
-        gly: glyph_list,
-        pro: professions
+        gly: glyph_list
       };
       if (mh != null) {
         payload.mh = [mh.speed, mh.dps * mh.speed, data.gear[15].enchant, mh.subclass];
@@ -540,7 +532,7 @@
   })();
   loadingSnapshot = false;
   ShadowcraftHistory = (function() {
-    var DATA_VERSION, base10, base36Decode, base36Encode, base77, compress, compress_handlers, decompress, decompress_handlers, map, poisonMap, professionMap, raceMap, rotationOptionsMap, rotationValueMap, unmap, utilPoisonMap;
+    var DATA_VERSION, base10, base36Decode, base36Encode, base77, compress, compress_handlers, decompress, decompress_handlers, map, poisonMap, raceMap, rotationOptionsMap, rotationValueMap, unmap, utilPoisonMap;
     DATA_VERSION = 1;
     function ShadowcraftHistory(app) {
       this.app = app;
@@ -747,7 +739,6 @@
       }
       return decompress_handlers[version](data);
     };
-    professionMap = ["enchanting", "engineering", "blacksmithing", "inscription", "jewelcrafting", "leatherworking", "tailoring", "alchemy", "skinning", "herbalism", "mining"];
     poisonMap = ["dp", "wp"];
     utilPoisonMap = ["lp", "n"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"];
@@ -761,7 +752,7 @@
     };
     compress_handlers = {
       "1": function(data) {
-        var advancedOptions, buff, buffs, gear, gearSet, general, index, k, options, profession, professions, ret, rotationOptions, set, slot, talent, talentSet, v, val, _i, _len, _len2, _ref, _ref2, _ref3, _ref4, _ref5;
+        var advancedOptions, buff, buffs, gear, gearSet, general, index, k, options, ret, rotationOptions, set, slot, talent, talentSet, v, _i, _len, _len2, _ref, _ref2, _ref3, _ref4;
         ret = [DATA_VERSION];
         gearSet = [];
         for (slot = 0; slot <= 17; slot++) {
@@ -793,37 +784,28 @@
         }
         ret.push(talentSet);
         options = [];
-        professions = [];
-        _ref2 = data.options.professions;
-        for (profession in _ref2) {
-          val = _ref2[profession];
-          if (val) {
-            professions.push(map(profession, professionMap));
-          }
-        }
-        options.push(professions);
         general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.virmens_bite ? 1 : 0, data.options.general.max_ilvl, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 502, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35];
         options.push(base36Encode(general));
         buffs = [];
-        _ref3 = ShadowcraftOptions.buffMap;
-        for (index = 0, _len2 = _ref3.length; index < _len2; index++) {
-          buff = _ref3[index];
+        _ref2 = ShadowcraftOptions.buffMap;
+        for (index = 0, _len2 = _ref2.length; index < _len2; index++) {
+          buff = _ref2[index];
           v = data.options.buffs[buff];
           buffs.push(v ? 1 : 0);
         }
         options.push(buffs);
         rotationOptions = [];
-        _ref4 = data.options["rotation"];
-        for (k in _ref4) {
-          v = _ref4[k];
+        _ref3 = data.options["rotation"];
+        for (k in _ref3) {
+          v = _ref3[k];
           rotationOptions.push(map(k, rotationOptionsMap));
           rotationOptions.push(map(v, rotationValueMap));
         }
         options.push(base36Encode(rotationOptions));
         advancedOptions = [];
-        _ref5 = data.options["advanced"];
-        for (k in _ref5) {
-          v = _ref5[k];
+        _ref4 = data.options["advanced"];
+        for (k in _ref4) {
+          v = _ref4[k];
           advancedOptions.push(k);
           advancedOptions.push(v);
         }
@@ -836,7 +818,7 @@
     };
     decompress_handlers = {
       "1": function(data) {
-        var advanced, d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _len6, _ref, _ref2, _ref3, _step, _step2, _step3, _step4;
+        var advanced, d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _ref, _ref2, _step, _step2, _step3, _step4;
         d = {
           gear: {},
           active: data[2],
@@ -883,13 +865,7 @@
           }
         }
         options = data[7];
-        d.options.professions = {};
-        _ref2 = options[0];
-        for (i = 0, _len3 = _ref2.length; i < _len3; i++) {
-          v = _ref2[i];
-          d.options.professions[unmap(v, professionMap)] = true;
-        }
-        general = base36Decode(options[1]);
+        general = base36Decode(options[0]);
         d.options.general = {
           level: general[0],
           race: unmap(general[1], raceMap),
@@ -910,21 +886,21 @@
           time_in_execute_range: general[16] / 100 || 0.35
         };
         d.options.buffs = {};
-        _ref3 = options[2];
-        for (i = 0, _len4 = _ref3.length; i < _len4; i++) {
-          v = _ref3[i];
+        _ref2 = options[1];
+        for (i = 0, _len3 = _ref2.length; i < _len3; i++) {
+          v = _ref2[i];
           d.options.buffs[ShadowcraftOptions.buffMap[i]] = v === 1;
         }
-        rotation = base36Decode(options[3]);
+        rotation = base36Decode(options[2]);
         d.options.rotation = {};
-        for (i = 0, _len5 = rotation.length, _step3 = 2; i < _len5; i += _step3) {
+        for (i = 0, _len4 = rotation.length, _step3 = 2; i < _len4; i += _step3) {
           v = rotation[i];
           d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i + 1], rotationValueMap);
         }
         if (options[4]) {
           advanced = options[4];
           d.options.advanced = {};
-          for (i = 0, _len6 = advanced.length, _step4 = 2; i < _len6; i += _step4) {
+          for (i = 0, _len5 = advanced.length, _step4 = 2; i < _len5; i += _step4) {
             v = advanced[i];
             d.options.advanced[v] = advanced[i + 1];
           }
@@ -2756,9 +2732,6 @@
     canUseGem = function(gem, gemType, pendingChanges, ignoreSlotIndex) {
       var _ref;
       if (((_ref = gem.requires) != null ? _ref.profession : void 0) != null) {
-        if (!Shadowcraft.Data.options.professions[gem.requires.profession]) {
-          return false;
-        }
         if (isProfessionalGem(gem, 'jewelcrafting')) {
           return false;
         }
@@ -4208,7 +4181,7 @@
         return e.stopPropagation();
       });
       Shadowcraft.Options.bind("update", function(opt, val) {
-        if (opt === 'professions.enchanting' || opt === 'professions.blacksmithing' || opt === 'rotation.use_hemorrhage' || opt === 'general.pvp') {
+        if (opt === 'rotation.use_hemorrhage' || opt === 'general.pvp') {
           app.updateDisplay();
         }
         if (opt === 'rotation.blade_flurry' || opt === 'general.num_boss_adds') {

@@ -113,7 +113,6 @@ class Character
                 :level => properties['level'],
                 :race => properties['race']
             },
-            :professions => Hash[*properties['professions'].map { |p| [p, true] }.flatten]
         },
         :achievements => properties['achievements'],
         :quests => properties['quests']

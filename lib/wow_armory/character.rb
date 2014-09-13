@@ -7,19 +7,6 @@ module WowArmory
     }
 
     POWER_TYPES = [:mana, :rage, :focus, :energy]
-    PROF_MAP = {
-      755 => 'jewelcrafting',
-      164 => 'blacksmithing',
-      165 => 'leatherworking',
-      333 => 'enchanting',
-      202 => 'engineering',
-      171 => 'alchemy',
-      197 => 'tailoring',
-      773 => 'inscription',
-      182 => 'herbalism',
-      186 => 'mining',
-      393 => 'skinning'
-    }
 
     RACE_MAP = {
       1 => 'Human',
@@ -63,22 +50,18 @@ module WowArmory
 
     include Document
 
-    attr_accessor :realm, :region, :name, :active, :professions, :gear, :race, :level, :player_class, :talents, :portrait, :achievements, :quests
+    attr_accessor :realm, :region, :name, :active, :gear, :race, :level, :player_class, :talents, :portrait, :achievements, :quests
 
     def initialize(character, realm, region = 'US')
       @character = character
       @realm = realm
       @region = region
-      fetch region, 'api/wow/character/%s/%s?fields=talents,items,professions,achievements,quests' % [normalize_realm(realm), normalize_character(character)], :json
+      fetch region, 'api/wow/character/%s/%s?fields=talents,items,achievements,quests' % [normalize_realm(realm), normalize_character(character)], :json
 
       populate!
 
       @json['talents'].each_with_index do |tree, index|
         self.active = index if tree['selected']
-      end
-
-      self.professions = @json['professions']['primary'].map do |prof|
-        PROF_MAP[prof['id']]
       end
 
       self.achievements = @json['achievements']['achievementsCompleted'].find_all{|id| ACHIEVEMENTS.include? id }
@@ -95,7 +78,6 @@ module WowArmory
         :race => race,
         :level => level,
         :active => active,
-        :professions => professions,
         :player_class => player_class,
         :talents => self.talents.map do |tree|
           glyphs = tree['glyphs'].map do |glyphset, set|
