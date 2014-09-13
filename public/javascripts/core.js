@@ -777,6 +777,9 @@
           gearSet.push(gear.g1 || 0);
           gearSet.push(gear.g2 || 0);
           gearSet.push(gear.upgrade_level || 0);
+          gearSet.push(gear.original_id || 0);
+          gearSet.push(gear.item_level || 0);
+          gearSet.push(gear.suffix || 0);
         }
         ret.push(base36Encode(gearSet));
         ret.push(data.active);
@@ -860,9 +863,9 @@
           };
         }
         gear = base36Decode(data[1]);
-        for (index = 0, _len2 = gear.length, _step2 = 7; index < _len2; index += _step2) {
+        for (index = 0, _len2 = gear.length, _step2 = 10; index < _len2; index += _step2) {
           id = gear[index];
-          slot = (index / 7).toString();
+          slot = (index / 10).toString();
           d.gear[slot] = {
             item_id: gear[index],
             enchant: gear[index + 1],
@@ -870,7 +873,10 @@
             g0: gear[index + 3],
             g1: gear[index + 4],
             g2: gear[index + 5],
-            upgrade_level: gear[index + 6]
+            upgrade_level: gear[index + 6],
+            original_id: gear[index + 7],
+            item_level: gear[index + 8],
+            suffix: gear[index + 9]
           };
           _ref = d.gear[slot];
           for (k in _ref) {
@@ -3618,13 +3624,13 @@
       }
       return item.id;
     };
-    getItem = function(itemId, upgradeLevel, suffix) {
+    getItem = function(itemId, itemLevel, suffix) {
       var arm, item, itemString;
-      arm = [itemId, upgradeLevel || 0, suffix || 0];
+      arm = [itemId, itemLevel, suffix || 0];
       itemString = arm.join(':');
       item = Shadowcraft.ServerData.ITEM_LOOKUP2[itemString];
       if (!(item != null)) {
-        console.warn("item not found", arm);
+        console.warn("item not found", itemString);
       }
       return item;
     };
@@ -4094,6 +4100,15 @@
                 data.gear[slot].upgrade_level = item.upgrade_level;
               } else {
                 data.gear[slot].upgrade_level = null;
+              }
+              if (item) {
+                data.gear[slot].original_id = item.original_id;
+                data.gear[slot].item_level = item.ilvl;
+                if (item.suffix) {
+                  data.gear[slot].suffix = item.suffix;
+                } else {
+                  data.gear[slot].suffix = null;
+                }
               }
               if (item && item.sockets) {
                 socketlength = item.sockets.length;

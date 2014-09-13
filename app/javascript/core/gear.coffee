@@ -916,12 +916,12 @@ class ShadowcraftGear
       return Math.floor(item.id / 1000)
     item.id
 
-  getItem = (itemId, upgradeLevel, suffix) ->
-    arm = [itemId, upgradeLevel || 0, suffix || 0]
+  getItem = (itemId, itemLevel, suffix) ->
+    arm = [itemId, itemLevel, suffix || 0]
     itemString = arm.join(':')
     item = Shadowcraft.ServerData.ITEM_LOOKUP2[itemString]
     if not item?
-      console.warn "item not found", arm
+      console.warn "item not found", itemString
     return item
 
   getItems = (filter = {}) ->
@@ -1338,6 +1338,13 @@ class ShadowcraftGear
               data.gear[slot].upgrade_level = item.upgrade_level
             else
               data.gear[slot].upgrade_level = null
+            if item
+              data.gear[slot].original_id = item.original_id
+              data.gear[slot].item_level = item.ilvl
+              if item.suffix
+                data.gear[slot].suffix = item.suffix
+              else
+                data.gear[slot].suffix = null
             if item and item.sockets
               socketlength = item.sockets.length
               for i in [0..2]

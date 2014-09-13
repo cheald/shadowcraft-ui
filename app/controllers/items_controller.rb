@@ -74,10 +74,6 @@ class ItemsController < ApplicationController
     @gems = gems.select {|g| !g.properties["name"].match(/Stormjewel/) }
     @gems.reject! {|g| !(g.stats.keys & bad_keys).empty? }
     @enchants = Enchant.all
-    h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_mop.xml")).read
-    @talents = h["page"]["talents"]
-    h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_mop_52.xml")).read
-    @talents_52 = h["page"]["talents"]
     h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_wod.xml")).read
     @talents_wod = h["page"]["talents"]
     @glyphs = Glyph.asc(:name).all

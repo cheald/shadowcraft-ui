@@ -122,6 +122,7 @@
         if(R.SLOT_CHOICES[item.equip_location] === undefined) { R.SLOT_CHOICES[item.equip_location] = []; }
         R.SLOT_CHOICES[item.equip_location][R.SLOT_CHOICES[item.equip_location].length] = item.id;
         R.ITEM_LOOKUP[item.id] = item;
+        R.ITEM_LOOKUP2[item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0)] = item
       }
       R.TALENT_LOOKUP_WOD = {};
         for(var talent = 0; talent < R.TALENTS_WOD.talent.length; talent++) {

@@ -199,6 +199,9 @@ class ShadowcraftHistory
         gearSet.push gear.g1 || 0
         gearSet.push gear.g2 || 0
         gearSet.push gear.upgrade_level || 0
+        gearSet.push gear.original_id || 0
+        gearSet.push gear.item_level || 0
+        gearSet.push gear.suffix || 0
       ret.push base36Encode(gearSet)
       ret.push data.active
       ret.push data.activeSpec
@@ -294,8 +297,8 @@ class ShadowcraftHistory
           glyphs: base36Decode(talentSets[index + 2])
 
       gear = base36Decode data[1]
-      for id, index in gear by 7
-        slot = (index / 7).toString()
+      for id, index in gear by 10
+        slot = (index / 10).toString()
         d.gear[slot] =
           item_id: gear[index]
           enchant: gear[index + 1]
@@ -304,6 +307,9 @@ class ShadowcraftHistory
           g1: gear[index + 4]
           g2: gear[index + 5]
           upgrade_level: gear[index + 6]
+          original_id: gear[index + 7]
+          item_level: gear[index + 8]
+          suffix: gear[index + 9]
         for k, v of d.gear[slot]
           delete d.gear[slot][k] if v == 0
 
