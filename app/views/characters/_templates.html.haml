@@ -80,7 +80,7 @@
     %input.ui-button.ui-widget.ui-state-default.ui-corner-all.clearReforge{:type => "Button", :value => "Undo Reforging"}
 
 - mustache("itemSlot") do
-  .slot{:id => "{{item/id}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}"}<
+  .slot{:id => "{{item/id}}", :"data-identifier" => "{{identifier}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}"}<
     .image<
       {{#item}}
       {{#icon}}

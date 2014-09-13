@@ -109,20 +109,21 @@
         expandItem(item, iStatMap);
 
         item.item_id = item.id;
+        item.identifier = item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0);
         if(item.equip_location == 6) {    // Add sockets to belts
           if(item.sockets === undefined) { item.sockets = []; }
           item.sockets[item.sockets.length] = "Prismatic";
         }
 
         if(item.equip_location == 21 || item.equip_location == 13) {
-          R.SLOT_CHOICES.offhand[R.SLOT_CHOICES.offhand.length] = item.id;   // Dual-hand items get added to offhands, too.
+          R.SLOT_CHOICES.offhand[R.SLOT_CHOICES.offhand.length] = item.identifier;   // Dual-hand items get added to offhands, too.
         }
         item.equip_location = getRealSlot(item.equip_location, true);
 
         if(R.SLOT_CHOICES[item.equip_location] === undefined) { R.SLOT_CHOICES[item.equip_location] = []; }
-        R.SLOT_CHOICES[item.equip_location][R.SLOT_CHOICES[item.equip_location].length] = item.id;
+        R.SLOT_CHOICES[item.equip_location][R.SLOT_CHOICES[item.equip_location].length] = item.identifier;
         R.ITEM_LOOKUP[item.id] = item;
-        R.ITEM_LOOKUP2[item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0)] = item
+        R.ITEM_LOOKUP2[item.identifier] = item;
       }
       R.TALENT_LOOKUP_WOD = {};
         for(var talent = 0; talent < R.TALENTS_WOD.talent.length; talent++) {

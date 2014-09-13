@@ -84,7 +84,8 @@ class ShadowcraftGear
       Shadowcraft.Gear.sumSlot(gear, offsets, facet)
     return offsets
 
-  sumItem = (s, i, key = "stats") ->
+  sumItem = (s, i, key) ->
+    key ||= "stats"
     for stat of i[key]
       s[stat] ||= 0
       s[stat] += i[key][stat]
@@ -120,10 +121,10 @@ class ShadowcraftGear
           #else
           total += (item.dps * c.oh_ep.oh_dps)
           total += c.oh_speed_ep["oh_" + item.speed]
-        else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
-          total += c.meta.chaotic_metagem
-        else if ShadowcraftGear.LEGENDARY_META_GEM == item.id
-          total += c.meta.legendary_capacitive_meta || 0
+      else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
+        total += c.meta.chaotic_metagem
+      else if ShadowcraftGear.LEGENDARY_META_GEM == item.id
+        total += c.meta.legendary_capacitive_meta || 0
       else if PROC_ENCHANTS[get_item_id(item)]
         switch slot
           when 14
@@ -152,11 +153,10 @@ class ShadowcraftGear
     return unless gear?.item_id?
     facets ||= FACETS.ALL
 
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
 
-    item = ItemLookup[gear.item_id]
+    item = getItem(gear.original_id, gear.item_level, gear.suffix)
     return unless item?
 
     if (facets & FACETS.ITEM) == FACETS.ITEM
@@ -287,16 +287,6 @@ class ShadowcraftGear
     return false if (gem.slot == "Meta" or gem.slot == "Cogwheel" or gem.slot == "Hydraulic") and gem.slot != gemType
     true
 
-  # Returns the EP value of a gem.
-  getRegularGemEpValue = (gem, offset) ->
-    equiv_ep = get_ep(gem, false, null, offset)
-    
-    # TODO profession gems shouldn't exist anymore
-    return equiv_ep unless gem.requires?.profession?
-    return gem.__reg_ep if gem.__reg_ep
-
-    return gem.__reg_ep
-
   addAchievementBonuses = (item) ->
     item.sockets ||= []
     if item.equip_location in ["mainhand","offhand"]
@@ -370,7 +360,7 @@ class ShadowcraftGear
       for gem in gem_list
         continue unless canUseGem gem, gemType, sGems, ignoreSlotIndex
         continue if gem.id == ShadowcraftGear.LEGENDARY_META_GEM and not canUseLegendaryMetaGem(item)
-        straightGemEP += getRegularGemEpValue(gem, offset)
+        straightGemEP += get_ep(gem, false, null, offset)
         sGems.push gem.id if returnFull
         broke = true
         break
@@ -388,7 +378,6 @@ class ShadowcraftGear
       return epValue
 
   optimizeGems: (depth) ->
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
     data = Shadowcraft.Data
 
@@ -399,14 +388,13 @@ class ShadowcraftGear
       Shadowcraft.Console.log "Beginning auto-regem...", "gold underline"
     madeChanges = false
     gem_list = getGemRecommendationList()
-
     for slotIndex in SLOT_ORDER
       slotIndex = parseInt(slotIndex, 10)
       gear = data.gear[slotIndex]
       continue unless gear
       continue if gear.locked
 
-      item = ItemLookup[gear.item_id]
+      item = getItem(gear.original_id, gear.item_level, gear.suffix)
       gem_offset = statOffset(gear, FACETS.GEMS)
 
       if item
@@ -458,7 +446,7 @@ class ShadowcraftGear
     use_epic_gems = Shadowcraft.Data.options.general.epic_gems == 1
     for gem in copy
       continue if gem.quality == 4 and gem.requires == undefined and not use_epic_gems
-      gem.normal_ep = getRegularGemEpValue(gem)
+      gem.normal_ep = get_ep(gem, false, null)
       if gem.normal_ep and gem.normal_ep > 1
         list.push gem
 
@@ -490,14 +478,13 @@ class ShadowcraftGear
   ###
 
   getUpgradeRecommandationList = ->
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     data = Shadowcraft.Data
     ret = []
     for slotIndex in SLOT_ORDER
       slotIndex = parseInt(slotIndex)
       gear = data.gear[slotIndex]
       continue unless gear
-      item = ItemLookup[gear.item_id]
+      item = getItem(gear.original_id, gear.item_level, gear.suffix)
       continue unless item
       ret
       if item.upgradable
@@ -505,19 +492,8 @@ class ShadowcraftGear
         curr_level = gear.upgrade_level if gear.upgrade_level?
         max_level = getMaxUpgradeLevel(item)
         continue if curr_level >= max_level
-        new_item_id = gear.item_id
-        if gear.upgrade_level
-          new_item_id = Math.floor(new_item_id / 1000000)
-          next = gear.upgrade_level + 1
-        else
-          if item.suffix
-            new_item_id = Math.floor(new_item_id / 1000)
-          next = 1
-        new_item_id = new_item_id * 1000000 + next
-        if item.suffix
-          new_item_id += Math.abs(item.suffix) * 1000
-
-        new_item = ItemLookup[new_item_id]
+        new_item_level = item.ilvl + getUpgradeLevelSteps(item)
+        new_item = getItem(gear.original_id, new_item_level, gear.suffix)
         itemEP = getSimpleEPForUpgrade(slotIndex, item)
         new_itemEP = getSimpleEPForUpgrade(slotIndex, new_item)
         obj = {}
@@ -531,14 +507,13 @@ class ShadowcraftGear
     ret
 
   getUpgradeRecommandationList2 = ->
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     data = Shadowcraft.Data
     ret = []
     for slotIndex in SLOT_ORDER
       slotIndex = parseInt(slotIndex)
       gear = data.gear[slotIndex]
       continue unless gear
-      item = ItemLookup[gear.item_id]
+      item = getItem(gear.original_id, gear.item_level, gear.suffix)
       continue unless item
       ret
       if item.upgradable
@@ -546,19 +521,8 @@ class ShadowcraftGear
         curr_level = gear.upgrade_level if gear.upgrade_level?
         max_level = getMaxUpgradeLevel(item)
         continue if curr_level >= max_level
-        new_item_id = gear.item_id
-        if gear.upgrade_level
-          new_item_id = Math.floor(new_item_id / 1000000)
-          next = gear.upgrade_level + 1
-        else
-          if item.suffix
-            new_item_id = Math.floor(new_item_id / 1000)
-          next = 1
-        new_item_id = new_item_id * 1000000 + next
-        if item.suffix
-          new_item_id += Math.abs(item.suffix) * 1000
-
-        new_item = ItemLookup[new_item_id]
+        new_item_level = item.ilvl + getUpgradeLevelSteps(item)
+        new_item = getItem(gear.original_id, new_item_level, gear.suffix)
         itemEP = getSimpleEPForUpgrade(slotIndex, item)
         new_itemEP = getSimpleEPForUpgrade(slotIndex, new_item)
         obj = {}
@@ -585,7 +549,6 @@ class ShadowcraftGear
   ###
 
   updateDisplay: (skipUpdate) ->
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
     EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
@@ -597,8 +560,7 @@ class ShadowcraftGear
       for i, slotIndex in slotSet
         data.gear[i] ||= {}
         gear = data.gear[i]
-        item = ItemLookup[gear.item_id]
-#        item2 = getItem(gear.item_id, gear.upgrade_level, gear.suffix)
+        item = getItem(gear.original_id, gear.item_level, gear.suffix)
         gems = []
         bonuses = null
         enchant = EnchantLookup[gear.enchant]
@@ -638,6 +600,7 @@ class ShadowcraftGear
 
         opt = {}
         opt.item = item
+        opt.identifier = item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0)
         opt.ttid = get_item_id(item) if item
         opt.ttrand = if item then item.suffix else null
         opt.ttupgd = if item then item.upgrade_level else null
@@ -924,8 +887,11 @@ class ShadowcraftGear
       console.warn "item not found", itemString
     return item
 
+  getItem: (itemId, itemLevel, suffix) ->
+    return getItem(itemId, itemLevel, suffix)
+
   getItems = (filter = {}) ->
-    _.where(Shadowcraft.ServerData.ITEM_LOOKUP2, filter);
+    _.where(Shadowcraft.ServerData.ITEM_LOOKUP2, filter)
 
   getMaxUpgradeLevel = (item) ->
     if item.quality == 3
@@ -936,12 +902,19 @@ class ShadowcraftGear
       else
         return 4
 
+  getUpgradeLevelSteps = (item) ->
+    if item.quality == 3
+      return 8
+    else
+      return 4
+
   # Click a name in a slot, for binding to event delegation
   clickSlotName = ->
     buf = clickSlot(this, "item_id")
     $slot = buf[0]
     slot = buf[1]
-    selected_id = parseInt $slot.attr("id"), 10
+    selected_identifier = $slot.data("identifier")
+
     equip_location = SLOT_INVTYPES[slot]
     GemList = Shadowcraft.ServerData.GEMS
 
@@ -953,8 +926,8 @@ class ShadowcraftGear
     loc_all = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
     loc = []
     for lid in loc_all
-      l = ShadowcraftData.ITEM_LOOKUP[lid]
-      if l.id == selected_id # always show equiped item
+      l = ShadowcraftData.ITEM_LOOKUP2[lid]
+      if lid == selected_identifier # always show equipped item
         loc.push l
         continue
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
@@ -962,9 +935,9 @@ class ShadowcraftGear
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
       #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
-      #continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and l.id != selected_id
+      #continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and lid != selected_identifier
       continue if l.upgrade_level != getMaxUpgradeLevel(l)
-      continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and l.id != selected_id
+      continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and lid != selected_identifier
       loc.push l
 
     #slot = parseInt($(this).parent().data("slot"), 10)
@@ -1023,6 +996,7 @@ class ShadowcraftGear
           max_level: max_level
       buffer += Templates.itemSlot(
         item: l
+        identifier: l.original_id + ":" + l.ilvl + ":" + (l.suffix || 0)
         gear: {}
         gems: []
         upgradable: l.upgradable
@@ -1096,15 +1070,14 @@ class ShadowcraftGear
 
   # Change out a gem
   clickSlotGem = ->
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2
     GemList = Shadowcraft.ServerData.GEMS
     data = Shadowcraft.Data
 
     buf = clickSlot(this, "gem")
     $slot = buf[0]
     slot = buf[1]
-
-    item = ItemLookup[parseInt($slot.attr("id"), 10)]
+    item = ItemLookup[$slot.data("identifier")]
     gemSlot = $slot.find(".gem").index(this)
     $.data(document.body, "gem-slot", gemSlot)
     gemType = item.sockets[gemSlot]
@@ -1165,19 +1138,16 @@ class ShadowcraftGear
 
   clickItemUpgrade = (e) ->
     e.stopPropagation()
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     buf = clickSlot(this, "item_id")
     $slot = buf[0]
     slot = buf[1]
-    selected_id = parseInt $slot.attr("id"), 10
-    equip_location = SLOT_INVTYPES[slot]
 
     data = Shadowcraft.Data
 
     #slot = parseInt($(this).parent().data("slot"), 10)
 
     gear = data.gear[slot]
-    item = ItemLookup[gear.item_id]
+    item = getItem(gear.original_id, gear.item_level, gear.suffix)
     new_item_id = gear.item_id
     if gear.upgrade_level
       new_item_id = Math.floor(new_item_id / 1000000)
@@ -1202,21 +1172,15 @@ class ShadowcraftGear
 
   clickItemLock = (e) ->
     e.stopPropagation()
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
     buf = clickSlot(this, "item_id")
-    $slot = buf[0]
     slot = buf[1]
-    selected_id = parseInt $slot.attr("id"), 10
-    equip_location = SLOT_INVTYPES[slot]
 
     data = Shadowcraft.Data
-
-    #slot = parseInt($(this).parent().data("slot"), 10)
 
     gear = data.gear[slot]
     gear.locked ||= false
     data.gear[slot].locked = not gear.locked
-    item = ItemLookup[gear.item_id]
+    item = getItem(gear.original_id, gear.item_level, gear.suffix)
     if item
       if data.gear[slot].locked
         Shadowcraft.Console.log("Locking " + item.name + " for Optimize Gems")
@@ -1320,7 +1284,7 @@ class ShadowcraftGear
     $altslots.click $.delegate
       ".slot": (e) ->
         Shadowcraft.Console.purgeOld()
-        ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
+        ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2
         EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
         Gems = Shadowcraft.ServerData.GEM_LOOKUP
         data = Shadowcraft.Data
@@ -1330,9 +1294,10 @@ class ShadowcraftGear
         $this = $(this)
         if update == "item_id" || update == "enchant"
           val = parseInt($this.attr("id"), 10)
+          identifier = $this.data("identifier")
           data.gear[slot][update] = if val != 0 then val else null
           if update == "item_id"
-            item = ItemLookup[data.gear[slot].item_id]
+            item = ItemLookup[identifier]
             data.gear[slot].reforge = null
             if data.gear[slot].item_id and item.upgrade_level
               data.gear[slot].upgrade_level = item.upgrade_level
@@ -1362,18 +1327,20 @@ class ShadowcraftGear
               data.gear[slot]["g" + i] = null for i in [0..2]
           else
             enchant_id = if not isNaN(val) then val else null
+            item = getItem(data.gear[slot].original_id, data.gear[slot].item_level, data.gear[slot].suffix)
             if enchant_id?
-              Shadowcraft.Console.log("Changing " + ItemLookup[data.gear[slot].item_id].name + " enchant to " + EnchantLookup[enchant_id].name)
+              Shadowcraft.Console.log("Changing " + item.name + " enchant to " + EnchantLookup[enchant_id].name)
             else
-              Shadowcraft.Console.log("Removing Enchant from " + ItemLookup[data.gear[slot].item_id].name)
+              Shadowcraft.Console.log("Removing Enchant from " + item.name)
         else if update == "gem"
           item_id = parseInt($this.attr("id"), 10)
           item_id = if not isNaN(item_id) then item_id else null
           gem_id = $.data(document.body, "gem-slot")
+          item = getItem(data.gear[slot].original_id, data.gear[slot].item_level, data.gear[slot].suffix)
           if item_id?
-            Shadowcraft.Console.log("Regemming " + ItemLookup[data.gear[slot].item_id].name + " socket " + (gem_id + 1) + " to " + Gems[item_id].name)
+            Shadowcraft.Console.log("Regemming " + item.name + " socket " + (gem_id + 1) + " to " + Gems[item_id].name)
           else
-            Shadowcraft.Console.log("Removing Gem from " + ItemLookup[data.gear[slot].item_id].name + " socket " + (gem_id + 1))
+            Shadowcraft.Console.log("Removing Gem from " + item.name + " socket " + (gem_id + 1))
           data.gear[slot]["g" + gem_id] = item_id
         Shadowcraft.update()
         app.updateDisplay()

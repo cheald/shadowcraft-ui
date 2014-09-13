@@ -26,16 +26,13 @@ class ShadowcraftBackend
 
   buildPayload: ->
     data = Shadowcraft.Data
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-    Talents = Shadowcraft.ServerData.TALENTS
-    statSum = Shadowcraft.Gear.statSum
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
     GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
 
     statSummary = Shadowcraft.Gear.sumStats()
 
-    mh = ItemLookup[data.gear[15].item_id] if data.gear[15]
-    oh = ItemLookup[data.gear[16].item_id] if data.gear[16]
+    mh = Shadowcraft.Gear.getItem(data.gear[15].original_id, data.gear[15].item_level, data.gear[15].suffix) if data.gear[15]
+    oh = Shadowcraft.Gear.getItem(data.gear[16].original_id, data.gear[16].item_level, data.gear[16].suffix) if data.gear[16]
     glyph_list = []
 
     for glyph in data.glyphs
@@ -113,11 +110,10 @@ class ShadowcraftBackend
 
     gear_ids = []
     for k, g of data.gear
-      _item_id = if g.upgrade_level then Math.floor(g.item_id / 1000000) else g.item_id
-      if _item_id
+      if g.original_id
         item = [
-          _item_id,
-          ItemLookup[g.item_id].ilvl
+          g.original_id,
+          g.item_level
         ]
         gear_ids.push(item)
       if k == "0" && g.g0 && Gems[g.g0] && Gems[g.g0].Meta

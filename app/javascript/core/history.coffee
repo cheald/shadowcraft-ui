@@ -201,7 +201,7 @@ class ShadowcraftHistory
         gearSet.push gear.upgrade_level || 0
         gearSet.push gear.original_id || 0
         gearSet.push gear.item_level || 0
-        gearSet.push gear.suffix || 0
+        gearSet.push Math.abs(gear.suffix) || 0
       ret.push base36Encode(gearSet)
       ret.push data.active
       ret.push data.activeSpec
@@ -309,7 +309,7 @@ class ShadowcraftHistory
           upgrade_level: gear[index + 6]
           original_id: gear[index + 7]
           item_level: gear[index + 8]
-          suffix: gear[index + 9]
+          suffix: gear[index + 9] * -1
         for k, v of d.gear[slot]
           delete d.gear[slot][k] if v == 0
 

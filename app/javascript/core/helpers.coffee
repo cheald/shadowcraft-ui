@@ -66,7 +66,6 @@ flash = (message) ->
 checkForWarnings = (section) ->
   Shadowcraft.Console.hide()
   data = Shadowcraft.Data
-  ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
   EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
   EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS
 
@@ -97,8 +96,8 @@ checkForWarnings = (section) ->
     # Warn items
     Shadowcraft.Console.remove(".items")
     for slotIndex, gear of data.gear
-      continue if !gear
-      item = ItemLookup[gear.item_id]
+      continue if !gear or _.isEmpty(gear)
+      item = Shadowcraft.Gear.getItem(gear.original_id, gear.item_level, gear.suffix)
       continue unless item
       if item.name.indexOf("Rune of Re-Origination") != -1
         Shadowcraft.Console.warn(item, "is not fully supported but also bad for rogues.", "It is recommended to not use this trinket.", "warn", "items")
