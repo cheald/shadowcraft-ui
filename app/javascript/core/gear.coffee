@@ -25,6 +25,7 @@ class ShadowcraftGear
 
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
   @LEGENDARY_META_GEM = 95346
+  @FURY_OF_XUEN_CLOAK = 102248
 
   Sets =
     T14:
@@ -125,6 +126,8 @@ class ShadowcraftGear
         total += c.meta.chaotic_metagem
       else if ShadowcraftGear.LEGENDARY_META_GEM == item.id
         total += c.meta.legendary_capacitive_meta || 0
+      else if ShadowcraftGear.FURY_OF_XUEN_CLOAK == item.original_id
+        total += c["other_ep"]["fury_of_xuen"]
       else if PROC_ENCHANTS[get_item_id(item)]
         switch slot
           when 14
