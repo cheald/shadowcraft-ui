@@ -2521,7 +2521,6 @@
       delete stats;
       c = Shadowcraft.lastCalculation;
       if (c && key !== "socketbonus") {
-        console.log(item.id, c.meta);
         if (item.dps) {
           if (slot === 15) {
             total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed];
@@ -3142,10 +3141,11 @@
       return ret;
     };
     getSimpleEPForUpgrade = function(slot, item) {
-      var gearEP, gear_offset;
+      var gear, gearEP, gear_offset;
       if (!item) {
         return 0;
       }
+      gear = Shadowcraft.Data.gear;
       gear_offset = statOffset(gear[slot], FACETS.ITEM);
       gearEP = get_ep(item, null, slot, gear_offset);
       if (isNaN(gearEP)) {
@@ -3228,7 +3228,9 @@
           }
           opt = {};
           opt.item = item;
-          opt.identifier = item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0);
+          if (item) {
+            opt.identifier = item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0);
+          }
           if (item) {
             opt.ttid = get_item_id(item);
           }
@@ -3748,7 +3750,7 @@
         ep: 0
       });
       $altslots.get(0).innerHTML = buffer;
-      $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
+      $altslots.find(".slot[data-identifier='" + selected_identifier + "']").addClass("active");
       showPopup($popup);
       return false;
     };
@@ -3885,10 +3887,9 @@
       return true;
     };
     clickItemUpgrade = function(e) {
-      var $slot, buf, data, gear, item, max, new_item_id, slot;
+      var buf, data, gear, item, max, new_item_id, slot;
       e.stopPropagation();
       buf = clickSlot(this, "item_id");
-      $slot = buf[0];
       slot = buf[1];
       data = Shadowcraft.Data;
       gear = data.gear[slot];
@@ -3898,7 +3899,9 @@
         new_item_id = Math.floor(new_item_id / 1000000);
         max = getMaxUpgradeLevel(item);
         gear.upgrade_level += 1;
+        gear.item_level += getUpgradeLevelSteps(item);
         if (gear.upgrade_level > max) {
+          gear.item_level -= getUpgradeLevelSteps(item) * gear.upgrade_level;
           delete gear.upgrade_level;
         }
       } else {
@@ -3906,6 +3909,7 @@
           new_item_id = Math.floor(new_item_id / 1000);
         }
         gear.upgrade_level = 1;
+        gear.item_level += getUpgradeLevelSteps(item);
       }
       if (gear.upgrade_level) {
         new_item_id = new_item_id * 1000000 + gear.upgrade_level;
@@ -3915,7 +3919,7 @@
       } else if (item.suffix) {
         new_item_id = new_item_id * 1000 + Math.abs(item.suffix);
       }
-      data.gear[slot]["item_id"] = new_item_id;
+      data.gear[slot].item_id = new_item_id;
       Shadowcraft.update();
       Shadowcraft.Gear.updateDisplay();
       return true;

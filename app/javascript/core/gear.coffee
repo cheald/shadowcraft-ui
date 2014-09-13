@@ -538,6 +538,8 @@ class ShadowcraftGear
   getSimpleEPForUpgrade = (slot, item) ->
     return 0 unless item
 
+    gear = Shadowcraft.Data.gear
+
     gear_offset = statOffset(gear[slot], FACETS.ITEM)
 
     gearEP = get_ep(item, null, slot, gear_offset)
@@ -600,7 +602,7 @@ class ShadowcraftGear
 
         opt = {}
         opt.item = item
-        opt.identifier = item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0)
+        opt.identifier = item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0) if item
         opt.ttid = get_item_id(item) if item
         opt.ttrand = if item then item.suffix else null
         opt.ttupgd = if item then item.upgrade_level else null
@@ -1018,7 +1020,7 @@ class ShadowcraftGear
     )
 
     $altslots.get(0).innerHTML = buffer
-    $altslots.find(".slot[id='#{selected_id}']").addClass("active")
+    $altslots.find(".slot[data-identifier='#{selected_identifier}']").addClass("active")
     showPopup($popup) # TODO
     false
 
@@ -1139,7 +1141,6 @@ class ShadowcraftGear
   clickItemUpgrade = (e) ->
     e.stopPropagation()
     buf = clickSlot(this, "item_id")
-    $slot = buf[0]
     slot = buf[1]
 
     data = Shadowcraft.Data
@@ -1153,19 +1154,22 @@ class ShadowcraftGear
       new_item_id = Math.floor(new_item_id / 1000000)
       max = getMaxUpgradeLevel(item)
       gear.upgrade_level += 1
+      gear.item_level += getUpgradeLevelSteps(item)
       if gear.upgrade_level > max
+        gear.item_level -= getUpgradeLevelSteps(item) * gear.upgrade_level
         delete gear.upgrade_level
     else
       if item.suffix
         new_item_id = Math.floor(new_item_id / 1000)
       gear.upgrade_level = 1
+      gear.item_level += getUpgradeLevelSteps(item)
     if gear.upgrade_level
       new_item_id = new_item_id * 1000000 + gear.upgrade_level
       if item.suffix
         new_item_id += Math.abs(item.suffix) * 1000
     else if item.suffix
       new_item_id = new_item_id * 1000 + Math.abs(item.suffix)
-    data.gear[slot]["item_id"] = new_item_id
+    data.gear[slot].item_id = new_item_id
     Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
     true
