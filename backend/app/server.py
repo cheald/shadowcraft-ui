@@ -103,27 +103,31 @@ class ShadowcraftComputation:
         #75274: "zen_alchemist_stone",
 
         # 5.2
-        #95665: 'lfr_bad_juju',
-        #94523: 'bad_juju',
-        #96037: 'thunder_bad_juju',
-        #96409: 'heroic_bad_juju',
-        #96781: 'heroic_thunder_bad_juju',
-        #95802: 'lfr_rune_of_re_origination',
-        #94532: 'rune_of_re_origination',
-        #96174: 'thunder_rune_of_re_origination',
-        #96546: 'heroic_rune_of_re_origination',
-        #96918: 'heroic_thunder_rune_of_re_origination',
-        #95748: 'lfr_talisman_of_bloodlust',
-        #94522: 'talisman_of_bloodlust',
-        #96120: 'thunder_talisman_of_bloodlust',
-        #96492: 'heroic_talisman_of_bloodlust',
-        #96864: 'heroic_thunder_talisman_of_bloodlust',
-        #95625: 'lfr_renatakis_soul_charm',
-        #94512: 'renatakis_soul_charm',
-        #95997: 'thunder_renatakis_soul_charm',
-        #96369: 'heroic_renatakis_soul_charm',
-        #96741: 'heroic_thunder_renatakis_soul_charm',
-        #94511: 'vicious_talisman_of_the_shado-pan_assault',
+        95665: 'bad_juju',
+        94523: 'bad_juju',
+        96037: 'bad_juju',
+        96409: 'bad_juju',
+        96781: 'bad_juju',
+        
+        95802: 'rune_of_re_origination',
+        94532: 'rune_of_re_origination',
+        96174: 'rune_of_re_origination',
+        96546: 'rune_of_re_origination',
+        96918: 'rune_of_re_origination',
+        
+        95748: 'talisman_of_bloodlust',
+        94522: 'talisman_of_bloodlust',
+        96120: 'talisman_of_bloodlust',
+        96492: 'talisman_of_bloodlust',
+        96864: 'talisman_of_bloodlust',
+        
+        95625: 'renatakis_soul_charm',
+        94512: 'renatakis_soul_charm',
+        95997: 'renatakis_soul_charm',
+        96369: 'renatakis_soul_charm',
+        96741: 'renatakis_soul_charm',
+        
+        94511: 'vicious_talisman_of_the_shado-pan_assault',
 
         # 5.4
         #102248: 'fury_of_xuen', # legendary cloak proc
@@ -167,17 +171,31 @@ class ShadowcraftComputation:
         105609: 'thoks_tail_tip',
     }
     
+    def createTrinketGroup(base_ilvls, upgrade_level, upgrade_steps):
+      trinketGroup = []
+      for base_ilvl in base_ilvls:
+        subgroup = ()
+        for i in xrange(base_ilvl,base_ilvl + (upgrade_level+1)*upgrade_steps ,upgrade_steps):
+          subgroup += (i,)
+        trinketGroup.append(subgroup)
+      return trinketGroup
+    
     # used for rankings
     trinketGroups = {
-      'assurance_of_consequence': [(528,532,536,540,544),(540,544,548,552,556),(553,557,561,565,569),(559,563,567,571,575),(566,570,574,578,582),(572,576,580,584,588)],
-      'haromms_talisman': [(528,532,536,540,544),(540,544,548,552,556),(553,557,561,565,569),(559,563,567,571,575),(566,570,574,578,582),(572,576,580,584,588)],
-      'sigil_of_rampage': [(528,532,536,540,544),(540,544,548,552,556),(553,557,561,565,569),(559,563,567,571,575),(566,570,574,578,582),(572,576,580,584,588)],
-      'ticking_ebon_detonator': [(528,532,536,540,544),(540,544,548,552,556),(553,557,561,565,569),(559,563,567,571,575),(566,570,574,578,582),(572,576,580,584,588)],
-      'thoks_tail_tip': [(528,532,536,540,544),(540,544,548,552,556),(553,557,561,565,569),(559,563,567,571,575),(566,570,574,578,582),(572,576,580,584,588)],
-      'discipline_of_xuen': [(496,500,504,508,512),(535,539,543,547,551)],
-      'woundripper_medallion': [(496,500,504,508,512)],
+      'bad_juju': createTrinketGroup((502,522,528,535,541), 4, 4),
+      'rune_of_re_origination': createTrinketGroup((502,522,528,535,541), 4, 4),
+      'talisman_of_bloodlust': createTrinketGroup((502,522,528,535,541), 4, 4),
+      'vicious_talisman_of_the_shado-pan_assault': createTrinketGroup((522,), 4, 4),
+      'renatakis_soul_charm': createTrinketGroup((522,), 4, 4),
+      'assurance_of_consequence': createTrinketGroup((528,540,553,559,566,572), 4, 4),
+      'haromms_talisman': createTrinketGroup((528,540,553,559,566,572), 4, 4),
+      'sigil_of_rampage': createTrinketGroup((528,540,553,559,566,572), 4, 4),
+      'ticking_ebon_detonator': createTrinketGroup((528,540,553,559,566,572), 4, 4),
+      'thoks_tail_tip': createTrinketGroup((528,540,553,559,566,572), 4, 4),
+      'discipline_of_xuen': createTrinketGroup((496,535), 4, 4),
+      'woundripper_medallion': createTrinketGroup((496,), 4, 4),
     }
-    
+
     gearBoosts = {
         #56115: 'skardyns_grace',
         #56440: 'heroic_skardyns_grace',
@@ -214,6 +232,7 @@ class ShadowcraftComputation:
     tier14IDS = frozenset([85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128])
     tier15IDS = frozenset([95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679])
     tier16IDS = frozenset([99006, 99007, 99008, 99009, 99010, 99112, 99113, 99114, 99115, 99116, 99348, 99349, 99350, 99355, 99356, 99629, 99630, 99631, 99634, 99635])
+    tier17IDS = frozenset([115570, 115571, 115572, 115573, 115574])
 
     legendary_tier_1 = frozenset([77945, 77946])
     legendary_tier_2 = frozenset([77947, 77948])
@@ -316,7 +335,7 @@ class ShadowcraftComputation:
                 'use_hemorrhage'
             ]
         ]
-    elif __builtin__.shadowcraft_engine_version == 5.4 or __builtin__.shadowcraft_engine_version == 6.0:
+    elif __builtin__.shadowcraft_engine_version == 5.4:
         validCycleKeys = [[
                 'min_envenom_size_non_execute',
                 'min_envenom_size_execute',
@@ -331,6 +350,20 @@ class ShadowcraftComputation:
             ], [
                 'use_hemorrhage',
                 'sub_sb_timing'
+            ]
+        ]
+    elif __builtin__.shadowcraft_engine_version == 6.0:
+        validCycleKeys = [[
+                'min_envenom_size_non_execute',
+                'min_envenom_size_execute',
+                'prioritize_rupture_uptime_non_execute',
+                'prioritize_rupture_uptime_execute'
+            ], [
+                'revealing_strike_pooling',
+                'ksp_immediately',
+                'blade_flurry',
+            ], [
+                'use_hemorrhage',
             ]
         ]
     
@@ -447,6 +480,12 @@ class ShadowcraftComputation:
 
         if len(self.tier16IDS & gear) >= 4:
             buff_list.append('rogue_t16_4pc')
+            
+        if len(self.tier17IDS & gear) >= 2:
+            buff_list.append('rogue_t17_2pc')
+
+        if len(self.tier17IDS & gear) >= 4:
+            buff_list.append('rogue_t17_4pc')
     
         agi_bonus = 0
         if len(self.arenaSeason9SetIds & gear) >= 2:
