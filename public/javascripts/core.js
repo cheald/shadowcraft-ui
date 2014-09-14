@@ -3628,7 +3628,7 @@
       arm = [itemId, itemLevel, suffix || 0];
       itemString = arm.join(':');
       item = Shadowcraft.ServerData.ITEM_LOOKUP2[itemString];
-      if (!(item != null)) {
+      if (!(item != null) && itemId) {
         console.warn("item not found", itemString);
       }
       return item;
@@ -4150,9 +4150,12 @@
                   }
                 }
               } else {
+                data.gear[slot].original_id = null;
+                data.gear[slot].item_level = null;
                 for (i = 0; i <= 2; i++) {
                   data.gear[slot]["g" + i] = null;
                 }
+                data.gear[slot].suffix = null;
               }
             } else {
               enchant_id = !isNaN(val) ? val : null;
