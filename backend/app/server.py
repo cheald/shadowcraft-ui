@@ -139,8 +139,6 @@ class ShadowcraftComputation:
         94511: 'vicious_talisman_of_the_shado-pan_assault',
 
         # 5.4
-        #102248: 'fury_of_xuen', # legendary cloak proc
-
         103686: 'discipline_of_xuen',
         103986: 'discipline_of_xuen',
 
@@ -507,7 +505,7 @@ class ShadowcraftComputation:
             if k in gear:
                 for gd in gear_data:
                     if gd[0] == k:
-                        #proclist.append((self.gearProcs[k],gd[1]))
+                        proclist.append((self.gearProcs[k],gd[1]))
                         break
         
         if len(self.tier11IDS & gear) >= 4:
@@ -524,7 +522,10 @@ class ShadowcraftComputation:
 
         if input.get("mg") == "capacitive":
             proclist.append('legendary_capacitive_meta')
-
+            
+        if len(frozenset([102248]) & gear) >= 1:
+            proclist.append('fury_of_xuen')
+        
         _procs = procs.ProcsList(*proclist)
 
         # ##################################################################################
