@@ -18,6 +18,21 @@
         delete item.s;
       }
 
+      function getUpgradeLevelSteps(item) {
+        if(item.quality == 3) {
+          return 8;
+        } else {
+          return 4;
+        }
+      }
+
+      function getBaseItemLevel(item) {
+        if(item.upgrade_level === undefined) {
+          return item.ilvl;
+        }
+        return item.ilvl - getUpgradeLevelSteps(item) * item.upgrade_level;
+      }
+
       R.GEMS = #{raw gem_json.to_json};
       R.ITEMS = #{raw item_json.to_json};
       R.ENCHANTS = #{raw enchant_json.to_json};
@@ -110,8 +125,10 @@
         item.item_id = item.id;
         item.identifier = item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0);
         if(item.equip_location == 6) {    // Add sockets to belts
-          if(item.sockets === undefined) { item.sockets = []; }
-          item.sockets[item.sockets.length] = "Prismatic";
+          if(600 >= getBaseItemLevel(item)) {
+            if(item.sockets === undefined) { item.sockets = []; }
+            item.sockets[item.sockets.length] = "Prismatic";
+          }
         }
 
         if(item.equip_location == 21 || item.equip_location == 13) {
