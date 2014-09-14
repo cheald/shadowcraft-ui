@@ -2965,7 +2965,7 @@
         return this.optimizeGems(depth + 1);
       }
     };
-    getEnchantRecommendation = function(enchant_list, item, offset) {
+    getEnchantRecommendation = function(enchant_list, item) {
       var enchant, _i, _len, _ref, _ref2;
       for (_i = 0, _len = enchant_list.length; _i < _len; _i++) {
         enchant = enchant_list[_i];
@@ -3012,7 +3012,7 @@
         }
         enchants.sort(__epSort);
         if (item) {
-          enchantId = getEnchantRecommendation(enchants, item, enchant_offset);
+          enchantId = getEnchantRecommendation(enchants, item);
           if (enchantId) {
             from_enchant = Enchants[gear.enchant];
             to_enchant = Enchants[enchantId];
@@ -3677,7 +3677,6 @@
       slot = buf[1];
       selected_identifier = $slot.data("identifier");
       equip_location = SLOT_INVTYPES[slot];
-      console.log(equip_location, slot);
       GemList = Shadowcraft.ServerData.GEMS;
       gear = Shadowcraft.Data.gear;
       requireDagger = needsDagger();

@@ -441,7 +441,7 @@ class ShadowcraftComputation:
         # ##################################################################################
         # Set up gear buffs.
         buff_list = []
-        buff_list.append('leather_specialization')
+        buff_list.append('gear_specialization')
         if input.get("pot", 0) == 1:
             buff_list.append('virmens_bite')
         if input.get("prepot", 0) == 1:
@@ -604,6 +604,9 @@ class ShadowcraftComputation:
             is_pvp = _opt.get("pvp", False),
             latency = _opt.get("latency", 0.03),
             adv_params = _opt.get("adv_params", ''),
+            potion = input.get("pot", 0) == 1,
+            prepot = input.get("prepot", 0) == 1,
+            default_ep_stat = 'ap',
             **settings_options
         )
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)

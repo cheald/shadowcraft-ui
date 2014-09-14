@@ -103,7 +103,6 @@
         R.ENCHANT_LOOKUP[enchant.id] = enchant;
       }
       R.ITEM_LOOKUP2 = {};
-      R.ITEM_LOOKUP = {};
       for(i = 0; i < R.ITEMS.length; i++) {
         var item = R.ITEMS[i];
         expandItem(item, iStatMap);
@@ -122,7 +121,6 @@
 
         if(R.SLOT_CHOICES[item.equip_location] === undefined) { R.SLOT_CHOICES[item.equip_location] = []; }
         R.SLOT_CHOICES[item.equip_location][R.SLOT_CHOICES[item.equip_location].length] = item.identifier;
-        R.ITEM_LOOKUP[item.id] = item;
         R.ITEM_LOOKUP2[item.identifier] = item;
       }
       R.TALENT_LOOKUP_WOD = {};
