@@ -2375,7 +2375,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBaseItemLevel, getBestNormalGem, getEnchantRecommendation, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getItem, getItems, getMaxUpgradeLevel, getSimpleEPForUpgrade, getStatWeight, getUpgradeLevelSteps, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBaseItemLevel, getBestNormalGem, getEnchantRecommendation, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getItem, getItems, getMaxUpgradeLevel, getSimpleEPForUpgrade, getStatWeight, getUpgradeLevelSteps, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
@@ -2516,7 +2516,7 @@
           total += c.meta.legendary_capacitive_meta || 0;
         } else if (ShadowcraftGear.FURY_OF_XUEN_CLOAK === item.original_id) {
           total += c["other_ep"]["fury_of_xuen"];
-        } else if (PROC_ENCHANTS[get_item_id(item)]) {
+        } else if (PROC_ENCHANTS[item.id]) {
           switch (slot) {
             case 14:
               pre = "";
@@ -2527,7 +2527,7 @@
             case 16:
               pre = "oh_";
           }
-          enchant = PROC_ENCHANTS[get_item_id(item)];
+          enchant = PROC_ENCHANTS[item.id];
           if (!pre && enchant) {
             total += c["other_ep"][enchant];
           } else if (pre && enchant) {
@@ -2535,8 +2535,8 @@
           }
         }
         item_level = item.ilvl;
-        if (c.trinket_map[get_item_id(item)]) {
-          proc_name = c.trinket_map[get_item_id(item)];
+        if (c.trinket_map[item.original_id]) {
+          proc_name = c.trinket_map[item.original_id];
           if (c.proc_ep[proc_name] && c.proc_ep[proc_name][item_level]) {
             total += c.proc_ep[proc_name][item_level];
           } else {
@@ -2839,7 +2839,7 @@
       if (item.ilvl >= 528 && (item.tag.indexOf("Raid Finder") >= 0 || item.tag.indexOf("Flexible") >= 0)) {
         return false;
       }
-      if (get_item_id(item) === 87012 || get_item_id(item) === 87032 || item.tag.indexOf("Season") >= 0 || item.name.indexOf("Immaculate") >= 0) {
+      if (item.original_id === 87012 || item.original_id === 87032 || item.tag.indexOf("Season") >= 0 || item.name.indexOf("Immaculate") >= 0) {
         return false;
       }
       return true;
@@ -3285,7 +3285,7 @@
             opt.identifier = item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0);
           }
           if (item) {
-            opt.ttid = get_item_id(item);
+            opt.ttid = item.original_id;
           }
           opt.ttrand = item ? item.suffix : null;
           opt.ttupgd = item ? item.upgrade_level : null;
@@ -3623,15 +3623,6 @@
           return 1000;
       }
     };
-    get_item_id = function(item) {
-      if (item.upgrade_level) {
-        return Math.floor(item.id / 1000000);
-      }
-      if (item.suffix) {
-        return Math.floor(item.id / 1000);
-      }
-      return item.id;
-    };
     getItem = function(itemId, itemLevel, suffix) {
       var arm, item, itemString;
       arm = [itemId, itemLevel, suffix || 0];
@@ -3727,7 +3718,7 @@
         l.__setBonusEP = 0;
         for (set_name in Sets) {
           set = Sets[set_name];
-          if (set.ids.indexOf(get_item_id(l)) >= 0) {
+          if (set.ids.indexOf(l.original_id) >= 0) {
             l.__setBonusEP += setBonEP[set_name];
           }
         }
@@ -3763,7 +3754,7 @@
           continue;
         }
         iEP = l.__ep;
-        ttid = get_item_id(l);
+        ttid = l.original_id;
         ttrand = l.suffix != null ? l.suffix : "";
         ttupgd = l.upgrade_level != null ? l.upgrade_level : "";
         upgrade = [];

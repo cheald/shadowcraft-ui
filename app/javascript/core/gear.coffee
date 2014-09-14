@@ -134,7 +134,7 @@ class ShadowcraftGear
         total += c.meta.legendary_capacitive_meta || 0
       else if ShadowcraftGear.FURY_OF_XUEN_CLOAK == item.original_id
         total += c["other_ep"]["fury_of_xuen"]
-      else if PROC_ENCHANTS[get_item_id(item)]
+      else if PROC_ENCHANTS[item.id]
         switch slot
           when 14
             pre = ""
@@ -142,15 +142,15 @@ class ShadowcraftGear
             pre = "mh_"
           when 16
             pre = "oh_"
-        enchant = PROC_ENCHANTS[get_item_id(item)]
+        enchant = PROC_ENCHANTS[item.id]
         if !pre and enchant
           total += c["other_ep"][enchant]
         else if pre and enchant
           total += c[pre + "ep"][pre + enchant]
 
       item_level = item.ilvl
-      if c.trinket_map[get_item_id(item)]
-        proc_name = c.trinket_map[get_item_id(item)]
+      if c.trinket_map[item.original_id]
+        proc_name = c.trinket_map[item.original_id]
         if c.proc_ep[proc_name] and c.proc_ep[proc_name][item_level]
           total += c.proc_ep[proc_name][item_level]
         else
@@ -341,7 +341,7 @@ class ShadowcraftGear
     return true if last > 0 and item.sockets[last] == "Prismatic" and item.sockets[last-1] == "Hydraulic"
     return false if item.ilvl < 502 or item.ilvl > 549
     return false if item.ilvl >= 528 and (item.tag.indexOf("Raid Finder") >= 0 or item.tag.indexOf("Flexible") >= 0)
-    return false if get_item_id(item) == 87012 or get_item_id(item) == 87032 or item.tag.indexOf("Season") >= 0 or item.name.indexOf("Immaculate") >= 0
+    return false if item.original_id == 87012 or item.original_id == 87032 or item.tag.indexOf("Season") >= 0 or item.name.indexOf("Immaculate") >= 0
     return true
 
   # Check if the gems have equal stats to pretend that optimize gems 
@@ -667,7 +667,7 @@ class ShadowcraftGear
         opt = {}
         opt.item = item
         opt.identifier = item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0) if item
-        opt.ttid = get_item_id(item) if item
+        opt.ttid = item.original_id if item
         opt.ttrand = if item then item.suffix else null
         opt.ttupgd = if item then item.upgrade_level else null
         opt.ep = if item then get_ep(item, null, i).toFixed(1) else 0
@@ -938,13 +938,6 @@ class ShadowcraftGear
       else
         1000
 
-  get_item_id = (item) ->
-    if item.upgrade_level
-      return Math.floor(item.id / 1000000)
-    if item.suffix
-      return Math.floor(item.id / 1000)
-    item.id
-
   getItem = (itemId, itemLevel, suffix) ->
     arm = [itemId, itemLevel, suffix || 0]
     itemString = arm.join(':')
@@ -1023,7 +1016,7 @@ class ShadowcraftGear
       l.__gemRec = getGemmingRecommendation(GemList, l, true, slot, gem_offset)
       l.__setBonusEP = 0
       for set_name, set of Sets
-        if set.ids.indexOf(get_item_id(l)) >= 0
+        if set.ids.indexOf(l.original_id) >= 0
           l.__setBonusEP += setBonEP[set_name]
 
       l.__gearEP = get_ep(l, null, slot, gear_offset)
@@ -1049,7 +1042,7 @@ class ShadowcraftGear
       continue if l.__ep < 1
       iEP = l.__ep
 
-      ttid = get_item_id(l)
+      ttid = l.original_id
       ttrand = if l.suffix? then l.suffix else ""
       ttupgd = if l.upgrade_level? then l.upgrade_level else ""
       upgrade = []
