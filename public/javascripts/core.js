@@ -399,7 +399,7 @@
       payload = {
         r: data.options.general.race,
         l: data.options.general.level,
-        pot: data.options.general.virmens_bite ? 1 : 0,
+        pot: data.options.general.potion ? 1 : 0,
         prepot: data.options.general.prepot ? 1 : 0,
         b: buffList,
         ro: data.options.rotation,
@@ -784,7 +784,7 @@
         }
         ret.push(talentSet);
         options = [];
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.virmens_bite ? 1 : 0, data.options.general.max_ilvl, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 502, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.potion ? 1 : 0, data.options.general.max_ilvl, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 502, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35];
         options.push(base36Encode(general));
         buffs = [];
         _ref2 = ShadowcraftOptions.buffMap;
@@ -872,7 +872,7 @@
           duration: general[2],
           lethal_poison: unmap(general[3], poisonMap),
           utility_poison: unmap(general[4], utilPoisonMap),
-          virmens_bite: general[5] !== 0,
+          potion: general[5] !== 0,
           max_ilvl: general[6] || 700,
           prepot: general[7] !== 0,
           patch: general[8] || 60,
@@ -1110,7 +1110,7 @@
   };
   ShadowcraftOptions = (function() {
     var cast, changeCheck, changeInput, changeOption, changeSelect, enforceBounds;
-    ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'haste_buff', 'multistrike_buff', 'attack_power_buff', 'mastery_buff', 'versatility_buff', 'agi_flask_mop', 'food_300_agi'];
+    ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'haste_buff', 'multistrike_buff', 'attack_power_buff', 'mastery_buff', 'versatility_buff', 'agi_flask_mop', 'food_mop_agi'];
     cast = function(val, dtype) {
       switch (dtype) {
         case "integer":
@@ -1420,15 +1420,15 @@
         }
       });
       this.setup("#settings #playerBuffs", "buffs", {
-        food_300_agi: {
+        food_mop_agi: {
           name: "Food Buff",
-          desc: "300 Agi Food",
+          desc: "34 Agility Food",
           'default': true,
           datatype: 'bool'
         },
         agi_flask_mop: {
           name: "Agility Flask",
-          desc: "Mists Flask",
+          desc: "Mists Flask (114 Agility)",
           'default': true,
           datatype: 'bool'
         },
@@ -1484,13 +1484,13 @@
       this.setup("#settings #raidOther", "general", {
         prepot: {
           type: "check",
-          name: "Pre-pot (Virmen's Bite)",
+          name: "Pre-pot",
           'default': false,
           datatype: 'bool'
         },
-        virmens_bite: {
+        potion: {
           type: "check",
-          name: "Combat potion (Virmen's Bite)",
+          name: "Combat potion",
           'default': true,
           datatype: 'bool'
         }

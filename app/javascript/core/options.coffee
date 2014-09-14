@@ -9,7 +9,7 @@ class ShadowcraftOptions
     'mastery_buff',
     'versatility_buff',
     'agi_flask_mop',
-    'food_300_agi'
+    'food_mop_agi'
   ]
 
   cast = (val, dtype) ->
@@ -139,8 +139,8 @@ class ShadowcraftOptions
     })
     
     @setup("#settings #playerBuffs", "buffs", {
-      food_300_agi: {name: "Food Buff", desc: "300 Agi Food", 'default': true, datatype: 'bool'},
-      agi_flask_mop: {name: "Agility Flask", desc: "Mists Flask", 'default': true, datatype: 'bool'},
+      food_mop_agi: {name: "Food Buff", desc: "34 Agility Food", 'default': true, datatype: 'bool'},
+      agi_flask_mop: {name: "Agility Flask", desc: "Mists Flask (114 Agility)", 'default': true, datatype: 'bool'},
       short_term_haste_buff: {name: "+30% Haste/40 sec", desc: "Heroism/Bloodlust/Time Warp", 'default': true, datatype: 'bool'},
       stat_multiplier_buff: {name: "5% All Stats", desc: "Blessing of Kings/Mark of the Wild/Legacy of the Emperor", 'default': true, datatype: 'bool'},
       crit_chance_buff: {name: "5% Crit", desc: "Leader of the Pack/Arcane Brilliance/Legacy of the White Tiger", 'default': true, datatype: 'bool'},
@@ -152,8 +152,8 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #raidOther", "general", {
-      prepot: {type: "check", name: "Pre-pot (Virmen's Bite)", 'default': false, datatype: 'bool'},
-      virmens_bite: {type: "check", name: "Combat potion (Virmen's Bite)", 'default': true, datatype: 'bool'},
+      prepot: {type: "check", name: "Pre-pot", 'default': false, datatype: 'bool'},
+      potion: {type: "check", name: "Combat potion", 'default': true, datatype: 'bool'},
     })
 
     @setup("#settings #pvp", "general", {

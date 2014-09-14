@@ -106,6 +106,10 @@ class ShadowcraftComputation:
         #87574: "corens_cold_chromium_coaster",
         #84072: "braid_of_ten_songs",
         #75274: "zen_alchemist_stone",
+        
+        # 5.1
+        93253: "woundripper_medallion",
+        93258: "woundripper_medallion",
 
         # 5.2
         95665: 'bad_juju',
@@ -222,10 +226,6 @@ class ShadowcraftComputation:
         #87079: "heroic_jade_bandit_figurine",
         86043: "jade_bandit_figurine",
         #86772: "lfr_jade_bandit_figurine",
-        
-        # 5.1
-        93253: "woundripper_medallion",
-        93258: "woundripper_medallion"
     }
     
     # combines gearProcs and gearBoosts
@@ -442,11 +442,6 @@ class ShadowcraftComputation:
         # Set up gear buffs.
         buff_list = []
         buff_list.append('gear_specialization')
-        if input.get("pot", 0) == 1:
-            buff_list.append('virmens_bite')
-        if input.get("prepot", 0) == 1:
-            buff_list.append('virmens_bite_prepot')
-
         if input.get("mg") == "chaotic":
             buff_list.append('chaotic_metagem')
 

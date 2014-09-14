@@ -224,7 +224,7 @@ class ShadowcraftHistory
         data.options.general.duration
         map(data.options.general.lethal_poison, poisonMap)
         map(data.options.general.utility_poison, utilPoisonMap)
-        if data.options.general.virmens_bite then 1 else 0
+        if data.options.general.potion then 1 else 0
         data.options.general.max_ilvl
         if data.options.general.prepot then 1 else 0
         data.options.general.patch,
@@ -316,7 +316,7 @@ class ShadowcraftHistory
         duration:               general[2]
         lethal_poison:          unmap(general[3], poisonMap)
         utility_poison:         unmap(general[4], utilPoisonMap)
-        virmens_bite:           general[5] != 0
+        potion:                 general[5] != 0
         max_ilvl:               general[6] || 700
         prepot:                 general[7] != 0
         patch:                  general[8] || 60
