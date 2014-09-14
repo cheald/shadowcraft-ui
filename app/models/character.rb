@@ -126,7 +126,6 @@ class Character
       copy.each do |key, item|
         suffix = item.include?('suffix')
         upgrade_level = item.include?('upgrade_level')
-        item['original_id'] = item['item_id']
         if suffix
           item['item_id'] = item['item_id'] * 1000 + item['suffix'].to_i.abs
           if upgrade_level and item['upgrade_level'] > 0

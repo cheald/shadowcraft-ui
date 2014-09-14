@@ -114,6 +114,7 @@ module WowArmory
         tooltip = v['tooltipParams'] || {}
         info = {
           'item_id' => v['id'],
+          'original_id' => v['id'],
           'item_level' => v['itemLevel'],
           'name' => v['name'],
           'enchant' => tooltip['enchant'],
