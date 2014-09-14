@@ -22,6 +22,12 @@ class ShadowcraftGear
     4443: "elemental_force"
     4444: "dancing_steel"
     5125: "dancing_steel"
+    5330: "mark_of_the_thunderlord"
+    5331: "mark_of_the_shattered_hand"
+    5334: "mark_of_the_frostwolf"
+    5337: "mark_of_warsong"
+    5384: "mark_of_bleeding_hollow"
+
 
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
   @LEGENDARY_META_GEM = 95346
@@ -422,6 +428,62 @@ class ShadowcraftGear
       Shadowcraft.Console.log "Finished automatic regemming: &Delta; #{Math.floor(@getEPTotal() - EP_PRE_REGEM)} EP", "gold"
     else
       this.optimizeGems depth + 1
+
+  # Assumes enchant_list is already sorted preferred order.
+  getEnchantRecommendation = (enchant_list, item) ->
+
+    for enchant in enchant_list
+      # do not consider enchant if item level is higher than allowed maximum
+      continue if enchant.requires?.max_item_level? and enchant.requires?.max_item_level < getBaseItemLevel(item)
+      return enchant.id
+    return false
+
+  optimizeEnchants: (depth) ->
+    Enchants = Shadowcraft.ServerData.ENCHANT_LOOKUP
+    data = Shadowcraft.Data
+
+    depth ||= 0
+    if depth == 0
+      Shadowcraft.Console.purgeOld()
+      EP_PRE_REGEM = @getEPTotal()
+      Shadowcraft.Console.log "Beginning auto-enchant...", "gold underline"
+    madeChanges = false
+    for slotIndex in SLOT_ORDER
+      slotIndex = parseInt(slotIndex, 10)
+
+      gear = data.gear[slotIndex]
+      continue unless gear
+      continue if gear.locked
+
+      item = getItem(gear.original_id, gear.item_level, gear.suffix)
+      enchant_offset = statOffset(gear, FACETS.ENCHANT)
+
+      enchants = Shadowcraft.ServerData.ENCHANT_SLOTS[SLOT_INVTYPES[slotIndex]]
+      continue unless enchants
+      for enchant in enchants
+        enchant.__ep = get_ep(enchant, null, slotIndex, enchant_offset)
+        enchant.__ep = 0 if isNaN enchant.__ep
+      enchants.sort(__epSort)
+
+      if item
+        enchantId = getEnchantRecommendation(enchants, item)
+        if enchantId
+          from_enchant = Enchants[gear.enchant]
+          to_enchant = Enchants[enchantId]
+          if from_enchant && to_enchant
+            continue if from_enchant.id == to_enchant.id
+            Shadowcraft.Console.log "Change enchant of #{item.name} from #{from_enchant.name} to #{to_enchant.name}"
+          else
+            Shadowcraft.Console.log "Enchant #{item.name} with #{to_enchant.name}"
+          gear.enchant = enchantId
+          madeChanges = true
+
+    if !madeChanges or depth >= 10
+      @app.update()
+      this.updateDisplay()
+      Shadowcraft.Console.log "Finished automatic enchanting: &Delta; #{Math.floor(@getEPTotal() - EP_PRE_REGEM)} EP", "gold"
+    else
+      this.optimizeEnchants depth + 1
 
   getBestNormalGem = ->
     Gems = Shadowcraft.ServerData.GEMS
@@ -1038,7 +1100,9 @@ class ShadowcraftGear
     enchants = EnchantSlots[equip_location]
     max = 0
 
-    offset = statOffset(Shadowcraft.Data.gear[slot], FACETS.ENCHANT)
+    gear = Shadowcraft.Data.gear[slot]
+    offset = statOffset(gear, FACETS.ENCHANT)
+    item = getItem(gear.original_id, gear.item_level, gear.suffix)
     for enchant in enchants
       enchant.__ep = get_ep(enchant, null, slot, offset)
       enchant.__ep = 0 if isNaN enchant.__ep
@@ -1048,6 +1112,8 @@ class ShadowcraftGear
     buffer = ""
 
     for enchant in enchants
+      # do not show enchant if item level is higher than allowed maximum
+      continue if enchant.requires?.max_item_level? and enchant.requires?.max_item_level < getBaseItemLevel(item)
       enchant.desc = statsToDesc(enchant) if enchant && !enchant.desc
       enchant.desc = enchant.name if enchant and enchant.desc == ""
       eEP = enchant.__ep
@@ -1071,6 +1137,11 @@ class ShadowcraftGear
     $altslots.find(".slot[id='#{selected_id}']").addClass("active")
     showPopup($popup) # TODO
     false
+
+  getBaseItemLevel = (item) ->
+    unless item.upgrade_level
+      return item.ilvl
+    return item.ilvl - getUpgradeLevelSteps(item) * item.upgrade_level
 
   # Change out a gem
   clickSlotGem = ->
@@ -1217,6 +1288,10 @@ class ShadowcraftGear
     $("#optimizeGems").click ->
       window._gaq.push ['_trackEvent', "Character", "Optimize Gems"] if window._gaq
       Shadowcraft.Gear.optimizeGems()
+
+    $("#optimizeEnchants").click ->
+      window._gaq.push ['_trackEvent', "Character", "Optimize Enchants"] if window._gaq
+      Shadowcraft.Gear.optimizeEnchants()
 
     #  Change out an item
     $slots.click $.delegate

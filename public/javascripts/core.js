@@ -2375,7 +2375,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBestNormalGem, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getItem, getItems, getMaxUpgradeLevel, getSimpleEPForUpgrade, getStatWeight, getUpgradeLevelSteps, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBaseItemLevel, getBestNormalGem, getEnchantRecommendation, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getItem, getItems, getMaxUpgradeLevel, getSimpleEPForUpgrade, getStatWeight, getUpgradeLevelSteps, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, get_item_id, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
@@ -2396,7 +2396,12 @@
       4441: "windsong",
       4443: "elemental_force",
       4444: "dancing_steel",
-      5125: "dancing_steel"
+      5125: "dancing_steel",
+      5330: "mark_of_the_thunderlord",
+      5331: "mark_of_the_shattered_hand",
+      5334: "mark_of_the_frostwolf",
+      5337: "mark_of_warsong",
+      5384: "mark_of_bleeding_hollow"
     };
     ShadowcraftGear.CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886];
     ShadowcraftGear.LEGENDARY_META_GEM = 95346;
@@ -2958,6 +2963,78 @@
         return Shadowcraft.Console.log("Finished automatic regemming: &Delta; " + (Math.floor(this.getEPTotal() - EP_PRE_REGEM)) + " EP", "gold");
       } else {
         return this.optimizeGems(depth + 1);
+      }
+    };
+    getEnchantRecommendation = function(enchant_list, item, offset) {
+      var enchant, _i, _len, _ref, _ref2;
+      for (_i = 0, _len = enchant_list.length; _i < _len; _i++) {
+        enchant = enchant_list[_i];
+        if ((((_ref = enchant.requires) != null ? _ref.max_item_level : void 0) != null) && ((_ref2 = enchant.requires) != null ? _ref2.max_item_level : void 0) < getBaseItemLevel(item)) {
+          continue;
+        }
+        return enchant.id;
+      }
+      return false;
+    };
+    ShadowcraftGear.prototype.optimizeEnchants = function(depth) {
+      var Enchants, data, enchant, enchantId, enchant_offset, enchants, from_enchant, gear, item, madeChanges, slotIndex, to_enchant, _i, _j, _len, _len2;
+      Enchants = Shadowcraft.ServerData.ENCHANT_LOOKUP;
+      data = Shadowcraft.Data;
+      depth || (depth = 0);
+      if (depth === 0) {
+        Shadowcraft.Console.purgeOld();
+        EP_PRE_REGEM = this.getEPTotal();
+        Shadowcraft.Console.log("Beginning auto-enchant...", "gold underline");
+      }
+      madeChanges = false;
+      for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
+        slotIndex = SLOT_ORDER[_i];
+        slotIndex = parseInt(slotIndex, 10);
+        gear = data.gear[slotIndex];
+        if (!gear) {
+          continue;
+        }
+        if (gear.locked) {
+          continue;
+        }
+        item = getItem(gear.original_id, gear.item_level, gear.suffix);
+        enchant_offset = statOffset(gear, FACETS.ENCHANT);
+        enchants = Shadowcraft.ServerData.ENCHANT_SLOTS[SLOT_INVTYPES[slotIndex]];
+        if (!enchants) {
+          continue;
+        }
+        for (_j = 0, _len2 = enchants.length; _j < _len2; _j++) {
+          enchant = enchants[_j];
+          enchant.__ep = get_ep(enchant, null, slotIndex, enchant_offset);
+          if (isNaN(enchant.__ep)) {
+            enchant.__ep = 0;
+          }
+        }
+        enchants.sort(__epSort);
+        if (item) {
+          enchantId = getEnchantRecommendation(enchants, item, enchant_offset);
+          if (enchantId) {
+            from_enchant = Enchants[gear.enchant];
+            to_enchant = Enchants[enchantId];
+            if (from_enchant && to_enchant) {
+              if (from_enchant.id === to_enchant.id) {
+                continue;
+              }
+              Shadowcraft.Console.log("Change enchant of " + item.name + " from " + from_enchant.name + " to " + to_enchant.name);
+            } else {
+              Shadowcraft.Console.log("Enchant " + item.name + " with " + to_enchant.name);
+            }
+            gear.enchant = enchantId;
+            madeChanges = true;
+          }
+        }
+      }
+      if (!madeChanges || depth >= 10) {
+        this.app.update();
+        this.updateDisplay();
+        return Shadowcraft.Console.log("Finished automatic enchanting: &Delta; " + (Math.floor(this.getEPTotal() - EP_PRE_REGEM)) + " EP", "gold");
+      } else {
+        return this.optimizeEnchants(depth + 1);
       }
     };
     getBestNormalGem = function() {
@@ -3600,6 +3677,7 @@
       slot = buf[1];
       selected_identifier = $slot.data("identifier");
       equip_location = SLOT_INVTYPES[slot];
+      console.log(equip_location, slot);
       GemList = Shadowcraft.ServerData.GEMS;
       gear = Shadowcraft.Data.gear;
       requireDagger = needsDagger();
@@ -3731,7 +3809,7 @@
       return false;
     };
     clickSlotEnchant = function() {
-      var EnchantSlots, buf, buffer, data, eEP, enchant, enchants, equip_location, max, offset, selected_id, slot, _i, _j, _len, _len2;
+      var EnchantSlots, buf, buffer, data, eEP, enchant, enchants, equip_location, gear, item, max, offset, selected_id, slot, _i, _j, _len, _len2, _ref, _ref2;
       data = Shadowcraft.Data;
       EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
       buf = clickSlot(this, "enchant");
@@ -3739,7 +3817,9 @@
       equip_location = SLOT_INVTYPES[slot];
       enchants = EnchantSlots[equip_location];
       max = 0;
-      offset = statOffset(Shadowcraft.Data.gear[slot], FACETS.ENCHANT);
+      gear = Shadowcraft.Data.gear[slot];
+      offset = statOffset(gear, FACETS.ENCHANT);
+      item = getItem(gear.original_id, gear.item_level, gear.suffix);
       for (_i = 0, _len = enchants.length; _i < _len; _i++) {
         enchant = enchants[_i];
         enchant.__ep = get_ep(enchant, null, slot, offset);
@@ -3753,6 +3833,9 @@
       buffer = "";
       for (_j = 0, _len2 = enchants.length; _j < _len2; _j++) {
         enchant = enchants[_j];
+        if ((((_ref = enchant.requires) != null ? _ref.max_item_level : void 0) != null) && ((_ref2 = enchant.requires) != null ? _ref2.max_item_level : void 0) < getBaseItemLevel(item)) {
+          continue;
+        }
         if (enchant && !enchant.desc) {
           enchant.desc = statsToDesc(enchant);
         }
@@ -3783,6 +3866,12 @@
       $altslots.find(".slot[id='" + selected_id + "']").addClass("active");
       showPopup($popup);
       return false;
+    };
+    getBaseItemLevel = function(item) {
+      if (!item.upgrade_level) {
+        return item.ilvl;
+      }
+      return item.ilvl - getUpgradeLevelSteps(item) * item.upgrade_level;
     };
     clickSlotGem = function() {
       var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemSlot, gemType, i, item, max, otherGearGems, selected_id, slot, usedNames, _i, _j, _len, _len2;
@@ -3943,6 +4032,12 @@
           window._gaq.push(['_trackEvent', "Character", "Optimize Gems"]);
         }
         return Shadowcraft.Gear.optimizeGems();
+      });
+      $("#optimizeEnchants").click(function() {
+        if (window._gaq) {
+          window._gaq.push(['_trackEvent', "Character", "Optimize Enchants"]);
+        }
+        return Shadowcraft.Gear.optimizeEnchants();
       });
       $slots.click($.delegate({
         ".upgrade": clickItemUpgrade,

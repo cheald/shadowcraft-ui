@@ -37,6 +37,11 @@ class ShadowcraftComputation:
         4443: 'elemental_force',
         4444: 'dancing_steel',
         5125: 'dancing_steel',
+        5330: "mark_of_the_thunderlord",
+        5331: "mark_of_the_shattered_hand",
+        5334: "mark_of_the_frostwolf",
+        5337: "mark_of_warsong",
+        5384: "mark_of_bleeding_hollow",
         0: None
     }
 
