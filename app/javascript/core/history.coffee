@@ -170,7 +170,6 @@ class ShadowcraftHistory
   poisonMap = [ "dp", "wp" ]
   utilPoisonMap = [ "lp", "n" ]
   raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"]
-  nightElfRacialMap = ["Day","Night"]
   rotationOptionsMap = [
     "min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute",
     "ksp_immediately", "revealing_strike_pooling", "blade_flurry",
@@ -237,7 +236,7 @@ class ShadowcraftHistory
         data.options.general.num_boss_adds * 100 || 0
         data.options.general.response_time * 100 || 50
         data.options.general.time_in_execute_range * 100 || 35
-        map(data.options.general.night_elf_racial, nightElfRacialMap)
+        data.options.general.night_elf_racial || 0
       ]
       options.push base36Encode(general)
 
@@ -330,7 +329,7 @@ class ShadowcraftHistory
         num_boss_adds:          general[14] / 100 || 0
         response_time:          general[15] / 100 || 0.5
         time_in_execute_range:  general[16] / 100 || 0.35
-        night_elf_racial:       unmap(general[17], nightElfRacialMap)
+        night_elf_racial:       general[17] || 0
 
       d.options.buffs = {}
       for v, i in options[1]

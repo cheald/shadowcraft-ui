@@ -533,7 +533,7 @@
   })();
   loadingSnapshot = false;
   ShadowcraftHistory = (function() {
-    var DATA_VERSION, base10, base36Decode, base36Encode, base77, compress, compress_handlers, decompress, decompress_handlers, map, nightElfRacialMap, poisonMap, raceMap, rotationOptionsMap, rotationValueMap, unmap, utilPoisonMap;
+    var DATA_VERSION, base10, base36Decode, base36Encode, base77, compress, compress_handlers, decompress, decompress_handlers, map, poisonMap, raceMap, rotationOptionsMap, rotationValueMap, unmap, utilPoisonMap;
     DATA_VERSION = 1;
     function ShadowcraftHistory(app) {
       this.app = app;
@@ -743,7 +743,6 @@
     poisonMap = ["dp", "wp"];
     utilPoisonMap = ["lp", "n"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"];
-    nightElfRacialMap = ["Day", "Night"];
     rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"];
     rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike', 'opener', 'uptime'];
     map = function(value, m) {
@@ -786,7 +785,7 @@
         }
         ret.push(talentSet);
         options = [];
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.potion ? 1 : 0, data.options.general.max_ilvl, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 502, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35, map(data.options.general.night_elf_racial, nightElfRacialMap)];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.potion ? 1 : 0, data.options.general.max_ilvl, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 502, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35, data.options.general.night_elf_racial || 0];
         options.push(base36Encode(general));
         buffs = [];
         _ref2 = ShadowcraftOptions.buffMap;
@@ -886,7 +885,7 @@
           num_boss_adds: general[14] / 100 || 0,
           response_time: general[15] / 100 || 0.5,
           time_in_execute_range: general[16] / 100 || 0.35,
-          night_elf_racial: unmap(general[17], nightElfRacialMap)
+          night_elf_racial: general[17] || 0
         };
         d.options.buffs = {};
         _ref2 = options[1];
@@ -1003,14 +1002,14 @@
     EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
     if (section === void 0 || section === "options") {
       Shadowcraft.Console.remove(".options");
-      if (parseInt(data.options.general.patch) < 54) {
+      if (parseInt(data.options.general.patch) < 60) {
         Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to the newest Patch and/or clear all saved data and refresh from armory.", null, 'warn', 'options');
       }
     }
     if (section === void 0 || section === "glyphs") {
       Shadowcraft.Console.remove(".glyphs");
       if (data.glyphs.length < 1) {
-        Shadowcraft.Console.warn({}, "Glyphs need to be selected", null, 'warn', 'glyphs');
+        Shadowcraft.Console.warn({}, "You have no Glyphs selected", null, 'warn', 'glyphs');
       }
     }
     if (section === void 0 || section === "talents") {
@@ -1236,8 +1235,6 @@
       return null;
     };
     ShadowcraftOptions.prototype.initOptions = function() {
-      var data;
-      data = Shadowcraft.Data;
       this.setup("#settings #general", "general", {
         patch: {
           type: "select",
@@ -1245,8 +1242,7 @@
           'default': 60,
           datatype: 'integer',
           options: {
-            60: '6.0 (Level 90)',
-            54: '5.4'
+            60: '6.0 (Level 90)'
           }
         },
         level: {
@@ -1264,11 +1260,14 @@
           'default': "Human"
         },
         night_elf_racial: {
-          type: "select",
-          options: ["Day", "Night"],
           name: "Racial (Night Elf)",
-          'default': "Night",
-          desc: "Day 1% Critical Strike / Night 1% Haste"
+          datatype: 'integer',
+          type: 'select',
+          options: {
+            1: 'Day (1% Crit)',
+            0: 'Night (1% Haste)'
+          },
+          "default": 0
         },
         duration: {
           type: "input",
@@ -1327,7 +1326,7 @@
         max_ilvl: {
           name: "Max ILevel",
           type: "input",
-          desc: "Don't show items over this ilevel in gear lists",
+          desc: "Don't show items over this item level in gear lists",
           'default': 700,
           datatype: 'integer',
           min: 430,
@@ -1336,7 +1335,7 @@
         min_ilvl: {
           name: "Min ILevel",
           type: "input",
-          desc: "Don't show items under this ilevel in gear lists",
+          desc: "Don't show items under this item level in gear lists",
           'default': 430,
           datatype: 'integer',
           min: 430,
@@ -1344,7 +1343,7 @@
         },
         show_random_items: {
           name: "Min ILvL (Random Items)",
-          desc: "Don't show random items under this ilevel in gear lists",
+          desc: "Don't show random items under this item level in gear lists",
           datatype: 'integer',
           type: 'input',
           min: 430,

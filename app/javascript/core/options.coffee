@@ -102,13 +102,12 @@ class ShadowcraftOptions
     null
 
   initOptions: ->
-    data = Shadowcraft.Data
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Patch/Engine", 'default': 60, datatype: 'integer', options: {60: '6.0 (Level 90)', 54: '5.4'}},
+      patch: {type: "select", name: "Patch/Engine", 'default': 60, datatype: 'integer', options: {60: '6.0 (Level 90)'}},
       level: {type: "input", name: "Level", 'default': 90, datatype: 'integer', min: 90, max: 100},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
-      night_elf_racial: {type: "select", options: ["Day","Night"], name: "Racial (Night Elf)", 'default': "Night", desc: "Day 1% Critical Strike / Night 1% Haste"}
+      night_elf_racial: {name: "Racial (Night Elf)", datatype: 'integer', type: 'select', options: {1: 'Day (1% Crit)', 0: 'Night (1% Haste)'}, default: 0}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
       response_time: {type: "input", name: "Response Time", 'default': 0.5, datatype: 'float', min: 0.1, max: 5}
       time_in_execute_range: {type: "input", name: "Time in Execute Range", desc: "Only used in Assassination Spec", 'default': 0.35, datatype: 'float', min: 0, max: 1}
@@ -118,9 +117,9 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #generalFilter", "general", {
-      max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this ilevel in gear lists", 'default': 700, datatype: 'integer', min: 430, max: 700}
-      min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this ilevel in gear lists", 'default': 430, datatype: 'integer', min: 430, max: 700},
-      show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this ilevel in gear lists", datatype: 'integer', type: 'input', min: 430, max: 700, 'default': 502}
+      max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this item level in gear lists", 'default': 700, datatype: 'integer', min: 430, max: 700}
+      min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this item level in gear lists", 'default': 430, datatype: 'integer', min: 430, max: 700},
+      show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this item level in gear lists", datatype: 'integer', type: 'input', min: 430, max: 700, 'default': 502}
       show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
       epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
     })
