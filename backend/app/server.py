@@ -580,7 +580,9 @@ class ShadowcraftComputation:
         rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
         settings_options = {}
         if __builtin__.shadowcraft_engine_version >= 5.4:
-            settings_options['num_boss_adds'] = _opt.get("num_boss_adds", 0)        
+            settings_options['num_boss_adds'] = _opt.get("num_boss_adds", 0)      
+        if __builtin__.shadowcraft_engine_version >= 6.0:
+           settings_options['is_day'] = _opt.get("night_elf_racial", "Night") == "Day"
 
         if tree == 0:
             _cycle = settings.AssassinationCycle(**rotation_options)

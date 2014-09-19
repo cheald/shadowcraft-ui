@@ -412,7 +412,8 @@
           pvp: data.options.general.pvp,
           num_boss_adds: data.options.general.num_boss_adds,
           latency: data.options.advanced.latency,
-          adv_params: data.options.advanced.adv_params
+          adv_params: data.options.advanced.adv_params,
+          night_elf_racial: data.options.general.night_elf_racial
         },
         spec: data.activeSpec,
         t: talentString,
@@ -532,7 +533,7 @@
   })();
   loadingSnapshot = false;
   ShadowcraftHistory = (function() {
-    var DATA_VERSION, base10, base36Decode, base36Encode, base77, compress, compress_handlers, decompress, decompress_handlers, map, poisonMap, raceMap, rotationOptionsMap, rotationValueMap, unmap, utilPoisonMap;
+    var DATA_VERSION, base10, base36Decode, base36Encode, base77, compress, compress_handlers, decompress, decompress_handlers, map, nightElfRacialMap, poisonMap, raceMap, rotationOptionsMap, rotationValueMap, unmap, utilPoisonMap;
     DATA_VERSION = 1;
     function ShadowcraftHistory(app) {
       this.app = app;
@@ -742,8 +743,9 @@
     poisonMap = ["dp", "wp"];
     utilPoisonMap = ["lp", "n"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"];
+    nightElfRacialMap = ["Day", "Night"];
     rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"];
-    rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike', 'opener'];
+    rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike', 'opener', 'uptime'];
     map = function(value, m) {
       return m.indexOf(value);
     };
@@ -784,7 +786,7 @@
         }
         ret.push(talentSet);
         options = [];
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.potion ? 1 : 0, data.options.general.max_ilvl, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 502, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.potion ? 1 : 0, data.options.general.max_ilvl, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 502, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35, map(data.options.general.night_elf_racial, nightElfRacialMap)];
         options.push(base36Encode(general));
         buffs = [];
         _ref2 = ShadowcraftOptions.buffMap;
@@ -883,7 +885,8 @@
           show_random_items: general[13] || 0,
           num_boss_adds: general[14] / 100 || 0,
           response_time: general[15] / 100 || 0.5,
-          time_in_execute_range: general[16] / 100 || 0.35
+          time_in_execute_range: general[16] / 100 || 0.35,
+          night_elf_racial: unmap(general[17], nightElfRacialMap)
         };
         d.options.buffs = {};
         _ref2 = options[1];
@@ -1260,6 +1263,13 @@
           name: "Race",
           'default': "Human"
         },
+        night_elf_racial: {
+          type: "select",
+          options: ["Day", "Night"],
+          name: "Racial (Night Elf)",
+          'default': "Night",
+          desc: "Day 1% Critical Strike / Night 1% Haste"
+        },
         duration: {
           type: "input",
           name: "Fight Duration",
@@ -1617,9 +1627,9 @@
           options: {
             'never': "Backstab",
             'always': "Hemorrhage",
-            '24': "Use Backstab and apply Hemorrhage every 24sec"
+            'uptime': "Use Backstab and Hemorrhage for 100% DoT uptime"
           },
-          "default": '24',
+          "default": 'uptime',
           datatype: 'string'
         },
         opener_name_subtlety: {

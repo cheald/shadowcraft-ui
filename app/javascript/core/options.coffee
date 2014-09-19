@@ -108,6 +108,7 @@ class ShadowcraftOptions
       patch: {type: "select", name: "Patch/Engine", 'default': 60, datatype: 'integer', options: {60: '6.0 (Level 90)', 54: '5.4'}},
       level: {type: "input", name: "Level", 'default': 90, datatype: 'integer', min: 90, max: 100},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
+      night_elf_racial: {type: "select", options: ["Day","Night"], name: "Racial (Night Elf)", 'default': "Night", desc: "Day 1% Critical Strike / Night 1% Haste"}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
       response_time: {type: "input", name: "Response Time", 'default': 0.5, datatype: 'float', min: 0.1, max: 5}
       time_in_execute_range: {type: "input", name: "Time in Execute Range", desc: "Only used in Assassination Spec", 'default': 0.35, datatype: 'float', min: 0, max: 1}
@@ -179,7 +180,7 @@ class ShadowcraftOptions
     })
 
     @setup("#settings section.subtlety .settings", "rotation", {
-      use_hemorrhage: {type: "select", name: "CP Builder", options: {'never': "Backstab", 'always': "Hemorrhage", '24': "Use Backstab and apply Hemorrhage every 24sec"}, default: '24', datatype: 'string'}
+      use_hemorrhage: {type: "select", name: "CP Builder", options: {'never': "Backstab", 'always': "Hemorrhage", 'uptime': "Use Backstab and Hemorrhage for 100% DoT uptime"}, default: 'uptime', datatype: 'string'}
       opener_name_subtlety: {type: "select", name: "Opener Name", options: {'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
       opener_use_subtlety: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })

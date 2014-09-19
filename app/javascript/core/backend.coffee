@@ -73,6 +73,7 @@ class ShadowcraftBackend
         num_boss_adds: data.options.general.num_boss_adds
         latency: data.options.advanced.latency
         adv_params: data.options.advanced.adv_params
+        night_elf_racial: data.options.general.night_elf_racial
       }
       spec: data.activeSpec,
       t: talentString,
