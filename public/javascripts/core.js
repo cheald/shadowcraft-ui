@@ -3690,9 +3690,6 @@
         if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
           continue;
         }
-        if ((slot === 15) && combatSpec && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
-          continue;
-        }
         if (l.upgrade_level !== getMaxUpgradeLevel(l)) {
           continue;
         }
