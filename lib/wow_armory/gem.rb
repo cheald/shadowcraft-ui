@@ -35,12 +35,12 @@ module WowArmory
       @gem_to_effect = {}
       begin
         spell_lookup = {}
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantment.dbc.csv")) do |row|
+        CSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantment.dbc.csv")) do |row|
           if row[2].to_i == 5
             spell_lookup[row[0]] = row
           end
         end
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "GemProperties.dbc.csv")) do |row|
+        CSV.foreach(File.join(File.dirname(__FILE__), "data", "GemProperties.dbc.csv")) do |row|
           @gem_to_effect[row[0].to_i] = spell_lookup[row[1]]
         end
       end
