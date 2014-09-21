@@ -38,10 +38,13 @@ module WowArmory
       48=>:block_value,
       32=>:crit,
       43=>:mana_every_5_seconds,
+      71=>:agility,
+      72=>:agility,
       73=>:agility,
       40=>:versatility,
       59=>:multistrike,
-      58=>:amplify
+      58=>:amplify,
+      50=>:bonus_armor
     }
 
     WOWHEAD_MAP = {
@@ -296,8 +299,8 @@ module WowArmory
         row = item_damage_one_hand[@properties[:ilevel].to_s]
         self.dps = row[1+@properties[:quality]].to_f
       end
-      puts "#{self.name} #{@properties[:tag]} #{@properties[:ilevel]}"
-      puts self.stats.inspect
+      #puts "#{self.name} #{@properties[:tag]} #{@properties[:ilevel]}"
+      #puts self.stats.inspect
     end
 
     SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "versatility", "multistrike",

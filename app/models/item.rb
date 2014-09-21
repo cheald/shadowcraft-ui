@@ -24,7 +24,7 @@ class Item
 
   before_validation :update_from_armory_if_necessary
   before_save :write_stats
-  EXCLUDE_KEYS = [:stamina, :resilience, :strength, :spirit, :intellect, :dodge, :parry, :health_regen]
+  EXCLUDE_KEYS = [:stamina, :resilience, :strength, :spirit, :intellect, :dodge, :parry, :health_regen, :bonus_armor]
 
   def update_from_armory_if_necessary
     return if remote_id == 0
@@ -41,7 +41,7 @@ class Item
     true
   end
 
-  # Unique Item idenfitifer
+  # Unique Item identifier
   # TODO subject to change
   def uid
     # a bit silly
@@ -83,7 +83,11 @@ class Item
       :id => uid.to_i,
       :oid => remote_id,
       :n => properties["name"],
-      :i => icon.gsub(/\.(tga|jpg|png)$/i, ""),
+      :i => if not icon.nil?
+              icon.gsub(/\.(tga|jpg|png)$/i, '')
+            else
+              ''
+            end,
       :q => properties["quality"],
       :stats => stats
     }
@@ -126,6 +130,19 @@ class Item
     end
 
     json
+  end
+
+  def self.populate_gear_wod(prefix = "www", source = "wowapi")
+    @source = source
+
+    item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=630;maxle=665;ub=4;cr=21;crs=1;crv=0"
+    pos = 0
+    item_ids.each do |id|
+      pos = pos + 1
+      puts "item #{pos} of #{item_ids.length}" if pos % 10 == 0
+      import id,[nil]
+    end
+    true
   end
 
   def self.populate_gear(prefix = "www",source = "wowapi")

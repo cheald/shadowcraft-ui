@@ -60,7 +60,7 @@ class ItemsController < ApplicationController
     end
 
     # This is really haxy, but it's flexible.
-    bad_keys = %w"intellect spell_power spirit parry dodge"
+    bad_keys = %w"intellect spell_power spirit parry dodge bonus_armor"
     bad_classes = %w"Plate Mail"
     @alt_items.reject! {|item| !(item.stats.keys & bad_keys).empty? }
     @alt_items.reject! {|item| item.stats.empty? and (item.equip_location != 12 and item.remote_id != 88149) } # Don't reject trinkets with empty stats

@@ -461,6 +461,8 @@ class ShadowcraftGear
       enchants = Shadowcraft.ServerData.ENCHANT_SLOTS[SLOT_INVTYPES[slotIndex]]
       continue unless enchants
       for enchant in enchants
+        # do not show enchant if item level is higher than allowed maximum
+        continue if enchant.requires?.max_item_level? and enchant.requires?.max_item_level < getBaseItemLevel(item)
         enchant.__ep = get_ep(enchant, null, slotIndex, enchant_offset)
         enchant.__ep = 0 if isNaN enchant.__ep
       enchants.sort(__epSort)
@@ -995,7 +997,7 @@ class ShadowcraftGear
       #continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
       #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
       #continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and lid != selected_identifier
-      continue if l.upgrade_level != getMaxUpgradeLevel(l)
+      continue if l.upgrade_level? and l.upgrade_level != getMaxUpgradeLevel(l)
       continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and lid != selected_identifier
       loc.push l
 

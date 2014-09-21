@@ -2514,10 +2514,9 @@
       if (c && key !== "socketbonus") {
         if (item.dps) {
           if (slot === 15) {
-            total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed];
+            total += item.dps * c.mh_ep.mh_dps;
           } else if (slot === 16) {
             total += item.dps * c.oh_ep.oh_dps;
-            total += c.oh_speed_ep["oh_" + item.speed];
           }
         } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
           total += c.meta.chaotic_metagem;
@@ -2986,7 +2985,7 @@
       return false;
     };
     ShadowcraftGear.prototype.optimizeEnchants = function(depth) {
-      var Enchants, data, enchant, enchantId, enchant_offset, enchants, from_enchant, gear, item, madeChanges, slotIndex, to_enchant, _i, _j, _len, _len2;
+      var Enchants, data, enchant, enchantId, enchant_offset, enchants, from_enchant, gear, item, madeChanges, slotIndex, to_enchant, _i, _j, _len, _len2, _ref, _ref2;
       Enchants = Shadowcraft.ServerData.ENCHANT_LOOKUP;
       data = Shadowcraft.Data;
       depth || (depth = 0);
@@ -3014,6 +3013,9 @@
         }
         for (_j = 0, _len2 = enchants.length; _j < _len2; _j++) {
           enchant = enchants[_j];
+          if ((((_ref = enchant.requires) != null ? _ref.max_item_level : void 0) != null) && ((_ref2 = enchant.requires) != null ? _ref2.max_item_level : void 0) < getBaseItemLevel(item)) {
+            continue;
+          }
           enchant.__ep = get_ep(enchant, null, slotIndex, enchant_offset);
           if (isNaN(enchant.__ep)) {
             enchant.__ep = 0;
@@ -3699,7 +3701,7 @@
         if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
           continue;
         }
-        if (l.upgrade_level !== getMaxUpgradeLevel(l)) {
+        if ((l.upgrade_level != null) && l.upgrade_level !== getMaxUpgradeLevel(l)) {
           continue;
         }
         if (l.suffix && Shadowcraft.Data.options.general.show_random_items > l.ilvl && lid !== selected_identifier) {
