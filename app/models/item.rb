@@ -145,6 +145,35 @@ class Item
     true
   end
 
+  def self.populate_gems_wod(prefix = "www", source = "wowapi")
+    gem_ids = [115809, 115811, 115812, 115813, 115814, 115815, 115803, 115804, 115805, 115806, 115807, 115808]
+
+    puts "importing now #{gem_ids.length} gems"
+    pos = 0
+    gem_ids.each do |id|
+      begin
+        pos = pos + 1
+        puts "gem #{pos} of #{gem_ids.length}" if pos % 10 == 0
+        db_item = Item.find_or_initialize_by(:remote_id => id)
+        if db_item.properties.nil?
+          item = WowArmory::Item.new(id, source)
+          db_item.properties = item.as_json.with_indifferent_access
+          db_item.equip_location = db_item.properties["equip_location"]
+          db_item.is_gem = !db_item.properties["gem_slot"].blank?
+          if db_item.new_record?
+            db_item.save
+          end
+        end
+      rescue WowArmory::MissingDocument => e
+        puts id
+        puts e.message
+      rescue Exception => e
+        puts id
+        puts e.message
+      end
+    end
+  end
+
   def self.populate_gear(prefix = "www",source = "wowapi")
     @source = source
     #suffixes = (-137..-133).to_a

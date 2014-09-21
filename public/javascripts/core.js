@@ -2514,9 +2514,10 @@
       if (c && key !== "socketbonus") {
         if (item.dps) {
           if (slot === 15) {
-            total += item.dps * c.mh_ep.mh_dps;
+            total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed];
           } else if (slot === 16) {
             total += item.dps * c.oh_ep.oh_dps;
+            total += c.oh_speed_ep["oh_" + item.speed];
           }
         } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
           total += c.meta.chaotic_metagem;

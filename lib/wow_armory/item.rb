@@ -49,7 +49,9 @@ module WowArmory
       "agi" => "agility",
       "sta" => "stamina",
       "pvppower" => "pvp_power",
-      "resirtng" => "pvp_resilience"
+      "resirtng" => "pvp_resilience",
+      "multistrike" => "multistrike",
+      "versatility" => "versatility"
     }
 
     # redundant to character.rb
