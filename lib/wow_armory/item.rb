@@ -399,7 +399,7 @@ module WowArmory
 
     def item_enchants
       @@item_enchants ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantments.csv")) do |row|
+        CSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantments.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
