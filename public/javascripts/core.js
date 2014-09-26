@@ -300,6 +300,7 @@
       itemSlot: Handlebars.compile($("#template-itemSlot").html()),
       stats: Handlebars.compile($("#template-stats").html()),
       reforge: Handlebars.compile($("#template-reforge").html()),
+      bonuses: Handlebars.compile($("#template-bonuses").html()),
       checkbox: Handlebars.compile($("#template-checkbox").html()),
       select: Handlebars.compile($("#template-select").html()),
       input: Handlebars.compile($("#template-input").html()),
@@ -2384,7 +2385,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBaseItemLevel, getBestNormalGem, getEnchantRecommendation, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getItem, getItems, getMaxUpgradeLevel, getSimpleEPForUpgrade, getStatWeight, getUpgradeLevelSteps, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotBonuses, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getBaseItemLevel, getBestNormalGem, getEnchantRecommendation, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getItem, getItems, getMaxUpgradeLevel, getSimpleEPForUpgrade, getStatWeight, getUpgradeLevelSteps, getUpgradeRecommandationList, getUpgradeRecommandationList2, get_ep, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
@@ -3307,6 +3308,7 @@
           opt.socketbonus = bonuses;
           opt.reforgable = reforgable;
           opt.reforge = reforge;
+          opt.bonusable = true;
           opt.sockets = item ? item.sockets : null;
           opt.enchantable = enchantable;
           opt.enchant = enchant;
@@ -3702,6 +3704,9 @@
         if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
           continue;
         }
+        if ((slot === 15) && combatSpec && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
+          continue;
+        }
         if ((l.upgrade_level != null) && l.upgrade_level !== getMaxUpgradeLevel(l)) {
           continue;
         }
@@ -3946,6 +3951,24 @@
       showPopup($popup);
       return false;
     };
+    clickSlotBonuses = function() {
+      var $slot, data, identifier, item, slot;
+      clickSlot(this, "bonuses");
+      $(".slot").removeClass("active");
+      $(this).addClass("active");
+      data = Shadowcraft.Data;
+      $slot = $(this).closest(".slot");
+      slot = parseInt($slot.data("slot"), 10);
+      $.data(document.body, "selecting-slot", slot);
+      identifier = $slot.attr("identifier");
+      item = Shadowcraft.ServerData.ITEM_LOOKUP2[identifier];
+      $.data(document.body, "bonuses-item", item);
+      $("#bonuses").html(Templates.bonuses({
+        key: "value"
+      }));
+      showPopup($("#bonuses.popup"));
+      return false;
+    };
     clickWowhead = function(e) {
       e.stopPropagation();
       return true;
@@ -4044,7 +4067,8 @@
         ".wowhead": clickWowhead,
         ".name": clickSlotName,
         ".enchant": clickSlotEnchant,
-        ".gem": clickSlotGem
+        ".gem": clickSlotGem,
+        ".bonuses": clickSlotBonuses
       }));
       $(".slots, .popup").mouseover($.delegate({
         ".tt": ttlib.requestTooltip

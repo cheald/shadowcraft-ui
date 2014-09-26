@@ -678,6 +678,7 @@ class ShadowcraftGear
         opt.socketbonus = bonuses
         opt.reforgable = reforgable
         opt.reforge = reforge
+        opt.bonusable = true # TODO
         opt.sockets = if item then item.sockets else null
         opt.enchantable = enchantable
         opt.enchant = enchant
@@ -994,7 +995,7 @@ class ShadowcraftGear
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
-      #continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
+      continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
       #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
       #continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and lid != selected_identifier
       continue if l.upgrade_level? and l.upgrade_level != getMaxUpgradeLevel(l)
@@ -1202,6 +1203,28 @@ class ShadowcraftGear
     showPopup($popup) # TODO
     false
 
+  clickSlotBonuses = ->
+    clickSlot(this, "bonuses")
+    $(".slot").removeClass("active")
+    $(this).addClass("active")
+    data = Shadowcraft.Data
+
+    $slot = $(this).closest(".slot")
+    slot = parseInt($slot.data("slot"), 10)
+    $.data(document.body, "selecting-slot", slot)
+
+    identifier = $slot.attr("identifier")
+    item = Shadowcraft.ServerData.ITEM_LOOKUP2[identifier]
+
+    # TODO build all possible bonuses with status selected or not, etc.
+
+    $.data(document.body, "bonuses-item", item)
+    $("#bonuses").html Templates.bonuses
+      key: "value"
+
+    showPopup $("#bonuses.popup") # TODO
+    false
+
   clickWowhead = (e) ->
     e.stopPropagation()
     true
@@ -1296,6 +1319,7 @@ class ShadowcraftGear
       ".name"    : clickSlotName
       ".enchant" : clickSlotEnchant
       ".gem"     : clickSlotGem
+      ".bonuses" : clickSlotBonuses
 
     $(".slots, .popup").mouseover($.delegate
       ".tt": ttlib.requestTooltip
