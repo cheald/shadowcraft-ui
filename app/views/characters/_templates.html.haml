@@ -79,6 +79,21 @@
     %input.ui-button.ui-widget.ui-state-default.ui-corner-all.doReforge{:type => "Button", :value => "Reforge"}
     %input.ui-button.ui-widget.ui-state-default.ui-corner-all.clearReforge{:type => "Button", :value => "Undo Reforging"}
 
+- mustache "bonuses" do
+  %h1 Item Bonuses
+  %form#bonuses
+    %fieldset.bonus_line
+      %Legend Available Bonuses
+      %label.label_check
+        %input{:type => "checkbox", :name => "bonus_socket", :value => "bonus_socket"}
+        Add Socket
+      %label.label_check
+        %input{:type => "checkbox", :name => "bonus_leech", :value => "bonus_leech"}
+        Add Leech
+
+    %input.ui-button.ui-widget.ui-state-default.ui-corner-all.applyBonuses{:type => "Button", :value => "Apply"}
+    %input.ui-button.ui-widget.ui-state-default.ui-corner-all.clearBonuses{:type => "Button", :value => "Reset"}
+
 - mustache("itemSlot") do
   .slot{:id => "{{item/id}}", :"data-identifier" => "{{identifier}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}"}<
     .image<
@@ -118,6 +133,18 @@
       Reforge item
       {{/reforge}}
     {{/reforgable}}
+
+    {{#bonusable}}
+    .bonuses<
+      =image_tag "reforge.png"
+      {{#bonuses}}
+      %span.oldstat -1 Test
+      %span.newstat +1 Test
+      {{/bonuses}}
+      {{^bonuses}}
+      Add Bonus
+      {{/bonuses}}
+    {{/bonusable}}
 
     {{#enchantable}}
     .enchant

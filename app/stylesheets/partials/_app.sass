@@ -772,6 +772,38 @@ img.upgrade
       right: 100px
       left: auto
 
+#bonuses
+  padding: 1em
+  fieldset
+    margin: 2em 0
+    border-top: 1px solid darken(#065175, 5%)
+    legend
+      font-weight: bold
+      margin-left: 1em
+      margin-bottom: 0.5em
+  .recommended
+    margin-bottom: 0.5em
+    .oldstat
+      color: #d00
+      font-weight: bold
+    .newstat
+      color: #0d0
+      font-weight: bold
+  .newstats
+    .stat
+      label
+        +inline-block
+        width: 100px
+  .pct
+    width: 200px
+  .pct-inner
+    left: 100px
+    +linear-gradient(color-stops(#2F2, #080), left)
+    &.reverse
+      +linear-gradient(color-stops(#800, #F22), left)
+      right: 100px
+      left: auto
+
 #tools
   button
     display: block
@@ -1095,7 +1127,7 @@ img.upgrade
       top: 9px
       left: 13px
 
-  .gems .gem, .enchant, .reforge, .name
+  .gems .gem, .enchant, .reforge, .bonuses, .name
     background: #0e0e0e url(../../images/texture.png)
     margin-bottom: 2px
     +border-radius(2px)
