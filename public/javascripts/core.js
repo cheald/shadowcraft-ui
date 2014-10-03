@@ -2978,6 +2978,9 @@
       var enchant, _i, _len, _ref, _ref2;
       for (_i = 0, _len = enchant_list.length; _i < _len; _i++) {
         enchant = enchant_list[_i];
+        if (enchant.id === 5125) {
+          continue;
+        }
         if ((((_ref = enchant.requires) != null ? _ref.max_item_level : void 0) != null) && ((_ref2 = enchant.requires) != null ? _ref2.max_item_level : void 0) < getBaseItemLevel(item)) {
           continue;
         }
