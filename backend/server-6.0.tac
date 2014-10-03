@@ -6,7 +6,7 @@
 
 import os, sys, __builtin__
 __builtin__.shadowcraft_engine_version = 6.0
-sys.path.append("vendor/engine-6.0-90")
+sys.path.append("vendor/engine-6.0")
 
 from twisted.application import service, internet
 from twisted.web import static, server
