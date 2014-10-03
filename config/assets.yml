@@ -11,7 +11,7 @@ javascripts:
     - public/javascripts/tooltip.js
     # - public/javascripts/ui.selectmenu.js
     - public/javascripts/underscore.js
-    - public/javascripts/backbone.js
+    - public/javascripts/backbone-min.js
     - public/javascripts/handlebars.js
     - public/javascripts/jstorage.js
     - public/javascripts/jquery.json-2.2.js
