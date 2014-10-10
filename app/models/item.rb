@@ -24,7 +24,7 @@ class Item
 
   before_validation :update_from_armory_if_necessary
   before_save :write_stats
-  EXCLUDE_KEYS = [:stamina, :resilience, :strength, :spirit, :intellect, :dodge, :parry, :health_regen]
+  EXCLUDE_KEYS = [:stamina, :resilience, :strength, :spirit, :intellect, :dodge, :parry, :health_regen, :bonus_armor]
 
   def update_from_armory_if_necessary
     return if remote_id == 0
@@ -41,6 +41,8 @@ class Item
     true
   end
 
+  # Unique Item identifier
+  # TODO subject to change
   def uid
     # a bit silly
     uid = remote_id
@@ -79,8 +81,13 @@ class Item
   def as_json(options={})
     json = {
       :id => uid.to_i,
+      :oid => remote_id,
       :n => properties["name"],
-      :i => icon.gsub(/\.(tga|jpg|png)$/i, ""),
+      :i => if not icon.nil?
+              icon.gsub(/\.(tga|jpg|png)$/i, '')
+            else
+              ''
+            end,
       :q => properties["quality"],
       :stats => stats
     }
@@ -123,6 +130,48 @@ class Item
     end
 
     json
+  end
+
+  def self.populate_gear_wod(prefix = "www", source = "wowapi")
+    @source = source
+
+    item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=630;maxle=665;ub=4;cr=21;crs=1;crv=0"
+    pos = 0
+    item_ids.each do |id|
+      pos = pos + 1
+      puts "item #{pos} of #{item_ids.length}" if pos % 10 == 0
+      import id,[nil]
+    end
+    true
+  end
+
+  def self.populate_gems_wod(prefix = "www", source = "wowapi")
+    gem_ids = [115809, 115811, 115812, 115813, 115814, 115815, 115803, 115804, 115805, 115806, 115807, 115808]
+
+    puts "importing now #{gem_ids.length} gems"
+    pos = 0
+    gem_ids.each do |id|
+      begin
+        pos = pos + 1
+        puts "gem #{pos} of #{gem_ids.length}" if pos % 10 == 0
+        db_item = Item.find_or_initialize_by(:remote_id => id)
+        if db_item.properties.nil?
+          item = WowArmory::Item.new(id, source)
+          db_item.properties = item.as_json.with_indifferent_access
+          db_item.equip_location = db_item.properties["equip_location"]
+          db_item.is_gem = !db_item.properties["gem_slot"].blank?
+          if db_item.new_record?
+            db_item.save
+          end
+        end
+      rescue WowArmory::MissingDocument => e
+        puts id
+        puts e.message
+      rescue Exception => e
+        puts id
+        puts e.message
+      end
+    end
   end
 
   def self.populate_gear(prefix = "www",source = "wowapi")
@@ -202,7 +251,6 @@ class Item
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=531;maxle=550;ub=4;cr=21;crs=1;crv=0"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=551;maxle=580;ub=4;cr=21;crs=1;crv=0"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0"
-    #item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=501;maxle=550;ub=4;cr=21;crs=1;crv=0"
 
     item_ids += [ 87057, 86132, 86791, 87574, 81265, 81267, 75274, 87495, 77534, 77530 ] # some extra_items, mostly 5.0 trinkets
     item_ids += [ 94523, 96409, 96037, 95665] # bad juju
@@ -210,21 +258,24 @@ class Item
     item_ids += [ 96174, 94511] # missing other trinkets
     item_ids += [ 96741, 96781] # heroic thunderforged, rune of reorigination and talisman of bloodlust still missing
     item_ids += [ 98148 ] # ilvl 600 cloak 5.3
-    
+
     # 5.4
     item_ids += [ 98604, 98613 ] # 5.4 crafting items
     item_ids += [ 102248 ] # ilvl 600 legendary cloak 5.4
     item_ids += [ 105029, 104780, 102301, 105278, 104531, 105527 ] # haromms_talisman
-    item_ids += [ 105082, 104833, 102302, 105331, 104584, 105580 ] # sigil_of_rampage    
+    item_ids += [ 105082, 104833, 102302, 105331, 104584, 105580 ] # sigil_of_rampage
     item_ids += [ 104974, 104725, 102292, 105223, 104476, 105472 ] # assurance_of_consequence
     item_ids += [ 105114, 104865, 102311, 105363, 104616, 105612 ] # ticking_ebon_detonator
-    item_ids += [ 105609, 104613, 105360, 102305, 104862, 105111 ] # thoks tail tip
     item_ids += [ 103686, 103986 ] # discipline of xuen timeless isle trinkets
 
     # filter out not existing items and other class set items
     item_ids -= [ 102312 ] # agi dps 5 trinket is basically discipline of xuen
     item_ids -= [ 99322, 99326, 99327, 99328, 99329, 99419, 99420, 99421, 99422, 99423, 99163, 99164, 99165, 99166, 99170, 99180, 99181, 99182, 99183, 99184, 99589, 99599, 99600, 99610, 99622, 99623, 99624, 99632, 99633, 99664, 98978, 98981, 98999, 99000, 99001, 99022, 99041, 99042, 99043, 99044 ] # druid set
     item_ids -= [ 99382, 99383, 99384, 99385, 99386, 99392, 99393, 99394, 99395, 99396, 99140, 99141, 99142, 99143, 99144, 99145, 99146, 99154, 99155, 99156, 99555, 99556, 99565, 99606, 99607, 99643, 99644, 99653, 99654, 99655, 99050, 99051, 99063, 99064, 99065, 99071, 99072, 99073, 99074, 99075 ] # monk set
+
+    # 6.0.2
+    # UBRS GEAR
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=550;maxle=550;maxrl=90;ub=4;cr=21;crs=1;crv=0"
 
     puts "importing now #{item_ids.length} items"
     pos = 0
@@ -236,9 +287,9 @@ class Item
     true
   end
 
-  def self.populate_gems(source = "wowapi")
-    gem_ids = get_ids_from_wowhead "http://www.wowhead.com/items=3?filter=qu=2:3;minle=86;maxle=90"
-    gem_ids += get_ids_from_wowhead  "http://www.wowhead.com/items=3?filter=qu=2:3:4;minle=86;maxle=90;cr=99;crs=11;crv=0"
+  def self.populate_gems(prefix = "www", source = "wowapi")
+    gem_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=3?filter=qu=2:3;minle=86;maxle=90"
+    gem_ids += get_ids_from_wowhead  "http://#{prefix}.wowhead.com/items=3?filter=qu=2:3:4;minle=86;maxle=90;cr=99;crs=11;crv=0"
 
     gem_ids += [89873] # 500agi gem
     gem_ids += [95346] # legendary meta gem

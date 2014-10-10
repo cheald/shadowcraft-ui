@@ -1,7 +1,7 @@
 class ShadowcraftTalents
   talentsSpent = 0
-  MAX_TALENT_POINTS = 6
-  TREE_SIZE = 6
+  MAX_TALENT_POINTS = 7
+  TREE_SIZE = 7
   ALWAYS_SHOW_GLYPHS = []
   CHARACTER_SPEC = ""
   SPEC_ICONS = 
@@ -11,15 +11,15 @@ class ShadowcraftTalents
     "": "class_rogue"
   DEFAULT_SPECS =
     "Stock Assassination":
-      talents: "221102"
+      talents: "2211020"
       glyphs: [45761]
       spec: "a"
     "Stock Combat":
-      talents: "221102"
+      talents: "2211020"
       glyphs: [42972]
       spec: "Z"
     "Stock Subtlety":
-      talents: "121002"
+      talents: "1210020"
       glyphs: [42970,63420]
       spec: "b"
 
@@ -94,8 +94,7 @@ class ShadowcraftTalents
     updateTalentAvailability(null)
 
   getTalents = ->
-    data = Shadowcraft.Data
-    talent_rows = ['.','.','.','.','.','.']
+    talent_rows = ['.','.','.','.','.','.','.']
     $("#talentframe .talent").each ->
       position = $.data(this, "position")
       points = $.data(this, "points")
@@ -143,15 +142,7 @@ class ShadowcraftTalents
       talentsSpent += dir
       tree.rowPoints[position.row] += dir
 
-      #Shadowcraft.Data["tree" + position.treeIndex] = tree.points
       $.data(button, "spentButton").text(tree.points)
-      #$points = $.data(button, "pointsButton")
-      #$points.get(0).className = "points"
-      #if points.cur == points.max
-      #  $points.addClass("full")
-      #else if points.cur > 0
-      #  $points.addClass("partial")
-      #$points.text(points.cur + "/" + points.max)
       unless skipUpdate
         data.activeTalents = getTalents()
         updateTalentAvailability $(button).parent()
@@ -169,22 +160,28 @@ class ShadowcraftTalents
 
   initTalentTree: ->
     switch Shadowcraft.Data.options.general.patch
-      when 52,54
-        Talents = Shadowcraft.ServerData.TALENTS_52
-        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52
-      when 50
-        Talents = Shadowcraft.ServerData.TALENTS
-        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP
+      when 60
+        Talents = Shadowcraft.ServerData.TALENTS_WOD
+        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD
       else
-        Talents = Shadowcraft.ServerData.TALENTS_52
-        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_52
+        Talents = Shadowcraft.ServerData.TALENTS_WOD
+        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD
 
     buffer = ""
+
+    talentTiers = [{tier:"0",level:"15"},{tier:"1",level:"30"},{tier:"2",level:"45"},{tier:"3",level:"60"},{tier:"4",level:"75"},{tier:"5",level:"90"},{tier:"6",level:"100"}]
+    talentTiers = _.filter(talentTiers, (tier) ->
+      return tier.level <= (Shadowcraft.Data.options.general.level || 100)
+    )
+
     buffer += Templates.talentTier({
       background: 1,
-      levels: [{tier:"0",level:"15"},{tier:"1",level:"30"},{tier:"2",level:"45"},{tier:"3",level:"60"},{tier:"4",level:"75"},{tier:"5",level:"90"}]
+      levels: talentTiers
     })
     for treeIndex, tree of Talents
+      tree = _.filter(tree, (talent) ->
+        return parseInt(talent.tier, 10) <= (talentTiers.length-1)
+      )
       buffer += Templates.talentTree({
         background: 1,
         talents: tree
@@ -204,7 +201,7 @@ class ShadowcraftTalents
       tree = talentTrees.index(myTree)
       talent = TalentLookup[row + ":" + col]
       $.data(this, "position", {tree: myTree, treeIndex: tree, row: row, col: col})
-      $.data(myTree, "info", {points: 0, rowPoints: [0, 0, 0, 0, 0, 0]})
+      $.data(myTree, "info", {points: 0, rowPoints: [0, 0, 0, 0, 0, 0, 0]})
       $.data(this, "talent", talent)
       $.data(this, "points", {cur: 0, max: talent.maxRank})
       $.data(this, "pointsButton", $this.find(".points"))
@@ -247,7 +244,7 @@ class ShadowcraftTalents
 
   initTalentsPane: ->
     this.initTalentTree()
-    
+
     data = Shadowcraft.Data
     buffer = ""
     for talent in data.talents
@@ -268,7 +265,6 @@ class ShadowcraftTalents
 
     $("#talentsets").get(0).innerHTML = buffer
     this.updateActiveTalents()
-    initTalentsPane = ->
 
   setGlyphs: (glyphs) ->
     Shadowcraft.Data.glyphs = glyphs
@@ -350,13 +346,9 @@ class ShadowcraftTalents
     count
 
   setGlyph = (e, active) ->
-    GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
-    data = Shadowcraft.Data
-
     $e = $(e)
     $set = $e.parents(".glyphset")
     id = parseInt($e.data("id"), 10)
-    glyph = GlyphLookup[id]
     if active
       $e.addClass("activated")
     else
@@ -368,13 +360,11 @@ class ShadowcraftTalents
       $set.removeClass("full")
 
   toggleGlyph = (e, override) ->
-    GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
     data = Shadowcraft.Data
 
     $e = $(e)
     $set = $e.parents(".glyphset")
     id = parseInt($e.data("id"), 10)
-    glyph = GlyphLookup[id]
     if $e.hasClass("activated")
       $e.removeClass("activated")
       data.glyphs = _.without(data.glyphs, id)
@@ -391,12 +381,11 @@ class ShadowcraftTalents
     Shadowcraft.update()
 
   updateTalentContribution = (LC) ->
-    return unless LC.talent_ranking_main
+    return unless LC.talent_ranking
     sets = {
-      "Primary": LC.talent_ranking_main,
-      "Secondary": LC.talent_ranking_off
+      "Primary": LC.talent_ranking,
     }
-    rankings = _.extend({}, LC.talent_ranking_main, LC.talent_ranking_off)
+    rankings = _.extend({}, LC.talent_ranking)
     max = _.max(rankings)
     $("#talentrankings .talent_contribution").hide()
     for setKey, setVal of sets
@@ -467,7 +456,7 @@ class ShadowcraftTalents
       #app.updateGlyphDisplay()
 
     Shadowcraft.Options.bind "update", (opt, val) ->
-      if opt in ['general.patch']
+      if opt in ['general.patch','general.level']
         app.initTalentTree()
         app.updateActiveTalents()
         checkForWarnings('options')

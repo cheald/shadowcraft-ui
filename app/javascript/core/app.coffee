@@ -1,41 +1,6 @@
 $ = window.jQuery 
 
 class ShadowcraftApp
-  RATING_CONVERSIONS = {
-    80:
-      hit: 30.7548
-      expertise: 7.68869
-    81:
-      hit: 40.3836
-      expertise: 10.0959
-    82:
-      hit: 53.0304
-      expertise: 13.2576
-    83:
-      hit: 69.6653
-      expertise: 17.4163
-    84:
-      hit: 91.4738 
-      expertise: 22.8685
-    85:
-      hit: 120.109
-      expertise: 30.0272
-    86:
-      hit: 120.109
-      expertise: 30.0272
-    87:
-      hit: 120.109
-      expertise: 30.0272
-    88:
-      hit: 120.109
-      expertise: 30.0272
-    89:
-      hit: 120.109
-      expertise: 30.0272
-    90:
-      hit: 340
-      expertise: 340
-  }
 
   reload: ->
     this.Options.initOptions()
@@ -79,6 +44,7 @@ class ShadowcraftApp
       wait()
       if confirm("An unrecoverable error has occurred. Reset data and reload?")
         $.jStorage.flush()
+        window.location.hash = ""
         location.reload(true)
       else
         throw error
@@ -92,9 +58,6 @@ class ShadowcraftApp
       try
         @Data = @History.load(data)
         if patch
-          # clear all selected professions first
-          # because data.options does not contain the elements not selected
-          @Data.options.professions = {}
           data.options = Object.deepExtend(@Data.options, data.options)
           @Data = _.extend(@Data, data)
           
@@ -179,8 +142,5 @@ class ShadowcraftApp
     t = @Data.activeTalents[idx]
     return 0 unless t
     return parseInt(t, 10)
-
-  _R: (str) ->
-    RATING_CONVERSIONS[@Data.options.general.level][str]
 
 _.extend(ShadowcraftApp, Backbone.Events)

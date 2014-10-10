@@ -4,37 +4,40 @@ module WowArmory
 
     @item_enchants = nil
 
-    STAT_INDEX = {
-      :damage_done                      => 41,
-      :dodge                            => 13,
-      :spirit                           => 6,
-      :block_value                      => 48,
-      :critical_strike_avoidance        => 34,
-      :healing_done                     => 42,
-      :parry                            => 14,
-      :stamina                          => 7,
-      :mastery                          => 49,
-      :haste                            => 36,
-      :mana_every_5_seconds             => 43,
-      :shield_block                     => 15,
-      :intellect                        => 5,
-      :attack_power                     => 38,
-      :pvp_resilience                   => 35,
-      :pvp_power                        => 57,
-      :armor_penetration                => 44,
-      :hit                              => 31,
-      :expertise                        => 37,
-      :agility                          => 3,
-      :mana                             => 2,
-      :health                           => 1,
-      :health_every_5_seconds           => 46,
-      :crit                             => 32,
-      :feral_attack_power               => 40,
-      :power                            => 45,
-      :defense                          => 12,
-      :strength                         => 4,
-      :penetration                      => 47,
-      :hit_avoidance                    => 33
+    STAT_LOOKUP = {
+      49=>:mastery, 
+      38=>:attack_power, 
+      5=>:intellect,
+      44=>:armor_penetration,
+      33=>:hit_avoidance,
+      6=>:spirit,
+      12=>:defense,
+      45=>:power,
+      34=>:critical_strike_avoidance,
+      1=>:health,
+      7=>:stamina,
+      3=>:agility,
+      2=>:mana,
+      13=>:dodge,
+      46=>:health_every_5_seconds,
+      57=>:pvp_power,
+      35=>:pvp_resilience,
+      41=>:damage_done,
+      14=>:parry,
+      36=>:haste,
+      47=>:penetration,
+      31=>:hit,
+      42=>:healing_done,
+      4=>:strength, 
+      37=>:expertise,
+      15=>:shield_block,
+      48=>:block_value,
+      32=>:crit,
+      43=>:mana_every_5_seconds,
+      73=>:agility,
+      40=>:versatility,
+      59=>:multistrike,
+      58=>:amplify
     }
 
     WOWHEAD_MAP = {
@@ -46,7 +49,9 @@ module WowArmory
       "agi" => "agility",
       "sta" => "stamina",
       "pvppower" => "pvp_power",
-      "resirtng" => "pvp_resilience"
+      "resirtng" => "pvp_resilience",
+      "multistrike" => "multistrike",
+      "versatility" => "versatility"
     }
 
     # redundant to character.rb
@@ -154,10 +159,10 @@ module WowArmory
       "dagger" => 15,
     }
 
-    STAT_LOOKUP = Hash[*STAT_INDEX.map {|k, v| [v, k]}.flatten]
+    ENCHANT_SCALING = 10.0 # for lvl 90 // lvl100 = 80
 
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :bonus_trees
     attr_accessor *ACCESSORS
     def initialize(id, source = "wowapi", name = nil, override_ilvl = nil)
       self.name = name
@@ -181,6 +186,8 @@ module WowArmory
         populate_base_data_wowhead
       elsif source == "wowhead_ptr"
         populate_base_data_wowhead("ptr")
+      elsif source == "wowhead_wod"
+        populate_base_data_wowhead("wod")
       end
     end
 
@@ -250,7 +257,11 @@ module WowArmory
       eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
       stats = JSON::load("{%s}" % doc.css("json").text)
       unless doc.css("error").blank?
-        raise Exception.new "Item not found on wowhead id #{@id}"
+        puts prefix
+        puts doc.inspect
+        puts "Item not found on wowhead id #{@id}"
+        return
+        #raise Exception.new "Item not found on wowhead id #{@id}"
       end
       self.name ||= doc.css("name").text
       self.quality = doc.xpath("//quality").attr("id").text.to_i
@@ -258,10 +269,8 @@ module WowArmory
       self.ilevel ||= doc.css("level").text.to_i
       self.icon = doc.css("icon").text.downcase
       self.tag = ""
-      tooltip = doc.css("htmlTooltip").text
-      tag = tooltip.match(/<span style=\"color: #00FF00\">(Heroic|Heroic Thunderforged|Heroic Warforged|Thunderforged|Warforged|Timeless|Flexible|Raid Finder|Season \d+ Elite|Season \d+|Elite)<\/span>/)
-      unless tag.nil?
-        self.tag = tag[1]
+      unless stats["namedesc"].nil?
+        self.tag = stats["namedesc"]
       end
       if stats["classs"] == 3 # gem
         puts "Gem = True"
@@ -285,9 +294,10 @@ module WowArmory
         unless eqstats["socketbonus"].nil?
           self.socket_bonus = {}
           enchant_row = item_enchants[eqstats["socketbonus"].to_s]
-          # TODO if socketbonus includes more than 1 stat this should be supported
+          # TODO if socketbonus includes more than 1 stat update this
           stat = enchant_row[14].to_i
-          self.socket_bonus[STAT_LOOKUP[stat]] = enchant_row[11].to_i
+          value = enchant_row[17].to_f * ENCHANT_SCALING
+          self.socket_bonus[STAT_LOOKUP[stat]] = value.round
         end
       end
       unless eqstats["reqskill"].nil?
@@ -303,6 +313,12 @@ module WowArmory
         self.upgradable = true
       else
         self.upgradable = false
+      end
+
+      unless stats["bonustrees"].nil?
+        self.bonus_trees = stats["bonustrees"]
+      else
+        self.bonus_trees = []
       end
     end
 
@@ -337,8 +353,8 @@ module WowArmory
       end
     end
 
-    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "hit", "expertise",
-                       "haste", "mastery", "pvp resilience", "pvp power", "all stats", "dodge", "block", "parry"
+    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike",
+                       "haste", "mastery", "pvp resilience", "pvp power", "all stats"
     ]
     SCAN_OVERRIDE = { "critical strike" => "crit", 
                         #"hit" => "hit rating",
@@ -399,7 +415,7 @@ module WowArmory
 
     def item_enchants
       @@item_enchants ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantments.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_SpellItemEnchantments.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end

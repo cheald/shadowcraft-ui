@@ -2,6 +2,7 @@ import sys
 import json
 import __builtin__
 
+from collections import defaultdict
 from math import floor
 from twisted.application import service, internet
 from twisted.internet import threads
@@ -36,6 +37,11 @@ class ShadowcraftComputation:
         4443: 'elemental_force',
         4444: 'dancing_steel',
         5125: 'dancing_steel',
+        5330: "mark_of_the_thunderlord",
+        5331: "mark_of_the_shattered_hand",
+        5334: "mark_of_the_frostwolf",
+        5337: "mark_of_warsong",
+        5384: "mark_of_bleeding_hollow",
         0: None
     }
 
@@ -88,84 +94,115 @@ class ShadowcraftComputation:
         #72897: 'arrow_of_time',
 
         # 5.0
-        81125: "windswept_pages",
-        79328: "relic_of_xuen",
-        86332: "terror_in_the_mists",
-        87167: "heroic_terror_in_the_mists",
-        86890: "lfr_terror_in_the_mists",
-        86132: "bottle_of_infinite_stars",
-        87057: "heroic_bottle_of_infinite_stars",
-        86791: "lfr_bottle_of_infinite_stars",
-        81267: "searing_words",
-        87574: "corens_cold_chromium_coaster",
+        #81125: "windswept_pages",
+        #79328: "relic_of_xuen",
+        #86332: "terror_in_the_mists",
+        #87167: "heroic_terror_in_the_mists",
+        #86890: "lfr_terror_in_the_mists",
+        #86132: "bottle_of_infinite_stars",
+        #87057: "heroic_bottle_of_infinite_stars",
+        #86791: "lfr_bottle_of_infinite_stars",
+        #81267: "searing_words",
+        #87574: "corens_cold_chromium_coaster",
         #84072: "braid_of_ten_songs",
-        75274: "zen_alchemist_stone",
+        #75274: "zen_alchemist_stone",
+        
+        # 5.1
+        93253: "woundripper_medallion",
+        93258: "woundripper_medallion",
 
         # 5.2
-        95665: 'lfr_bad_juju',
+        95665: 'bad_juju',
         94523: 'bad_juju',
-        96037: 'thunder_bad_juju',
-        96409: 'heroic_bad_juju',
-        96781: 'heroic_thunder_bad_juju',
-        95802: 'lfr_rune_of_re_origination',
+        96037: 'bad_juju',
+        96409: 'bad_juju',
+        96781: 'bad_juju',
+        
+        95802: 'rune_of_re_origination',
         94532: 'rune_of_re_origination',
-        96174: 'thunder_rune_of_re_origination',
-        96546: 'heroic_rune_of_re_origination',
-        96918: 'heroic_thunder_rune_of_re_origination',
-        95748: 'lfr_talisman_of_bloodlust',
+        96174: 'rune_of_re_origination',
+        96546: 'rune_of_re_origination',
+        96918: 'rune_of_re_origination',
+        
+        95748: 'talisman_of_bloodlust',
         94522: 'talisman_of_bloodlust',
-        96120: 'thunder_talisman_of_bloodlust',
-        96492: 'heroic_talisman_of_bloodlust',
-        96864: 'heroic_thunder_talisman_of_bloodlust',
-        95625: 'lfr_renatakis_soul_charm',
+        96120: 'talisman_of_bloodlust',
+        96492: 'talisman_of_bloodlust',
+        96864: 'talisman_of_bloodlust',
+        
+        95625: 'renatakis_soul_charm',
         94512: 'renatakis_soul_charm',
-        95997: 'thunder_renatakis_soul_charm',
-        96369: 'heroic_renatakis_soul_charm',
-        96741: 'heroic_thunder_renatakis_soul_charm',
+        95997: 'renatakis_soul_charm',
+        96369: 'renatakis_soul_charm',
+        96741: 'renatakis_soul_charm',
+        
         94511: 'vicious_talisman_of_the_shado-pan_assault',
 
         # 5.4
-        102248: 'fury_of_xuen', # legendary cloak proc
-
         103686: 'discipline_of_xuen',
-        103986: 'timeless_discipline_of_xuen',
+        103986: 'discipline_of_xuen',
 
-        105029: 'lfr_haromms_talisman',
-        104780: 'flex_haromms_talisman',
+        105029: 'haromms_talisman',
+        104780: 'haromms_talisman',
         102301: 'haromms_talisman',
-        105278: 'war_haromms_talisman',
-        104531: 'heroic_haromms_talisman',
-        105527: 'heroic_war_haromms_talisman',
+        105278: 'haromms_talisman',
+        104531: 'haromms_talisman',
+        105527: 'haromms_talisman',
         
-        105082: 'lfr_sigil_of_rampage',
-        104833: 'flex_sigil_of_rampage',
+        105082: 'sigil_of_rampage',
+        104833: 'sigil_of_rampage',
         102302: 'sigil_of_rampage',
-        105331: 'war_sigil_of_rampage',
-        104584: 'heroic_sigil_of_rampage',
-        105580: 'heroic_war_sigil_of_rampage',
+        105331: 'sigil_of_rampage',
+        104584: 'sigil_of_rampage',
+        105580: 'sigil_of_rampage',
         
-        104974: 'lfr_assurance_of_consequence',
-        104725: 'flex_assurance_of_consequence',
+        104974: 'assurance_of_consequence',
+        104725: 'assurance_of_consequence',
         102292: 'assurance_of_consequence',
-        105223: 'war_assurance_of_consequence',
-        104476: 'heroic_assurance_of_consequence',
-        105472: 'heroic_war_assurance_of_consequence',
+        105223: 'assurance_of_consequence',
+        104476: 'assurance_of_consequence',
+        105472: 'assurance_of_consequence',
 
-        105114: 'lfr_ticking_ebon_detonator',
-        104865: 'flex_ticking_ebon_detonator',
+        105114: 'ticking_ebon_detonator',
+        104865: 'ticking_ebon_detonator',
         102311: 'ticking_ebon_detonator',
-        105363: 'war_ticking_ebon_detonator',
-        104616: 'heroic_ticking_ebon_detonator',
-        105612: 'heroic_war_ticking_ebon_detonator',
+        105363: 'ticking_ebon_detonator',
+        104616: 'ticking_ebon_detonator',
+        105612: 'ticking_ebon_detonator',
 
-        105111: 'lfr_thoks_tail_tip',
-        104862: 'flex_thoks_tail_tip',
+        105111: 'thoks_tail_tip',
+        104862: 'thoks_tail_tip',
         102305: 'thoks_tail_tip',
-        105360: 'war_thoks_tail_tip',
-        104613: 'heroic_thoks_tail_tip',
-        105609: 'heroic_war_thoks_tail_tip',
+        105360: 'thoks_tail_tip',
+        104613: 'thoks_tail_tip',
+        105609: 'thoks_tail_tip',
     }
     
+    def createTrinketGroup(base_ilvls, upgrade_level, upgrade_steps):
+      trinketGroup = []
+      for base_ilvl in base_ilvls:
+        subgroup = ()
+        for i in xrange(base_ilvl,base_ilvl + (upgrade_level+1)*upgrade_steps ,upgrade_steps):
+          subgroup += (i,)
+        trinketGroup.append(subgroup)
+      return trinketGroup
+    
+    # used for rankings
+    trinketGroups = {
+      'bad_juju': createTrinketGroup((502,522,528,535,541), 4, 4),
+      'rune_of_re_origination': createTrinketGroup((502,522,528,535,541), 4, 4),
+      'talisman_of_bloodlust': createTrinketGroup((502,522,528,535,541), 4, 4),
+      'vicious_talisman_of_the_shado-pan_assault': createTrinketGroup((522,), 4, 4),
+      'renatakis_soul_charm': createTrinketGroup((522,), 4, 4),
+      'assurance_of_consequence': createTrinketGroup((528,540,553,559,566,572), 4, 4),
+      'haromms_talisman': createTrinketGroup((528,540,553,559,566,572), 4, 4),
+      'sigil_of_rampage': createTrinketGroup((528,540,553,559,566,572), 4, 4),
+      'ticking_ebon_detonator': createTrinketGroup((528,540,553,559,566,572), 4, 4),
+      'thoks_tail_tip': createTrinketGroup((528,540,553,559,566,572), 4, 4),
+      'discipline_of_xuen': createTrinketGroup((496,535), 4, 4),
+      'woundripper_medallion': createTrinketGroup((496,), 4, 4),
+    }
+
     gearBoosts = {
         #56115: 'skardyns_grace',
         #56440: 'heroic_skardyns_grace',
@@ -187,14 +224,10 @@ class ShadowcraftComputation:
         #87079: "heroic_jade_bandit_figurine",
         86043: "jade_bandit_figurine",
         #86772: "lfr_jade_bandit_figurine",
-        
-        # 5.1
-        93253: "woundripper_medallion",
-        93258: "woundripper_medallion"
     }
     
+    # combines gearProcs and gearBoosts
     trinketMap = dict(gearProcs, **gearBoosts)
-    trinkets = trinketMap.values()
 
     tier11IDS = frozenset([60298, 65240, 60299, 65241, 60300, 65242, 60302, 65243, 60301, 65239])
     tier12IDS = frozenset([71046, 71538, 71047, 71539, 71048, 71540, 71049, 71541, 71045, 71537])
@@ -202,6 +235,7 @@ class ShadowcraftComputation:
     tier14IDS = frozenset([85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128])
     tier15IDS = frozenset([95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679])
     tier16IDS = frozenset([99006, 99007, 99008, 99009, 99010, 99112, 99113, 99114, 99115, 99116, 99348, 99349, 99350, 99355, 99356, 99629, 99630, 99631, 99634, 99635])
+    tier17IDS = frozenset([115570, 115571, 115572, 115573, 115574])
 
     legendary_tier_1 = frozenset([77945, 77946])
     legendary_tier_2 = frozenset([77947, 77948])
@@ -233,15 +267,13 @@ class ShadowcraftComputation:
         'short_term_haste_buff',
         'stat_multiplier_buff',
         'crit_chance_buff',
-        'mastery_buff',
-        'melee_haste_buff',
+        'haste_buff',
+        'multistrike_buff',
         'attack_power_buff',
-        'armor_debuff',
-        'physical_vulnerability_debuff',
-        'spell_damage_debuff',
+        'mastery_buff',
+        'versatility_buff',
         'agi_flask_mop',
-        'food_300_agi',
-        'spell_haste_buff'
+        'food_mop_agi'
     ]
     
     if __builtin__.shadowcraft_engine_version == 4.1:
@@ -323,6 +355,20 @@ class ShadowcraftComputation:
                 'sub_sb_timing'
             ]
         ]
+    elif __builtin__.shadowcraft_engine_version == 6.0:
+        validCycleKeys = [[
+                'min_envenom_size_non_execute',
+                'min_envenom_size_execute',
+                'prioritize_rupture_uptime_non_execute',
+                'prioritize_rupture_uptime_execute'
+            ], [
+                'revealing_strike_pooling',
+                'ksp_immediately',
+                'blade_flurry',
+            ], [
+                'use_hemorrhage',
+            ]
+        ]
     
     validOpenerKeys = [[
         'mutilate',
@@ -368,7 +414,6 @@ class ShadowcraftComputation:
     def setup(self, input):
         gear_data = input.get("g", [])
         gear = frozenset([x[0] for x in gear_data])
-        professions = input.get("pro", {})
         
         i18n.set_language('local')
 
@@ -394,12 +439,7 @@ class ShadowcraftComputation:
         # ##################################################################################
         # Set up gear buffs.
         buff_list = []
-        buff_list.append('leather_specialization')
-        if input.get("pot", 0) == 1:
-            buff_list.append('virmens_bite')
-        if input.get("prepot", 0) == 1:
-            buff_list.append('virmens_bite_prepot')
-
+        buff_list.append('gear_specialization')
         if input.get("mg") == "chaotic":
             buff_list.append('chaotic_metagem')
 
@@ -438,6 +478,12 @@ class ShadowcraftComputation:
 
         if len(self.tier16IDS & gear) >= 4:
             buff_list.append('rogue_t16_4pc')
+            
+        if len(self.tier17IDS & gear) >= 2:
+            buff_list.append('rogue_t17_2pc')
+
+        if len(self.tier17IDS & gear) >= 4:
+            buff_list.append('rogue_t17_4pc')
     
         agi_bonus = 0
         if len(self.arenaSeason9SetIds & gear) >= 2:
@@ -446,25 +492,9 @@ class ShadowcraftComputation:
         if len(self.arenaSeason9SetIds & gear) >= 4:
             agi_bonus += 90
 
-        # If engineer
-        if "engineering" in professions:
-            buff_list.append('synapse_springs')
-
         for k in self.gearBoosts:
             if k in gear:
                 buff_list.append(self.gearBoosts[k])
-            
-        # If alchemist
-        if "alchemy" in professions:
-            buff_list.append('mixology')
-
-        # If herbalist
-        if "herbalism" in professions:
-            buff_list.append('lifeblood')
-
-        # If skinner
-        if "skinning" in professions:
-            buff_list.append('master_of_anatomy')
 
         _gear_buffs = stats.GearBuffs(*buff_list)
 
@@ -490,13 +520,12 @@ class ShadowcraftComputation:
         if len(self.legendary_tier_3 & gear) >= 2:
             proclist.append('fangs_of_the_father')
 
-        # if tailor
-        if "tailoring" in professions and input.get("se") == 'swordguard_embroidery':
-            proclist.append('swordguard_embroidery')
-
         if input.get("mg") == "capacitive":
             proclist.append('legendary_capacitive_meta')
-
+            
+        if len(frozenset([102248]) & gear) >= 1:
+            proclist.append('fury_of_xuen')
+        
         _procs = procs.ProcsList(*proclist)
 
         # ##################################################################################
@@ -519,14 +548,15 @@ class ShadowcraftComputation:
             0,
             s[2], # AP
             s[3], # Crit
-            s[4], # Hit
-            s[5], # Expertise
-            s[6], # Haste
-            s[7], # Mastery
+            s[4], # Haste
+            s[5], # Mastery
+            0,
+            s[6], # Multistrike
+            s[7], # Versatility
             _level,
             s[9], # PvP Power
             s[8], # Resilience Rating
-            pvp_target_armor = _opt.get("pvp_target_armor", 10000))
+            pvp_target_armor = _opt.get("pvp_target_armor", 1500))
         # ##################################################################################
 
         # Talents
@@ -536,7 +566,7 @@ class ShadowcraftComputation:
         # Glyphs
         _glyphs = glyphs.Glyphs("rogue", *input.get("gly", []))
 	
-	_spec = input.get("spec", 'a')
+        _spec = input.get("spec", 'a')
         if _spec == "a":
             tree = 0
         elif _spec == "Z":
@@ -550,7 +580,9 @@ class ShadowcraftComputation:
         rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
         settings_options = {}
         if __builtin__.shadowcraft_engine_version >= 5.4:
-            settings_options['num_boss_adds'] = _opt.get("num_boss_adds", 0)        
+            settings_options['num_boss_adds'] = _opt.get("num_boss_adds", 0)      
+        if __builtin__.shadowcraft_engine_version >= 6.0:
+           settings_options['is_day'] = _opt.get("night_elf_racial", 0) == 1
 
         if tree == 0:
             _cycle = settings.AssassinationCycle(**rotation_options)
@@ -558,20 +590,21 @@ class ShadowcraftComputation:
             _cycle = settings.CombatCycle(**rotation_options)
         else:
             _cycle = settings.SubtletyCycle(5, **rotation_options)
-        # test_settings = settings.Settings(test_cycle, response_time=.5, duration=360, dmg_poison='dp', utl_poison='lp', is_pvp=charInfo['pvp'],stormlash=charInfo['stormlash'], shiv_interval=charInfo['shiv'])
+        # test_settings = settings.Settings(test_cycle, response_time=.5, duration=360, dmg_poison='dp', utl_poison='lp', is_pvp=charInfo['pvp'], shiv_interval=charInfo['shiv'])
         _settings = settings.Settings(_cycle,
             time_in_execute_range = _opt.get("time_in_execute_range", 0.35),
-            tricks_on_cooldown = _opt.get("tricks", False),
             response_time = _opt.get("response_time", 0.5),
             duration = duration,
             dmg_poison = _opt.get("dmg_poison", 'dp'),
             utl_poison = _opt.get("utl_poison", None),
             opener_name = rotation_keys["opener_name"],
             use_opener = rotation_keys["opener_use"],
-            stormlash = _opt.get("stormlash", False),
             is_pvp = _opt.get("pvp", False),
             latency = _opt.get("latency", 0.03),
             adv_params = _opt.get("adv_params", ''),
+            potion = input.get("pot", 0) == 1,
+            prepot = input.get("prepot", 0) == 1,
+            default_ep_stat = 'ap',
             **settings_options
         )
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)
@@ -587,8 +620,7 @@ class ShadowcraftComputation:
             out["total_dps"] = sum(entry[1] for entry in out["breakdown"].items())
 
             # Get EP Values
-            default_ep_stats = ['white_hit', 'yellow_hit', 'str', 'agi', 'haste',
-                'crit', 'mastery', 'spell_hit', 'ap', 'mh_dodge_exp', 'oh_dodge_exp']
+            default_ep_stats = ['agi', 'haste', 'crit', 'mastery', 'multistrike', 'versatility', 'ap']
             _opt = input.get("settings", {})
             is_pvp = _opt.get("pvp", False)
             if is_pvp:
@@ -599,29 +631,25 @@ class ShadowcraftComputation:
             out["glyph_ranking"] = [] # calculator.get_glyphs_ranking(input.get("gly", []))
             
             out["meta"] = calculator.get_other_ep(['chaotic_metagem','legendary_capacitive_meta'])
-            out["other_ep"] = calculator.get_other_ep(['swordguard_embroidery','rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc','rogue_t16_2pc','rogue_t16_4pc'])
+            out["other_ep"] = calculator.get_other_ep(['fury_of_xuen','rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc','rogue_t16_2pc','rogue_t16_4pc'])
             
-            trinket_rankings = calculator.get_upgrades_ep_fast(self.trinkets)
-            trinketMapReverse = dict((v,k) for k,v in self.trinketMap.iteritems())
-            out["trinket_ranking"] = {}
-            for k in trinket_rankings:
-                if k in trinketMapReverse:
-                    id = trinketMapReverse[k]
-                    try:
-                        out["trinket_ranking"][id] = [floor(float(x) * 10) / 10 for x in trinket_rankings[k]]
-                    except ValueError:
-                        pass
+            trinket_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
+
+            out["proc_ep"] = trinket_rankings
+            out["trinket_map"] = self.trinketMap
             
             # Compute weapon ep
             out["mh_ep"], out["oh_ep"] = calculator.get_weapon_ep(dps=True, enchants=True)
             out["mh_speed_ep"], out["oh_speed_ep"] = calculator.get_weapon_ep([2.4, 2.6, 1.7, 1.8])
+            #if input.get("spec", 'a') == "Z":
+            #  out["mh_type_ep"], out["oh_type_ep"] = calculator.get_weapon_type_ep()
 
             # oh weapon modifier, pull only for combat spec
             #if input.get("spec", 'a') == "Z":
             #    out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
             
             # Talent ranking is slow. This is done last per a note from nextormento.
-            out["talent_ranking_main"] = [] # calculator.get_talents_ranking()      
+            out["talent_ranking"] = [] # calculator.get_talents_ranking()      
 
             return out
         except (InputNotModeledException, exceptions.InvalidInputException) as e:

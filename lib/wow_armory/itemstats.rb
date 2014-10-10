@@ -7,38 +7,44 @@ module WowArmory
     @rand_prop_points = nil
     @item_data = nil
     @item_damage_one_hand = nil
-
-    STAT_INDEX = {
-      :damage_done                      => 41,
-      :dodge                            => 13,
-      :spirit                           => 6,
-      :block_value                      => 48,
-      :critical_strike_avoidance        => 34,
-      :healing_done                     => 42,
-      :parry                            => 14,
-      :stamina                          => 7,
-      :mastery                          => 49,
-      :haste                            => 36,
-      :mana_every_5_seconds             => 43,
-      :shield_block                     => 15,
-      :intellect                        => 5,
-      :attack_power                     => 38,
-      :pvp_resilience                   => 35,
-      :pvp_power                        => 57,
-      :armor_penetration                => 44,
-      :hit                              => 31,
-      :expertise                        => 37,
-      :agility                          => 3,
-      :mana                             => 2,
-      :health                           => 1,
-      :health_every_5_seconds           => 46,
-      :crit                             => 32,
-      :feral_attack_power               => 40,
-      :power                            => 45,
-      :defense                          => 12,
-      :strength                         => 4,
-      :penetration                      => 47,
-      :hit_avoidance                    => 33
+    
+    STAT_LOOKUP = {
+      49=>:mastery, 
+      38=>:attack_power, 
+      5=>:intellect,
+      44=>:armor_penetration,
+      33=>:hit_avoidance,
+      6=>:spirit,
+      12=>:defense,
+      45=>:power,
+      34=>:critical_strike_avoidance,
+      1=>:health,
+      7=>:stamina,
+      3=>:agility,
+      2=>:mana,
+      13=>:dodge,
+      46=>:health_every_5_seconds,
+      57=>:pvp_power,
+      35=>:pvp_resilience,
+      41=>:damage_done,
+      14=>:parry,
+      36=>:haste,
+      47=>:penetration,
+      31=>:hit,
+      42=>:healing_done,
+      4=>:strength, 
+      37=>:expertise,
+      15=>:shield_block,
+      48=>:block_value,
+      32=>:crit,
+      43=>:mana_every_5_seconds,
+      71=>:agility,
+      72=>:agility,
+      73=>:agility,
+      40=>:versatility,
+      59=>:multistrike,
+      58=>:amplify,
+      50=>:bonus_armor
     }
 
     WOWHEAD_MAP = {
@@ -50,7 +56,9 @@ module WowArmory
       "agi" => "agility",
       "sta" => "stamina",
       "pvppower" => "pvp_power",
-      "resirtng" => "pvp_resilience"
+      "resirtng" => "pvp_resilience",
+      "multistrike" => "multistrike",
+      "versatility" => "versatility"
     }
 
     SUFFIX_NAME_MAP = {
@@ -76,9 +84,7 @@ module WowArmory
       357 => "of the Zephyr", # 5.3 Zephyr - Agi
     }
 
-    ITEM_SOCKET_COST = 160.0 # 160 is for every item from mop
-
-    STAT_LOOKUP = Hash[*STAT_INDEX.map {|k, v| [v, k]}.flatten]
+    ITEM_SOCKET_COST = 8.0 # lvl 100 = 30.
 
     ACCESSORS = :stats, :name, :dps, :random_suffix, :upgrade_level
     attr_accessor *ACCESSORS
@@ -128,17 +134,19 @@ module WowArmory
       base = rand_prop_points[@properties[:ilevel].to_s]
 
       self.stats = {}
+      # wod offset
+      offset = 0
       10.times do |i|
-        break if row[17+i] == "-1"
-        enchantid = row[17+i]
-        multiplier = row[37+i].to_f
-        socket_mult = row[47+i].to_f
+        break if row[16+offset+i] == "-1"
+        enchantid = row[16+offset+i] # more or less stat-id
+        multiplier = row[36+offset+i].to_f
+        socket_mult  = row[46+offset+i].to_f
         basevalue = base[1+quality_index(@properties[:quality])*5+slot_index(@properties[:equip_location])]
         if enchantid != "0"
           stat = enchantid.to_i
-          value = (multiplier/10000.0) * basevalue.to_f - socket_mult * ITEM_SOCKET_COST
-          #puts value
-          self.stats[STAT_LOOKUP[stat]] = value.round
+          
+          value = ((multiplier/10000.0) * basevalue.to_f).round - (socket_mult * ITEM_SOCKET_COST).round
+          self.stats[STAT_LOOKUP[stat]] = value
           #puts STAT_LOOKUP[stat]
           #puts self.stats[STAT_LOOKUP[stat]]
         end
@@ -182,7 +190,7 @@ module WowArmory
 
     def item_enchants
       @@item_enchants ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantments.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_SpellItemEnchantments.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -190,7 +198,7 @@ module WowArmory
 
     def rand_prop_points
       @@rand_prop_points ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "RandPropPoints.dbc.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_RandPropPoints.dbc.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -198,7 +206,7 @@ module WowArmory
 
     def item_data
       @@item_data ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "item_data.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_item_data.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -206,7 +214,7 @@ module WowArmory
 
     def item_damage_one_hand
       @@item_damage_one_hand ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "ItemDamageOneHand.dbc.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_ItemDamageOneHand.dbc.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -291,11 +299,11 @@ module WowArmory
         row = item_damage_one_hand[@properties[:ilevel].to_s]
         self.dps = row[1+@properties[:quality]].to_f
       end
-      puts "#{self.name} #{@properties[:tag]} #{@properties[:ilevel]}"
-      puts self.stats.inspect
+      #puts "#{self.name} #{@properties[:tag]} #{@properties[:ilevel]}"
+      #puts self.stats.inspect
     end
 
-    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "hit", "expertise",
+    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "versatility", "multistrike",
                        "haste", "mastery", "pvp resilience", "pvp power", "all stats", "dodge", "block", "parry"
     ]
     SCAN_OVERRIDE = { "critical strike" => "crit", 

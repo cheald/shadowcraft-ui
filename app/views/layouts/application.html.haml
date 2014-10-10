@@ -16,12 +16,12 @@
     /[if IE]
       = stylesheet_link_tag 'compiled/ie.css', :media => 'screen, projection'
     = csrf_meta_tag
-    =javascript_include_tag "https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.js"
+    =javascript_include_tag "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"
     =include_javascripts  :app
 
     #{yield :head}
     :javascript
-      window.FLASH = #{raw flash.reject {|k, v| k.to_s.match(/^_/) }.values.to_json};
+      window.FLASH = #{raw flash.reject {|k, v| k.to_s.match(/^_/) }.to_json};
   %body
     #container{:class => "#{params[:controller]}-#{params[:action]}"}
       =yield

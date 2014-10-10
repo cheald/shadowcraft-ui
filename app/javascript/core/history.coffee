@@ -167,18 +167,16 @@ class ShadowcraftHistory
 
     decompress_handlers[version](data)
 
-  professionMap = [ "enchanting", "engineering", "blacksmithing", "inscription", "jewelcrafting", "leatherworking", "tailoring", "alchemy", "skinning", "herbalism", "mining" ]
   poisonMap = [ "dp", "wp" ]
   utilPoisonMap = [ "lp", "n" ]
   raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"]
   rotationOptionsMap = [
     "min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute",
-    "use_rupture", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "bf_targets", "stack_cds"
-    "clip_recuperate", "use_hemorrhage",
+    "ksp_immediately", "revealing_strike_pooling", "blade_flurry",
+    "use_hemorrhage",
     "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use",
-    "sub_sb_timing"
   ]
-  rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'sometimes', 'pool', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike', 'opener', 'shd', 'fw', 'other']
+  rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike', 'opener', 'uptime']
 
   map = (value, m) ->
     m.indexOf(value)
@@ -186,7 +184,7 @@ class ShadowcraftHistory
   unmap = (value, m) ->
     m[value]
 
-  compress_handlers =
+  compress_handlers =  
     "1": (data) ->
       ret = [DATA_VERSION]
 
@@ -200,6 +198,9 @@ class ShadowcraftHistory
         gearSet.push gear.g1 || 0
         gearSet.push gear.g2 || 0
         gearSet.push gear.upgrade_level || 0
+        gearSet.push gear.original_id || 0
+        gearSet.push gear.item_level || 0
+        gearSet.push Math.abs(gear.suffix) || 0
       ret.push base36Encode(gearSet)
       ret.push data.active
       ret.push data.activeSpec
@@ -215,10 +216,6 @@ class ShadowcraftHistory
 
       # Options
       options = []
-      professions = []
-      for profession, val of data.options.professions
-        professions.push map(profession, professionMap) if val
-      options.push professions
 
       # General options
       general = [
@@ -227,21 +224,19 @@ class ShadowcraftHistory
         data.options.general.duration
         map(data.options.general.lethal_poison, poisonMap)
         map(data.options.general.utility_poison, utilPoisonMap)
-        if data.options.general.virmens_bite then 1 else 0
+        if data.options.general.potion then 1 else 0
         data.options.general.max_ilvl
-        if data.options.general.tricks then 1 else 0
-        if data.options.general.receive_tricks then 1 else 0
         if data.options.general.prepot then 1 else 0
         data.options.general.patch,
         data.options.general.min_ilvl
         if data.options.general.epic_gems then 1 else 0
-        if data.options.general.stormlash then 1 else 0
         if data.options.general.pvp then 1 else 0
         if data.options.general.show_upgrades then 1 else 0
         data.options.general.show_random_items || 502
         data.options.general.num_boss_adds * 100 || 0
         data.options.general.response_time * 100 || 50
         data.options.general.time_in_execute_range * 100 || 35
+        data.options.general.night_elf_racial || 0
       ]
       options.push base36Encode(general)
 
@@ -298,8 +293,8 @@ class ShadowcraftHistory
           glyphs: base36Decode(talentSets[index + 2])
 
       gear = base36Decode data[1]
-      for id, index in gear by 7
-        slot = (index / 7).toString()
+      for id, index in gear by 10
+        slot = (index / 10).toString()
         d.gear[slot] =
           item_id: gear[index]
           enchant: gear[index + 1]
@@ -308,42 +303,39 @@ class ShadowcraftHistory
           g1: gear[index + 4]
           g2: gear[index + 5]
           upgrade_level: gear[index + 6]
+          original_id: gear[index + 7]
+          item_level: gear[index + 8]
+          suffix: gear[index + 9] * -1
         for k, v of d.gear[slot]
           delete d.gear[slot][k] if v == 0
 
       options = data[7]
-      d.options.professions = {}
-      for v, i in options[0]
-        d.options.professions[unmap(v, professionMap)] = true
-
-      general = base36Decode options[1]
+      general = base36Decode options[0]
       d.options.general =
         level:                  general[0]
         race:                   unmap(general[1], raceMap)
         duration:               general[2]
         lethal_poison:          unmap(general[3], poisonMap)
         utility_poison:         unmap(general[4], utilPoisonMap)
-        virmens_bite:           general[5] != 0
+        potion:                 general[5] != 0
         max_ilvl:               general[6] || 700
-        tricks:                 general[7] != 0
-        receive_tricks:         general[8] != 0
-        prepot:                 general[9] != 0
-        patch:                  general[10] || 52
-        min_ilvl:               general[11] || 430
-        epic_gems:              general[12] || 0
-        stormlash:              general[13] || 0
-        pvp:                    general[14] || 0
-        show_upgrades:          general[15] || 0
-        show_random_items:      general[16] || 0
-        num_boss_adds:          general[17] / 100 || 0
-        response_time:          general[18] / 100 || 0.5
-        time_in_execute_range:  general[19] / 100 || 0.35
+        prepot:                 general[7] != 0
+        patch:                  general[8] || 60
+        min_ilvl:               general[9] || 430
+        epic_gems:              general[10] || 0
+        pvp:                    general[11] || 0
+        show_upgrades:          general[12] || 0
+        show_random_items:      general[13] || 0
+        num_boss_adds:          general[14] / 100 || 0
+        response_time:          general[15] / 100 || 0.5
+        time_in_execute_range:  general[16] / 100 || 0.35
+        night_elf_racial:       general[17] || 0
 
       d.options.buffs = {}
-      for v, i in options[2]
+      for v, i in options[1]
         d.options.buffs[ShadowcraftOptions.buffMap[i]] = v == 1
 
-      rotation = base36Decode options[3]
+      rotation = base36Decode options[2]
       d.options.rotation = {}
       for v, i in rotation by 2
         d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i+1], rotationValueMap)

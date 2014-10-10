@@ -8,19 +8,20 @@ class Enchant
   field :item_id, :type => Integer
   field :item_name
   field :equip_location, :type => Integer
+  field :requires, :type => Hash
 
   ALL_STATS = {
-    "2931" => 4,    # Ring
-    "1891" => 4,    # Bracer, Chest
-    "2661" => 6,    # Bracer, Chest
-    "866"  => 2,    # Chest
-    "847"  => 1,    # Chest
-    "928"  => 3,    # Chest
-    "3252" => 8,    # Chest
-    "3832" => 10,   # Chest
-    "4063" => 15,   # Chest
-    "4102" => 20,   # Chest
-    "4419" => 80,   # Chest
+      '2931' => 4, # Ring
+      '1891' => 4, # Bracer, Chest
+      '2661' => 6, # Bracer, Chest
+      '866' => 2, # Chest
+      '847' => 1, # Chest
+      '928' => 3, # Chest
+      '3252' => 8, # Chest
+      '3832' => 10, # Chest
+      '4063' => 15, # Chest
+      '4102' => 20, # Chest
+      '4419' => 80, # Chest
   }
 
   def encode_json(options = {})
@@ -29,95 +30,36 @@ class Enchant
 
   def as_json(options = {})
     {
-      :id => spell_id,
-      :stats => stats,
-      :icon => icon,
-      :slot => equip_location,
-      :name => item_name.gsub(/Scroll.*- /, "")
+        :id => spell_id,
+        :stats => stats,
+        :icon => icon,
+        :slot => equip_location,
+        :name => item_name.gsub(/Scroll.*- /, ''),
+        :requires => requires
     }
   end
 
-  def self.update!
-    self.destroy_all
-    stat_lookup = Hash[*File.open(File.join(Rails.root, "app", "xml", "stats.txt")).map {|l| x = l.strip.split(/[\s]+/, 2) }.flatten]
-    permEnchants = {}
-    CSV.foreach(File.join(Rails.root, "app", "xml", "SpellItemEnchantment.dbc.csv")) do |row|
-      enchantId = row[0].to_i
-      b = {}
-      if row[2].to_i == 5 or row[3].to_i == 5
-        3.times do |i|
-          amt = row[5 + i].to_i
-          if amt != 0 and row[11+i] != "0"
-            if statType = stat_lookup[row[11+i]]
-              key = statType.titleize.gsub(/ /, "").snake_case
-              b[key] = amt
-            end
-          end
-        end
-      elsif q = ALL_STATS[row[0]]
-        b[:agility] = q
-        b[:stamina] = q
-        b[:strength] = q
-      end
-
-      permEnchants[enchantId] = b unless b.empty?
-    end
-
-    Character.all.map {|c| c.properties["characterTab"]["items"]["item"] }.flatten.map do |i|
-      h = Hash[*i.keys.grep(/enchant/i).map {|k| [k.to_sym, i[k]] }.flatten]
-      i_obj = Item.find_or_create_by(:remote_id => i["id"].to_i)
-      h[:slot] = i_obj.equip_location
-
-      if i["permanentEnchantItemId"] and i["permanentEnchantItemId"] != "0"
-        e_obj = Item.find_or_create_by(:remote_id => i["permanentEnchantItemId"])
-        h[:item_name] = e_obj.properties["name"]
-      elsif i["permanentEnchantSpellName"]
-        h[:item_name] = i["permanentEnchantSpellName"]
-      end
-      puts "Looking up spell enchant for #{h[:item_name]}"
-      if h[:item_name]
-        h
-      else
-        nil
-      end
-    end.compact.uniq.each do |enchant|
-      if Enchant.count(:conditions => {:spell_id => enchant[:permanentenchant].to_i}) == 0
-        puts enchant[:item_name]
-        puts enchant[:permanentenchant].to_i
-        puts permEnchants[enchant[:permanentenchant].to_i].inspect
-        Enchant.create({
-          :spell_id => enchant[:permanentenchant].to_i,
-          :stats => permEnchants[enchant[:permanentenchant].to_i],
-          :icon => enchant[:permanentEnchantIcon],
-          :item_id => enchant[:permanentEnchantItemId],
-          :item_name => enchant[:item_name],
-          :equip_location => enchant[:slot]
-        })
-      end
-    end
-  end
-
   JSON_TO_INTERNAL = {
-    "agi" => "agility",
-    "atkpwr" => "attack_power",
-    "critstrkrtng" => "crit",
-    "exprtng" => "expertise",
-    "hastertng" => "haste",
-    "hitrtng" => "hit",
-    "str" => "strength",
-    "sta" => "stamina",
-    "mastrtng" => "mastery"
+      'agi' => 'agility',
+      'atkpwr' => 'attack_power',
+      'critstrkrtng' => 'crit',
+      'exprtng' => 'expertise',
+      'hastertng' => 'haste',
+      'hitrtng' => 'hit',
+      'str' => 'strength',
+      'sta' => 'stamina',
+      'mastrtng' => 'mastery'
   }
   SLOT_MAP = [
-    0x1, 0x2, 0x4, 0x8,
-    0x10, 0x20, 0x40, 0x80,
-    0x100, 0x200, 0x400, 0x800,
-    0x1000, 0x2000, 0x4000, 0x8000,
-    0x10000, 0x20000, 0x40000, 0x80000,
-    0x100000, 0x200000, 0x400000, 0x800000
+      0x1, 0x2, 0x4, 0x8,
+      0x10, 0x20, 0x40, 0x80,
+      0x100, 0x200, 0x400, 0x800,
+      0x1000, 0x2000, 0x4000, 0x8000,
+      0x10000, 0x20000, 0x40000, 0x80000,
+      0x100000, 0x200000, 0x400000, 0x800000
   ]
 
-  ACCEPTED_ENCHANTS = ["Black Magic", "Berserking", "Mongoose", "Hurricane", "Avalanche", "Landslide", "Windsong", "Elemental Force", "Dancing Steel"]
+  ACCEPTED_ENCHANTS = ['Black Magic', 'Berserking', 'Mongoose', 'Hurricane', 'Avalanche', 'Landslide', 'Windsong', 'Elemental Force', 'Dancing Steel']
 
   def self.get_slots(k)
     SLOT_MAP.each_with_index do |e, i|
@@ -129,25 +71,25 @@ class Enchant
   def self.update_from_json!
     self.destroy_all
     keys = JSON_TO_INTERNAL.keys
-    j = JSON::load open(File.join(Rails.root, "app/xml/converted_enchants.json")).read
+    j = JSON::load open(File.join(Rails.root, 'app/xml/converted_enchants.json')).read
     j.each do |k, i|
-      slots = [i["slots"]].flatten
+      slots = [i['slots']].flatten
       used_names = []
-      [i["name"]].flatten.each_with_index do |name, index|
-        name_match = ACCEPTED_ENCHANTS.detect {|n| name.match(n) }
-        if name_match or (x = i["jsonequip"].keys & keys and x.length > 0)
+      [i['name']].flatten.each_with_index do |name, index|
+        name_match = ACCEPTED_ENCHANTS.detect { |n| name.match(n) }
+        if name_match or (x = i['jsonequip'].keys & keys and x.length > 0)
           next if used_names.include? name
           x ||= {}
           puts "Adding #{name}..."
           slot = get_slots(slots[index].to_i)
           next if slot == 1 # do not import head enchants
           Enchant.create({
-            :spell_id => k.to_i,
-            :stats => Hash[*x.map {|rk| [JSON_TO_INTERNAL[rk], i["jsonequip"][rk].to_i] }.flatten],
-            :icon => [i["icon"]].flatten.first.downcase,
-            :item_name => name,
-            :equip_location => slot
-          })
+                             :spell_id => k.to_i,
+                             :stats => Hash[*x.map { |rk| [JSON_TO_INTERNAL[rk], i['jsonequip'][rk].to_i] }.flatten],
+                             :icon => [i['icon']].flatten.first.downcase,
+                             :item_name => name,
+                             :equip_location => slot
+                         })
           used_names.push name
         else
           puts "Not adding #{name}"
@@ -159,224 +101,529 @@ class Enchant
   end
 
   def self.hardcoded_import
+    # first delete all existing enchants int he database
+    Enchant.delete_all
+
+    # WOD WEAPON
+    # Enchant.create({
+    #                    :spell_id => 5330,
+    #                    :stats => {},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Weapon - Mark of the Thunderlord',
+    #                    :equip_location => 13
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5331,
+    #                    :stats => {},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Weapon - Mark of the Shattered Hand',
+    #                    :equip_location => 13
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5334,
+    #                    :stats => {},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Weapon - Mark of the Frostwolf',
+    #                    :equip_location => 13
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5337,
+    #                    :stats => {},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Weapon - Mark of Warsong',
+    #                    :equip_location => 13
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5384,
+    #                    :stats => {},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Weapon - Mark of Bleeding Hollow',
+    #                    :equip_location => 13
+    #                })
+    # # WOD RING
+    # Enchant.create({
+    #                    :spell_id => 5303,
+    #                    :stats => {'versatility' => 30},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Ring - Breath of Versatility',
+    #                    :equip_location => 11 # Ring
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5301,
+    #                    :stats => {'multistrike' => 30},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Ring - Breath of Multistrike',
+    #                    :equip_location => 11 # Ring
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5299,
+    #                    :stats => {'mastery' => 30},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Ring - Breath of Mastery',
+    #                    :equip_location => 11 # Ring
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5297,
+    #                    :stats => {'haste' => 30},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Ring - Breath of Haste',
+    #                    :equip_location => 11 # Ring
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5284,
+    #                    :stats => {'crit' => 30},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Ring - Breath of Critical Strike',
+    #                    :equip_location => 11 # Ring
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5328,
+    #                    :stats => {'versatility' => 50},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Ring - Gift of Versatility',
+    #                    :equip_location => 11 # Ring
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5327,
+    #                    :stats => {'multistrike' => 50},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Ring - Gift of Multistrike',
+    #                    :equip_location => 11 # Ring
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5326,
+    #                    :stats => {'mastery' => 50},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Ring - Gift of Mastery',
+    #                    :equip_location => 11 # Ring
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5325,
+    #                    :stats => {'haste' => 50},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Ring - Gift of Haste',
+    #                    :equip_location => 11 # Ring
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5324,
+    #                    :stats => {'crit' => 50},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Ring - Gift of Critical Strike',
+    #                    :equip_location => 11 # Ring
+    #                })
+    # # WOD NECK
+    # Enchant.create({
+    #                    :spell_id => 5295,
+    #                    :stats => {'versatility' => 40},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Neck - Breath of Versatility',
+    #                    :equip_location => 2 # Neck
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5294,
+    #                    :stats => {'multistrike' => 40},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Neck - Breath of Multistrike',
+    #                    :equip_location => 2 # Neck
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5293,
+    #                    :stats => {'mastery' => 40},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Neck - Breath of Mastery',
+    #                    :equip_location => 2 # Neck
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5292,
+    #                    :stats => {'haste' => 40},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Neck - Breath of Haste',
+    #                    :equip_location => 2 # Neck
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5285,
+    #                    :stats => {'crit' => 40},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Neck - Breath of Critical Strike',
+    #                    :equip_location => 2 # Neck
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5321,
+    #                    :stats => {'versatility' => 75},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Neck - Gift of Versatility',
+    #                    :equip_location => 2 # Neck
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5320,
+    #                    :stats => {'multistrike' => 75},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Neck - Gift of Multistrike',
+    #                    :equip_location => 2 # Neck
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5319,
+    #                    :stats => {'mastery' => 75},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Neck - Gift of Mastery',
+    #                    :equip_location => 2 # Neck
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5318,
+    #                    :stats => {'haste' => 75},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Neck - Gift of Haste',
+    #                    :equip_location => 2 # Neck
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5317,
+    #                    :stats => {'crit' => 75},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Neck - Gift of Critical Strike',
+    #                    :equip_location => 2 # Neck
+    #                })
+    # # WOD CLOAK
+    # Enchant.create({
+    #                    :spell_id => 5304,
+    #                    :stats => {'versatility' => 100},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Cloak - Breath of Versatility',
+    #                    :equip_location => 16 # Cloak
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5302,
+    #                    :stats => {'multistrike' => 100},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Cloak - Breath of Multistrike',
+    #                    :equip_location => 16 # Cloak
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5300,
+    #                    :stats => {'mastery' => 100},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Cloak - Breath of Mastery',
+    #                    :equip_location => 16 # Cloak
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5298,
+    #                    :stats => {'haste' => 100},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Cloak - Breath of Haste',
+    #                    :equip_location => 16 # Cloak
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5281,
+    #                    :stats => {'crit' => 100},
+    #                    :icon => 'inv_enchant_formulagood_01',
+    #                    :item_name => 'Enchant Cloak - Breath of Critical Strike',
+    #                    :equip_location => 16 # Cloak
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5314,
+    #                    :stats => {'versatility' => 100},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Cloak - Gift of Versatility',
+    #                    :equip_location => 16 # Cloak
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5313,
+    #                    :stats => {'multistrike' => 100},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Cloak - Gift of Multistrike',
+    #                    :equip_location => 16 # Cloak
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5312,
+    #                    :stats => {'mastery' => 100},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Cloak - Gift of Mastery',
+    #                    :equip_location => 16 # Cloak
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5311,
+    #                    :stats => {'haste' => 100},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Cloak - Gift of Haste',
+    #                    :equip_location => 16 # Cloak
+    #                })
+    # Enchant.create({
+    #                    :spell_id => 5310,
+    #                    :stats => {'crit' => 100},
+    #                    :icon => 'inv_enchant_formulasuperior_01',
+    #                    :item_name => 'Enchant Cloak - Gift of Critical Strike',
+    #                    :equip_location => 16 # Cloak
+    #                })
+
+    # MOP Enchants
     Enchant.create({
-         :spell_id => 5125,
-         :stats => {},
-         :icon => "inv_enchant_formulasuperior_01",
-         :item_name => "Enchant Weapon - Bloody Dancing Steel",
-         :equip_location => 13
-	})
+                       :spell_id => 5125,
+                       :stats => {},
+                       :icon => 'inv_enchant_formulasuperior_01',
+                       :item_name => 'Enchant Weapon - Bloody Dancing Steel',
+                       :equip_location => 13,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
     Enchant.create({
-         :spell_id => 4444,
-         :stats => {},
-         :icon => "inv_enchant_formulasuperior_01",
-         :item_name => "Enchant Weapon - Dancing Steel",
-         :equip_location => 13
-	})
+                       :spell_id => 4444,
+                       :stats => {},
+                       :icon => 'inv_enchant_formulasuperior_01',
+                       :item_name => 'Enchant Weapon - Dancing Steel',
+                       :equip_location => 13,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
     Enchant.create({
-         :spell_id => 4443,
-         :stats => {},
-         :icon => "inv_enchant_formulasuperior_01",
-         :item_name => "Enchant Weapon - Elemental Force",
-         :equip_location => 13
-	})
+                       :spell_id => 4443,
+                       :stats => {},
+                       :icon => 'inv_enchant_formulasuperior_01',
+                       :item_name => 'Enchant Weapon - Elemental Force',
+                       :equip_location => 13,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
     Enchant.create({
-         :spell_id => 4441,
-         :stats => {},
-         :icon => "inv_enchant_formulasuperior_01",
-         :item_name => "Enchant Weapon - Windsong",
-         :equip_location => 13
-	})
+                       :spell_id => 4441,
+                       :stats => {},
+                       :icon => 'inv_enchant_formulasuperior_01',
+                       :item_name => 'Enchant Weapon - Windsong',
+                       :equip_location => 13,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
     Enchant.create({
-         :spell_id => 4918,
-         :stats => {"expertise" => 200 },
-         :icon => "inv_enchant_formulasuperior_01",
-         :item_name => "Living Steel Weapon Chain",
-         :equip_location => 13
-	})
+                       :spell_id => 4918,
+                       :stats => {'crit' => 13},
+                       :icon => 'inv_enchant_formulasuperior_01',
+                       :item_name => 'Living Steel Weapon Chain',
+                       :equip_location => 13,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
     Enchant.create({
-         :spell_id => 4433,
-         :stats => {"mastery" => 170 },
-         :icon => "inv_enchant_formulasuperior_01",
-         :item_name => "Enchant Gloves - Superior Mastery",
-         :equip_location => 10
-	})
+                       :spell_id => 4433,
+                       :stats => {'mastery' => 11},
+                       :icon => 'inv_enchant_formulasuperior_01',
+                       :item_name => 'Enchant Gloves - Superior Mastery',
+                       :equip_location => 10,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
     Enchant.create({
-         :spell_id => 4430,
-         :stats => {"haste" => 170 },
-         :icon => "inv_enchant_formulasuperior_01",
-         :item_name => "Enchant Gloves - Greater Haste",
-         :equip_location => 10
-	})
+                       :spell_id => 4430,
+                       :stats => {'haste' => 11},
+                       :icon => 'inv_enchant_formulasuperior_01',
+                       :item_name => 'Enchant Gloves - Greater Haste',
+                       :equip_location => 10,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
     Enchant.create({
-         :spell_id => 4431,
-         :stats => {"expertise" => 170 },
-         :icon => "inv_enchant_formulasuperior_01",
-         :item_name => "Enchant Gloves - Superior Expertise",
-         :equip_location => 10
-	})
+                       :spell_id => 4431,
+                       :stats => {'haste' => 11},
+                       :icon => 'inv_enchant_formulasuperior_01',
+                       :item_name => 'Enchant Gloves - Superior Haste',
+                       :equip_location => 10,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
     Enchant.create({
-         :spell_id => 4432,
-         :stats => {"strength" => 170 },
-         :icon => "inv_enchant_formulasuperior_01",
-         :item_name => "Enchant Gloves - Super Strength",
-         :equip_location => 10
-	})
-     Enchant.create({
-         :spell_id => 4908,
-         :stats => {"agility" => 120, "crit" => 80 },
-         :icon => "inv_inscription_runescrolloffortitude_blue",
-         :item_name => "Tiger Claw Inscription",
-         :equip_location => 3
-	})
-     Enchant.create({
-         :spell_id => 4804,
-         :stats => {"agility" => 200, "crit" => 100 },
-         :icon => "inv_inscription_runescrolloffortitude_yellow",
-         :item_name => "Greater Tiger Claw Inscription",
-         :equip_location => 3
-	})
-     Enchant.create({
-         :spell_id => 4914,
-         :stats => {"agility" => 520, "crit" => 100 },
-         :icon => "inv_misc_mastersinscription",
-         :item_name => "Secret Tiger Claw Inscription",
-         :equip_location => 3
-	})
-     Enchant.create({
-         :spell_id => 4419,
-         :stats => {"agility" => 80, "strength" => 80, "stamina" => 80 },
-         :icon => "inv_misc_enchantedscroll",
-         :item_name => "Enchant Chest - Glorious Stats",
-         :equip_location => 5
-	})
-     Enchant.create({
-         :spell_id => 4880,
-         :stats => {"agility" => 285, "crit" => 165 },
-         :icon => "inv_misc_cataclysmarmorkit_12",
-         :item_name => "Primal Leg Reinforcements",
-         :equip_location => 7
-	})
-     Enchant.create({
-         :spell_id => 4822,
-         :stats => {"agility" => 285, "crit" => 165 },
-         :icon => "inv_misc_cataclysmarmorkit_02",
-         :item_name => "Shadowleather Leg Armor",
-         :equip_location => 7
-	})
-     Enchant.create({
-         :spell_id => 4871,
-         :stats => {"agility" => 170, "crit" => 100 },
-         :icon => "inv_misc_cataclysmarmorkit_01",
-         :item_name => "Sha-Touched Leg Armor",
-         :equip_location => 7
-	})
-     Enchant.create({
-         :spell_id => 4429,
-         :stats => {"mastery" => 140 },
-         :icon => "inv_misc_enchantedscroll",
-         :item_name => "Enchant Boots - Pandaren's Step",
-         :equip_location => 8
-	})
-     Enchant.create({
-         :spell_id => 4428,
-         :stats => {"agility" => 140 },
-         :icon => "inv_misc_enchantedscroll",
-         :item_name => "Enchant Boots - Blurred Speed",
-         :equip_location => 8
-	})
-     Enchant.create({
-         :spell_id => 4426,
-         :stats => {"haste" => 175 },
-         :icon => "inv_misc_enchantedscroll",
-         :item_name => "Enchant Boots - Greater Haste",
-         :equip_location => 8
-	})
-     Enchant.create({
-         :spell_id => 4427,
-         :stats => {"hit" => 175 },
-         :icon => "inv_misc_enchantedscroll",
-         :item_name => "Enchant Boots - Greater Precision",
-         :equip_location => 8
-	})
-     Enchant.create({
-         :spell_id => 4416,
-         :stats => {"agility" => 180 },
-         :icon => "inv_misc_enchantedscroll",
-         :item_name => "Enchant Bracers - Greater Agility",
-         :equip_location => 9
-	})
-     Enchant.create({
-         :spell_id => 4411,
-         :stats => {"mastery" => 170 },
-         :icon => "inv_misc_enchantedscroll",
-         :item_name => "Enchant Bracers - Mastery",
-         :equip_location => 9
-	})
-     Enchant.create({
-         :spell_id => 4875,
-         :stats => {"agility" => 500 },
-         :icon => "inv_misc_pelt_13",
-         :item_name => "Fur Lining - Agility",
-         :equip_location => 9
-	})
-     Enchant.create({
-         :spell_id => 4359,
-         :stats => {"agility" => 160 },
-         :icon => "inv_misc_enchantedscroll",
-         :item_name => "Greater Agility",
-         :equip_location => 11
-	})
-     Enchant.create({
-         :spell_id => 4421,
-         :stats => {"hit" => 180 },
-         :icon => "inv_misc_enchantedscroll",
-         :item_name => "Enchant Cloak - Accuracy",
-         :equip_location => 16
-	})
-     Enchant.create({
-         :spell_id => 4424,
-         :stats => {"crit" => 180 },
-         :icon => "inv_misc_enchantedscroll",
-         :item_name => "Enchant Cloak - Superior Critical Strike",
-         :equip_location => 16
-	})
-     Enchant.create({
-         :spell_id => 4894,
-         :stats => { },
-         :icon => "inv_misc_thread_01",
-         :item_name => "Swordguard Embroidery",
-         :equip_location => 16
-	})
-     true
+                       :spell_id => 4432,
+                       :stats => {'strength' => 11},
+                       :icon => 'inv_enchant_formulasuperior_01',
+                       :item_name => 'Enchant Gloves - Super Strength',
+                       :equip_location => 10,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4908,
+                       :stats => {'agility' => 8, 'crit' => 5},
+                       :icon => 'inv_inscription_runescrolloffortitude_blue',
+                       :item_name => 'Tiger Claw Inscription',
+                       :equip_location => 3,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4804,
+                       :stats => {'agility' => 13, 'crit' => 6},
+                       :icon => 'inv_inscription_runescrolloffortitude_yellow',
+                       :item_name => 'Greater Tiger Claw Inscription',
+                       :equip_location => 3,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4914,
+                       :stats => {'agility' => 13, 'crit' => 6},
+                       :icon => 'inv_misc_mastersinscription',
+                       :item_name => 'Secret Tiger Claw Inscription',
+                       :equip_location => 3,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4419,
+                       :stats => {'agility' => 5, 'strength' => 5, 'stamina' => 5},
+                       :icon => 'inv_misc_enchantedscroll',
+                       :item_name => 'Enchant Chest - Glorious Stats',
+                       :equip_location => 5,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4880,
+                       :stats => {'agility' => 18, 'crit' => 10},
+                       :icon => 'inv_misc_cataclysmarmorkit_12',
+                       :item_name => 'Primal Leg Reinforcements',
+                       :equip_location => 7,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4822,
+                       :stats => {'agility' => 18, 'crit' => 10},
+                       :icon => 'inv_misc_cataclysmarmorkit_02',
+                       :item_name => 'Shadowleather Leg Armor',
+                       :equip_location => 7,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4871,
+                       :stats => {'agility' => 11, 'crit' => 6},
+                       :icon => 'inv_misc_cataclysmarmorkit_01',
+                       :item_name => 'Sha-Touched Leg Armor',
+                       :equip_location => 7,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4429,
+                       :stats => {'mastery' => 9},
+                       :icon => 'inv_misc_enchantedscroll',
+                       :item_name => "Enchant Boots - Pandaren's Step",
+                       :equip_location => 8,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4428,
+                       :stats => {'agility' => 9},
+                       :icon => 'inv_misc_enchantedscroll',
+                       :item_name => 'Enchant Boots - Blurred Speed',
+                       :equip_location => 8,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4426,
+                       :stats => {'haste' => 11},
+                       :icon => 'inv_misc_enchantedscroll',
+                       :item_name => 'Enchant Boots - Greater Haste',
+                       :equip_location => 8,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4427,
+                       :stats => {'crit' => 11},
+                       :icon => 'inv_misc_enchantedscroll',
+                       :item_name => 'Enchant Boots - Greater Precision',
+                       :equip_location => 8,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4416,
+                       :stats => {'agility' => 11},
+                       :icon => 'inv_misc_enchantedscroll',
+                       :item_name => 'Enchant Bracer - Greater Agility',
+                       :equip_location => 9,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4411,
+                       :stats => {'mastery' => 11},
+                       :icon => 'inv_misc_enchantedscroll',
+                       :item_name => 'Enchant Bracer - Mastery',
+                       :equip_location => 9,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4421,
+                       :stats => {'crit' => 11},
+                       :icon => 'inv_misc_enchantedscroll',
+                       :item_name => 'Enchant Cloak - Accuracy',
+                       :equip_location => 16,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4424,
+                       :stats => {'crit' => 11},
+                       :icon => 'inv_misc_enchantedscroll',
+                       :item_name => 'Enchant Cloak - Superior Critical Strike',
+                       :equip_location => 16,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    true
   end
 
   def self.populate_from_wowhead
     self.destroy_all
-    url = "http://www.wowhead.com/items=0.6"
+    url = 'http://www.wowhead.com/items=0.6'
     doc = open(url).read
     ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i
     ids.each do |id|
       puts id
-      doc = open("http://www.wowhead.com/item=%d&xml" % id).read
+      doc = open('http://www.wowhead.com/item=%d&xml' % id).read
       xml = Nokogiri::XML(doc)
-      json = JSON::load("{%s}" % xml.css("json").text)
-      puts xml.css("name").text
+      json = JSON::load('{%s}' % xml.css('json').text)
+      puts xml.css('name').text
       #puts json.inspect
-      jsonequip = JSON::load("{%s}" % xml.css("jsonEquip").text)
+      jsonequip = JSON::load('{%s}' % xml.css('jsonEquip').text)
       puts jsonequip.inspect
-      name_match = ACCEPTED_ENCHANTS.detect {|n| name.match(n) }
+      name_match = ACCEPTED_ENCHANTS.detect { |n| name.match(n) }
       if name_match or (x = jsonequip.keys & keys and x.length > 0)
-       x ||= {}
-       puts "Adding #{name}..."
-       slot = get_slots(slots[index].to_i)
-       Enchant.create({
-         :spell_id => k.to_i,
-         :stats => Hash[*x.map {|rk| [JSON_TO_INTERNAL[rk], jsonequip[rk].to_i] }.flatten],
-         :icon => [i["icon"]].flatten.first.downcase,
-         :item_name => name,
-         :equip_location => slot
-	})
+        x ||= {}
+        puts "Adding #{name}..."
+        slot = get_slots(slots[index].to_i)
+        Enchant.create({
+                           :spell_id => k.to_i,
+                           :stats => Hash[*x.map { |rk| [JSON_TO_INTERNAL[rk], jsonequip[rk].to_i] }.flatten],
+                           :icon => [i['icon']].flatten.first.downcase,
+                           :item_name => name,
+                           :equip_location => slot
+                       })
       else
         puts "Not adding #{name}"
       end

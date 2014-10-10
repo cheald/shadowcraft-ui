@@ -7,10 +7,11 @@ javascripts:
     - public/javascripts/modernizr-2.6.2.js
     # - public/javascripts/jquery-ui-1.8.10.custom.js
     - public/javascripts/jquery-ui-1.8.24.custom.min.js
+    - public/javascripts/jquery.browser.min.js
     - public/javascripts/tooltip.js
     # - public/javascripts/ui.selectmenu.js
     - public/javascripts/underscore.js
-    - public/javascripts/backbone.js
+    - public/javascripts/backbone-min.js
     - public/javascripts/handlebars.js
     - public/javascripts/jstorage.js
     - public/javascripts/jquery.json-2.2.js

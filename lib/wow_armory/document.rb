@@ -64,12 +64,15 @@ module WowArmory
         elsif result.response_code >= 500
           raise ArmoryError.new "Armory returned #{result.response_code}", result.response_code
         end
-
+		
         @content = result.body_str
         if parse == :xml
           @document = Nokogiri::HTML @content
         elsif parse == :json
           @json = JSON::load @content
+          if @json.blank?
+            raise ArmoryError.new "Armory returned empty data", 404
+          end
         else
           @content
         end

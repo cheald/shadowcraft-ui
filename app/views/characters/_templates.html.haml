@@ -11,9 +11,9 @@
 - mustache "tree" do
   .tree
     {{#talents}}
-    .talent.tt{:class => "row-{{tier}} col-{{column}}", :"data-tooltip-type" => "spell", :"data-tooltip-id" => "{{spell}}", :style => "background-image: url(http://us.media.blizzard.com/wow/icons/56/{{icon}}.jpg);"}
+    .talent.tt{:class => "row-{{tier}} col-{{column}}", :"data-tooltip-type" => "spell", :"data-tooltip-id" => "{{spell}}", :style => "background-image: url(http://wow.zamimg.com/images/wow/icons/large/{{icon}}.jpg);"}
       .grey
-      //.points 0/{{maxRank}}
+    //.points 0/{{maxRank}}
     {{/talents}}
 - mustache "tier" do
   .tiers
@@ -80,12 +80,12 @@
     %input.ui-button.ui-widget.ui-state-default.ui-corner-all.clearReforge{:type => "Button", :value => "Undo Reforging"}
 
 - mustache("itemSlot") do
-  .slot{:id => "{{item/id}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}"}<
+  .slot{:id => "{{item/id}}", :"data-identifier" => "{{identifier}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}"}<
     .image<
       {{#item}}
       {{#icon}}
-      -#%img{:src => "http://static.wowhead.com/images/wow/icons/large/{{.}}.jpg"}
-      %img{:src => "http://us.media.blizzard.com/wow/icons/56/{{.}}.jpg"}
+      %img{:src => "http://wow.zamimg.com/images/wow/icons/large/{{.}}.jpg"}
+      -#%img{:src => "http://us.media.blizzard.com/wow/icons/56/{{.}}.jpg"}
       {{/icon}}
       {{/item}}
 
@@ -104,7 +104,7 @@
       {{/upgrade}}
       {{/upgradable}}
       -#{{#item/id}}
-      %a.wowhead{:href => "http://www.wowhead.com/item={{ttid}}", :target => "_blank"} Wowhead
+      %a.wowhead{:href => "http://wod.wowhead.com/item={{ttid}}", :target => "_blank"} Wowhead
       -#{{/item/id}}
 
     {{#reforgable}}

@@ -15,6 +15,8 @@ class ItemsController < ApplicationController
     end
   end
 
+  # Create a new item
+  # Is it used anywhere?
   def create
     item = Item.find_or_create_by(:remote_id => params[:item][:remote_id])
 
@@ -26,6 +28,7 @@ class ItemsController < ApplicationController
     end
   end
 
+  # Rebuild the item database based on the given character hash
   def rebuild
     char = Character.criteria.id(params[:c]).first
     player_class = "unknown"
@@ -36,15 +39,20 @@ class ItemsController < ApplicationController
     first_item = Item.desc(:created_at).first
     anchor = flash[:reload].blank? ? nil : "reload"
     f = File.join(Rails.root, "public", filename)
+    # If file not exists or an Item from Database is newer then the file creation time
     if !File.exists?(f) or File.mtime(f) < first_item.created_at
+      # initiate indexing
       index
+      # render everything to a file, whatever here happens?
       render_to_string :action => "index.js"
     end
+    # finally go back to the character page
     redirect_to params[:c].blank? ? :back : character_path(character_options(char).merge(:anchor => anchor))
   end
 
   private
 
+  # Get all items, gems, etc. and filter out not needed ones for rogues
   def index_rogue
     @alt_items = []
     VALID_SLOTS.each do |i|
@@ -52,7 +60,7 @@ class ItemsController < ApplicationController
     end
 
     # This is really haxy, but it's flexible.
-    bad_keys = %w"intellect spell_power spirit parry dodge"
+    bad_keys = %w"intellect spell_power spirit parry dodge bonus_armor"
     bad_classes = %w"Plate Mail"
     @alt_items.reject! {|item| !(item.stats.keys & bad_keys).empty? }
     @alt_items.reject! {|item| item.stats.empty? and (item.equip_location != 12 and item.remote_id != 88149) } # Don't reject trinkets with empty stats
@@ -61,15 +69,14 @@ class ItemsController < ApplicationController
     @alt_items.reject! {|item| item.properties['name'].match(/DONTUSE/) }
     @alt_items.reject! {|item| !item.properties['upgradable'] and [1,2,3,4,5,6].include? item.properties['upgrade_level'] } # reject items which are upgrades but are not allowed
     @alt_items.reject! {|item| item.properties['quality'] == 3 and [2,3,4,5,6].include? item.properties['upgrade_level'] } # reject blue items with upgrade_level >= 2
+    @alt_items.reject! {|item| !item.properties['bonus_trees'].empty? }
 
     gems = Item.where(:has_stats => true, :is_gem => true, :item_level.gt => 87).all
     @gems = gems.select {|g| !g.properties["name"].match(/Stormjewel/) }
     @gems.reject! {|g| !(g.stats.keys & bad_keys).empty? }
     @enchants = Enchant.all
-    h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_mop.xml")).read
-    @talents = h["page"]["talents"]
-    h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_mop_52.xml")).read
-    @talents_52 = h["page"]["talents"]
+    h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_wod.xml")).read
+    @talents_wod = h["page"]["talents"]
     @glyphs = Glyph.asc(:name).all
   end
 end

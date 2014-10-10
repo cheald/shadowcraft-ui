@@ -1,14 +1,14 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.20'
+gem 'rails', '3.1.12'
 gem 'nokogiri'
 gem "compass", ">= 0.10.5"
 gem "formtastic"
+gem 'dynamic_form'
 gem "haml"
 gem "bson_ext"
 gem "mongo"
 gem "mongoid", "2.0.0.rc.7"
-gem "httparty"
 gem 'jquery-rails'
 gem "exception_notification", :git => "http://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem "will_paginate"

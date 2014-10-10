@@ -3,13 +3,13 @@ class ShadowcraftBackend
 
   get_engine = ->
     switch Shadowcraft.Data.options.general.patch
-      when 52
+      when 61
         port = 8880
-        endpoint = "engine-5.2"
+        endpoint = "engine-6.1"
         return "http://#{window.location.hostname}:#{port}/#{endpoint}"
       else
         port = 8881
-        endpoint = "engine-5.4"
+        endpoint = "engine-6.0"
         if window.location.host.match(/:/)
           return "http://#{window.location.hostname}:#{port}/#{endpoint}"
         else
@@ -26,16 +26,13 @@ class ShadowcraftBackend
 
   buildPayload: ->
     data = Shadowcraft.Data
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP
-    Talents = Shadowcraft.ServerData.TALENTS
-    statSum = Shadowcraft.Gear.statSum
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
     GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
 
     statSummary = Shadowcraft.Gear.sumStats()
 
-    mh = ItemLookup[data.gear[15].item_id] if data.gear[15]
-    oh = ItemLookup[data.gear[16].item_id] if data.gear[16]
+    mh = Shadowcraft.Gear.getItem(data.gear[15].original_id, data.gear[15].item_level, data.gear[15].suffix) if data.gear[15]
+    oh = Shadowcraft.Gear.getItem(data.gear[16].original_id, data.gear[16].item_level, data.gear[16].suffix) if data.gear[16]
     glyph_list = []
 
     for glyph in data.glyphs
@@ -46,8 +43,6 @@ class ShadowcraftBackend
     for key, val of data.options.buffs
       if val
         buffList.push ShadowcraftOptions.buffMap.indexOf(key)
-
-    professions = _.compact( _.map(data.options.professions, (v, k) -> if v then k else null ) )
     
     talentArray = data.activeTalents.split ""
     for val, key in talentArray
@@ -64,22 +59,21 @@ class ShadowcraftBackend
     payload =
       r: data.options.general.race
       l: data.options.general.level
-      pot: if data.options.general.virmens_bite then 1 else 0
+      pot: if data.options.general.potion then 1 else 0
       prepot: if data.options.general.prepot then 1 else 0
       b: buffList
       ro: data.options.rotation,
       settings: {
-        tricks: data.options.general.tricks
         dmg_poison: data.options.general.lethal_poison
         utl_poison: data.options.general.utility_poison if data.options.general.utility_poison != 'n'
         duration: data.options.general.duration
         response_time: data.options.general.response_time
         time_in_execute_range: data.options.general.time_in_execute_range
-        stormlash: data.options.general.stormlash
         pvp: data.options.general.pvp
         num_boss_adds: data.options.general.num_boss_adds
         latency: data.options.advanced.latency
         adv_params: data.options.advanced.adv_params
+        night_elf_racial: data.options.general.night_elf_racial
       }
       spec: data.activeSpec,
       t: talentString,
@@ -88,15 +82,14 @@ class ShadowcraftBackend
         statSummary.agility || 0,
         statSummary.attack_power || 0,
         statSummary.crit || 0,
-        statSummary.hit || 0,
-        statSummary.expertise || 0,
         statSummary.haste || 0,
         statSummary.mastery || 0,
+        statSummary.multistrike || 0,
+        statSummary.versatility || 0,
         statSummary.resilience || 0,
         statSummary.pvp_power || 0
       ],
-      gly: glyph_list,
-      pro: professions
+      gly: glyph_list
 
     if mh?
       payload.mh = [
@@ -115,21 +108,17 @@ class ShadowcraftBackend
 
     gear_ids = []
     for k, g of data.gear
-      _item_id = if g.upgrade_level then Math.floor(g.item_id / 1000000) else g.item_id
-      item = [
-        _item_id,
-        if g.upgrade_level then g.upgrade_level else 0
-      ]
-      if _item_id
+      if g.original_id
+        item = [
+          g.original_id,
+          g.item_level
+        ]
         gear_ids.push(item)
       if k == "0" && g.g0 && Gems[g.g0] && Gems[g.g0].Meta
         if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(g.g0) != -1
           payload.mg = "chaotic"
         if ShadowcraftGear.LEGENDARY_META_GEM == g.g0
           payload.mg = "capacitive"
-      if k == "14" && g.enchant && g.enchant == 4894
-        payload.se = "swordguard_embroidery"
-
     payload.g = gear_ids
     payload
 
@@ -143,8 +132,6 @@ class ShadowcraftBackend
       Shadowcraft.Console.warn {}, data.error, null, "error", "error"
       return
 
-    if Shadowcraft.Data.options.general.receive_tricks
-      data.total_dps *= 1.03
     @app.lastCalculation = data
     #this.trigger("recompute2", data)
     this.trigger("recompute", data)
@@ -168,7 +155,7 @@ class ShadowcraftBackend
       @ws.send "m", payload
 
   recompute_via_post: (payload) ->
-   if $.browser.msie and window.XDomainRequest
+   if /msie/.test(navigator.userAgent.toLowerCase()) and window.XDomainRequest
       this.recompute_via_xdr payload
     else
       this.recompute_via_xhr payload
