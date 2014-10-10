@@ -162,7 +162,7 @@ module WowArmory
     ENCHANT_SCALING = 10.0 # for lvl 90 // lvl100 = 80
 
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :bonus_trees
     attr_accessor *ACCESSORS
     def initialize(id, source = "wowapi", name = nil, override_ilvl = nil)
       self.name = name
@@ -313,6 +313,12 @@ module WowArmory
         self.upgradable = true
       else
         self.upgradable = false
+      end
+
+      unless stats["bonustrees"].nil?
+        self.bonus_trees = stats["bonustrees"]
+      else
+        self.bonus_trees = []
       end
     end
 

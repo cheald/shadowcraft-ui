@@ -641,6 +641,8 @@ class ShadowcraftComputation:
             # Compute weapon ep
             out["mh_ep"], out["oh_ep"] = calculator.get_weapon_ep(dps=True, enchants=True)
             out["mh_speed_ep"], out["oh_speed_ep"] = calculator.get_weapon_ep([2.4, 2.6, 1.7, 1.8])
+            #if input.get("spec", 'a') == "Z":
+            #  out["mh_type_ep"], out["oh_type_ep"] = calculator.get_weapon_type_ep()
 
             # oh weapon modifier, pull only for combat spec
             #if input.get("spec", 'a') == "Z":

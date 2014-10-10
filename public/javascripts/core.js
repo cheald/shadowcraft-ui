@@ -2515,9 +2515,22 @@
         if (item.dps) {
           if (slot === 15) {
             total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed];
+            if (c.mh_type_ep != null) {
+              if (item.subclass === 15) {
+                total += c.mh_type_ep["mh_type_dagger"];
+              } else {
+                total += c.mh_type_ep["mh_type_one-hander"];
+              }
+            }
           } else if (slot === 16) {
-            total += item.dps * c.oh_ep.oh_dps;
-            total += c.oh_speed_ep["oh_" + item.speed];
+            total += (item.dps * c.oh_ep.oh_dps) + c.oh_speed_ep["oh_" + item.speed];
+            if (c.oh_type_ep != null) {
+              if (item.subclass === 15) {
+                total += c.oh_type_ep["oh_type_dagger"];
+              } else {
+                total += c.oh_type_ep["oh_type_one-hander"];
+              }
+            }
           }
         } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
           total += c.meta.chaotic_metagem;
@@ -3703,6 +3716,9 @@
           continue;
         }
         if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
+          continue;
+        }
+        if ((slot === 15) && combatSpec && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
           continue;
         }
         if ((l.upgrade_level != null) && l.upgrade_level !== getMaxUpgradeLevel(l)) {

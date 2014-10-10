@@ -114,20 +114,18 @@ class ShadowcraftGear
       if item.dps
         if slot == 15
           total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed]
+          if c.mh_type_ep?
+            if item.subclass == 15
+              total += c.mh_type_ep["mh_type_dagger"]
+            else
+              total += c.mh_type_ep["mh_type_one-hander"]
         else if slot == 16
-          #if Shadowcraft.Data.activeSpec == "Z"
-          #  mod = 1
-          #  if item.subclass == 15
-          #    mod = c.oh_weapon_modifier["oh_"+item.speed+"_dagger"]
-          #  else
-          #    for weapon_type in ["one-hander","1h_fist","1h_axe","1h_sword","1h_mace"]
-          #      if c.oh_weapon_modifier["oh_"+item.speed+"_"+weapon_type]
-          #        mod = c.oh_weapon_modifier["oh_"+item.speed+"_"+weapon_type]
-          #        break
-          #  total += (item.dps * c.oh_ep.oh_dps) * mod
-          #else
-          total += (item.dps * c.oh_ep.oh_dps)
-          total += c.oh_speed_ep["oh_" + item.speed]
+          total += (item.dps * c.oh_ep.oh_dps) + c.oh_speed_ep["oh_" + item.speed]
+          if c.oh_type_ep?
+            if item.subclass == 15
+              total += c.oh_type_ep["oh_type_dagger"]
+            else
+              total += c.oh_type_ep["oh_type_one-hander"]
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem
       else if ShadowcraftGear.LEGENDARY_META_GEM == item.id
@@ -996,7 +994,7 @@ class ShadowcraftGear
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
-      #continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
+      continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
       #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
       #continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and lid != selected_identifier
       continue if l.upgrade_level? and l.upgrade_level != getMaxUpgradeLevel(l)
