@@ -10,7 +10,7 @@ class ShadowcraftConsole
   log: (msg, klass) ->
     date = new Date()
     now = Math.round date/1000
-    msg = "["+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] " + msg
+    msg = "["+date.getHours()+":"+("0"+date.getMinutes()).slice(-2)+":"+("0"+date.getSeconds()).slice(-2)+"] " + msg
     @$log.append("<div class='#{klass}' data-created='#{now}'>#{msg}</div>").scrollTop(@$log.get(0).scrollHeight)
 
   warn: (item, msg, submsg, klass, section) ->
