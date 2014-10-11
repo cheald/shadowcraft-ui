@@ -614,8 +614,6 @@ class ShadowcraftComputation:
             is_pvp = _opt.get("pvp", False),
             latency = _opt.get("latency", 0.03),
             adv_params = _opt.get("adv_params", ''),
-            potion = input.get("pot", 0) == 1,
-            prepot = input.get("prepot", 0) == 1,
             default_ep_stat = 'ap',
             **settings_options
         )
