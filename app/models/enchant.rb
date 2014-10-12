@@ -407,7 +407,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4433,
-                       :stats => {'mastery' => 11},
+                       :stats => {'mastery' => 13},
                        :icon => 'inv_enchant_formulasuperior_01',
                        :item_name => 'Enchant Gloves - Superior Mastery',
                        :equip_location => 10,
@@ -446,8 +446,28 @@ class Enchant
                        }
                    })
     Enchant.create({
+                       :spell_id => 5259,
+                       :stats => {'agility' => 10},
+                       :icon => 'spell_holy_greaterheal',
+                       :item_name => 'Enchant Gloves - Major Agility',
+                       :equip_location => 10,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 1603,
+                       :stats => {'attack_power' => 11},
+                       :icon => 'spell_holy_greaterheal',
+                       :item_name => 'Enchant Gloves - Crusher',
+                       :equip_location => 10,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
                        :spell_id => 4908,
-                       :stats => {'agility' => 8, 'crit' => 5},
+                       :stats => {'agility' => 12, 'crit' => 5},
                        :icon => 'inv_inscription_runescrolloffortitude_blue',
                        :item_name => 'Tiger Claw Inscription',
                        :equip_location => 3,
@@ -457,7 +477,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4804,
-                       :stats => {'agility' => 13, 'crit' => 6},
+                       :stats => {'agility' => 15, 'crit' => 5},
                        :icon => 'inv_inscription_runescrolloffortitude_yellow',
                        :item_name => 'Greater Tiger Claw Inscription',
                        :equip_location => 3,
@@ -497,9 +517,39 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4822,
-                       :stats => {'agility' => 18, 'crit' => 10},
+                       :stats => {'agility' => 19, 'crit' => 11},
                        :icon => 'inv_misc_cataclysmarmorkit_02',
                        :item_name => 'Shadowleather Leg Armor',
+                       :equip_location => 7,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4126,
+                       :stats => {'attack_power' => 19, 'crit' => 11},
+                       :icon => 'inv_misc_monsterscales_14',
+                       :item_name => 'Dragonscale Leg Armor',
+                       :equip_location => 7,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 3823,
+                       :stats => {'attack_power' => 19, 'crit' => 11},
+                       :icon => 'inv_misc_armorkit_33',
+                       :item_name => 'Icescale Leg Armor',
+                       :equip_location => 7,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4122,
+                       :stats => {'attack_power' => 28, 'crit' => 23},
+                       :icon => 'inv_misc_armorkit_26',
+                       :item_name => 'Scorched Leg Armor',
                        :equip_location => 7,
                        :requires => {
                            :max_item_level => 600
@@ -556,8 +606,28 @@ class Enchant
                        }
                    })
     Enchant.create({
+                       :spell_id => 4094,
+                       :stats => {'mastery' => 10},
+                       :icon => 'spell_holy_greaterheal',
+                       :item_name => 'Enchant Boots - Mastery',
+                       :equip_location => 8,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 3824,
+                       :stats => {'attack_power' => 12},
+                       :icon => 'spell_holy_greaterheal',
+                       :item_name => 'Enchant Boots - Assault',
+                       :equip_location => 8,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
                        :spell_id => 4416,
-                       :stats => {'agility' => 11},
+                       :stats => {'agility' => 12},
                        :icon => 'inv_misc_enchantedscroll',
                        :item_name => 'Enchant Bracer - Greater Agility',
                        :equip_location => 9,
@@ -576,8 +646,48 @@ class Enchant
                        }
                    })
     Enchant.create({
+                       :spell_id => 4108,
+                       :stats => {'haste' => 13},
+                       :icon => 'inv_enchant_formulagood_01',
+                       :item_name => 'Enchant Bracer - Greater Haste',
+                       :equip_location => 9,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4089,
+                       :stats => {'crit' => 10},
+                       :icon => 'spell_holy_greaterheal',
+                       :item_name => 'Enchant Bracer - Precision',
+                       :equip_location => 9,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4101,
+                       :stats => {'crit' => 13},
+                       :icon => 'inv_enchant_formulagood_01',
+                       :item_name => 'Enchant Bracer - Greater Critical Strike',
+                       :equip_location => 9,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 3845,
+                       :stats => {'attack_power' => 14},
+                       :icon => 'inv_enchant_formulagood_01',
+                       :item_name => 'Enchant Bracer - Greater Assault',
+                       :equip_location => 9,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
                        :spell_id => 4421,
-                       :stats => {'crit' => 11},
+                       :stats => {'crit' => 12},
                        :icon => 'inv_misc_enchantedscroll',
                        :item_name => 'Enchant Cloak - Accuracy',
                        :equip_location => 16,
@@ -587,9 +697,39 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4424,
-                       :stats => {'crit' => 11},
+                       :stats => {'crit' => 12},
                        :icon => 'inv_misc_enchantedscroll',
                        :item_name => 'Enchant Cloak - Superior Critical Strike',
+                       :equip_location => 16,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 4100,
+                       :stats => {'crit' => 13},
+                       :icon => 'inv_enchant_formulagood_01',
+                       :item_name => 'Enchant Cloak - Greater Critical Strike',
+                       :equip_location => 16,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 1099,
+                       :stats => {'agility' => 11},
+                       :icon => 'spell_holy_greaterheal',
+                       :item_name => 'Enchant Cloak - Major Agility',
+                       :equip_location => 16,
+                       :requires => {
+                           :max_item_level => 600
+                       }
+                   })
+    Enchant.create({
+                       :spell_id => 3831,
+                       :stats => {'haste' => 12},
+                       :icon => 'inv_enchant_formulagood_01',
+                       :item_name => 'Enchant Cloak - Greater Speed',
                        :equip_location => 16,
                        :requires => {
                            :max_item_level => 600
