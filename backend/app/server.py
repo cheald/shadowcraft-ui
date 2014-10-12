@@ -531,9 +531,10 @@ class ShadowcraftComputation:
                 proclist.append('virmens_bite_prepot')
             if input.get("pot", 0) == 1:
                 proclist.append('virmens_bite')
+
         elif input.get("l", 0) > 90:
             if input.get("prepot", 0) == 1:
-                proclist.append('virmens_bite_prepot')
+                proclist.append('draenic_agi_prepot')
             if input.get("pot", 0) == 1:
                 proclist.append('draenic_agi')
         
