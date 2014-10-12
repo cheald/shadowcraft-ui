@@ -45,11 +45,11 @@ class Character
       rescue WowArmory::ArmoryError => e
         # thrown if character has no items, or no data could be loaded
         errors.add :base, e.message
-        false
+        return false
       rescue WowArmory::MissingDocument => e
         # character does not exist
         errors.add :base, 'Character not found in the Armory'
-        false
+        return false
       end
 
       self.properties = char.as_json

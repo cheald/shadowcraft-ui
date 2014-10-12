@@ -58,7 +58,6 @@ module WowArmory
           curl.headers["User-Agent"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13"
           sign_request("GET", curl)
         end
-
         if result.response_code >= 400 and result.response_code < 500
           raise MissingDocument.new "Armory returned #{result.response_code}", result.response_code
         elsif result.response_code >= 500
