@@ -768,7 +768,7 @@ class ShadowcraftGear
         switch data.options.rotation.use_hemorrhage
           when "never" then "Backstab"
           when "always" then "Hemorrhage"
-          when "24" then "Backstab w/ Hemo"
+          when "uptime" then "Backstab w/ Hemo"
       }
     $summary.get(0).innerHTML = Templates.stats {stats: a_stats}
 

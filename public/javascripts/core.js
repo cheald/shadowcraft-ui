@@ -3424,7 +3424,7 @@
                 return "Backstab";
               case "always":
                 return "Hemorrhage";
-              case "24":
+              case "uptime":
                 return "Backstab w/ Hemo";
             }
           })()
@@ -4407,7 +4407,7 @@
       var date, now;
       date = new Date();
       now = Math.round(date / 1000);
-      msg = "[" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "] " + msg;
+      msg = "[" + date.getHours() + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2) + "] " + msg;
       return this.$log.append("<div class='" + klass + "' data-created='" + now + "'>" + msg + "</div>").scrollTop(this.$log.get(0).scrollHeight);
     };
     ShadowcraftConsole.prototype.warn = function(item, msg, submsg, klass, section) {
