@@ -69,8 +69,8 @@ module WowArmory
       136 => "of the Zephyr",
       137 => "of the Windstorm",
       336 => "[Crit]",
-      337 => "[Hit]",
-      338 => "[Exp]",
+      337 => "[Crit]", # was hit
+      338 => "[Haste]", # was expertise
       339 => "[Mastery]",
       340 => "[Haste]",
       344 => "of the Decimator", # 5.3 Barrens
