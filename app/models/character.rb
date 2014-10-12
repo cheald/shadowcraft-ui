@@ -81,7 +81,7 @@ class Character
             db_item = Item.find_or_initialize_by(:remote_id => gemid.to_i)
             # if new item collect the properties of the item
             if db_item.properties.nil?
-              item = WowArmory::Item.new(gemid.to_i)
+              item = WowArmory::Item.new(gemid.to_i, "wowhead_wod")
               db_item.properties = item.as_json.with_indifferent_access
               db_item.equip_location = db_item.properties['equip_location']
               db_item.is_gem = !db_item.properties['gem_slot'].blank?

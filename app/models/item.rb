@@ -325,7 +325,7 @@ class Item
   end
 
   def self.import(id, upgrade_levels = [nil,1,2,3,4,5,6], random_suffixes = nil, source = @source, override_ilvl = nil)
-    source = "wowapi" if source.nil?
+    source = "wowhead_wod" if source.nil?
     # options need to be upgrade_level = [nil,1,2,3,4,5,6]
     # same for random_suffix
     random_suffixes = [nil] if random_suffixes.nil?
