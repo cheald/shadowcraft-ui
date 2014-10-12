@@ -15,6 +15,7 @@ class ShadowcraftConsole
 
   warn: (item, msg, submsg, klass, section) ->
     this.consoleMessage(item, msg, submsg, "warning", klass, section)
+    this.purgeOld()
 
   consoleMessage: (item, msg, submsg, severity, klass, section) ->
     fullMsg = Templates.log({

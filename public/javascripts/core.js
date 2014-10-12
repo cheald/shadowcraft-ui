@@ -4422,7 +4422,8 @@
       return this.$log.append("<div class='" + klass + "' data-created='" + now + "'>" + msg + "</div>").scrollTop(this.$log.get(0).scrollHeight);
     };
     ShadowcraftConsole.prototype.warn = function(item, msg, submsg, klass, section) {
-      return this.consoleMessage(item, msg, submsg, "warning", klass, section);
+      this.consoleMessage(item, msg, submsg, "warning", klass, section);
+      return this.purgeOld();
     };
     ShadowcraftConsole.prototype.consoleMessage = function(item, msg, submsg, severity, klass, section) {
       var fullMsg;
