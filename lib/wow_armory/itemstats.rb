@@ -44,7 +44,8 @@ module WowArmory
       40=>:versatility,
       59=>:multistrike,
       58=>:amplify,
-      50=>:bonus_armor
+      50=>:bonus_armor,
+      63=>:avoidance
     }
 
     WOWHEAD_MAP = {
