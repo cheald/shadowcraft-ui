@@ -94,16 +94,16 @@ class ShadowcraftComputation:
         #72897: 'arrow_of_time',
 
         # 5.0
-        #81125: "windswept_pages",
-        #79328: "relic_of_xuen",
-        #86332: "terror_in_the_mists",
-        #87167: "heroic_terror_in_the_mists",
-        #86890: "lfr_terror_in_the_mists",
-        #86132: "bottle_of_infinite_stars",
-        #87057: "heroic_bottle_of_infinite_stars",
-        #86791: "lfr_bottle_of_infinite_stars",
-        #81267: "searing_words",
-        #87574: "corens_cold_chromium_coaster",
+        81125: "windswept_pages",
+        79328: "relic_of_xuen",
+        86332: "terror_in_the_mists",
+        87167: "terror_in_the_mists",
+        86890: "terror_in_the_mists",
+        86132: "bottle_of_infinite_stars",
+        87057: "bottle_of_infinite_stars",
+        86791: "bottle_of_infinite_stars",
+        81267: "searing_words",
+        87574: "corens_cold_chromium_coaster",
         #84072: "braid_of_ten_songs",
         #75274: "zen_alchemist_stone",
         
@@ -189,18 +189,30 @@ class ShadowcraftComputation:
     
     # used for rankings
     trinketGroups = {
-      'bad_juju': createTrinketGroup((502,522,528,535,541), 4, 4),
-      'rune_of_re_origination': createTrinketGroup((502,522,528,535,541), 4, 4),
-      'talisman_of_bloodlust': createTrinketGroup((502,522,528,535,541), 4, 4),
-      'vicious_talisman_of_the_shado-pan_assault': createTrinketGroup((522,), 4, 4),
-      'renatakis_soul_charm': createTrinketGroup((522,), 4, 4),
-      'assurance_of_consequence': createTrinketGroup((528,540,553,559,566,572), 4, 4),
-      'haromms_talisman': createTrinketGroup((528,540,553,559,566,572), 4, 4),
-      'sigil_of_rampage': createTrinketGroup((528,540,553,559,566,572), 4, 4),
-      'ticking_ebon_detonator': createTrinketGroup((528,540,553,559,566,572), 4, 4),
-      'thoks_tail_tip': createTrinketGroup((528,540,553,559,566,572), 4, 4),
-      'discipline_of_xuen': createTrinketGroup((496,535), 4, 4),
-      'woundripper_medallion': createTrinketGroup((496,), 4, 4),
+      'bad_juju': createTrinketGroup((502,522,528,535,541), 6, 4),
+      #'rune_of_re_origination': createTrinketGroup((502,522,528,535,541), 6, 4),
+      'talisman_of_bloodlust': createTrinketGroup((502,522,528,535,541), 6, 4),
+      'vicious_talisman_of_the_shado-pan_assault': createTrinketGroup((522,), 6, 4),
+      'renatakis_soul_charm': createTrinketGroup((502,522,528,535,541), 6, 4),
+      'assurance_of_consequence': createTrinketGroup((528,540,553,559,566,572), 6, 4),
+      'haromms_talisman': createTrinketGroup((528,540,553,559,566,572), 6, 4),
+      'sigil_of_rampage': createTrinketGroup((528,540,553,559,566,572), 6, 4),
+      'ticking_ebon_detonator': createTrinketGroup((528,540,553,559,566,572), 6, 4),
+      'thoks_tail_tip': createTrinketGroup((528,540,553,559,566,572), 6, 4),
+      'discipline_of_xuen': createTrinketGroup((496,535), 6, 4),
+      'woundripper_medallion': createTrinketGroup((496,), 6, 4),
+      
+      'windswept_pages': createTrinketGroup((463,), 1, 8),
+      'searing_words': createTrinketGroup((463,), 1, 8),
+      'relic_of_xuen': createTrinketGroup((476,), 4 ,4),
+      'bottle_of_infinite_stars': createTrinketGroup((476,489,502), 4 , 4),
+      'corens_cold_chromium_coaster': createTrinketGroup((470,), 4, 4),
+      'terror_in_the_mists': createTrinketGroup((483,496,509), 4, 4),
+      
+      'gerps_perfect_arrow': (442,),
+      'flashing_steel_talisman': createTrinketGroup((463,), 1, 8),
+      'hawkmasters_talon': createTrinketGroup((489,), 6, 4),
+      'jade_bandit_figurine': createTrinketGroup((476,489,502), 6, 4),
     }
 
     gearBoosts = {
@@ -214,16 +226,14 @@ class ShadowcraftComputation:
         #69001: 'ancient_petrified_seed',
         #70144: 'rickets_magnetic_fireball',
         #77113: 'kiroptyric_sigil',
-        #78004: 'heroic_kiroptyric_sigil',
-        #77974: 'lfr_kiroptyric_sigil',
         
         #5.0
-        #87495: "gerps_perfect_arrow",
+        87495: "gerps_perfect_arrow",
         81265: "flashing_steel_talisman",
         89082: "hawkmasters_talon",
-        #87079: "heroic_jade_bandit_figurine",
+        87079: "jade_bandit_figurine",
         86043: "jade_bandit_figurine",
-        #86772: "lfr_jade_bandit_figurine",
+        86772: "jade_bandit_figurine",
     }
     
     # combines gearProcs and gearBoosts
