@@ -526,16 +526,15 @@ class ShadowcraftComputation:
         if len(frozenset([102248]) & gear) >= 1:
             proclist.append('fury_of_xuen')
 
-        if input.get("prepot", 0) == 1:
-            if input.get("l", 0) == 90:
+        if input.get("l", 0) == 90:
+            if input.get("prepot", 0) == 1:
                 proclist.append('virmens_bite_prepot')
-            elif input.get("l", 0) == 100:
-                proclist.append('draenic_agi_prepot')
-        
-        if input.get("pot", 0) == 1:
-            if input.get("l", 0) == 90:
+            if input.get("pot", 0) == 1:
                 proclist.append('virmens_bite')
-            elif input.get("l", 0) == 100:
+        elif input.get("l", 0) > 90:
+            if input.get("prepot", 0) == 1:
+                proclist.append('virmens_bite_prepot')
+            if input.get("pot", 0) == 1:
                 proclist.append('draenic_agi')
         
         _procs = procs.ProcsList(*proclist)
