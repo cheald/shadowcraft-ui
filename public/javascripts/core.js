@@ -3391,15 +3391,13 @@
       $summary = $("#summary .inner");
       a_stats = [];
       if (data.options.general.patch) {
-        if (data.options.general.patch === 52) {
-          valengine = 5.3;
-        } else if (data.options.general.patch === 50) {
-          valengine = 5.1;
+        if (data.options.general.patch === 60) {
+          valengine = "6.0";
         } else {
           valengine = data.options.general.patch / 10;
         }
       } else {
-        valengine = "5.x";
+        valengine = "6.x";
       }
       valengine += " " + (data.options.general.pvp ? "(PvP)" : "(PvE)");
       a_stats.push({
@@ -3426,6 +3424,19 @@
                 return "Hemorrhage";
               case "uptime":
                 return "Backstab w/ Hemo";
+            }
+          })()
+        });
+      }
+      if (data.options.general.lethal_poison) {
+        a_stats.push({
+          name: "Poison",
+          val: (function() {
+            switch (data.options.general.lethal_poison) {
+              case "wp":
+                return "Wound";
+              case "dp":
+                return "Deadly";
             }
           })()
         });
@@ -4300,7 +4311,7 @@
         if (opt === 'rotation.use_hemorrhage' || opt === 'general.pvp') {
           app.updateDisplay();
         }
-        if (opt === 'rotation.blade_flurry' || opt === 'general.num_boss_adds') {
+        if (opt === 'rotation.blade_flurry' || opt === 'general.num_boss_adds' || opt === 'general.lethal_poison') {
           return app.updateSummaryWindow();
         }
       });

@@ -735,14 +735,12 @@ class ShadowcraftGear
     $summary = $("#summary .inner")
     a_stats = []
     if data.options.general.patch
-      if data.options.general.patch == 52
-        valengine = 5.3
-      else if data.options.general.patch == 50
-        valengine = 5.1
+      if data.options.general.patch == 60
+        valengine = "6.0"
       else
         valengine = data.options.general.patch / 10
     else
-      valengine = "5.x"
+      valengine = "6.x"
     valengine += " " + if data.options.general.pvp then "(PvP)" else "(PvE)"
     a_stats.push {
       name: "Engine"
@@ -763,12 +761,20 @@ class ShadowcraftGear
       }
     else if ShadowcraftTalents.GetActiveSpecName() == "Subtlety"
       a_stats.push {
-      name: "CP Builder"
-      val: 
-        switch data.options.rotation.use_hemorrhage
-          when "never" then "Backstab"
-          when "always" then "Hemorrhage"
-          when "uptime" then "Backstab w/ Hemo"
+        name: "CP Builder"
+        val:
+          switch data.options.rotation.use_hemorrhage
+            when "never" then "Backstab"
+            when "always" then "Hemorrhage"
+            when "uptime" then "Backstab w/ Hemo"
+      }
+    if data.options.general.lethal_poison
+      a_stats.push {
+        name: "Poison"
+        val:
+          switch data.options.general.lethal_poison
+            when "wp" then "Wound"
+            when "dp" then "Deadly"
       }
     $summary.get(0).innerHTML = Templates.stats {stats: a_stats}
 
@@ -1497,7 +1503,7 @@ class ShadowcraftGear
     Shadowcraft.Options.bind "update", (opt, val) ->
       if opt in ['rotation.use_hemorrhage','general.pvp']
         app.updateDisplay()
-      if opt in ['rotation.blade_flurry','general.num_boss_adds']
+      if opt in ['rotation.blade_flurry','general.num_boss_adds','general.lethal_poison']
         app.updateSummaryWindow()
 
     checkForWarnings('options')
