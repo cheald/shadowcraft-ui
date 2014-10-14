@@ -112,6 +112,7 @@ var ttlib = {
     if(upgd && upgd != "0") {
       url += "&upgd=" + upgd;
     }
+    url += "&lvl=90"; // TODO CHANGE FOR LEVEL 100
 
     ttlib.currentMouseover = url;
     ttlib.jstooltip.style.width = null;
