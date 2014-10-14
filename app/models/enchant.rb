@@ -397,7 +397,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4918,
-                       :stats => {'crit' => 13},
+                       :stats => {'crit' => 12},
                        :icon => 'inv_enchant_formulasuperior_01',
                        :item_name => 'Living Steel Weapon Chain',
                        :equip_location => 13,
@@ -407,7 +407,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4433,
-                       :stats => {'mastery' => 11},
+                       :stats => {'mastery' => 13},
                        :icon => 'inv_enchant_formulasuperior_01',
                        :item_name => 'Enchant Gloves - Superior Mastery',
                        :equip_location => 10,
@@ -447,7 +447,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4908,
-                       :stats => {'agility' => 8, 'crit' => 5},
+                       :stats => {'agility' => 12, 'crit' => 5},
                        :icon => 'inv_inscription_runescrolloffortitude_blue',
                        :item_name => 'Tiger Claw Inscription',
                        :equip_location => 3,
@@ -457,7 +457,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4804,
-                       :stats => {'agility' => 13, 'crit' => 6},
+                       :stats => {'agility' => 15, 'crit' => 5},
                        :icon => 'inv_inscription_runescrolloffortitude_yellow',
                        :item_name => 'Greater Tiger Claw Inscription',
                        :equip_location => 3,
@@ -467,7 +467,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4914,
-                       :stats => {'agility' => 13, 'crit' => 6},
+                       :stats => {'agility' => 20, 'crit' => 5},
                        :icon => 'inv_misc_mastersinscription',
                        :item_name => 'Secret Tiger Claw Inscription',
                        :equip_location => 3,
@@ -497,7 +497,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4822,
-                       :stats => {'agility' => 18, 'crit' => 10},
+                       :stats => {'agility' => 19, 'crit' => 11},
                        :icon => 'inv_misc_cataclysmarmorkit_02',
                        :item_name => 'Shadowleather Leg Armor',
                        :equip_location => 7,
@@ -507,7 +507,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4871,
-                       :stats => {'agility' => 11, 'crit' => 6},
+                       :stats => {'agility' => 11, 'crit' => 7},
                        :icon => 'inv_misc_cataclysmarmorkit_01',
                        :item_name => 'Sha-Touched Leg Armor',
                        :equip_location => 7,
@@ -557,7 +557,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4416,
-                       :stats => {'agility' => 11},
+                       :stats => {'agility' => 12},
                        :icon => 'inv_misc_enchantedscroll',
                        :item_name => 'Enchant Bracer - Greater Agility',
                        :equip_location => 9,
@@ -577,7 +577,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4421,
-                       :stats => {'crit' => 11},
+                       :stats => {'crit' => 12},
                        :icon => 'inv_misc_enchantedscroll',
                        :item_name => 'Enchant Cloak - Accuracy',
                        :equip_location => 16,
@@ -587,7 +587,7 @@ class Enchant
                    })
     Enchant.create({
                        :spell_id => 4424,
-                       :stats => {'crit' => 11},
+                       :stats => {'crit' => 12},
                        :icon => 'inv_misc_enchantedscroll',
                        :item_name => 'Enchant Cloak - Superior Critical Strike',
                        :equip_location => 16,
