@@ -69,7 +69,6 @@ class ItemsController < ApplicationController
     @alt_items.reject! {|item| item.properties['name'].match(/DONTUSE/) }
     @alt_items.reject! {|item| !item.properties['upgradable'] and [1,2,3,4,5,6].include? item.properties['upgrade_level'] } # reject items which are upgrades but are not allowed
     @alt_items.reject! {|item| item.properties['quality'] == 3 and [2,3,4,5,6].include? item.properties['upgrade_level'] } # reject blue items with upgrade_level >= 2
-    @alt_items.reject! {|item| !item.properties['bonus_trees'].empty? and item.properties['ilevel'] >= 600 }
 
     gems = Item.where(:has_stats => true, :is_gem => true, :item_level.gt => 87).all
     @gems = gems.select {|g| !g.properties["name"].match(/Stormjewel/) }
