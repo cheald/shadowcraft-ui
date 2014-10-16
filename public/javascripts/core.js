@@ -2994,6 +2994,9 @@
         if (enchant.id === 5125) {
           continue;
         }
+        if (enchant.id === 4914) {
+          continue;
+        }
         if ((((_ref = enchant.requires) != null ? _ref.max_item_level : void 0) != null) && ((_ref2 = enchant.requires) != null ? _ref2.max_item_level : void 0) < getBaseItemLevel(item)) {
           continue;
         }
