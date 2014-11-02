@@ -369,8 +369,6 @@ class ShadowcraftComputation:
         validCycleKeys = [[
                 'min_envenom_size_non_execute',
                 'min_envenom_size_execute',
-                'prioritize_rupture_uptime_non_execute',
-                'prioritize_rupture_uptime_execute'
             ], [
                 'revealing_strike_pooling',
                 'ksp_immediately',
