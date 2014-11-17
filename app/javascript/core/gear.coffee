@@ -383,6 +383,22 @@ class ShadowcraftGear
     else
       return epValue
 
+  lockAll: () ->
+    Shadowcraft.Console.log("Locking all items")
+    for slot in SLOT_ORDER
+      gear = Shadowcraft.Data.gear[slot]
+      item = getItem(gear.original_id, gear.item_level, gear.suffix)
+      gear.locked = true
+    Shadowcraft.Gear.updateDisplay()
+
+  unlockAll: () ->
+    Shadowcraft.Console.log("Unlocking all items")
+    for slot in SLOT_ORDER
+      gear = Shadowcraft.Data.gear[slot]
+      item = getItem(gear.original_id, gear.item_level, gear.suffix)
+      gear.locked = false
+    Shadowcraft.Gear.updateDisplay()
+
   optimizeGems: (depth) ->
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
     data = Shadowcraft.Data
@@ -1317,6 +1333,14 @@ class ShadowcraftGear
     $("#optimizeEnchants").click ->
       window._gaq.push ['_trackEvent', "Character", "Optimize Enchants"] if window._gaq
       Shadowcraft.Gear.optimizeEnchants()
+
+    $("#lockAll").click ->
+      window._gaq.push ['_trackEvent', "Character", "Lock All"] if window._gaq
+      Shadowcraft.Gear.lockAll()
+
+    $("#unlockAll").click ->
+      window._gaq.push ['_trackEvent', "Character", "Unlock All"] if window._gaq
+      Shadowcraft.Gear.unlockAll()
 
     #  Change out an item
     $slots.click $.delegate
