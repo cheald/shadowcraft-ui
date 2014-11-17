@@ -375,12 +375,6 @@ class ShadowcraftComputation:
             buff_list.append('rogue_t17_4pc_lfr')
     
         agi_bonus = 0
-        if len(self.arenaSeason9SetIds & gear) >= 2:
-            agi_bonus += 70
-            
-        if len(self.arenaSeason9SetIds & gear) >= 4:
-            agi_bonus += 90
-            
         if len(self.tier17LFRIDS & gear) >= 2:
             agi_bonus += 100
 
@@ -435,7 +429,7 @@ class ShadowcraftComputation:
         _stats = stats.Stats(
             _mh, _oh, _procs, _gear_buffs,
             s[0], # Str
-            s[1], # AGI
+            s[1] + agi_bonus, # AGI
             0,
             0,
             0,
