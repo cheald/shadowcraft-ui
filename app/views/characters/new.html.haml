@@ -30,7 +30,7 @@
       %strong
         = value
     =error_messages_for :character, :header_message => "Oops - something's not quite right!", :message => ""
-    =form_for usable_character_path(@character) do |f|
+    =form_for @character, :url => characters_path do |f|
       %span
         %label{:for => "character_name"} Character Name
         =f.text_field :name
