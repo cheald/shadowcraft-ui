@@ -12,4 +12,12 @@ module CharactersHelper
     j[:reload] = flash[:reload] unless flash[:reload].blank?
     j.to_json
   end
+
+  def usable_character_path(character)
+    if character.name.nil?
+      character_path(@character)
+    else
+      character_path(@character.region, @character.realm, @character.name)
+    end
+  end
 end
