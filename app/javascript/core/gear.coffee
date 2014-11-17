@@ -26,7 +26,7 @@ class ShadowcraftGear
     5331: "mark_of_the_shattered_hand"
     5334: "mark_of_the_frostwolf"
     5337: "mark_of_warsong"
-    5384: "mark_of_bleeding_hollow"
+    5384: "mark_of_the_bleeding_hollow"
 
 
   @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
@@ -46,10 +46,13 @@ class ShadowcraftGear
     T17:
       ids: [115570, 115571, 115572, 115573, 115574]
       bonuses: {4: "rogue_t17_4pc", 2: "rogue_t17_2pc"}
+    T17_LFR:
+      ids: [120384, 120383, 120382, 120381, 120380, 120379]
+      bonuses: {4: "rogue_t17_4pc_lfr"}
 
   Weights =
     attack_power: 1
-    agility: 1.05
+    agility: 1.1
     crit: 0.87
     haste: 1.44
     mastery: 1.15
@@ -84,6 +87,21 @@ class ShadowcraftGear
   $slots = null
   $altslots = null
   $popup = null
+
+  getRandPropRow = (slotIndex) ->
+    switch slotIndex
+      when 1, 5, 7
+        return 0
+      when 3, 6, 8, 10, 12
+        return 1
+      when 2, 9, 11, 16, 22
+        return 2
+      when 13, 21
+        return 3
+      when 15
+        return 4
+      else
+        return 2
 
   statOffset = (gear, facet) ->
     offsets = {}
@@ -128,10 +146,14 @@ class ShadowcraftGear
               total += c.oh_type_ep["oh_type_one-hander"]
       else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
         total += c.meta.chaotic_metagem
-      else if ShadowcraftGear.LEGENDARY_META_GEM == item.id
-        total += c.meta.legendary_capacitive_meta || 0
-      else if ShadowcraftGear.FURY_OF_XUEN_CLOAK == item.original_id
-        total += c["other_ep"]["fury_of_xuen"]
+#      else if ShadowcraftGear.LEGENDARY_META_GEM == item.id
+#        total += c.meta.legendary_capacitive_meta || 0
+#      else if ShadowcraftGear.FURY_OF_XUEN_CLOAK == item.original_id
+#        total += c["other_ep"]["fury_of_xuen"]
+      else if 118302 == item.original_id
+        total += c["other_ep"]["archmages_incandescence"]
+      else if 118307 == item.original_id
+        total += c["other_ep"]["archmages_greater_incandescence"]
       else if PROC_ENCHANTS[item.id]
         switch slot
           when 14
@@ -242,7 +264,7 @@ class ShadowcraftGear
     for slot in SLOT_ORDER
       continue if SLOT_INVTYPES[slot] == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
-      _item_id = if gear.upgrade_level then Math.floor( gear.item_id / 1000000 ) else gear.item_id
+      _item_id = gear.item_id
       if _item_id in setIds
         count++
     return count
@@ -285,7 +307,7 @@ class ShadowcraftGear
   canUseGem = (gem, gemType, pendingChanges, ignoreSlotIndex) ->
     if gem.requires?.profession?
       return false if isProfessionalGem(gem, 'jewelcrafting')
-    
+
     return false if not gem[gemType]
     return false if gem.slot == "Cogwheel" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
     return false if gem.slot == "Hydraulic" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
@@ -455,6 +477,24 @@ class ShadowcraftGear
       return enchant.id
     return false
 
+  getApplicableEnchants = (slotIndex, item, enchant_offset) ->
+    enchant_list = Shadowcraft.ServerData.ENCHANT_SLOTS[SLOT_INVTYPES[slotIndex]]
+    unless enchant_list?
+      return []
+
+    enchants = []
+    for enchant in enchant_list
+      # do not show enchant if item level is higher than allowed maximum
+      continue if enchant.requires?.max_item_level? and enchant.requires?.max_item_level < getBaseItemLevel(item)
+      enchant.__ep = get_ep(enchant, null, slotIndex, enchant_offset)
+      enchant.__ep = 0 if isNaN enchant.__ep
+      enchants.push(enchant)
+    enchants.sort(__epSort)
+    return enchants
+
+  getApplicableEnchants: (slotIndex, item, enchant_offset) ->
+    return getApplicableEnchants(slotIndex, item, enchant_offset)
+
   optimizeEnchants: (depth) ->
     Enchants = Shadowcraft.ServerData.ENCHANT_LOOKUP
     data = Shadowcraft.Data
@@ -475,14 +515,7 @@ class ShadowcraftGear
       item = getItem(gear.original_id, gear.item_level, gear.suffix)
       enchant_offset = statOffset(gear, FACETS.ENCHANT)
 
-      enchants = Shadowcraft.ServerData.ENCHANT_SLOTS[SLOT_INVTYPES[slotIndex]]
-      continue unless enchants
-      for enchant in enchants
-        # do not show enchant if item level is higher than allowed maximum
-        continue if enchant.requires?.max_item_level? and enchant.requires?.max_item_level < getBaseItemLevel(item)
-        enchant.__ep = get_ep(enchant, null, slotIndex, enchant_offset)
-        enchant.__ep = 0 if isNaN enchant.__ep
-      enchants.sort(__epSort)
+      enchants = getApplicableEnchants(slotIndex, item, enchant_offset)
 
       if item
         enchantId = getEnchantRecommendation(enchants, item)
@@ -556,68 +589,6 @@ class ShadowcraftGear
     Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
 
-  ###
-  # Upgrade helpers
-  ###
-
-  getUpgradeRecommandationList = ->
-    data = Shadowcraft.Data
-    ret = []
-    for slotIndex in SLOT_ORDER
-      slotIndex = parseInt(slotIndex)
-      gear = data.gear[slotIndex]
-      continue unless gear
-      item = getItem(gear.original_id, gear.item_level, gear.suffix)
-      continue unless item
-      ret
-      if item.upgradable
-        curr_level = 0
-        curr_level = gear.upgrade_level if gear.upgrade_level?
-        max_level = getMaxUpgradeLevel(item)
-        continue if curr_level >= max_level
-        new_item_level = item.ilvl + getUpgradeLevelSteps(item)
-        new_item = getItem(gear.original_id, new_item_level, gear.suffix)
-        itemEP = getSimpleEPForUpgrade(slotIndex, item)
-        new_itemEP = getSimpleEPForUpgrade(slotIndex, new_item)
-        obj = {}
-        obj.slot = slotIndex
-        obj.item_id = item.item_id
-        obj.name = item.name
-        obj.old_ep = itemEP
-        obj.new_ep = new_itemEP
-        obj.diff = new_itemEP - itemEP
-        ret.push obj
-    ret
-
-  getUpgradeRecommandationList2 = ->
-    data = Shadowcraft.Data
-    ret = []
-    for slotIndex in SLOT_ORDER
-      slotIndex = parseInt(slotIndex)
-      gear = data.gear[slotIndex]
-      continue unless gear
-      item = getItem(gear.original_id, gear.item_level, gear.suffix)
-      continue unless item
-      ret
-      if item.upgradable
-        curr_level = 0
-        curr_level = gear.upgrade_level if gear.upgrade_level?
-        max_level = getMaxUpgradeLevel(item)
-        continue if curr_level >= max_level
-        new_item_level = item.ilvl + getUpgradeLevelSteps(item)
-        new_item = getItem(gear.original_id, new_item_level, gear.suffix)
-        itemEP = getSimpleEPForUpgrade(slotIndex, item)
-        new_itemEP = getSimpleEPForUpgrade(slotIndex, new_item)
-        obj = {}
-        obj.slot = slotIndex
-        obj.item_id = item.item_id
-        obj.name = item.name
-        obj.old_ep = itemEP
-        obj.new_ep = new_itemEP
-        obj.diff = new_itemEP - itemEP
-        ret.push obj
-    ret
-
   getSimpleEPForUpgrade = (slot, item) ->
     return 0 unless item
 
@@ -655,8 +626,27 @@ class ShadowcraftGear
         upgradable = null
         if item
           addAchievementBonuses(item)
-          enchantable = EnchantSlots[item.equip_location]? && EnchantSlots[item.equip_location].length > 0
-          
+          enchantable = EnchantSlots[item.equip_location]? && getApplicableEnchants(i, item).length > 0
+
+          bonus_keys = _.keys(Shadowcraft.ServerData.ITEM_BONUSES)
+          bonuses_equipped = []
+          for bonusIndex in [0..9]
+            continue unless gear["b" + bonusIndex]?
+            bonuses_equipped.push gear["b" + bonusIndex]
+            if _.contains(bonus_keys, gear["b" + bonusIndex]+"")
+              for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[gear["b" + bonusIndex]]
+                switch bonus_entry.type
+                  when 6 # cool extra sockets
+                    last = item.sockets[item.sockets.length - 1]
+                    if last != "Prismatic"
+                      item.sockets.push "Prismatic"
+                    else
+                      item.sockets.pop
+                  when 5 # item name suffix
+                    item.name_suffix = bonus_entry.val1
+                  when 2 # awesome extra stats
+                    item.stats[bonus_entry.val1] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][1 + getRandPropRow(slotIndex)])
+
           allSlotsMatch = item.sockets && item.sockets.length > 0
           for socket in item.sockets
             gem = Gems[gear["g" + gems.length]]
@@ -689,6 +679,7 @@ class ShadowcraftGear
         opt.ttid = item.original_id if item
         opt.ttrand = if item then item.suffix else null
         opt.ttupgd = if item then item.upgrade_level else null
+        opt.ttbonus = if bonuses_equipped then bonuses_equipped.join(":") else null
         opt.ep = if item then get_ep(item, null, i).toFixed(1) else 0
         opt.slot = i + ''
         opt.gems = gems
@@ -835,6 +826,7 @@ class ShadowcraftGear
       t16_4pc: source.other_ep.rogue_t16_4pc || 0
       t17_2pc: source.other_ep.rogue_t17_2pc || 0
       t17_4pc: source.other_ep.rogue_t17_4pc || 0
+      t17_4pc_lfr: source.other_ep.rogue_t17_4pc_lfr || 0
 
     all = _.extend(Weights, other)
 
@@ -852,7 +844,7 @@ class ShadowcraftGear
         $.data(exist.get(0), "sortkey", 0)
         if key in ["mainhand_dps","offhand_dps"]
           $.data(exist.get(0), "sortkey", 1)
-        else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc","t16_2pc","t16_4pc","t17_2pc","t17_4pc"]
+        else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc","t16_2pc","t16_4pc","t17_2pc","t17_4pc","t17_4pc_lfr"]
           $.data(exist.get(0), "sortkey", 2)
       $.data(exist.get(0), "weight", weight)
 
@@ -1021,7 +1013,7 @@ class ShadowcraftGear
       continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
       #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
       #continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and lid != selected_identifier
-      continue if l.upgrade_level? and l.upgrade_level != getMaxUpgradeLevel(l)
+      continue if l.upgrade_level? and l.upgrade_level > getMaxUpgradeLevel(l)
       continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and lid != selected_identifier
       loc.push l
 
@@ -1071,6 +1063,7 @@ class ShadowcraftGear
       ttid = l.original_id
       ttrand = if l.suffix? then l.suffix else ""
       ttupgd = if l.upgrade_level? then l.upgrade_level else ""
+      ttbonus = if l.bonus_trees? then l.bonus_trees.join(":") else ""
       upgrade = []
       if l.upgradable
         curr_level = "0"
@@ -1089,6 +1082,7 @@ class ShadowcraftGear
         ttid: ttid
         ttrand: ttrand
         ttupgd: ttupgd
+        ttbonus: ttbonus
         desc: "#{l.__gearEP.toFixed(1)} base / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__setBonusEP > 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
         search: escape(l.name + " " + l.tag)
         percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01
@@ -1441,23 +1435,28 @@ class ShadowcraftGear
                 data.gear[slot].suffix = item.suffix
               else
                 data.gear[slot].suffix = null
-            if item and item.sockets
-              socketlength = item.sockets.length
-              for i in [0..2]
-                if i >= socketlength
-                  data.gear[slot]["g" + i] = null
-                else if data.gear[slot]["g" + i]?
-                  gem = Gems[data.gear[slot]["g" + i]]
-                  if gem
-                    if gem.id == ShadowcraftGear.LEGENDARY_META_GEM and not canUseLegendaryMetaGem(item)
-                      data.gear[slot]["g" + i] = null
-                    else if not canUseGem Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot
-                      data.gear[slot]["g" + i] = null
-
+              if item.sockets
+                socketlength = item.sockets.length
+                for i in [0..2]
+                  if i >= socketlength
+                    data.gear[slot]["g" + i] = null
+                  else if data.gear[slot]["g" + i]?
+                    gem = Gems[data.gear[slot]["g" + i]]
+                    if gem
+                      if gem.id == ShadowcraftGear.LEGENDARY_META_GEM and not canUseLegendaryMetaGem(item)
+                        data.gear[slot]["g" + i] = null
+                      else if not canUseGem Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot
+                        data.gear[slot]["g" + i] = null
+              if item.bonus_trees
+                for bonusIndex in [0..9]
+                  data.gear[slot]["b" + bonusIndex] = null
+                for bonusIndex, bonus_id of item.bonus_trees
+                  data.gear[slot]["b" + bonusIndex] = bonus_id
             else
               data.gear[slot].original_id = null
               data.gear[slot].item_level = null
               data.gear[slot]["g" + i] = null for i in [0..2]
+              data.gear[slot]["b" + i] = null for i in [0..9]
               data.gear[slot].suffix = null
           else
             enchant_id = if not isNaN(val) then val else null

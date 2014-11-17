@@ -56,7 +56,10 @@ module WowArmory
       @character = character
       @realm = realm
       @region = region
-      fetch region, 'api/wow/character/%s/%s?fields=talents,items,achievements,quests' % [normalize_realm(realm), normalize_character(character)], :json
+      params = {
+          :fields => 'talents,items,achievements,quests'
+      }
+      @json = WowArmory::Document.fetch region, '/wow/character/%s/%s' % [normalize_realm(realm), normalize_character(character)], params, :json
 
       populate!
 
@@ -128,6 +131,11 @@ module WowArmory
           upgrade = tooltip['upgrade']
           info['upgrade_level'] = upgrade['current'] if upgrade['current'] > 0
         end
+        info['bonus_trees'] = v['bonusLists']
+        (0..9).each do |pos|
+          info["b#{pos}"] = v['bonusLists'][pos]
+        end
+        puts info.inspect
         @gear[info['slot'].to_s] = info
       end
     end

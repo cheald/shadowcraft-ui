@@ -52,11 +52,62 @@ class ItemsController < ApplicationController
 
   private
 
+  SOCKET_MAP = {
+      1 => 'Meta',
+      2 => 'Red',
+      8 => 'Blue',
+      4 => 'Yellow',
+      14 => 'Prismatic',
+      16 => 'Hydraulic',
+      32 => 'Cogwheel'
+  }
+
+  STAT_LOOKUP = {
+      49 => :mastery,
+      38 => :attack_power,
+      5 => :intellect,
+      44 => :armor_penetration,
+      33 => :hit_avoidance,
+      6 => :spirit,
+      12 => :defense,
+      45 => :power,
+      34 => :critical_strike_avoidance,
+      1 => :health,
+      7 => :stamina,
+      3 => :agility,
+      2 => :mana,
+      13 => :dodge,
+      46 => :health_every_5_seconds,
+      57 => :pvp_power,
+      35 => :pvp_resilience,
+      41 => :damage_done,
+      14 => :parry,
+      36 => :haste,
+      47 => :penetration,
+      31 => :hit,
+      42 => :healing_done,
+      4 => :strength,
+      37 => :expertise,
+      15 => :shield_block,
+      48 => :block_value,
+      32 => :crit,
+      43 => :mana_every_5_seconds,
+      71 => :agility,
+      72 => :agility,
+      73 => :agility,
+      40 => :versatility,
+      59 => :multistrike,
+      58 => :amplify,
+      50 => :bonus_armor,
+      63 => :avoidance,
+      67 => :versatility
+  }
+
   # Get all items, gems, etc. and filter out not needed ones for rogues
   def index_rogue
     @alt_items = []
     VALID_SLOTS.each do |i|
-      @alt_items += Item.where(:equip_location => i, :item_level.gte => 500).desc(:item_level).all
+      @alt_items += Item.where(:equip_location => i, :item_level.gte => 530).desc(:item_level).all
     end
 
     # This is really haxy, but it's flexible.
@@ -77,5 +128,42 @@ class ItemsController < ApplicationController
     h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_wod.xml")).read
     @talents_wod = h["page"]["talents"]
     @glyphs = Glyph.asc(:name).all
+
+    item_bonuses = {}
+    FasterCSV.foreach(File.join(Rails.root, 'app', 'xml', 'WoD_ItemBonusIDs.csv'), { :col_sep => ';'}) do |row|
+      unless item_bonuses.has_key? row[1].to_i
+        item_bonuses[row[1].to_i] = []
+      end
+      entry = {
+        :type => row[2].to_i,
+        :val1 => row[3].to_i,
+        :val2 => row[4].to_i
+      }
+      if entry[:type] == 5
+        entry[:val1] = item_name_description[entry[:val1]]
+      end
+      if entry[:type] == 2
+        entry[:val1] = STAT_LOOKUP[entry[:val1]]
+      end
+      item_bonuses[row[1].to_i].push entry
+    end
+    @item_bonuses = item_bonuses
+    @rand_prop_points = rand_prop_points
+  end
+
+  def item_name_description
+    @@item_name_description ||= Hash.new.tap do |hash|
+      FasterCSV.foreach(File.join(Rails.root, 'app', 'xml', 'WoD_ItemNameDescription.csv'), { :col_sep => ';'}) do |row|
+        hash[row[0].to_i] = row[1]
+      end
+    end
+  end
+
+  def rand_prop_points
+    @@rand_prop_points ||= Hash.new.tap do |hash|
+      FasterCSV.foreach(File.join(Rails.root, 'app', 'xml', 'WoD_RandPropPoints.csv'), { :col_sep => ';'}) do |row|
+        hash[row[0].to_i] = row
+      end
+    end
   end
 end

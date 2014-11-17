@@ -2,9 +2,10 @@ class Item
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  @item_bonus_map = nil
+
   field :remote_id, :type => Integer, :index => true
-  field :random_suffix, :type => Integer
-  field :upgrade_level, :type => Integer
+  field :bonus_tree, :type => Integer
   field :equip_location, :type => Integer, :index => true
   field :item_level, :type => Integer
   field :properties, :type => Hash
@@ -33,119 +34,116 @@ class Item
       item = WowArmory::Item.new(remote_id, item_name_override)
       # return false if item.stats.empty?
       self.properties = item.as_json.with_indifferent_access
-      item_stats = WowArmory::Itemstats.new(self.properties, random_suffix, upgrade_level)
+      item_stats = WowArmory::Itemstats.new(self.properties)
       self.properties = self.properties.merge(item_stats.as_json.with_indifferent_access)
-      self.equip_location = self.properties["equip_location"]
-      self.is_gem = !self.properties["gem_slot"].blank?
+      self.equip_location = self.properties['equip_location']
+      self.is_gem = !self.properties['gem_slot'].blank?
     end
     true
   end
 
-  # Unique Item identifier
-  # TODO subject to change
-  def uid
-    # a bit silly
-    uid = remote_id
-    if random_suffix?
-      uid = remote_id * 1000 + random_suffix.abs
-      if not properties["upgrade_level"].nil?
-        uid = uid * 1000 + properties["upgrade_level"].to_i
-      end
-    else
-      uid = remote_id
-      if not properties["upgrade_level"].nil?
-        uid = uid * 1000000 + properties["upgrade_level"].to_i
-      end
-    end
-    uid
-  end
-
   def icon(size = 51)
-    return "" if self.properties.nil?
-    self.properties["icon"].split("/").last
+    return '' if self.properties.nil?
+    self.properties['icon'].split('/').last
   end
 
   def write_stats
     return if properties.nil?
-    self.stats = properties["stats"]
-    if all = self.stats.delete(:"all_stats")
+    self.stats = properties['stats']
+    if all = self.stats.delete(:'all_stats')
       [:agility, :stamina, :strength].each do |stat|
         self.stats[stat] = (self.stats[stat] || 0) + all
       end
     end
-    self.item_level = properties["ilevel"]
+    self.item_level = properties['ilevel']
     self.has_stats = !(self.stats.keys - EXCLUDE_KEYS).empty?
     true  # Returning false from a before_save filter causes it to fail.
   end
 
   def as_json(options={})
     json = {
-      :id => uid.to_i,
+      :id => remote_id,
       :oid => remote_id,
-      :n => properties["name"],
-      :i => if not icon.nil?
-              icon.gsub(/\.(tga|jpg|png)$/i, '')
-            else
+      :n => properties['name'],
+      :i => if icon.nil?
               ''
+            else
+              icon.gsub(/\.(tga|jpg|png)$/i, '')
             end,
-      :q => properties["quality"],
+      :q => properties['quality'],
       :stats => stats
     }
-    if properties["sockets"] and !properties["sockets"].empty?
-      json[:so] = properties["sockets"]
+    if properties['sockets'] and !properties['sockets'].empty?
+      json[:so] = properties['sockets']
     end
 
-    if properties["equip_location"]
-      json[:e] = properties["equip_location"]
+    if properties['equip_location']
+      json[:e] = properties['equip_location']
     end
-    json[:ilvl] = properties["ilevel"]
+    json[:ilvl] = properties['ilevel']
 
-    if properties["socket_bonus"]
-      json[:sb] = properties["socket_bonus"]
-    end
-
-    if properties["requirement"]
-      json[:rq] = {:profession => properties["requirement"].downcase}
+    if properties['socket_bonus']
+      json[:sb] = properties['socket_bonus']
     end
 
-    if properties["gem_slot"]
-      json[:sl] = properties["gem_slot"]
+    if properties['requirement']
+      json[:rq] = {:profession => properties['requirement'].downcase}
     end
+
+    if properties['gem_slot']
+      json[:sl] = properties['gem_slot']
+    end
+
+    json[:tag] = if properties['tag'] then properties['tag'] else
+                                                               ''
+                 end
+
 
     json[:tag] = if properties["tag"] then properties["tag"] else "" end
-    
-    if !properties["speed"].blank?
-      json[:speed] = properties["speed"]
-      json[:dps] = properties["dps"]
-      json[:subclass] = properties["subclass"]
+
+    unless properties['speed'].blank?
+      json[:speed] = properties['speed']
+      json[:dps] = properties['dps']
+      json[:subclass] = properties['subclass']
     end
-    if properties["random_suffix"]
-      json[:suffix] = properties["random_suffix"]
+
+    if properties['random_suffix']
+      json[:suffix] = properties['random_suffix']
     end
-    if properties["upgrade_level"]
-      json[:upgrade_level] = properties["upgrade_level"]
+    if properties['upgrade_level']
+      json[:upgrade_level] = properties['upgrade_level']
     end
-    if properties["upgradable"]
-      json[:upgradable] = properties["upgradable"]
+    if properties['upgradable']
+      json[:upgradable] = properties['upgradable']
+    end
+    if properties['bonus_trees']
+      json[:bonus_trees] = properties['bonus_trees']
     end
 
     json
   end
 
-  def self.populate_gear_wod(prefix = "www", source = "wowapi")
+  def self.populate_gear_wod(prefix = 'www', source = 'wowapi')
     @source = source
 
-    item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=630;maxle=665;ub=4;cr=21;crs=1;crv=0"
+    # blue items
+    item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=600;maxle=665;ub=4;cr=21;crs=1;crv=0"
+
+    # epic items
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=630;maxle=665;ub=4;cr=21;crs=1;crv=0"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=666;maxle=700;ub=4;cr=21;crs=1;crv=0"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=701;maxle=750;ub=4;cr=21;crs=1;crv=0"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4.-4?filter=minle=530;ro=1"
     pos = 0
     item_ids.each do |id|
       pos = pos + 1
       puts "item #{pos} of #{item_ids.length}" if pos % 10 == 0
-      import id,[nil]
+      wod_import id
     end
     true
   end
 
-  def self.populate_gems_wod(prefix = "www", source = "wowapi")
+  def self.populate_gems_wod(prefix = 'www', source = 'wowhead')
     gem_ids = [115809, 115811, 115812, 115813, 115814, 115815, 115803, 115804, 115805, 115806, 115807, 115808]
 
     puts "importing now #{gem_ids.length} gems"
@@ -158,8 +156,8 @@ class Item
         if db_item.properties.nil?
           item = WowArmory::Item.new(id, source)
           db_item.properties = item.as_json.with_indifferent_access
-          db_item.equip_location = db_item.properties["equip_location"]
-          db_item.is_gem = !db_item.properties["gem_slot"].blank?
+          db_item.equip_location = db_item.properties['equip_location']
+          db_item.is_gem = !db_item.properties['gem_slot'].blank?
           if db_item.new_record?
             db_item.save
           end
@@ -174,89 +172,89 @@ class Item
     end
   end
 
-  def self.populate_gear(prefix = "www",source = "wowapi")
+  def self.populate_gear_mop(prefix = 'www',source = 'wowhead')
     @source = source
-    suffixes = (-137..-133).to_a
-    random_item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;ub=4;cr=124;crs=0;crv=zephyr"
-    random_item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4?filter=na=hozen-speed"
-    random_item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4?filter=na=Stormcrier"
-    
-    random_item_ids += (93049..93056).to_a
-    puts "importing now #{random_item_ids.length} random items"
-    random_item_ids.each do |id|
-      import id,[nil,1,2,3,4,5,6],suffixes
-    end
+    # suffixes = (-137..-133).to_a
+    # random_item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;ub=4;cr=124;crs=0;crv=zephyr"
+    # random_item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4?filter=na=hozen-speed"
+    # random_item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4?filter=na=Stormcrier"
+    #
+    # random_item_ids += (93049..93056).to_a
+    # puts "importing now #{random_item_ids.length} random items"
+    # random_item_ids.each do |id|
+    #   import_mop id,[nil,1,2,3,4,5,6],suffixes
+    # end
 
     # 5.2 random enchantment items
-    suffixes = (-340..-336).to_a
-    random_item_ids = [ 94979, 95796, 96168, 96540, 96912 ]
-    puts "importing now #{random_item_ids.length} random items for 5.2"
-    random_item_ids.each do |id|
-      import id,[nil,1,2,3,4,5,6],suffixes
-    end
+    # suffixes = (-340..-336).to_a
+    # random_item_ids = [ 94979, 95796, 96168, 96540, 96912 ]
+    # puts "importing now #{random_item_ids.length} random items for 5.2"
+    # random_item_ids.each do |id|
+    #   import_mop id,[nil,1,2,3,4,5,6],suffixes
+    # end
 
     # 5.3 random enchantment items
-    suffixes = (-348..-344).to_a + (-357..-353).to_a
-    random_item_ids = [ 98279, 98275, 98280, 98271, 98272, 98189, 98172, 98190 ]
-    random_item_ids += (98173..98180).to_a # tidesplitter ilvl 516
-    random_item_ids += [ 97663, 97647, 97682, 97633, 97655, 97639, 97675 ] # disowner ilvl 502
-    puts "importing now #{random_item_ids.length} random items for 5.3"
-    random_item_ids.each do |id|
-      import id,[nil,1,2,3,4,5,6],suffixes
-    end
+    # suffixes = (-348..-344).to_a + (-357..-353).to_a
+    # random_item_ids = [ 98279, 98275, 98280, 98271, 98272, 98189, 98172, 98190 ]
+    # random_item_ids += (98173..98180).to_a # tidesplitter ilvl 516
+    # random_item_ids += [ 97663, 97647, 97682, 97633, 97655, 97639, 97675 ] # disowner ilvl 502
+    # puts "importing now #{random_item_ids.length} random items for 5.3"
+    # random_item_ids.each do |id|
+    #   import_mop id,[nil,1,2,3,4,5,6],suffixes
+    # end
 
     # 5.4 random enchantment items
-    suffixes = (-348..-344).to_a + (-357..-353).to_a # 0 sockets
+    # suffixes = (-348..-344).to_a + (-357..-353).to_a # 0 sockets
 
     # ilvl 496
-    suffixes_05 = (-465..-461).to_a + (-474..-470).to_a # 0.5 socket cost ilvl 496
-    suffixes_15 = (-381..-377).to_a + (-390..-386).to_a # 1.5 socket cost ilvl 496
-    random_item_ids = [ 101862, 101863, 101865, 101868, 101869 ] # 0 socket items
-    random_item_ids += [ 101827, 101828, 101829 ] # neck, ring, cloak
-    random_item_ids_05 = [ 101864, 101867 ] # 1 socket items
-    random_item_ids_15 = [ 101866 ] # 2 socket items
-    puts "importing now #{random_item_ids.length+random_item_ids_05.length+random_item_ids_15.length} random items for 5.4 (ilvl 496)"
-    random_item_ids.each do |id|
-      import id,[nil,1,2,3,4,5,6],suffixes
-    end
-    random_item_ids_05.each do |id|
-      import id,[nil,1,2,3,4,5,6],suffixes_05
-    end
-    random_item_ids_15.each do |id|
-      import id,[nil,1,2,3,4,5,6],suffixes_15
-    end
+    # suffixes_05 = (-465..-461).to_a + (-474..-470).to_a # 0.5 socket cost ilvl 496
+    # suffixes_15 = (-381..-377).to_a + (-390..-386).to_a # 1.5 socket cost ilvl 496
+    # random_item_ids = [ 101862, 101863, 101865, 101868, 101869 ] # 0 socket items
+    # random_item_ids += [ 101827, 101828, 101829 ] # neck, ring, cloak
+    # random_item_ids_05 = [ 101864, 101867 ] # 1 socket items
+    # random_item_ids_15 = [ 101866 ] # 2 socket items
+    # puts "importing now #{random_item_ids.length+random_item_ids_05.length+random_item_ids_15.length} random items for 5.4 (ilvl 496)"
+    # random_item_ids.each do |id|
+    #   import_mop id,[nil,1,2,3,4,5,6],suffixes
+    # end
+    # random_item_ids_05.each do |id|
+    #   import_mop id,[nil,1,2,3,4,5,6],suffixes_05
+    # end
+    # random_item_ids_15.each do |id|
+    #   import_mop id,[nil,1,2,3,4,5,6],suffixes_15
+    # end
 
     # ilvl 535
-    suffixes_05 = (-409..-405).to_a + (-418..-414).to_a # 0.5 socket cost ilvl 535
-    suffixes_15 = (-437..-433).to_a + (-446..-442).to_a # 1.5 socket cost ilvl 535
-    random_item_ids = [ 101949, 101950, 101952, 101955, 101956 ] # 0 sockets
-    random_item_ids += [ 101916, 101917, 101918 ] # neck, ring, cloak
-    random_item_ids_05 = [ 101951, 101954 ] # 1 socket items
-    random_item_ids_15 = [ 101953 ] # 2 socket items
-    puts "importing now #{random_item_ids.length+random_item_ids_05.length+random_item_ids_15.length} random items for 5.4 (ilvl 535)"
-    random_item_ids.each do |id|
-      import id,[nil,1,2,3,4,5,6],suffixes
-    end
-    random_item_ids_05.each do |id|
-      import id,[nil,1,2,3,4,5,6],suffixes_05
-    end
-    random_item_ids_15.each do |id|
-      import id,[nil,1,2,3,4,5,6],suffixes_15
-    end
-    
-    item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=483;ub=4;cr=21;crs=1;crv=0"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=484;maxle=500;ub=4;cr=21;crs=1;crv=0"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=501;maxle=510;ub=4;cr=21;crs=1;crv=0"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=511;maxle=530;ub=4;cr=21;crs=1;crv=0"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=531;maxle=550;ub=4;cr=21;crs=1;crv=0"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=551;maxle=580;ub=4;cr=21;crs=1;crv=0"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0"
+    # suffixes_05 = (-409..-405).to_a + (-418..-414).to_a # 0.5 socket cost ilvl 535
+    # suffixes_15 = (-437..-433).to_a + (-446..-442).to_a # 1.5 socket cost ilvl 535
+    # random_item_ids = [ 101949, 101950, 101952, 101955, 101956 ] # 0 sockets
+    # random_item_ids += [ 101916, 101917, 101918 ] # neck, ring, cloak
+    # random_item_ids_05 = [ 101951, 101954 ] # 1 socket items
+    # random_item_ids_15 = [ 101953 ] # 2 socket items
+    # puts "importing now #{random_item_ids.length+random_item_ids_05.length+random_item_ids_15.length} random items for 5.4 (ilvl 535)"
+    # random_item_ids.each do |id|
+    #   import_mop id,[nil,1,2,3,4,5,6],suffixes
+    # end
+    # random_item_ids_05.each do |id|
+    #   import_mop id,[nil,1,2,3,4,5,6],suffixes_05
+    # end
+    # random_item_ids_15.each do |id|
+    #   import_mop id,[nil,1,2,3,4,5,6],suffixes_15
+    # end
 
-    item_ids += [ 87057, 86132, 86791, 87574, 81265, 81267, 75274, 87495, 77534, 77530 ] # some extra_items, mostly 5.0 trinkets
-    item_ids += [ 94523, 96409, 96037, 95665] # bad juju
-    item_ids += [ 96741, 96369, 95997, 94512, 95625] # renatakis soul charm
-    item_ids += [ 96174, 94511] # missing other trinkets
-    item_ids += [ 96741, 96781] # heroic thunderforged, rune of reorigination and talisman of bloodlust still missing
+    # item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0"
+    # item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=483;ub=4;cr=21;crs=1;crv=0"
+    # item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=484;maxle=500;ub=4;cr=21;crs=1;crv=0"
+    # item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=501;maxle=510;ub=4;cr=21;crs=1;crv=0"
+    # item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=511;maxle=530;ub=4;cr=21;crs=1;crv=0"
+    # item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=531;maxle=550;ub=4;cr=21;crs=1;crv=0"
+    item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=540;maxle=580;ub=4;cr=21;crs=1;crv=0"
+
+    # item_ids += [ 87057, 86132, 86791, 87574, 81265, 81267, 75274, 87495, 77534, 77530 ] # some extra_items, mostly 5.0 trinkets
+    # item_ids += [ 94523, 96409, 96037, 95665] # bad juju
+    # item_ids += [ 96741, 96369, 95997, 94512, 95625] # renatakis soul charm
+    # item_ids += [ 96174, 94511] # missing other trinkets
+    # item_ids += [ 96741, 96781] # heroic thunderforged, rune of reorigination and talisman of bloodlust still missing
     item_ids += [ 98148 ] # ilvl 600 cloak 5.3
 
     # 5.4
@@ -277,17 +275,21 @@ class Item
     # UBRS GEAR
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=550;maxle=550;maxrl=90;ub=4;cr=21;crs=1;crv=0"
 
+    # heirlooms lvl100 edition
+    item_ids += [104400, 105671, 105684] # razor
+    item_ids += [104404, 105672, 105685] # cleaver
+
     puts "importing now #{item_ids.length} items"
     pos = 0
     item_ids.each do |id|
       pos = pos + 1
       puts "item #{pos} of #{item_ids.length}" if pos % 10 == 0
-      import id,[nil,1,2,3,4,5,6]
+      import_mop id,[nil,1,2,3,4,5,6]
     end
     true
   end
 
-  def self.populate_gems(prefix = "www", source = "wowapi")
+  def self.populate_gems_mop(prefix = 'www', source = 'wowhead')
     gem_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=3?filter=qu=2:3;minle=86;maxle=90"
     gem_ids += get_ids_from_wowhead  "http://#{prefix}.wowhead.com/items=3?filter=qu=2:3:4;minle=86;maxle=90;cr=99;crs=11;crv=0"
 
@@ -304,8 +306,8 @@ class Item
         if db_item.properties.nil?
           item = WowArmory::Item.new(id, source)
           db_item.properties = item.as_json.with_indifferent_access
-          db_item.equip_location = db_item.properties["equip_location"]
-          db_item.is_gem = !db_item.properties["gem_slot"].blank?
+          db_item.equip_location = db_item.properties['equip_location']
+          db_item.is_gem = !db_item.properties['gem_slot'].blank?
           if db_item.new_record?
             db_item.save
           end
@@ -320,12 +322,8 @@ class Item
     end
   end
 
-  def self.populate_glyphs
-    populate_from_wowhead "http://www.wowhead.com/items=16.4", :is_glyph => true
-  end
-
-  def self.import(id, upgrade_levels = [nil,1,2,3,4,5,6], random_suffixes = nil, source = @source, override_ilvl = nil)
-    source = "wowhead_wod" if source.nil?
+  def self.import_mop(id, upgrade_levels = [nil,1,2,3,4,5,6], random_suffixes = nil, source = @source, override_ilvl = nil)
+    source = 'wowhead'
     # options need to be upgrade_level = [nil,1,2,3,4,5,6]
     # same for random_suffix
     random_suffixes = [nil] if random_suffixes.nil?
@@ -340,13 +338,13 @@ class Item
           db_item = Item.find_or_initialize_by options
           if db_item.properties.nil?
             if item.nil?
-              item = WowArmory::Item.new(id, source, nil, override_ilvl)
+              item = WowArmory::Item.new(id, source, nil, '', [], override_ilvl)
             end
             db_item.properties = item.as_json.with_indifferent_access
             item_stats = WowArmory::Itemstats.new(db_item.properties, suffix, level)
             db_item.properties = db_item.properties.merge(item_stats.as_json.with_indifferent_access)
-            db_item.equip_location = db_item.properties["equip_location"]
-            db_item.is_gem = !db_item.properties["gem_slot"].blank?
+            db_item.equip_location = db_item.properties['equip_location']
+            db_item.is_gem = !db_item.properties['gem_slot'].blank?
             if db_item.new_record?
               db_item.save
             end
@@ -362,16 +360,97 @@ class Item
     end
   end
 
-  def self.single_import(id, options = {})
-    puts id    
-    if not options.has_key?(:upgrade_level)
-      options[:upgrade_level] = nil
+  SKIP2 = [39,38,37,36,35,34,33,32,31,30,19,29,28,27,26,21,25,24,23,22,20,45,46,47,48,49,50,51,52,53,54,55,56,
+           57,58,59,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,
+           91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,
+           118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,
+           143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,
+           168,169,170,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,
+           197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,
+           222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237]
+
+  SKIP3 = [39,38,37,36,35,34,33,32,31,30,19,29,28,27,26,21,25,24,23,22,20,45,46,47,48,49,50,51,52,53,54,55,56,
+           57,58,59,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,
+           91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,
+           118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,
+           143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,
+           168,169,170,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,
+           197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,
+           222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,
+           247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,
+           272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,
+           297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,
+           322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342]
+
+  def self.wod_import(id)
+    source = 'wowapi'
+    puts id
+    existing_item = Item.find :first, :conditions => { :remote_id => id }
+    unless existing_item.nil?
+      return
     end
+
     begin
-      Item.find_or_create_by options.merge(:remote_id => id)
+      json_data = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {}, :json
     rescue WowArmory::MissingDocument => e
       puts id
       puts e.message
+      return
+    end
+    json_data['availableContexts'].each do |context|
+      if context == ''
+        context_data = json_data
+      else
+        context_data = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id,context], {}, :json
+      end
+      if context_data['bonusSummary']['defaultBonusLists'].empty?
+        context_data['bonusSummary']['defaultBonusLists'] = ['']
+      end
+      context_data['bonusSummary']['defaultBonusLists'].each do |defaultBonus|
+        options = {
+            :remote_id => id,
+            :bonus_trees => [defaultBonus]
+        }
+        db_item = Item.find_or_initialize_by options
+        if db_item.properties.nil?
+          item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees], nil, false)
+          db_item.properties = item.as_json.with_indifferent_access
+          db_item.equip_location = db_item.properties['equip_location']
+          db_item.is_gem = !db_item.properties['gem_slot'].blank?
+          if db_item.new_record?
+            db_item.save
+          end
+          # if available we need to import warforged too
+          # the other stuff like extra socket or tertiary stats are added in the UI dynamically
+          context_data['bonusSummary']['chanceBonusLists'].each do |bonus|
+            next if [40,41,42,43].include? bonus # avoidance, leech, speed...
+            next if SKIP2.include? bonus
+            next if SKIP3.include? bonus
+            puts bonus
+            options = {
+                :remote_id => id,
+                :bonus_trees => [defaultBonus] + [bonus]
+            }
+            db_item_with_bonus = Item.find_or_initialize_by options
+            if db_item_with_bonus.properties.nil?
+              item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees], nil ,false)
+              db_item_with_bonus.properties = item.as_json.with_indifferent_access
+              db_item_with_bonus.equip_location = db_item_with_bonus.properties['equip_location']
+              db_item_with_bonus.is_gem = !db_item_with_bonus.properties['gem_slot'].blank?
+              if db_item_with_bonus.properties['tag'].include? 'Warforged' or [15,171,529,530,545].include? bonus
+                if db_item_with_bonus.new_record?
+                  db_item_with_bonus.save
+                end
+              end
+              if db_item_with_bonus.properties['tag'].include? 'Warforged'
+                puts 'warforged found and imported'
+                # warforged found so dont try other options
+                break
+              end
+            end
+          end
+        end
+      end
     end
   end
 
@@ -381,22 +460,25 @@ class Item
     ids
   end
 
-  def self.populate_from_wowhead(url, options = {})
-    doc = open(url, 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
-    gem_ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i
-    gem_ids.each do |id|
-      puts id
-      begin
-        Item.find_or_create_by options.merge(:remote_id => id)
-      rescue WowArmory::MissingDocument => e
-        puts id
-        puts e.message
-      end
-    end
-    nil
-  end
-
   def self.reindex!
     self.all.each {|i| i.save }
+  end
+
+  def self.find_bonus_trees(id)
+    groups = []
+    item_bonus_map.each_value do |row|
+      if row[1].to_i == id
+        groups.push(row[2])
+      end
+    end
+    groups
+  end
+
+  def self.item_bonus_map
+    @@item_bonus_map ||= Hash.new.tap do |hash|
+      FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_item_bonus_map_data.csv')) do |row|
+        hash[row[0]] = row
+      end
+    end
   end
 end

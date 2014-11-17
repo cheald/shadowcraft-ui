@@ -102,7 +102,7 @@ checkForWarnings = (section) ->
       if item.name.indexOf("Rune of Re-Origination") != -1
         Shadowcraft.Console.warn(item, "is not fully supported but also bad for rogues.", "It is recommended to not use this trinket.", "warn", "items")
       enchant = EnchantLookup[gear.enchant]
-      enchantable = EnchantSlots[item.equip_location] != undefined && EnchantSlots[item.equip_location].length > 0
+      enchantable = EnchantSlots[item.equip_location] != undefined && Shadowcraft.Gear.getApplicableEnchants(slotIndex, item).length > 0
 
       if !enchant and enchantable
         Shadowcraft.Console.warn(item, "needs an enchantment", null, "warn", "items")

@@ -18,7 +18,7 @@ var ttlib = {
   show: function() {
     if( !ttlib.jstooltip ) { return; }
     var pos = ttlib.jstooltip.owner.offset();
-    var dwidth = document.body.clientWidth
+    var dwidth = document.body.clientWidth;
 
     var left = pos.left + ttlib.jstooltip.owner.width() + 30;
     var top  = pos.top;
@@ -103,16 +103,20 @@ var ttlib = {
     var spellid = $this.data("tooltip-spellid");
     var rand = $this.data("tooltip-rand");
     var upgd = $this.data("tooltip-upgd");
+    var bonus = $this.data("tooltip-bonus");
     if(!id) { return; }
     var t = $this.data("tooltip-type") || "item";
-    var url = "http://wod.wowhead.com/" + t + "=" + id + "&power";
+    var url = "http://www.wowhead.com/" + t + "=" + id + "&power";
     if(rand && rand != "0") {
       url += "&rand=" + rand;
     }
     if(upgd && upgd != "0") {
       url += "&upgd=" + upgd;
     }
-    url += "&lvl=90"; // TODO CHANGE FOR LEVEL 100
+    if(bonus) {
+      url += "&bonus=" + bonus;
+    }
+    url += "&lvl=100";
 
     ttlib.currentMouseover = url;
     ttlib.jstooltip.style.width = null;
