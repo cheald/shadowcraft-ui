@@ -743,7 +743,7 @@
     poisonMap = ["dp", "wp"];
     utilPoisonMap = ["lp", "n"];
     raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"];
-    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"];
+    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"];
     rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike', 'opener', 'uptime'];
     map = function(value, m) {
       return m.indexOf(value);
@@ -1533,20 +1533,6 @@
           datatype: 'integer',
           min: 1,
           max: 5
-        },
-        prioritize_rupture_uptime_non_execute: {
-          type: "check",
-          name: "Prioritize Rupture (>35%)",
-          desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate",
-          "default": true,
-          datatype: 'bool'
-        },
-        prioritize_rupture_uptime_execute: {
-          type: "check",
-          name: "Prioritize Rupture (<35%)",
-          desc: "Prioritize Rupture over Envenom when your CP builder is Dispatch",
-          "default": true,
-          datatype: 'bool'
         },
         opener_name_assassination: {
           type: "select",
