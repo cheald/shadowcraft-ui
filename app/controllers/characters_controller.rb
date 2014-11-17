@@ -49,6 +49,10 @@ class CharactersController < ApplicationController
       @character.update_from_armory!(true) unless @character.nil?
     end
 
+    if @character.properties.nil?
+      return new
+    end
+
     if @character.properties["player_class"] == "unknown"
       return new
     end

@@ -171,7 +171,7 @@ class ShadowcraftHistory
   utilPoisonMap = [ "lp", "n" ]
   raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"]
   rotationOptionsMap = [
-    "min_envenom_size_non_execute", "min_envenom_size_execute", "prioritize_rupture_uptime_non_execute", "prioritize_rupture_uptime_execute",
+    "min_envenom_size_non_execute", "min_envenom_size_execute",
     "ksp_immediately", "revealing_strike_pooling", "blade_flurry",
     "use_hemorrhage",
     "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use",
@@ -201,6 +201,16 @@ class ShadowcraftHistory
         gearSet.push gear.original_id || 0
         gearSet.push gear.item_level || 0
         gearSet.push Math.abs(gear.suffix) || 0
+        gearSet.push Math.abs(gear.b0) || 0
+        gearSet.push Math.abs(gear.b1) || 0
+        gearSet.push Math.abs(gear.b2) || 0
+        gearSet.push Math.abs(gear.b3) || 0
+        gearSet.push Math.abs(gear.b4) || 0
+        gearSet.push Math.abs(gear.b5) || 0
+        gearSet.push Math.abs(gear.b6) || 0
+        gearSet.push Math.abs(gear.b7) || 0
+        gearSet.push Math.abs(gear.b8) || 0
+        gearSet.push Math.abs(gear.b9) || 0
       ret.push base36Encode(gearSet)
       ret.push data.active
       ret.push data.activeSpec
@@ -232,7 +242,7 @@ class ShadowcraftHistory
         if data.options.general.epic_gems then 1 else 0
         if data.options.general.pvp then 1 else 0
         if data.options.general.show_upgrades then 1 else 0
-        data.options.general.show_random_items || 502
+        data.options.general.show_random_items || 600
         data.options.general.num_boss_adds * 100 || 0
         data.options.general.response_time * 100 || 50
         data.options.general.time_in_execute_range * 100 || 35
@@ -293,8 +303,8 @@ class ShadowcraftHistory
           glyphs: base36Decode(talentSets[index + 2])
 
       gear = base36Decode data[1]
-      for id, index in gear by 10
-        slot = (index / 10).toString()
+      for id, index in gear by 20
+        slot = (index / 20).toString()
         d.gear[slot] =
           item_id: gear[index]
           enchant: gear[index + 1]
@@ -306,6 +316,16 @@ class ShadowcraftHistory
           original_id: gear[index + 7]
           item_level: gear[index + 8]
           suffix: gear[index + 9] * -1
+          b0: gear[index + 10]
+          b1: gear[index + 11]
+          b2: gear[index + 12]
+          b3: gear[index + 13]
+          b4: gear[index + 14]
+          b5: gear[index + 15]
+          b6: gear[index + 16]
+          b7: gear[index + 17]
+          b8: gear[index + 18]
+          b9: gear[index + 19]
         for k, v of d.gear[slot]
           delete d.gear[slot][k] if v == 0
 
@@ -318,10 +338,10 @@ class ShadowcraftHistory
         lethal_poison:          unmap(general[3], poisonMap)
         utility_poison:         unmap(general[4], utilPoisonMap)
         potion:                 general[5] != 0
-        max_ilvl:               general[6] || 700
+        max_ilvl:               general[6] || 1000
         prepot:                 general[7] != 0
         patch:                  general[8] || 60
-        min_ilvl:               general[9] || 430
+        min_ilvl:               general[9] || 540
         epic_gems:              general[10] || 0
         pvp:                    general[11] || 0
         show_upgrades:          general[12] || 0

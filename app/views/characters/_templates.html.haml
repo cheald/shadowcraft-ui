@@ -99,8 +99,8 @@
     .image<
       {{#item}}
       {{#icon}}
-      %img{:src => "http://wow.zamimg.com/images/wow/icons/large/{{.}}.jpg"}
-      -#%img{:src => "http://us.media.blizzard.com/wow/icons/56/{{.}}.jpg"}
+      -#%img{:src => "http://wow.zamimg.com/images/wow/icons/large/{{.}}.jpg"}
+      %img{:src => "http://us.media.blizzard.com/wow/icons/56/{{.}}.jpg"}
       {{/icon}}
       {{/item}}
 
@@ -109,8 +109,9 @@
     .lock{:class => "{{lock_class}}"}< 
       %img{:src => "/images/{{lock_class}}.png"}
     {{/lock}}
-    .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}", :"data-tooltip-rand" => "{{ttrand}}", :"data-tooltip-upgd" => "{{ttupgd}}"}
+    .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}", :"data-tooltip-rand" => "{{ttrand}}", :"data-tooltip-upgd" => "{{ttupgd}}", :"data-tooltip-bonus" => "{{ttbonus}}"}
       {{item/name}}
+      {{item/name_suffix}}
       %em.heroic {{item/tag}}
       {{#upgradable}}
       {{#upgrade}}
@@ -134,17 +135,17 @@
       {{/reforge}}
     {{/reforgable}}
 
-    {{#bonusable}}
-    .bonuses<
-      =image_tag "reforge.png"
-      {{#bonuses}}
-      %span.oldstat -1 Test
-      %span.newstat +1 Test
-      {{/bonuses}}
-      {{^bonuses}}
-      Add Bonus
-      {{/bonuses}}
-    {{/bonusable}}
+    -#{{#bonusable}}
+    -#.bonuses<
+    -#  =image_tag "reforge.png"
+    -#  {{#bonuses}}
+    -#  %span.oldstat -1 Test
+    -#  %span.newstat +1 Test
+    -#  {{/bonuses}}
+    -#  {{^bonuses}}
+    -#  Add Bonus
+    -#  {{/bonuses}}
+    -#{{/bonusable}}
 
     {{#enchantable}}
     .enchant

@@ -41,7 +41,7 @@ class ShadowcraftComputation:
         5331: "mark_of_the_shattered_hand",
         5334: "mark_of_the_frostwolf",
         5337: "mark_of_warsong",
-        5384: "mark_of_bleeding_hollow",
+        5384: "mark_of_the_bleeding_hollow",
         0: None
     }
 
@@ -94,49 +94,49 @@ class ShadowcraftComputation:
         #72897: 'arrow_of_time',
 
         # 5.0
-        81125: "windswept_pages",
-        79328: "relic_of_xuen",
-        86332: "terror_in_the_mists",
-        87167: "terror_in_the_mists",
-        86890: "terror_in_the_mists",
-        86132: "bottle_of_infinite_stars",
-        87057: "bottle_of_infinite_stars",
-        86791: "bottle_of_infinite_stars",
-        81267: "searing_words",
-        87574: "corens_cold_chromium_coaster",
+        #81125: "windswept_pages",
+        #79328: "relic_of_xuen",
+        #86332: "terror_in_the_mists",
+        #87167: "terror_in_the_mists",
+        #86890: "terror_in_the_mists",
+        #86132: "bottle_of_infinite_stars",
+        #87057: "bottle_of_infinite_stars",
+        #86791: "bottle_of_infinite_stars",
+        #81267: "searing_words",
+        #87574: "corens_cold_chromium_coaster",
         #84072: "braid_of_ten_songs",
         #75274: "zen_alchemist_stone",
         
         # 5.1
-        93253: "woundripper_medallion",
-        93258: "woundripper_medallion",
+        #93253: "woundripper_medallion",
+        #93258: "woundripper_medallion",
 
         # 5.2
-        95665: 'bad_juju',
-        94523: 'bad_juju',
-        96037: 'bad_juju',
-        96409: 'bad_juju',
-        96781: 'bad_juju',
+        #95665: 'bad_juju',
+        #94523: 'bad_juju',
+        #96037: 'bad_juju',
+        #96409: 'bad_juju',
+        #96781: 'bad_juju',
         
-        95802: 'rune_of_re_origination',
-        94532: 'rune_of_re_origination',
-        96174: 'rune_of_re_origination',
-        96546: 'rune_of_re_origination',
-        96918: 'rune_of_re_origination',
+        #95802: 'rune_of_re_origination',
+        #94532: 'rune_of_re_origination',
+        #96174: 'rune_of_re_origination',
+        #96546: 'rune_of_re_origination',
+        #96918: 'rune_of_re_origination',
         
-        95748: 'talisman_of_bloodlust',
-        94522: 'talisman_of_bloodlust',
-        96120: 'talisman_of_bloodlust',
-        96492: 'talisman_of_bloodlust',
-        96864: 'talisman_of_bloodlust',
+        #95748: 'talisman_of_bloodlust',
+        #94522: 'talisman_of_bloodlust',
+        #96120: 'talisman_of_bloodlust',
+        #96492: 'talisman_of_bloodlust',
+        #96864: 'talisman_of_bloodlust',
         
-        95625: 'renatakis_soul_charm',
-        94512: 'renatakis_soul_charm',
-        95997: 'renatakis_soul_charm',
-        96369: 'renatakis_soul_charm',
-        96741: 'renatakis_soul_charm',
+        #95625: 'renatakis_soul_charm',
+        #94512: 'renatakis_soul_charm',
+        #95997: 'renatakis_soul_charm',
+        #96369: 'renatakis_soul_charm',
+        #96741: 'renatakis_soul_charm',
         
-        94511: 'vicious_talisman_of_the_shado-pan_assault',
+        #94511: 'vicious_talisman_of_the_shado-pan_assault',
 
         # 5.4
         103686: 'discipline_of_xuen',
@@ -176,6 +176,28 @@ class ShadowcraftComputation:
         105360: 'thoks_tail_tip',
         104613: 'thoks_tail_tip',
         105609: 'thoks_tail_tip',
+        
+        # 6.0
+        113931: 'beating_heart_of_the_mountain',
+        118114: 'meaty_dragonspine_trophy',
+        113985: 'humming_blackiron_trigger',
+        113612: 'scales_of_doom',
+        #118302: 'spellbound_solium_band_of_fatal_strikes',
+        112318: 'skull_of_war',
+        114610: 'formidable_jar_of_doom',
+        116314: 'blackheart_enforcers_medallion',
+        118876: 'lucky_doublesided_coin',
+        117930: 'primal_combatants_boc',
+        115750: 'primal_combatants_ioc',
+        
+        109998: 'gorashans_lodestone_spike',
+        109997: 'kihras_adrenaline_injector',
+        114488: 'turbulent_vial_of_toxin',
+        114427: 'munificent_emblem_of_terror',
+        109999: 'witherbarks_branch',
+        109262: 'draenic_philosophers_stone',
+        114891: 'void-touched_totem',
+        116799: 'smoldering_heart_of_hyperious'
     }
     
     def createTrinketGroup(base_ilvls, upgrade_level, upgrade_steps):
@@ -189,30 +211,48 @@ class ShadowcraftComputation:
     
     # used for rankings
     trinketGroups = {
-      'bad_juju': createTrinketGroup((502,522,528,535,541), 6, 4),
+      'beating_heart_of_the_mountain': [665,671,680,686,695,701],
+      'meaty_dragonspine_trophy': [665,671,680,686,695,701],
+      'humming_blackiron_trigger': [665,671,680,686,695,701],
+      'scales_of_doom': [655,661,670,676,685,691],
+      'skull_of_war': [640],
+      'formidable_jar_of_doom': [655],
+      'lucky_doublesided_coin': [665],
+      'blackheart_enforcers_medallion': [650,656],
+      'primal_combatants_boc': [660],
+      'primal_combatants_ioc': [660],
+      'gorashans_lodestone_spike': [530,550,570,600,615,630,636],
+      'kihras_adrenaline_injector': [530,550,570,600,615,630,636],
+      'turbulent_vial_of_toxin': [630],
+      'munificent_emblem_of_terror': [615],
+      'witherbarks_branch': [530,550,570,600,615,630,636],
+      'draenic_philosophers_stone': [620],
+      'void-touched_totem': [604,614,624],
+      'smoldering_heart_of_hyperious': [597,607],
+      #'bad_juju': createTrinketGroup((502,522,528,535,541), 6, 4),
       #'rune_of_re_origination': createTrinketGroup((502,522,528,535,541), 6, 4),
-      'talisman_of_bloodlust': createTrinketGroup((502,522,528,535,541), 6, 4),
-      'vicious_talisman_of_the_shado-pan_assault': createTrinketGroup((522,), 6, 4),
-      'renatakis_soul_charm': createTrinketGroup((502,522,528,535,541), 6, 4),
+      #'talisman_of_bloodlust': createTrinketGroup((502,522,528,535,541), 6, 4),
+      #'vicious_talisman_of_the_shado-pan_assault': createTrinketGroup((522,), 6, 4),
+      #'renatakis_soul_charm': createTrinketGroup((502,522,528,535,541), 6, 4),
       'assurance_of_consequence': createTrinketGroup((528,540,553,559,566,572), 6, 4),
       'haromms_talisman': createTrinketGroup((528,540,553,559,566,572), 6, 4),
       'sigil_of_rampage': createTrinketGroup((528,540,553,559,566,572), 6, 4),
       'ticking_ebon_detonator': createTrinketGroup((528,540,553,559,566,572), 6, 4),
       'thoks_tail_tip': createTrinketGroup((528,540,553,559,566,572), 6, 4),
       'discipline_of_xuen': createTrinketGroup((496,535), 6, 4),
-      'woundripper_medallion': createTrinketGroup((496,), 6, 4),
+      #'woundripper_medallion': createTrinketGroup((496,), 6, 4),
       
-      'windswept_pages': createTrinketGroup((463,), 1, 8),
-      'searing_words': createTrinketGroup((463,), 1, 8),
-      'relic_of_xuen': createTrinketGroup((476,), 4 ,4),
-      'bottle_of_infinite_stars': createTrinketGroup((476,489,502), 4 , 4),
-      'corens_cold_chromium_coaster': createTrinketGroup((470,), 4, 4),
-      'terror_in_the_mists': createTrinketGroup((483,496,509), 4, 4),
+      #'windswept_pages': createTrinketGroup((463,), 1, 8),
+      #'searing_words': createTrinketGroup((463,), 1, 8),
+      #'relic_of_xuen': createTrinketGroup((476,), 4 ,4),
+      #'bottle_of_infinite_stars': createTrinketGroup((476,489,502), 4 , 4),
+      #'corens_cold_chromium_coaster': createTrinketGroup((470,), 4, 4),
+      #'terror_in_the_mists': createTrinketGroup((483,496,509), 4, 4),
       
-      'gerps_perfect_arrow': (442,),
-      'flashing_steel_talisman': createTrinketGroup((463,), 1, 8),
-      'hawkmasters_talon': createTrinketGroup((489,), 6, 4),
-      'jade_bandit_figurine': createTrinketGroup((476,489,502), 6, 4),
+      #'gerps_perfect_arrow': (442,),
+      #'flashing_steel_talisman': createTrinketGroup((463,), 1, 8),
+      #'hawkmasters_talon': createTrinketGroup((489,), 6, 4),
+      #'jade_bandit_figurine': createTrinketGroup((476,489,502), 6, 4),
     }
 
     gearBoosts = {
@@ -228,12 +268,12 @@ class ShadowcraftComputation:
         #77113: 'kiroptyric_sigil',
         
         #5.0
-        87495: "gerps_perfect_arrow",
-        81265: "flashing_steel_talisman",
-        89082: "hawkmasters_talon",
-        87079: "jade_bandit_figurine",
-        86043: "jade_bandit_figurine",
-        86772: "jade_bandit_figurine",
+        #87495: "gerps_perfect_arrow",
+        #81265: "flashing_steel_talisman",
+        #89082: "hawkmasters_talon",
+        #87079: "jade_bandit_figurine",
+        #86043: "jade_bandit_figurine",
+        #86772: "jade_bandit_figurine",
     }
     
     # combines gearProcs and gearBoosts
@@ -246,6 +286,7 @@ class ShadowcraftComputation:
     tier15IDS = frozenset([95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679])
     tier16IDS = frozenset([99006, 99007, 99008, 99009, 99010, 99112, 99113, 99114, 99115, 99116, 99348, 99349, 99350, 99355, 99356, 99629, 99630, 99631, 99634, 99635])
     tier17IDS = frozenset([115570, 115571, 115572, 115573, 115574])
+    tier17LFRIDS = frozenset([120384, 120383, 120382, 120381, 120380, 120379])
 
     legendary_tier_1 = frozenset([77945, 77946])
     legendary_tier_2 = frozenset([77947, 77948])
@@ -282,7 +323,7 @@ class ShadowcraftComputation:
         'attack_power_buff',
         'mastery_buff',
         'versatility_buff',
-        'agi_flask_mop',
+        'flask_wod_agi',
         'food_mop_agi'
     ]
     
@@ -369,8 +410,6 @@ class ShadowcraftComputation:
         validCycleKeys = [[
                 'min_envenom_size_non_execute',
                 'min_envenom_size_execute',
-                'prioritize_rupture_uptime_non_execute',
-                'prioritize_rupture_uptime_execute'
             ], [
                 'revealing_strike_pooling',
                 'ksp_immediately',
@@ -428,7 +467,7 @@ class ShadowcraftComputation:
         i18n.set_language('local')
 
         # Base
-        _level = int(input.get("l", 90))
+        _level = int(input.get("l", 100))
 
         # Buffs
         buff_list = []
@@ -494,6 +533,9 @@ class ShadowcraftComputation:
 
         if len(self.tier17IDS & gear) >= 4:
             buff_list.append('rogue_t17_4pc')
+        
+        if len(self.tier17LFRIDS & gear) >= 4:
+            buff_list.append('rogue_t17_4pc_lfr')
     
         agi_bonus = 0
         if len(self.arenaSeason9SetIds & gear) >= 2:
@@ -501,6 +543,9 @@ class ShadowcraftComputation:
             
         if len(self.arenaSeason9SetIds & gear) >= 4:
             agi_bonus += 90
+            
+        if len(self.tier17LFRIDS & gear) >= 2:
+            agi_bonus += 100
 
         for k in self.gearBoosts:
             if k in gear:
@@ -533,8 +578,8 @@ class ShadowcraftComputation:
         if input.get("mg") == "capacitive":
             proclist.append('legendary_capacitive_meta')
             
-        if len(frozenset([102248]) & gear) >= 1:
-            proclist.append('fury_of_xuen')
+        #if len(frozenset([102248]) & gear) >= 1:
+        #    proclist.append('fury_of_xuen')
 
         if input.get("l", 0) == 90:
             if input.get("prepot", 0) == 1:
@@ -546,7 +591,7 @@ class ShadowcraftComputation:
             if input.get("prepot", 0) == 1:
                 proclist.append('draenic_agi_prepot')
             if input.get("pot", 0) == 1:
-                proclist.append('draenic_agi')
+                proclist.append('draenic_agi_pot')
         
         _procs = procs.ProcsList(*proclist)
 
@@ -602,7 +647,7 @@ class ShadowcraftComputation:
         rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
         settings_options = {}
         if __builtin__.shadowcraft_engine_version >= 5.4:
-            settings_options['num_boss_adds'] = _opt.get("num_boss_adds", 0)      
+            settings_options['num_boss_adds'] = _opt.get("num_boss_adds", 0)
         if __builtin__.shadowcraft_engine_version >= 6.0:
            settings_options['is_day'] = _opt.get("night_elf_racial", 0) == 1
 
@@ -650,8 +695,8 @@ class ShadowcraftComputation:
             # Glyph ranking is slow
             out["glyph_ranking"] = [] # calculator.get_glyphs_ranking(input.get("gly", []))
             
-            out["meta"] = calculator.get_other_ep(['chaotic_metagem','legendary_capacitive_meta'])
-            out["other_ep"] = calculator.get_other_ep(['fury_of_xuen','rogue_t14_2pc','rogue_t14_4pc','rogue_t15_2pc','rogue_t15_4pc','rogue_t16_2pc','rogue_t16_4pc'])
+            out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
+            out["other_ep"] = calculator.get_other_ep(['rogue_t17_2pc','rogue_t17_4pc','rogue_t17_4pc_lfr','archmages_incandescence','archmages_greater_incandescence'])
             
             trinket_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
 

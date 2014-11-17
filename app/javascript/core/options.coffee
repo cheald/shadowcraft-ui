@@ -104,8 +104,8 @@ class ShadowcraftOptions
   initOptions: ->
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Patch/Engine", 'default': 60, datatype: 'integer', options: {60: '6.0 (Level 90)'}},
-      level: {type: "input", name: "Level", 'default': 90, datatype: 'integer', min: 90, max: 100},
+      patch: {type: "select", name: "Patch/Engine", 'default': 60, datatype: 'integer', options: {60: '6.0 (Level 100)'}},
+      level: {type: "input", name: "Level", 'default': 100, datatype: 'integer', min: 100, max: 100},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
       night_elf_racial: {name: "Racial (Night Elf)", datatype: 'integer', type: 'select', options: {1: 'Day (1% Crit)', 0: 'Night (1% Haste)'}, default: 0}
       duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
@@ -117,27 +117,13 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #generalFilter", "general", {
-      max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this item level in gear lists", 'default': 700, datatype: 'integer', min: 430, max: 700}
-      min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this item level in gear lists", 'default': 430, datatype: 'integer', min: 430, max: 700},
-      show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this item level in gear lists", datatype: 'integer', type: 'input', min: 430, max: 700, 'default': 502}
+      max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this item level in gear lists", 'default': 1000, datatype: 'integer', min: 540, max: 1000}
+      min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this item level in gear lists", 'default': 540, datatype: 'integer', min: 540, max: 1000},
+      show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this item level in gear lists", datatype: 'integer', type: 'input', min: 540, max: 1000, 'default': 540}
       show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
       epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
     })
 
-    @setup("#settings #professions", "professions", {
-      alchemy:        {'default': false, datatype: 'bool', name: "Alchemy"}
-      blacksmithing:  {'default': false, datatype: 'bool', name: "Blacksmithing"}
-      enchanting:     {'default': false, datatype: 'bool', name: "Enchanting"}
-      engineering:    {'default': false, datatype: 'bool', name: "Engineering"}
-      herbalism:      {'default': false, datatype: 'bool', name: "Herbalism"}
-      inscription:    {'default': false, datatype: 'bool', name: "Inscription"}
-      jewelcrafting:  {'default': false, datatype: 'bool', name: "Jewelcrafting"}
-      leatherworking: {'default': false, datatype: 'bool', name: "Leatherworking"}
-      mining:         {'default': false, datatype: 'bool', name: "Mining"}
-      skinning:       {'default': false, datatype: 'bool', name: "Skinning"}
-      tailoring:      {'default': false, datatype: 'bool', name: "Tailoring"}
-    })
-    
     @setup("#settings #playerBuffs", "buffs", {
       food_mop_agi: {name: "Food Buff", desc: "34 Agility Food", 'default': true, datatype: 'bool'},
       agi_flask_mop: {name: "Agility Flask", desc: "Mists Flask (114 Agility)", 'default': true, datatype: 'bool'},
@@ -148,7 +134,7 @@ class ShadowcraftOptions
       multistrike_buff: {name: "5% Multistrike", desc: "Swiftblade's Cunning", 'default': true, datatype: 'bool'},
       attack_power_buff: {name: "10% Attack Power", desc: "Horn of Winter/Trueshot Aura/Battle Shout", 'default': true, datatype: 'bool'},
       mastery_buff: {name: "Mastery", desc: "Blessing of Might/Grace of Air", 'default': true, datatype: 'bool'},
-      versatility_buff: {name: "3% Versatility", desc: "PH", 'default': true, datatype: 'bool'},
+      versatility_buff: {name: "3% Versatility", desc: "", 'default': true, datatype: 'bool'},
     })
 
     @setup("#settings #raidOther", "general", {
@@ -164,8 +150,6 @@ class ShadowcraftOptions
     @setup("#settings section.mutilate .settings", "rotation", {
       min_envenom_size_non_execute: {type: "select", name: "Min CP/Envenom > 35%", options: [5,4,3,2,1], 'default': 4, desc: "CP for Envenom when using Mutilate, no effect with Anticipation", datatype: 'integer', min: 1, max: 5}
       min_envenom_size_execute: {type: "select", name: "Min CP/Envenom < 35%", options: [5,4,3,2,1], 'default': 5, desc: "CP for Envenom when using Dispatch, no effect with Anticipation", datatype: 'integer', min: 1, max: 5}
-      prioritize_rupture_uptime_non_execute: {type: "check", name: "Prioritize Rupture (>35%)", desc: "Prioritize Rupture over Envenom when your CP builder is Mutilate", default: true, datatype: 'bool'}
-      prioritize_rupture_uptime_execute: {type: "check", name: "Prioritize Rupture (<35%)", desc: "Prioritize Rupture over Envenom when your CP builder is Dispatch", default: true, datatype: 'bool'}
       opener_name_assassination: {type: "select", name: "Opener Name", options: {'mutilate': "Mutilate", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
       opener_use_assassination: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })
