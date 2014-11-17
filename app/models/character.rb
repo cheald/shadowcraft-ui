@@ -14,6 +14,7 @@ class Character
   RACES = ['Human', 'Gnome', 'Dwarf', 'Night Elf', 'Worgen', 'Troll', 'Orc', 'Goblin', 'Undead', 'Pandaren']
   REGIONS = ['US', 'EU', 'KR', 'TW', 'CN', 'SEA']
   CLASSES = ['rogue']
+  MAX_LEVEL = 100
 
   validates_inclusion_of :region, :in => REGIONS
   validates_presence_of :name, :message => '%{value} could not be found on the Armory.'
@@ -187,8 +188,8 @@ class Character
   def is_supported_level?
     return false unless properties
     return false unless properties['level']
-    unless properties['level'] >= 90
-      errors.add :character, 'must be level 90 or higher to be supported by Shadowcraft.'
+    unless properties['level'] == MAX_LEVEL
+      errors.add :character, "must be level #{MAX_LEVEL} to be supported by Shadowcraft."
       return false
     end
     true

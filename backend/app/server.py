@@ -46,52 +46,6 @@ class ShadowcraftComputation:
     }
 
     gearProcs = {
-        #58181: 'fluid_death',
-        #56295: 'heroic_grace_of_the_herald',
-        #55266: 'grace_of_the_herald',
-        #56328: 'heroic_key_to_the_endless_chamber',
-        #56427: 'heroic_left_eye_of_rajh',
-        #65026: 'heroic_prestors_talisman_of_machination',
-        #56394: 'heroic_tias_grace',
-        #62049: 'darkmoon_card_hurricane',
-        #62051: 'darkmoon_card_hurricane',
-        #59473: 'essence_of_the_cyclone',
-        #65140: 'heroic_essence_of_the_cyclone',
-        #66969: 'heart_of_the_vile',
-        #55795: 'key_to_the_endless_chamber',
-        #56102: 'left_eye_of_rajh',
-        #59441: 'prestors_talisman_of_machination',
-        #68163: 'the_twilight_blade',
-        #55874: 'tias_grace',
-        #59520: 'unheeded_warning',
-        #71633: 'aellas_bottle',
-        #68994: 'matrix_restabilizer',
-        #69150: 'heroic_matrix_restabilizer',
-        #71335: 'corens_chilled_chromium_coaster',
-        #66969: 'heart_of_the_vile',
-        #65805: 'schnottz_medallion_of_command',
-        #68927: 'the_hungerer',
-        #69112: 'heroic_the_hungerer',
-        #70144: 'rickets_magnetic_fireball_proc',
-
-        # 4.3
-        #77979: 'lfr_vial_of_shadows',
-        #77207: 'vial_of_shadows',
-        #77999: 'heroic_vial_of_shadows',
-
-        #77974: 'lfr_wrath_of_unchaining',
-        #77197: 'wrath_of_unchaining',
-        #77994: 'heroic_wrath_of_unchaining',
-
-        #77993: 'heroic_starcatcher_compass',
-        #77973: 'lfr_starcatcher_compass',
-        #77202: 'starcatcher_compass',
-
-        #78481 : 'lfr_nokaled_the_elements_of_death',
-        #77188: 'nokaled_the_elements_of_death',
-        #78472: 'heroic_nokaled_the_elements_of_death',
-
-        #72897: 'arrow_of_time',
 
         # 5.0
         #81125: "windswept_pages",
@@ -256,16 +210,6 @@ class ShadowcraftComputation:
     }
 
     gearBoosts = {
-        #56115: 'skardyns_grace',
-        #56440: 'heroic_skardyns_grace',
-        #68709: 'unsolvable_riddle',
-        #62468: 'unsolvable_riddle',
-        #62463: 'unsolvable_riddle',
-        #52199: 'demon_panther',
-        #69199: 'heroic_ancient_petrified_seed',
-        #69001: 'ancient_petrified_seed',
-        #70144: 'rickets_magnetic_fireball',
-        #77113: 'kiroptyric_sigil',
         
         #5.0
         #87495: "gerps_perfect_arrow",
@@ -279,21 +223,11 @@ class ShadowcraftComputation:
     # combines gearProcs and gearBoosts
     trinketMap = dict(gearProcs, **gearBoosts)
 
-    tier11IDS = frozenset([60298, 65240, 60299, 65241, 60300, 65242, 60302, 65243, 60301, 65239])
-    tier12IDS = frozenset([71046, 71538, 71047, 71539, 71048, 71540, 71049, 71541, 71045, 71537])
-    tier13IDS = frozenset([78664, 78679, 78699, 78708, 78738, 77023, 77024, 77025, 77026, 77027, 78759, 78774, 78794, 78803, 78833])
     tier14IDS = frozenset([85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128])
     tier15IDS = frozenset([95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679])
     tier16IDS = frozenset([99006, 99007, 99008, 99009, 99010, 99112, 99113, 99114, 99115, 99116, 99348, 99349, 99350, 99355, 99356, 99629, 99630, 99631, 99634, 99635])
     tier17IDS = frozenset([115570, 115571, 115572, 115573, 115574])
     tier17LFRIDS = frozenset([120384, 120383, 120382, 120381, 120380, 120379])
-
-    legendary_tier_1 = frozenset([77945, 77946])
-    legendary_tier_2 = frozenset([77947, 77948])
-    legendary_tier_3 = frozenset([77949, 77950])
-    legendary_mainhands = frozenset([77945, 77947, 77949])
-
-    arenaSeason9SetIds = frozenset([60458, 60459, 60460, 60461, 60462, 64769, 64770, 64771, 64772, 64773, 65545, 65546, 65547, 65548, 65549])
 
     subclassMap = {
     -1: None,
@@ -327,86 +261,7 @@ class ShadowcraftComputation:
         'food_mop_agi'
     ]
     
-    if __builtin__.shadowcraft_engine_version == 4.1:
-        validCycleKeys = [[
-                'min_envenom_size_mutilate',
-                'min_envenom_size_backstab',
-                'prioritize_rupture_uptime_mutilate',
-                'prioritize_rupture_uptime_backstab'
-            ], [
-                'use_rupture',
-                'use_revealing_strike',
-                'ksp_immediately'
-            ], [
-                'clip_recuperate'
-            ]
-        ]
-    elif __builtin__.shadowcraft_engine_version == 4.2 or __builtin__.shadowcraft_engine_version == 4.3:
-        validCycleKeys = [[
-                'min_envenom_size_mutilate',
-                'min_envenom_size_backstab',
-                'prioritize_rupture_uptime_mutilate',
-                'prioritize_rupture_uptime_backstab'
-            ], [
-                'use_rupture',
-                'use_revealing_strike',
-                'ksp_immediately'
-            ], [
-                'clip_recuperate',
-                'use_hemorrhage'
-            ]
-        ]
-    elif __builtin__.shadowcraft_engine_version == 5.0:
-        validCycleKeys = [[
-                'min_envenom_size_non_execute',
-                'min_envenom_size_execute',
-                'prioritize_rupture_uptime_non_execute',
-                'prioritize_rupture_uptime_execute'
-            ], [
-                'use_rupture',
-                'revealing_strike_pooling',
-                'ksp_immediately',
-                'blade_flurry'
-            ], [
-                'clip_recuperate',
-                'use_hemorrhage'
-            ]
-        ]
-    elif __builtin__.shadowcraft_engine_version == 5.2:
-        validCycleKeys = [[
-                'min_envenom_size_non_execute',
-                'min_envenom_size_execute',
-                'prioritize_rupture_uptime_non_execute',
-                'prioritize_rupture_uptime_execute'
-            ], [
-                'use_rupture',
-                'revealing_strike_pooling',
-                'ksp_immediately',
-                'blade_flurry',
-                'stack_cds',
-                'bf_targets'
-            ], [
-                'use_hemorrhage'
-            ]
-        ]
-    elif __builtin__.shadowcraft_engine_version == 5.4:
-        validCycleKeys = [[
-                'min_envenom_size_non_execute',
-                'min_envenom_size_execute',
-                'prioritize_rupture_uptime_non_execute',
-                'prioritize_rupture_uptime_execute'
-            ], [
-                'use_rupture',
-                'revealing_strike_pooling',
-                'ksp_immediately',
-                'blade_flurry',
-                'stack_cds'
-            ], [
-                'use_hemorrhage',
-                'sub_sb_timing'
-            ]
-        ]
-    elif __builtin__.shadowcraft_engine_version == 6.0:
+    if __builtin__.shadowcraft_engine_version == 6.0:
         validCycleKeys = [[
                 'min_envenom_size_non_execute',
                 'min_envenom_size_execute',
@@ -492,24 +347,6 @@ class ShadowcraftComputation:
         if input.get("mg") == "chaotic":
             buff_list.append('chaotic_metagem')
 
-        if len(self.tier11IDS & gear) >= 2:
-            buff_list.append('rogue_t11_2pc')
-
-        if len(self.tier12IDS & gear) >= 2:
-            buff_list.append('rogue_t12_2pc')
-
-        if len(self.tier12IDS & gear) >= 4:
-            buff_list.append('rogue_t12_4pc')
-
-        if len(self.tier13IDS & gear) >= 2:
-            buff_list.append('rogue_t13_2pc')
-
-        if len(self.tier13IDS & gear) >= 4:
-            buff_list.append('rogue_t13_4pc')
-
-        if len(self.legendary_mainhands & gear) >= 1:
-            buff_list.append('rogue_t13_legendary')
-
         if len(self.tier14IDS & gear) >= 2:
             buff_list.append('rogue_t14_2pc')
 
@@ -563,17 +400,6 @@ class ShadowcraftComputation:
                         proclist.append((self.gearProcs[k],gd[1]))
                         break
         
-        if len(self.tier11IDS & gear) >= 4:
-            proclist.append('rogue_t11_4pc')
-
-        if len(self.legendary_tier_1 & gear) >= 2:
-            proclist.append('jaws_of_retribution')
-
-        if len(self.legendary_tier_2 & gear) >= 2:
-            proclist.append('maw_of_oblivion')
-
-        if len(self.legendary_tier_3 & gear) >= 2:
-            proclist.append('fangs_of_the_father')
 
         if input.get("mg") == "capacitive":
             proclist.append('legendary_capacitive_meta')
@@ -609,7 +435,7 @@ class ShadowcraftComputation:
         _stats = stats.Stats(
             _mh, _oh, _procs, _gear_buffs,
             s[0], # Str
-            s[1]  + agi_bonus, # AGI
+            s[1], # AGI
             0,
             0,
             0,
