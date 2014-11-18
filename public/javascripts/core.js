@@ -2902,6 +2902,28 @@
         return epValue;
       }
     };
+    ShadowcraftGear.prototype.lockAll = function() {
+      var gear, item, slot, _i, _len;
+      Shadowcraft.Console.log("Locking all items");
+      for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
+        slot = SLOT_ORDER[_i];
+        gear = Shadowcraft.Data.gear[slot];
+        item = getItem(gear.original_id, gear.item_level, gear.suffix);
+        gear.locked = true;
+      }
+      return Shadowcraft.Gear.updateDisplay();
+    };
+    ShadowcraftGear.prototype.unlockAll = function() {
+      var gear, item, slot, _i, _len;
+      Shadowcraft.Console.log("Unlocking all items");
+      for (_i = 0, _len = SLOT_ORDER.length; _i < _len; _i++) {
+        slot = SLOT_ORDER[_i];
+        gear = Shadowcraft.Data.gear[slot];
+        item = getItem(gear.original_id, gear.item_level, gear.suffix);
+        gear.locked = false;
+      }
+      return Shadowcraft.Gear.updateDisplay();
+    };
     ShadowcraftGear.prototype.optimizeGems = function(depth) {
       var Gems, data, from_gem, gear, gem, gemIndex, gem_list, gem_offset, item, madeChanges, rec, slotIndex, to_gem, _i, _len, _len2, _ref;
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
@@ -3025,6 +3047,9 @@
           continue;
         }
         item = getItem(gear.original_id, gear.item_level, gear.suffix);
+        if (!item) {
+          continue;
+        }
         enchant_offset = statOffset(gear, FACETS.ENCHANT);
         enchants = getApplicableEnchants(slotIndex, item, enchant_offset);
         if (item) {
@@ -4022,6 +4047,18 @@
           window._gaq.push(['_trackEvent', "Character", "Optimize Enchants"]);
         }
         return Shadowcraft.Gear.optimizeEnchants();
+      });
+      $("#lockAll").click(function() {
+        if (window._gaq) {
+          window._gaq.push(['_trackEvent', "Character", "Lock All"]);
+        }
+        return Shadowcraft.Gear.lockAll();
+      });
+      $("#unlockAll").click(function() {
+        if (window._gaq) {
+          window._gaq.push(['_trackEvent', "Character", "Unlock All"]);
+        }
+        return Shadowcraft.Gear.unlockAll();
       });
       $slots.click($.delegate({
         ".upgrade": clickItemUpgrade,

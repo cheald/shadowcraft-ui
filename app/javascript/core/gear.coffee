@@ -513,6 +513,7 @@ class ShadowcraftGear
       continue if gear.locked
 
       item = getItem(gear.original_id, gear.item_level, gear.suffix)
+      continue unless item
       enchant_offset = statOffset(gear, FACETS.ENCHANT)
 
       enchants = getApplicableEnchants(slotIndex, item, enchant_offset)

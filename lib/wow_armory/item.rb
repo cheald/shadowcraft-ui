@@ -167,7 +167,7 @@ module WowArmory
     ENCHANT_SCALING = 10.0 # for lvl 90 // lvl100 = 80
 
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :bonus_trees, :bonus_sockets
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :bonus_trees, :chance_bonus_lists
     attr_accessor *ACCESSORS
     def initialize(id, source = 'wowapi', name = nil, context = '', bonus_trees = [], override_ilvl = nil, is_upgradable = nil)
       self.name = name
@@ -270,15 +270,10 @@ module WowArmory
         end
       end
 
-      unless @json['bonusSummary']['bonusChances'].nil?
-        @json['bonusSummary']['bonusChances'].each do |chance|
-          if chance['chanceType'] == 'SOCKET'
-            self.bonus_sockets =[]
-            chance['sockets'].each do |socket|
-              self.bonus_sockets.push socket['socketType'].capitalize
-            end
-          end
-        end
+      unless @json['bonusSummary']['chanceBonusLists'].nil?
+        self.chance_bonus_lists = @json['bonusSummary']['chanceBonusLists']
+      else
+        self.chance_bonus_lists = []
       end
 
       unless @json['weaponInfo'].nil?

@@ -119,6 +119,9 @@ class Item
     if properties['bonus_trees']
       json[:bonus_trees] = properties['bonus_trees']
     end
+    if properties['chance_bonus_lists']
+      json[:chance_bonus_lists] = properties['chance_bonus_lists']
+    end
 
     json
   end
@@ -133,7 +136,15 @@ class Item
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=630;maxle=665;ub=4;cr=21;crs=1;crv=0"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=666;maxle=700;ub=4;cr=21;crs=1;crv=0"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=701;maxle=750;ub=4;cr=21;crs=1;crv=0"
+
+    # trinkets
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4.-4?filter=minle=530;ro=1"
+    # do not import mop trinkets here, so remove them
+    item_ids -= [ 105029, 104780, 102301, 105278, 104531, 105527 ] # haromms_talisman
+    item_ids -= [ 105082, 104833, 102302, 105331, 104584, 105580 ] # sigil_of_rampage
+    item_ids -= [ 104974, 104725, 102292, 105223, 104476, 105472 ] # assurance_of_consequence
+    item_ids -= [ 105114, 104865, 102311, 105363, 104616, 105612 ] # ticking_ebon_detonator
+
     pos = 0
     item_ids.each do |id|
       pos = pos + 1
