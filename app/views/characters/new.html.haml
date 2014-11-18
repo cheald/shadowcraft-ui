@@ -30,7 +30,7 @@
       %strong
         = value
     =error_messages_for :character, :header_message => "Oops - something's not quite right!", :message => ""
-    =form_for @character do |f|
+    =form_for @character, :url => characters_path do |f|
       %span
         %label{:for => "character_name"} Character Name
         =f.text_field :name
@@ -50,6 +50,8 @@
             #{f.radio_button :region, "TW"} TW
           %label
             #{f.radio_button :region, "CN"} CN
+          %level
+            #{f.radio_button :region, "SEA"} SEA
       .submit
         =f.submit "Begin"
 #wait

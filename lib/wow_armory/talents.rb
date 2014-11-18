@@ -10,8 +10,8 @@ module WowArmory
       @character = character
       @realm = realm
       @region = region
-      fetch region, "character/%s/%s/talent/%s" % [normalize_realm(realm), normalize_character(character), tree]
-      populate!
+      #fetch region, "character/%s/%s/talent/%s" % [normalize_realm(realm), normalize_character(character), tree]
+      #populate!
     end
 
     def as_json(options = {})

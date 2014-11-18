@@ -7,7 +7,9 @@ module WowArmory
     @rand_prop_points = nil
     @item_data = nil
     @item_damage_one_hand = nil
-    
+    @item_bonus_trees = nil
+    @item_bonus_data = nil
+
     STAT_LOOKUP = {
       49=>:mastery, 
       38=>:attack_power, 
@@ -45,7 +47,8 @@ module WowArmory
       59=>:multistrike,
       58=>:amplify,
       50=>:bonus_armor,
-      63=>:avoidance
+      63=>:avoidance,
+      67=>:versatility
     }
 
     WOWHEAD_MAP = {
@@ -62,34 +65,24 @@ module WowArmory
       "versatility" => "versatility"
     }
 
-    SUFFIX_NAME_MAP = {
-      133 => "of the Stormblast",
-      134 => "of the Galeburst",
-      135 => "of the Windflurry",
-      136 => "of the Zephyr",
-      137 => "of the Windstorm",
-      336 => "[Crit]",
-      337 => "[Crit]", # was hit
-      338 => "[Haste]", # was expertise
-      339 => "[Mastery]",
-      340 => "[Haste]",
-      344 => "of the Decimator", # 5.3 Barrens
-      345 => "of the Unerring",
-      346 => "of the Adroit",
-      347 => "of the Savant",
-      348 => "of the Impatient", # 5.3 Barrens
-      353 => "of the Stormblast", # 5.3 Stormblast - Agi
-      354 => "of the Galeburst", # 5.3 Galeburst - Agi
-      355 => "of the Windflurry", # 5.3 Windflurry - Agi
-      356 => "of the Windstorm", # 5.3 Windstorm - Agi
-      357 => "of the Zephyr", # 5.3 Zephyr - Agi
+    BONUS_ACTIONS = {
+       1 => :ADJUST_ITEM_LEVEL,
+       2 => :MODIFY_STATS,
+       3 => :CHANGE_ITEM_QUALITY,
+       4 => :ADD_ITEM_TITLES,
+       5 => :APPEND_WORDS_TO_ITEM_NAME,
+       6 => :ADD_SOCKETS,
+       7 => :ADJUST_ITEM_APPEARANCE_ID,
+       8 => :ADJUST_EQUIP_LEVEL,
+       9 => :UNKNOWN_1,
+      10 => :UNKNOWN_2,
     }
 
     ITEM_SOCKET_COST = 8.0 # lvl 100 = 30.
 
-    ACCESSORS = :stats, :name, :dps, :random_suffix, :upgrade_level
+    ACCESSORS = :stats, :name, :dps, :random_suffix, :upgrade_level, :bonus_trees
     attr_accessor *ACCESSORS
-    def initialize(properties, random_suffix = nil, upgrade_level = nil)
+    def initialize(properties, random_suffix = nil, upgrade_level = nil, bonus_trees = [])
       self.stats = {}
       @properties = properties
       self.random_suffix = random_suffix
@@ -97,6 +90,7 @@ module WowArmory
       self.upgrade_level = upgrade_level
       self.upgrade_level = nil if self.upgrade_level == 0
       self.name = @properties[:name]
+      self.bonus_trees = bonus_trees
 
       populate_stats
     end
@@ -120,7 +114,7 @@ module WowArmory
         enchantid = row[3+i]
         multiplier = row[8+i].to_f / 10000.0
         basevalue = base[1+quality_index(@properties[:quality])*5+slot_index(@properties[:equip_location])]
-        if enchantid != "0"
+        if enchantid != '0'
           stat = item_enchants[enchantid][14].to_i
           self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).to_i
         end
@@ -138,12 +132,12 @@ module WowArmory
       # wod offset
       offset = 0
       10.times do |i|
-        break if row[16+offset+i] == "-1"
+        break if row[16+offset+i] == '-1'
         enchantid = row[16+offset+i] # more or less stat-id
         multiplier = row[36+offset+i].to_f
         socket_mult  = row[46+offset+i].to_f
         basevalue = base[1+quality_index(@properties[:quality])*5+slot_index(@properties[:equip_location])]
-        if enchantid != "0"
+        if enchantid != '0'
           stat = enchantid.to_i
           
           value = ((multiplier/10000.0) * basevalue.to_f).round - (socket_mult * ITEM_SOCKET_COST).round
@@ -216,6 +210,22 @@ module WowArmory
     def item_damage_one_hand
       @@item_damage_one_hand ||= Hash.new.tap do |hash|
         FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_ItemDamageOneHand.dbc.csv")) do |row|
+          hash[row[0].to_s] = row
+        end
+      end
+    end
+
+    def item_bonus_trees
+      @@item_bonus_trees ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_item_bonus_tree_data.csv')) do |row|
+          hash[row[1].to_s] = row
+        end
+      end
+    end
+
+    def item_bonus_data
+      @@item_bonus_data ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_item_bonus_data.csv')) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -298,16 +308,30 @@ module WowArmory
       # if weapon: update dps
       if not @properties[:speed].nil? and not @properties[:speed].blank?
         row = item_damage_one_hand[@properties[:ilevel].to_s]
-        self.dps = row[1+@properties[:quality]].to_f
+        if @properties[:quality] > 4
+          self.dps = row[1+4].to_f
+        else
+          self.dps = row[1+@properties[:quality]].to_f
+        end
       end
-      #puts "#{self.name} #{@properties[:tag]} #{@properties[:ilevel]}"
-      #puts self.stats.inspect
+      puts "#{self.name} #{@properties[:tag]} #{@properties[:ilevel]}"
+      puts self.stats.inspect
     end
 
-    SCAN_ATTRIBUTES = ["agility", "strength", "intellect", "spirit", "stamina", "attack power", "critical strike", "versatility", "multistrike",
-                       "haste", "mastery", "pvp resilience", "pvp power", "all stats", "dodge", "block", "parry"
+    def get_bonus_data_rows(bonus_id)
+      bonus_data_rows = []
+      item_bonus_data.each_value do |row|
+        if row[1] == bonus_id
+          bonus_data_rows.push(row)
+        end
+      end
+      return bonus_data_rows
+    end
+
+    SCAN_ATTRIBUTES = ['agility', 'strength', 'intellect', 'spirit', 'stamina', 'attack power', 'critical strike', 'versatility', 'multistrike',
+                       'haste', 'mastery', 'pvp resilience', 'pvp power', 'all stats', 'dodge', 'block', 'parry'
     ]
-    SCAN_OVERRIDE = { "critical strike" => "crit", 
+    SCAN_OVERRIDE = { 'critical strike' => 'crit',
                         #"hit" => "hit rating",
                         #"expertise" => "expertise rating",
                         #"haste" => "haste rating",
@@ -315,26 +339,6 @@ module WowArmory
                         #"pvp resilience" => "resilience",
                         #"pvp power" => "pvp power rating"
                       }
-
-    # used for battle.net tooltip
-    def scan_stats
-      stats = {}
-      @document.css(".item-specs li").each do  |li|
-        if li.attr("id").present? and match = li.attr("id").match(/stat-(\d+)/)
-          if value = li.text.strip.match(/(\d+)/)
-            stat = STAT_LOOKUP[ match[1].to_i ]
-            stats[stat] = value[1].to_i
-          end
-        end
-
-        li.text.strip.split(" and ").each do |chunk|
-          scan_str(chunk.strip).each do |stat, val|
-            stats[stat] ||= val
-          end
-        end
-      end
-      stats
-    end
 
     def scan_str(str)
       map = SCAN_ATTRIBUTES.map do |attr|
@@ -354,12 +358,12 @@ module WowArmory
     def fix_gem_colors(color)
       return nil if color.nil?
       case color
-      when "Red or Yellow"
-        return "Orange"
-      when "Red or Blue"
-        return "Purple"
-      when "Blue or Yellow", "Yellow or Blue"
-        return "Green"
+      when 'Red or Yellow'
+        return 'Orange'
+      when 'Red or Blue'
+        return 'Purple'
+      when 'Blue or Yellow', 'Yellow or Blue'
+        return 'Green'
       else
         color
       end

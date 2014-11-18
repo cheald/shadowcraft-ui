@@ -38,6 +38,9 @@
       R.ENCHANTS = #{raw enchant_json.to_json};
       R.TALENTS_WOD = #{raw @talents_wod.to_json};
       R.GLYPHS = #{raw @glyphs.to_json};
+      R.SOCKET_BONUS_IDS = #{raw @socket_bonus_ids.to_json};
+      R.ITEM_BONUSES = #{raw @item_bonuses.to_json};
+      R.RAND_PROP_POINTS = #{raw @rand_prop_points.to_json};
 
       function expandItem(item, map) {
         expandStats(item, map);

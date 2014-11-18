@@ -12,7 +12,7 @@ class Character
   field :uid, :index => true
 
   RACES = ['Human', 'Gnome', 'Dwarf', 'Night Elf', 'Worgen', 'Troll', 'Orc', 'Goblin', 'Undead', 'Pandaren']
-  REGIONS = ['US', 'EU', 'KR', 'TW', 'CN']
+  REGIONS = ['US', 'EU', 'KR', 'TW', 'CN', 'SEA']
   CLASSES = ['rogue']
   MAX_LEVEL = 100
 
@@ -73,7 +73,7 @@ class Character
       # iterate over the players gear and if an item or gem is missing import it from external sources
       properties['gear'].each do |slot, item|
         # import item and all there upgrade_levels
-        Item.import item['item_id'].to_i, [nil, 1, 2, 3, 4, 5, 6], [item['suffix']]
+        Item.wod_import item['item_id'].to_i
         # import every gem from the equipped item
         [item['g0'], item['g1'], item['g2']].each do |gemid|
           # only proceed if there is a gem
@@ -82,7 +82,7 @@ class Character
             db_item = Item.find_or_initialize_by(:remote_id => gemid.to_i)
             # if new item collect the properties of the item
             if db_item.properties.nil?
-              item = WowArmory::Item.new(gemid.to_i, "wowhead_wod")
+              item = WowArmory::Item.new(gemid.to_i, 'wowhead')
               db_item.properties = item.as_json.with_indifferent_access
               db_item.equip_location = db_item.properties['equip_location']
               db_item.is_gem = !db_item.properties['gem_slot'].blank?
@@ -100,7 +100,7 @@ class Character
   def as_json(options = {})
     #Rails.logger.debug Character.encode_random_items(properties["gear"]).inspect
     {
-        :gear => Character.encode_items(properties['gear']),
+        :gear => properties['gear'],
         :talents => properties['talents'],
         :active => if not properties['active'].nil?
                      properties['active']

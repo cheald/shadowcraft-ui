@@ -15,48 +15,52 @@ module WowArmory
 
   module Document
     unloadable
-    def fetch(region, resource, parse = :xml)
+    def self.fetch(region, resource, params, parse = :json)
       host = case parse
       when :json
         case region.downcase
-          when "us"
-            "http://us.battle.net/"
-          when "eu"
-            "http://eu.battle.net/"
-          when "kr"
-            "http://kr.battle.net/"
-          when "tw"
-            "http://tw.battle.net/"
-          when "cn"
-            "http://www.battlenet.com.cn/"
+          when 'us'
+            'us.api.battle.net'
+          when 'eu'
+            'eu.api.battle.net'
+          when 'kr'
+            'kr.api.battle.net'
+          when 'tw'
+            'tw.api.battle.net'
+          when 'cn'
+            'www.api.battlenet.com.cn'
+          when 'sea'
+            'sea.api.battle.net'
           else
-            "http://us.battle.net/"
+            'us.api.battle.net'
         end
       when :xml, false
         case region.downcase
-          when "us"
-            "http://us.battle.net/wow/en/"
-          when "eu"
-            "http://eu.battle.net/wow/en/"
-          when "kr"
-            "http://kr.battle.net/wow/ko/"
-          when "tw"
-            "http://tw.battle.net/wow/zh/"
-          when "cn"
-            "http://cn.battle.net/wow/zh/"
+          when 'us'
+            'us.battle.net/wow/en'
+          when 'eu'
+            'eu.battle.net/wow/en'
+          when 'kr'
+            'kr.battle.net/wow/ko'
+          when 'tw'
+            'tw.battle.net/wow/zh'
+          when 'cn'
+            'cn.battle.net/wow/zh'
+          when 'sea'
+            'sea.battle.net/wow/sea'
           else
-            "http://us.battle.net/wow/en/"
+            'us.battle.net/wow/en'
         end
       end
 
-      url = URI.escape(host + resource)
+      params[:apikey] = BLIZZARD_CREDENTIALS['apikey']
+      url = 'https://' + host + resource + '?' + params.to_query
       tries = 0
-      # BLIZZARD_CREDENTIALS
       begin
         result = Curl::Easy.http_get(url) do |curl|
           curl.timeout = 7
-          curl.headers["User-Agent"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13"
-          sign_request("GET", curl)
+          curl.headers['User-Agent'] = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13'
+          #sign_request('GET', curl)
         end
         if result.response_code >= 400 and result.response_code < 500
           raise MissingDocument.new "Armory returned #{result.response_code}", result.response_code
@@ -70,8 +74,9 @@ module WowArmory
         elsif parse == :json
           @json = JSON::load @content
           if @json.blank?
-            raise ArmoryError.new "Armory returned empty data", 404
+            raise ArmoryError.new 'Armory returned empty data', 404
           end
+          return @json
         else
           @content
         end
@@ -86,17 +91,17 @@ module WowArmory
       end
     end
 
-    def sign_request(verb, curl)
-      return if BLIZZARD_CREDENTIALS["public"].nil?
+    def self.sign_request(verb, curl)
+      return if BLIZZARD_CREDENTIALS['public'].nil?
       path = URI.parse(curl.url).path
-      curl.headers["Date"] = Time.now.gmtime.rfc2822.gsub("-0000", "GMT")
-      string_to_sign = "%s\n%s\n%s\n" % [verb, curl.headers["Date"], path]
-      signature = Base64.encode64(HMAC::SHA1.digest(BLIZZARD_CREDENTIALS["private"], string_to_sign)).strip
-      curl.headers["Authorization"] = "BNET %s:%s" % [BLIZZARD_CREDENTIALS["public"], signature]
+      curl.headers['Date'] = Time.now.gmtime.rfc2822.gsub('-0000', 'GMT')
+      string_to_sign = "%s\n%s\n%s\n" % [verb, curl.headers['Date'], path]
+      signature = Base64.encode64(HMAC::SHA1.digest(BLIZZARD_CREDENTIALS['private'], string_to_sign)).strip
+      curl.headers['Authorization'] = 'BNET %s:%s' % [BLIZZARD_CREDENTIALS['public'], signature]
     end
 
     def normalize_realm(realm)
-      realm.downcase.gsub(/['’]/, "").gsub(/ /, "-").gsub(/[àáâãäå]/, "a").gsub(/[ö]/, "o")
+      realm.downcase.gsub(/['’]/, '').gsub(/ /, '-').gsub(/[àáâãäå]/, 'a').gsub(/[ö]/, 'o')
     end
 
     def normalize_character(character)
