@@ -162,6 +162,15 @@ class ShadowcraftComputation:
           subgroup += (i,)
         trinketGroup.append(subgroup)
       return trinketGroup
+      
+    def createTrinketGroupFast(base_ilvls, upgrade_level, upgrade_steps):
+      trinketGroup = []
+      subgroup = ()
+      for base_ilvl in base_ilvls:
+        for i in xrange(base_ilvl,base_ilvl + (upgrade_level+1)*upgrade_steps ,upgrade_steps):
+          subgroup += (i,)
+      trinketGroup.append(subgroup)
+      return trinketGroup
     
     # used for rankings
     trinketGroups = {
@@ -188,12 +197,12 @@ class ShadowcraftComputation:
       #'talisman_of_bloodlust': createTrinketGroup((502,522,528,535,541), 6, 4),
       #'vicious_talisman_of_the_shado-pan_assault': createTrinketGroup((522,), 6, 4),
       #'renatakis_soul_charm': createTrinketGroup((502,522,528,535,541), 6, 4),
-      'assurance_of_consequence': createTrinketGroup((528,540,553,559,566,572), 6, 4),
-      'haromms_talisman': createTrinketGroup((528,540,553,559,566,572), 6, 4),
-      'sigil_of_rampage': createTrinketGroup((528,540,553,559,566,572), 6, 4),
-      'ticking_ebon_detonator': createTrinketGroup((528,540,553,559,566,572), 6, 4),
-      'thoks_tail_tip': createTrinketGroup((528,540,553,559,566,572), 6, 4),
-      'discipline_of_xuen': createTrinketGroup((496,535), 6, 4),
+      'assurance_of_consequence': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
+      'haromms_talisman': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
+      'sigil_of_rampage': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
+      'ticking_ebon_detonator': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
+      'thoks_tail_tip': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
+      'discipline_of_xuen': createTrinketGroupFast((496,535), 6, 4),
       #'woundripper_medallion': createTrinketGroup((496,), 6, 4),
       
       #'windswept_pages': createTrinketGroup((463,), 1, 8),
