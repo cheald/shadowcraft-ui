@@ -519,7 +519,7 @@ class ShadowcraftComputation:
             is_pvp = _opt.get("pvp", False)
             if is_pvp:
                 default_ep_stats.append("pvp_power")
-            out["ep"] = calculator.get_ep(ep_stats=default_ep_stats,baseline_dps=out["total_dps"])
+            out["ep"] = calculator.get_ep(ep_stats=default_ep_stats)
 
             # Glyph ranking is slow
             out["glyph_ranking"] = [] # calculator.get_glyphs_ranking(input.get("gly", []))
