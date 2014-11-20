@@ -65,22 +65,22 @@ class ShadowcraftGear
     Weights
 
   SLOT_INVTYPES =
-      0: 1
-      1: 2
-      2: 3
-      14: 16
-      4: 5
-      8: 9
-      9: 10
-      5: 6
-      6: 7
-      7: 8
-      10: 11
-      11: 11
-      12: 12
-      13: 12
-      15: "mainhand"
-      16: "offhand"
+      0: 1 # head
+      1: 2 # neck
+      2: 3 # shoulder
+      14: 16 # back
+      4: 5 # chest
+      8: 9 # wrist
+      9: 10 # gloves
+      5: 6 # belt
+      6: 7 # legs
+      7: 8 # boots
+      10: 11 # ring1
+      11: 11 # ring2
+      12: 12 # trinket1
+      13: 12 # trinket2
+      15: "mainhand" # mainhand
+      16: "offhand" # offhand
 
   EP_PRE_REGEM = null
   EP_TOTAL = null
@@ -89,17 +89,16 @@ class ShadowcraftGear
   $popup = null
 
   getRandPropRow = (slotIndex) ->
+    slotIndex = parseInt(slotIndex, 10)
     switch slotIndex
-      when 1, 5, 7
+      when 0, 4, 6
         return 0
-      when 3, 6, 8, 10, 12
+      when 2, 5, 7, 9, 12, 13
         return 1
-      when 2, 9, 11, 16, 22
+      when 1, 8, 10, 11, 14
         return 2
-      when 13, 21
+      when 15, 16
         return 3
-      when 15
-        return 4
       else
         return 2
 
@@ -646,7 +645,7 @@ class ShadowcraftGear
                   when 5 # item name suffix
                     item.name_suffix = bonus_entry.val1
                   when 2 # awesome extra stats
-                    item.stats[bonus_entry.val1] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][1 + getRandPropRow(slotIndex)])
+                    item.stats[bonus_entry.val1] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][1 + getRandPropRow(i)])
 
           allSlotsMatch = item.sockets && item.sockets.length > 0
           for socket in item.sockets

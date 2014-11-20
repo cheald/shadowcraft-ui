@@ -2431,28 +2431,28 @@
     $altslots = null;
     $popup = null;
     getRandPropRow = function(slotIndex) {
+      slotIndex = parseInt(slotIndex, 10);
       switch (slotIndex) {
-        case 1:
+        case 0:
+        case 4:
+        case 6:
+          return 0;
+        case 2:
         case 5:
         case 7:
-          return 0;
-        case 3:
-        case 6:
+        case 9:
+        case 12:
+        case 13:
+          return 1;
+        case 1:
         case 8:
         case 10:
-        case 12:
-          return 1;
-        case 2:
-        case 9:
         case 11:
-        case 16:
-        case 22:
+        case 14:
           return 2;
-        case 13:
-        case 21:
-          return 3;
         case 15:
-          return 4;
+        case 16:
+          return 3;
         default:
           return 2;
       }
@@ -3214,7 +3214,7 @@
                       item.name_suffix = bonus_entry.val1;
                       break;
                     case 2:
-                      item.stats[bonus_entry.val1] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][1 + getRandPropRow(slotIndex)]);
+                      item.stats[bonus_entry.val1] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][1 + getRandPropRow(i)]);
                   }
                 }
               }
