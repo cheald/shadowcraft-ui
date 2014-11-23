@@ -470,8 +470,8 @@ class ShadowcraftComputation:
         else:
             tree = 2
         
-        rotation_keys = input.get("ro", {})
-        if not rotation_keys["opener_name"] in self.validOpenerKeys[tree]: 
+        rotation_keys = input.get("ro", { 'opener_name': 'default', 'opener_use': 'always'})
+        if not rotation_keys["opener_name"] in self.validOpenerKeys[tree]:
           rotation_keys["opener_name"] = "default"
         rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
         settings_options = {}
