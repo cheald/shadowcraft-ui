@@ -544,6 +544,8 @@ class ShadowcraftComputation:
             
             # Talent ranking is slow. This is done last per a note from nextormento.
             out["talent_ranking"] = [] # calculator.get_talents_ranking()      
+            
+            out["engine_info"] = calculator.get_engine_info()
 
             return out
         except (InputNotModeledException, exceptions.InvalidInputException) as e:

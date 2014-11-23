@@ -2326,7 +2326,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotBonuses, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getApplicableEnchants, getBaseItemLevel, getBestNormalGem, getEnchantRecommendation, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getItem, getItems, getMaxUpgradeLevel, getRandPropRow, getSimpleEPForUpgrade, getStatWeight, getUpgradeLevelSteps, get_ep, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateStatWeights, updateUpgradeWindow, whiteWhite, __epSort;
+    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clickItemLock, clickItemUpgrade, clickSlot, clickSlotBonuses, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getApplicableEnchants, getBaseItemLevel, getBestNormalGem, getEnchantRecommendation, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getItem, getItems, getMaxUpgradeLevel, getRandPropRow, getStatWeight, getUpgradeLevelSteps, get_ep, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateEngineInfoWindow, updateStatWeights, whiteWhite, __epSort;
     MAX_ENGINEERING_GEMS = 1;
     MAX_HYDRAULIC_GEMS = 1;
     JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
@@ -3149,19 +3149,6 @@
       Shadowcraft.update();
       return Shadowcraft.Gear.updateDisplay();
     };
-    getSimpleEPForUpgrade = function(slot, item) {
-      var gear, gearEP, gear_offset;
-      if (!item) {
-        return 0;
-      }
-      gear = Shadowcraft.Data.gear;
-      gear_offset = statOffset(gear[slot], FACETS.ITEM);
-      gearEP = get_ep(item, null, slot, gear_offset);
-      if (isNaN(gearEP)) {
-        gearEP = 0;
-      }
-      return gearEP;
-    };
     /*
       # View helpers
       */
@@ -3506,52 +3493,23 @@
       obj.__statsToDesc = buff.join("/");
       return obj.__statsToDesc;
     };
-    updateUpgradeWindow = function() {
-      var buffer, data, exist, i, max, name, pct, rec, target, val, _len;
-      rec = getUpgradeRecommandationList();
-      rec.sort(function(a, b) {
-        return b.diff - a.diff;
-      });
-      max = null;
-      buffer = "";
-      target = $("#upgraderankings .inner");
-      $("#upgraderankings .talent_contribution").hide();
-      for (i = 0, _len = rec.length; i < _len; i++) {
-        data = rec[i];
-        exist = $("#upgraderankings #talent-weight-" + data.item_id);
-        val = parseInt(data.diff, 10);
-        name = data.name;
-        if (isNaN(val)) {
-          name += " (NYI)";
-          val = 0;
-        }
-        max || (max = val);
-        pct = val / max * 100 + 0.01;
-        if (exist.length === 0) {
-          buffer = Templates.talentContribution({
-            name: name,
-            raw_name: data.item_id,
-            val: val.toFixed(1),
-            width: pct
-          });
-          target.append(buffer);
-        }
-        exist = $("#upgraderankings #talent-weight-" + data.item_id);
-        $.data(exist.get(0), "val", val);
-        exist.show().find(".pct-inner").css({
-          width: pct + "%"
-        });
-        exist.find(".label").text(val.toFixed(1));
+    updateEngineInfoWindow = function() {
+      var $summary, data, engine_info, name, val;
+      if (Shadowcraft.lastCalculation.engine_info == null) {
+        return;
       }
-      return $("#upgraderankings .talent_contribution").sortElements(function(a, b) {
-        var ad, bd;
-        ad = $.data(a, "val");
-        bd = $.data(b, "val");
-        if (ad > bd) {
-          return -1;
-        } else {
-          return 1;
-        }
+      engine_info = Shadowcraft.lastCalculation.engine_info;
+      $summary = $("#engineinfo .inner");
+      data = [];
+      for (name in engine_info) {
+        val = engine_info[name];
+        data.push({
+          name: titleize(name),
+          val: val
+        });
+      }
+      return $summary.get(0).innerHTML = Templates.stats({
+        stats: data
       });
     };
     updateDpsBreakdown = function() {
@@ -4029,6 +3987,7 @@
         return Shadowcraft.Gear;
       });
       Shadowcraft.Backend.bind("recompute", updateDpsBreakdown);
+      Shadowcraft.Backend.bind("recompute", updateEngineInfoWindow);
       Shadowcraft.Talents.bind("changed", function() {
         app.updateStatsWindow();
         return app.updateSummaryWindow();

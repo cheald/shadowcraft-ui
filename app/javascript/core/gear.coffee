@@ -589,17 +589,6 @@ class ShadowcraftGear
     Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
 
-  getSimpleEPForUpgrade = (slot, item) ->
-    return 0 unless item
-
-    gear = Shadowcraft.Data.gear
-
-    gear_offset = statOffset(gear[slot], FACETS.ITEM)
-
-    gearEP = get_ep(item, null, slot, gear_offset)
-    gearEP = 0 if isNaN gearEP
-    return gearEP
-
   ###
   # View helpers
   ###
@@ -865,40 +854,17 @@ class ShadowcraftGear
     obj.__statsToDesc = buff.join("/")
     return obj.__statsToDesc
 
-  updateUpgradeWindow = ->
-    rec = getUpgradeRecommandationList()
-    rec.sort (a, b) ->
-      b.diff - a.diff
-    max = null
-    buffer = ""
-    target = $("#upgraderankings .inner")
-    $("#upgraderankings .talent_contribution").hide()
-    for data, i in rec
-      exist = $("#upgraderankings #talent-weight-" + data.item_id)
-      val = parseInt(data.diff, 10)
-      name = data.name
-      if isNaN(val)
-        name += " (NYI)"
-        val = 0
-      max ||= val
-      pct = val / max * 100 + 0.01
-      if exist.length == 0
-        buffer = Templates.talentContribution({
-          name: name,
-          raw_name: data.item_id,
-          val: val.toFixed(1),
-          width: pct
-        })
-        target.append(buffer)
-      exist = $("#upgraderankings #talent-weight-" + data.item_id)
-      $.data(exist.get(0), "val", val)
-      exist.show().find(".pct-inner").css({width: pct + "%"})
-      exist.find(".label").text(val.toFixed(1))
-
-    $("#upgraderankings .talent_contribution").sortElements (a, b) ->
-      ad = $.data(a, "val")
-      bd = $.data(b, "val")
-      if ad > bd then -1 else 1
+  updateEngineInfoWindow = ->
+    return unless Shadowcraft.lastCalculation.engine_info?
+    engine_info = Shadowcraft.lastCalculation.engine_info
+    $summary = $("#engineinfo .inner")
+    data = []
+    for name, val of engine_info
+      data.push {
+        name: titleize name
+        val: val
+      }
+    $summary.get(0).innerHTML = Templates.stats {stats: data}
 
   updateDpsBreakdown = ->
     dps_breakdown = Shadowcraft.lastCalculation.breakdown
@@ -1311,7 +1277,7 @@ class ShadowcraftGear
     Shadowcraft.Backend.bind("recompute", updateStatWeights)
     Shadowcraft.Backend.bind("recompute", -> Shadowcraft.Gear )
     Shadowcraft.Backend.bind("recompute", updateDpsBreakdown)
-    #Shadowcraft.Backend.bind("recompute", updateUpgradeWindow)
+    Shadowcraft.Backend.bind("recompute", updateEngineInfoWindow)
 
     Shadowcraft.Talents.bind "changed", ->
       app.updateStatsWindow()
