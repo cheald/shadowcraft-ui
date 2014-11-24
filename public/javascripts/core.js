@@ -3294,25 +3294,27 @@
                 applyBonusToItem(item, gear["b" + bonusIndex], i);
               }
             }
-            _ref2 = item.chance_bonus_lists;
-            for (_i = 0, _len3 = _ref2.length; _i < _len3; _i++) {
-              bonusId = _ref2[_i];
-              if (!(bonusId != null)) {
-                continue;
-              }
-              if (bonusable) {
-                break;
-              }
-              _ref3 = Shadowcraft.ServerData.ITEM_BONUSES[bonusId];
-              for (_j = 0, _len4 = _ref3.length; _j < _len4; _j++) {
-                bonus_entry = _ref3[_j];
-                switch (bonus_entry.type) {
-                  case 6:
-                    bonusable = true;
-                    break;
-                  case 2:
-                    bonusable = true;
-                    break;
+            if (item.chance_bonus_lists != null) {
+              _ref2 = item.chance_bonus_lists;
+              for (_i = 0, _len3 = _ref2.length; _i < _len3; _i++) {
+                bonusId = _ref2[_i];
+                if (!(bonusId != null)) {
+                  continue;
+                }
+                if (bonusable) {
+                  break;
+                }
+                _ref3 = Shadowcraft.ServerData.ITEM_BONUSES[bonusId];
+                for (_j = 0, _len4 = _ref3.length; _j < _len4; _j++) {
+                  bonus_entry = _ref3[_j];
+                  switch (bonus_entry.type) {
+                    case 6:
+                      bonusable = true;
+                      break;
+                    case 2:
+                      bonusable = true;
+                      break;
+                  }
                 }
               }
             }

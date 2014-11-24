@@ -701,17 +701,18 @@ class ShadowcraftGear
             bonuses_equipped.push gear["b" + bonusIndex]
             if _.contains(bonus_keys, gear["b" + bonusIndex]+"")
                 applyBonusToItem(item, gear["b" + bonusIndex], i) # here happens all the magic
-          for bonusId in item.chance_bonus_lists
-            continue if not bonusId?
-            break if bonusable
-            for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
-              switch bonus_entry.type
-                when 6 # cool extra sockets
-                  bonusable = true
-                  break
-                when 2
-                  bonusable = true
-                  break
+          if item.chance_bonus_lists?
+            for bonusId in item.chance_bonus_lists
+              continue if not bonusId?
+              break if bonusable
+              for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
+                switch bonus_entry.type
+                  when 6 # cool extra sockets
+                    bonusable = true
+                    break
+                  when 2
+                    bonusable = true
+                    break
           allSlotsMatch = item.sockets && item.sockets.length > 0
           for socket in item.sockets
             gem = Gems[gear["g" + gems.length]]
