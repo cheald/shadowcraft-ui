@@ -1316,9 +1316,10 @@ class ShadowcraftGear
             subgroup = "suffixes"
           when 2 # awesome extra stats
             entry['val2'] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[item.ilvl][1 + getRandPropRow(slot)])
-            entry['val1'] = titleize bonus_entry.val1
+            entry['val1'] = bonus_entry.val1
             group['entries'].push entry
             group.ep += getStatWeight(entry.val1, entry.val2)
+            entry['val1'] = bonus_entry.val1.toLowerCase()
             subgroup = "tertiary" unless subgroup?
       if subgroup?
         group.ep = group.ep.toFixed(2)
