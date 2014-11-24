@@ -588,7 +588,7 @@ img.upgrade
     position: absolute
     left: -9999px
 
-  #settings, #advanced .panel-content
+  #settings, #advanced .panel-content, #bonuses
     h3
       font-size: 1.3em
       font-weight: bold
@@ -653,6 +653,10 @@ img.upgrade
         font-size: 0.9em
         color: #777
         margin-top: -0.5em
+
+  #bonuses
+    .label_check, .input, .select
+      width: inherit
 
 #errorExplanation
   background: rgba(0, 0, 0, 0.3)
@@ -781,28 +785,6 @@ img.upgrade
       font-weight: bold
       margin-left: 1em
       margin-bottom: 0.5em
-  .recommended
-    margin-bottom: 0.5em
-    .oldstat
-      color: #d00
-      font-weight: bold
-    .newstat
-      color: #0d0
-      font-weight: bold
-  .newstats
-    .stat
-      label
-        +inline-block
-        width: 100px
-  .pct
-    width: 200px
-  .pct-inner
-    left: 100px
-    +linear-gradient(color-stops(#2F2, #080), left)
-    &.reverse
-      +linear-gradient(color-stops(#800, #F22), left)
-      right: 100px
-      left: auto
 
 #tools
   button
@@ -1165,7 +1147,7 @@ img.upgrade
     margin-bottom: 4px
     font-size: 0.9em
     padding: 4px 4px 4px 35px
-  .reforge
+  .reforge, .bonuses
     img
       vertical-align: middle
       margin-right: 5px

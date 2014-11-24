@@ -589,6 +589,77 @@ class ShadowcraftGear
     Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
 
+  clearBonuses = ->
+    console.log 'clear'
+    return
+
+  applyBonuses: ->
+    Shadowcraft.Console.purgeOld()
+    data = Shadowcraft.Data
+    slot = $.data(document.body, "selecting-slot")
+    gear = data.gear[slot]
+    return unless gear
+    item = getItem(gear.item_id, gear.item_level, gear.suffix)
+
+    currentBonuses = []
+    for bonusIndex in [0..9]
+      currentBonuses.push gear["b" + bonusIndex] if gear["b" + bonusIndex]?
+
+    checkedBonuses = []
+    uncheckedBonuses = []
+    $("#bonuses input:checkbox").each ->
+      val = parseInt($(this).val(), 10)
+      if $(this).is(':checked')
+        checkedBonuses.push val
+      else
+        uncheckedBonuses.push val
+
+    $("#bonuses select option").each ->
+      val = parseInt($(this).val(), 10)
+      if $(this).is(':selected')
+        checkedBonuses.push val
+      else
+        uncheckedBonuses.push val
+
+    union = _.union(currentBonuses, checkedBonuses)
+    newBonuses = _.difference(union, uncheckedBonuses)
+
+    # remove all from old bonuses
+    for bonus in currentBonuses
+      if bonus in uncheckedBonuses
+        applyBonusToItem(item, bonus, slot, false)
+
+    # apply new bonuses
+    for bonusIndex in [0..9]
+      gear["b" + bonusIndex] = newBonuses[bonusIndex]
+
+    $("#bonuses").removeClass("visible")
+    Shadowcraft.update()
+    Shadowcraft.Gear.updateDisplay()
+
+  applyBonusToItem = (item, bonusId, slot, apply = true) ->
+    for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
+      switch bonus_entry.type
+        when 6 # cool extra sockets
+          if apply
+            last = item.sockets[item.sockets.length - 1]
+            item.sockets.push "Prismatic"
+          else
+            item.sockets.pop()
+        when 5 # item name suffix
+          if apply
+            item.name_suffix = bonus_entry.val1
+          else
+            item.name_suffix = ""
+        when 2 # awesome extra stats
+          value = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[item.ilvl][1 + getRandPropRow(slot)])
+          item.stats[bonus_entry.val1] ||= 0
+          if apply
+            item.stats[bonus_entry.val1] = value
+          else
+            item.stats[bonus_entry.val1] -= value
+          delete item.stats[bonus_entry.val1] if item.stats[bonus_entry.val1] == 0
+
   ###
   # View helpers
   ###
@@ -613,29 +684,34 @@ class ShadowcraftGear
         reforge = null
         reforgable = null
         upgradable = null
+        bonusable = null
         if item
           addAchievementBonuses(item)
           enchantable = EnchantSlots[item.equip_location]? && getApplicableEnchants(i, item).length > 0
 
           bonus_keys = _.keys(Shadowcraft.ServerData.ITEM_BONUSES)
           bonuses_equipped = []
+          if item.sockets.length > 0
+            for socketIndex in [item.sockets.length-1..0]
+              last = item.sockets[socketIndex]
+              if last == "Prismatic"
+                item.sockets.pop()
           for bonusIndex in [0..9]
             continue unless gear["b" + bonusIndex]?
             bonuses_equipped.push gear["b" + bonusIndex]
             if _.contains(bonus_keys, gear["b" + bonusIndex]+"")
-              for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[gear["b" + bonusIndex]]
-                switch bonus_entry.type
-                  when 6 # cool extra sockets
-                    last = item.sockets[item.sockets.length - 1]
-                    if last != "Prismatic"
-                      item.sockets.push "Prismatic"
-                    else
-                      item.sockets.pop
-                  when 5 # item name suffix
-                    item.name_suffix = bonus_entry.val1
-                  when 2 # awesome extra stats
-                    item.stats[bonus_entry.val1] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][1 + getRandPropRow(i)])
-
+                applyBonusToItem(item, gear["b" + bonusIndex], i) # here happens all the magic
+          for bonusId in item.chance_bonus_lists
+            continue if not bonusId?
+            break if bonusable
+            for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
+              switch bonus_entry.type
+                when 6 # cool extra sockets
+                  bonusable = true
+                  break
+                when 2
+                  bonusable = true
+                  break
           allSlotsMatch = item.sockets && item.sockets.length > 0
           for socket in item.sockets
             gem = Gems[gear["g" + gems.length]]
@@ -681,6 +757,7 @@ class ShadowcraftGear
         opt.enchant = enchant
         opt.upgradable = if item then item.upgradable else false
         opt.upgrade = upgrade
+        opt.bonusable = bonusable
         if item
           opt.lock = true
           if gear.locked
@@ -1030,6 +1107,11 @@ class ShadowcraftGear
       ttrand = if l.suffix? then l.suffix else ""
       ttupgd = if l.upgrade_level? then l.upgrade_level else ""
       ttbonus = if l.bonus_trees? then l.bonus_trees.join(":") else ""
+      if l.identifier == selected_identifier
+        bonus_trees = []
+        for bonusIndex in [0..9]
+          bonus_trees.push gear[slot]["b" + bonusIndex] if gear[slot]["b" + bonusIndex]?
+        ttbonus = bonus_trees.join(":")
       upgrade = []
       if l.upgradable
         curr_level = "0"
@@ -1196,15 +1278,59 @@ class ShadowcraftGear
     slot = parseInt($slot.data("slot"), 10)
     $.data(document.body, "selecting-slot", slot)
 
-    identifier = $slot.attr("identifier")
+    identifier = $slot.data("identifier")
     item = Shadowcraft.ServerData.ITEM_LOOKUP2[identifier]
 
+    gear = data.gear[slot]
+    currentBonuses = []
+    for bonusIndex in [0..9]
+      currentBonuses.push gear["b" + bonusIndex] if gear["b" + bonusIndex]?
     # TODO build all possible bonuses with status selected or not, etc.
-
+    groups = {
+      suffixes: []
+      tertiary: []
+      sockets: []
+    }
+    for bonusId in item.chance_bonus_lists
+      group = {}
+      group['bonusId'] = bonusId
+      group['active'] = true if _.contains(currentBonuses, bonusId)
+      group['entries'] = []
+      group.ep = 0
+      subgroup = null
+      for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
+        entry = {
+          'type': bonus_entry.type
+          'val1': bonus_entry.val1
+          'val2': bonus_entry.val2
+        }
+        switch bonus_entry.type
+          when 6 # cool extra sockets
+            group['entries'].push entry
+            gem = getBestNormalGem
+            group.ep += get_ep(gem)
+            subgroup = "sockets"
+          when 5 # item name suffix
+            group['entries'].push entry
+            subgroup = "suffixes"
+          when 2 # awesome extra stats
+            entry['val2'] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[item.ilvl][1 + getRandPropRow(slot)])
+            entry['val1'] = titleize bonus_entry.val1
+            group['entries'].push entry
+            group.ep += getStatWeight(entry.val1, entry.val2)
+            subgroup = "tertiary" unless subgroup?
+      if subgroup?
+        group.ep = group.ep.toFixed(2)
+        groups[subgroup].push group
+        groups[subgroup+"_active"] = true
+    for key,subgroup of groups
+      continue unless _.isArray(subgroup)
+      subgroup.sort (a, b) ->
+        b.ep - a.ep
     $.data(document.body, "bonuses-item", item)
     $("#bonuses").html Templates.bonuses
-      key: "value"
-
+      groups: groups
+    Shadowcraft.setupLabels("#bonuses")
     showPopup $("#bonuses.popup") # TODO
     false
 
@@ -1301,6 +1427,16 @@ class ShadowcraftGear
     $("#unlockAll").click ->
       window._gaq.push ['_trackEvent', "Character", "Unlock All"] if window._gaq
       Shadowcraft.Gear.unlockAll()
+
+    # Initialize UI handlers
+    $("#bonuses").click $.delegate
+      ".label_check input"  : ->
+        $this = $(this)
+        #changeOption($this, "check", not $this.attr("checked")?)
+        $this.attr("checked", not $this.attr("checked")?)
+        Shadowcraft.setupLabels("#bonuses")
+      ".applyBonuses" : this.applyBonuses
+      ".clearBonuses" : clearBonuses
 
     #  Change out an item
     $slots.click $.delegate
@@ -1510,7 +1646,7 @@ class ShadowcraftGear
       if e.keyCode == 27
         reset()
 
-    $("#filter").click (e) ->
+    $("#filter, #bonuses").click (e) ->
       e.cancelBubble = true
       e.stopPropagation()
 

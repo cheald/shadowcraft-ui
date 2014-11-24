@@ -100,7 +100,10 @@ class ItemsController < ApplicationController
       58 => :amplify,
       50 => :bonus_armor,
       63 => :avoidance,
-      67 => :versatility
+      67 => :versatility,
+      61 => :speed,
+      62 => :leech,
+      64 => :indestructible,
   }
 
   # Get all items, gems, etc. and filter out not needed ones for rogues
@@ -143,7 +146,12 @@ class ItemsController < ApplicationController
         entry[:val1] = item_name_description[entry[:val1]]
       end
       if entry[:type] == 2
-        entry[:val1] = STAT_LOOKUP[entry[:val1]]
+        if STAT_LOOKUP[entry[:val1]]
+          entry[:val1] = STAT_LOOKUP[entry[:val1]]
+        end
+      end
+      if entry[:type] == 6
+        entry[:val2] = SOCKET_MAP[entry[:val2].to_i]
       end
       item_bonuses[row[1].to_i].push entry
     end

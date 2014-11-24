@@ -82,17 +82,57 @@
 - mustache "bonuses" do
   %h1 Item Bonuses
   %form#bonuses
+    {{#groups/suffixes_active}}
     %fieldset.bonus_line
-      %Legend Available Bonuses
-      %label.label_check
-        %input{:type => "checkbox", :name => "bonus_socket", :value => "bonus_socket"}
-        Add Socket
-      %label.label_check
-        %input{:type => "checkbox", :name => "bonus_leech", :value => "bonus_leech"}
-        Add Leech
-
-    %input.ui-button.ui-widget.ui-state-default.ui-corner-all.applyBonuses{:type => "Button", :value => "Apply"}
-    %input.ui-button.ui-widget.ui-state-default.ui-corner-all.clearBonuses{:type => "Button", :value => "Reset"}
+      %Legend Suffixes
+      <select class="optionSelect" name="{{key}}">
+      {{#groups/suffixes}}
+      %label.label_select
+        <option value="{{bonusId}}" {{#active}}selected="selected"{{/active}}>
+        {{#entries}}
+        {{val2}} {{val1}} /
+        {{/entries}}
+        ({{ep}} EP)
+        </option>
+      {{/groups/suffixes}}
+      </select>
+    {{/groups/suffixes_active}}
+    {{#groups/sockets_active}}
+    %fieldset.bonus_line
+      %Legend Extra Sockets
+      {{#groups/sockets}}
+      .stat{:"data-bonusid" => "{{bonusId}}"}
+        %label.label_check
+          {{#active}}
+          %input{:type=> "checkbox", :name => "bonus", :value => "{{bonusId}}", :checked => "checked"}
+          {{/active}}
+          {{^active}}
+          %input{:type=> "checkbox", :name => "bonus", :value => "{{bonusId}}"}
+          {{/active}}
+          {{#entries}}
+          {{val1}} {{val2}} Socket
+          {{/entries}}
+      {{/groups/sockets}}
+    {{/groups/sockets_active}}
+    {{#groups/tertiary_active}}
+    %fieldset.bonus_line
+      %Legend Tertiary Stats
+      {{#groups/tertiary}}
+      .stat{:"data-bonusid" => "{{bonusId}}"}
+        %label.label_check
+          {{#active}}
+          %input{:type=> "checkbox", :name => "bonus", :value => "{{bonusId}}", :checked => "checked"}
+          {{/active}}
+          {{^active}}
+          %input{:type=> "checkbox", :name => "bonus", :value => "{{bonusId}}"}
+          {{/active}}
+          {{#entries}}
+          +{{val2}} {{val1}}
+          {{/entries}}
+      {{/groups/tertiary}}
+    {{/groups/tertiary_active}}
+    %input.ui-button.ui-widget.ui-state-default.ui-corner-all.applyBonuses{:role => "button", :value => "Apply"}
+    -#%input.ui-button.ui-widget.ui-state-default.ui-corner-all.clearBonuses{:role => "button", :value => "Reset"}
 
 - mustache("itemSlot") do
   .slot{:id => "{{item/id}}", :"data-identifier" => "{{identifier}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}"}<
@@ -135,17 +175,17 @@
       {{/reforge}}
     {{/reforgable}}
 
-    -#{{#bonusable}}
-    -#.bonuses<
-    -#  =image_tag "reforge.png"
-    -#  {{#bonuses}}
-    -#  %span.oldstat -1 Test
-    -#  %span.newstat +1 Test
-    -#  {{/bonuses}}
-    -#  {{^bonuses}}
-    -#  Add Bonus
-    -#  {{/bonuses}}
-    -#{{/bonusable}}
+    {{#bonusable}}
+    .bonuses<
+      =image_tag "reforge.png"
+      {{#bonuses}}
+      %span.oldstat -1 Test
+      %span.newstat +1 Test
+      {{/bonuses}}
+      {{^bonuses}}
+      Modify Bonuses
+      {{/bonuses}}
+    {{/bonusable}}
 
     {{#enchantable}}
     .enchant
