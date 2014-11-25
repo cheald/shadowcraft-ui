@@ -402,7 +402,7 @@ class Item
     source = 'wowapi'
     puts id
     existing_item = Item.find :all, :conditions => { :remote_id => id }
-    unless existing_item.nil?
+    unless existing_item.nil? or existing_item.empty?
       existing_item.each do |item|
         copy = item.properties['bonus_trees'].clone
         if copy.include? ''
