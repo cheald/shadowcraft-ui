@@ -409,6 +409,9 @@ class Item
         if copy.include? ''
           copy.delete('')
         end
+        if copy.include? 0
+          copy.delete(0)
+        end
         return if copy == bonuses
       end
       # if bonus is in skip list filter out
@@ -442,7 +445,7 @@ class Item
         context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) if SKIP_DEFAULT_BONUS_IDS.include? defaultBonusListsId
       end
       if context_data['bonusSummary']['defaultBonusLists'].empty?
-        context_data['bonusSummary']['defaultBonusLists'] = ['']
+        context_data['bonusSummary']['defaultBonusLists'] = [0]
       end
       context_data['bonusSummary']['defaultBonusLists'].each do |defaultBonus|
         options = {
