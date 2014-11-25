@@ -438,8 +438,8 @@ class Item
       else
         context_data = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id,context], {}, :json
       end
-      context_data['bonusSummary']['defaultBonusLists'].clone.each do |id|
-        context_data['bonusSummary']['defaultBonusLists'].delete(id) if SKIP_DEFAULT_BONUS_IDS.include? id
+      context_data['bonusSummary']['defaultBonusLists'].clone.each do |defaultBonusListsId|
+        context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) if SKIP_DEFAULT_BONUS_IDS.include? defaultBonusListsId
       end
       if context_data['bonusSummary']['defaultBonusLists'].empty?
         context_data['bonusSummary']['defaultBonusLists'] = ['']
