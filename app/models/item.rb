@@ -417,6 +417,7 @@ class Item
         bonuses.delete(bonus) if [40,41,42,43].include? bonus # avoidance, leech, speed, indestructible
         bonuses.delete(bonus) if SKIP2.include? bonus # random suffix
         bonuses.delete(bonus) if SKIP3.include? bonus # random suffix
+      end
       return if bonuses.empty?
       # make a special import with the given and possible missing bonus id data from armory
       puts "special import #{id} #{context} #{bonuses.inspect}"
