@@ -393,11 +393,24 @@ class Item
            297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,
            322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342]
 
-  def self.wod_import(id)
+  def self.wod_import(id, context = '', bonuses = nil)
     source = 'wowapi'
     puts id
-    existing_item = Item.find :first, :conditions => { :remote_id => id }
+    existing_item = Item.find :all, :conditions => { :remote_id => id }
     unless existing_item.nil?
+      existing_item.each do |item|
+        return if item.properties['bonus_trees'] == bonuses
+      end
+      # if bonus is in skip list filter out
+      bonuses.clone.each do |bonus|
+        bonuses.delete(bonus) if [40,41,42,43].include? bonus # avoidance, leech, speed, indestructible
+        bonuses.delete(bonus) if SKIP2.include? bonus # random suffix
+        bonuses.delete(bonus) if SKIP3.include? bonus # random suffix
+      end
+      return if bonuses.empty?
+      # make a special import with the given and possible missing bonus id data from armory
+      puts "special import #{id} #{context} #{bonuses.inspect}"
+      self.wod_special_import id, context, bonuses
       return
     end
 
@@ -434,9 +447,9 @@ class Item
           # if available we need to import warforged too
           # the other stuff like extra socket or tertiary stats are added in the UI dynamically
           context_data['bonusSummary']['chanceBonusLists'].each do |bonus|
-            next if [40,41,42,43].include? bonus # avoidance, leech, speed...
-            next if SKIP2.include? bonus
-            next if SKIP3.include? bonus
+            next if [40,41,42,43].include? bonus # avoidance, leech, speed, indestructible
+            next if SKIP2.include? bonus # random suffix
+            next if SKIP3.include? bonus # random suffix
             puts bonus
             options = {
                 :remote_id => id,
@@ -448,7 +461,7 @@ class Item
               db_item_with_bonus.properties = item.as_json.with_indifferent_access
               db_item_with_bonus.equip_location = db_item_with_bonus.properties['equip_location']
               db_item_with_bonus.is_gem = !db_item_with_bonus.properties['gem_slot'].blank?
-              if db_item_with_bonus.properties['tag'].include? 'Warforged' or [15,171,529,530,545].include? bonus
+              if db_item_with_bonus.properties['tag'].include? 'Warforged' or [15,171,529,530,545,575].include? bonus
                 if db_item_with_bonus.new_record?
                   db_item_with_bonus.save
                 end
@@ -462,6 +475,48 @@ class Item
           end
         end
       end
+    end
+  end
+
+  def self.wod_special_import(id, context, bonuses)
+    begin
+      source = 'wowapi'
+      options = {
+          :remote_id => id,
+          :bonus_trees => bonuses
+      }
+      db_item_with_bonus = Item.find_or_initialize_by options
+      if db_item_with_bonus.properties.nil?
+        begin
+          item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees], nil ,false)
+        rescue WowArmory::MissingDocument => e
+          # try without context
+          item = WowArmory::Item.new(id, source, nil, '', options[:bonus_trees], nil ,false)
+        end
+        db_item_with_bonus.properties = item.as_json.with_indifferent_access
+        db_item_with_bonus.equip_location = db_item_with_bonus.properties['equip_location']
+        db_item_with_bonus.is_gem = !db_item_with_bonus.properties['gem_slot'].blank?
+
+        valid_bonus = false
+        bonuses.each do |bonus|
+          if [15,171,529,530,545,575].include? bonus
+            valid_bonus = true
+            break
+          end
+        end
+        if db_item_with_bonus.properties['tag'].include? 'Warforged' or valid_bonus
+          if db_item_with_bonus.new_record?
+            db_item_with_bonus.save
+          end
+        else
+          puts "SPECIAL IMPORT ERROR: #{id} with bonuses: #{bonuses.inspect}"
+          Rails.logger.debug "SPECIAL IMPORT ERROR: #{id} with bonuses: #{bonuses.inspect}"
+        end
+      end
+    rescue WowArmory::MissingDocument => e
+      Rails.logger.debug id
+      Rails.logger.debug e.message
+      return
     end
   end
 

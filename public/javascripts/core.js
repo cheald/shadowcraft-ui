@@ -4076,7 +4076,6 @@
               entry['val1'] = bonus_entry.val1;
               group['entries'].push(entry);
               group.ep += getStatWeight(entry.val1, entry.val2);
-              entry['val1'] = bonus_entry.val1.toLowerCase();
               if (subgroup == null) {
                 subgroup = "tertiary";
               }

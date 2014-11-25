@@ -1319,7 +1319,6 @@ class ShadowcraftGear
             entry['val1'] = bonus_entry.val1
             group['entries'].push entry
             group.ep += getStatWeight(entry.val1, entry.val2)
-            entry['val1'] = bonus_entry.val1.toLowerCase()
             subgroup = "tertiary" unless subgroup?
       if subgroup?
         group.ep = group.ep.toFixed(2)

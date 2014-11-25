@@ -56,6 +56,7 @@ module WowArmory
       params[:apikey] = BLIZZARD_CREDENTIALS['apikey']
       url = 'https://' + host + resource + '?' + params.to_query
       tries = 0
+      puts url
       begin
         result = Curl::Easy.http_get(url) do |curl|
           curl.timeout = 7
