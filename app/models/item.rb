@@ -393,6 +393,8 @@ class Item
            297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,
            322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342]
 
+  SKIP_DEFAULT_BONUS_IDS = [486,487,488,489,490,491]
+
   # update this with ilvl upgrade ids which are allowed to be imported
   VALID_BONUSES = [15,171,525,526,527,529,530,545,575]
 
@@ -402,7 +404,11 @@ class Item
     existing_item = Item.find :all, :conditions => { :remote_id => id }
     unless existing_item.nil?
       existing_item.each do |item|
-        return if item.properties['bonus_trees'] == bonuses
+        copy = item.properties['bonus_trees'].clone
+        if copy.include? ''
+          copy.delete('')
+        end
+        return if copy == bonuses
       end
       # if bonus is in skip list filter out
       bonuses.clone.each do |bonus|
@@ -429,6 +435,9 @@ class Item
         context_data = json_data
       else
         context_data = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id,context], {}, :json
+      end
+      context_data['bonusSummary']['defaultBonusLists'].clone.each do |id|
+        context_data['bonusSummary']['defaultBonusLists'].delete(id) if SKIP_DEFAULT_BONUS_IDS.include? id
       end
       if context_data['bonusSummary']['defaultBonusLists'].empty?
         context_data['bonusSummary']['defaultBonusLists'] = ['']
