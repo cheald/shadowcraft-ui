@@ -393,6 +393,9 @@ class Item
            297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,
            322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342]
 
+  # update this with ilvl upgrade ids which are allowed to be imported
+  VALID_BONUSES = [15,171,525,526,527,529,530,545,575]
+
   def self.wod_import(id, context = '', bonuses = nil)
     source = 'wowapi'
     puts id
@@ -461,7 +464,7 @@ class Item
               db_item_with_bonus.properties = item.as_json.with_indifferent_access
               db_item_with_bonus.equip_location = db_item_with_bonus.properties['equip_location']
               db_item_with_bonus.is_gem = !db_item_with_bonus.properties['gem_slot'].blank?
-              if db_item_with_bonus.properties['tag'].include? 'Warforged' or [15,171,529,530,545,575].include? bonus
+              if db_item_with_bonus.properties['tag'].include? 'Warforged' or VALID_BONUSES.include? bonus
                 if db_item_with_bonus.new_record?
                   db_item_with_bonus.save
                 end
@@ -499,7 +502,7 @@ class Item
 
         valid_bonus = false
         bonuses.each do |bonus|
-          if [15,171,529,530,545,575].include? bonus
+          if VALID_BONUSES.include? bonus
             valid_bonus = true
             break
           end

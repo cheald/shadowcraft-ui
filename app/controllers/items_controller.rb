@@ -36,11 +36,11 @@ class ItemsController < ApplicationController
       player_class = char.properties['player_class']
     end
     filename = "items-#{player_class.downcase}.js"
-    first_item = Item.desc(:created_at).first
+    first_item = Item.desc(:updated_at).first
     anchor = flash[:reload].blank? ? nil : "reload"
     f = File.join(Rails.root, "public", filename)
     # If file not exists or an Item from Database is newer then the file creation time
-    if !File.exists?(f) or File.mtime(f) < first_item.created_at
+    if !File.exists?(f) or File.mtime(f) < first_item.updated_at
       # initiate indexing
       index
       # render everything to a file, whatever here happens?
