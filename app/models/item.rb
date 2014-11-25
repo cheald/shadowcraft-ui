@@ -402,7 +402,8 @@ class Item
     source = 'wowapi'
     puts id
     existing_item = Item.find :all, :conditions => { :remote_id => id }
-    unless existing_item.nil? or existing_item.empty?
+    puts existing_item.inspect
+    unless existing_item.empty?
       existing_item.each do |item|
         copy = item.properties['bonus_trees'].clone
         if copy.include? ''
@@ -411,11 +412,11 @@ class Item
         return if copy == bonuses
       end
       # if bonus is in skip list filter out
+      return if bonuses.nil?
       bonuses.clone.each do |bonus|
         bonuses.delete(bonus) if [40,41,42,43].include? bonus # avoidance, leech, speed, indestructible
         bonuses.delete(bonus) if SKIP2.include? bonus # random suffix
         bonuses.delete(bonus) if SKIP3.include? bonus # random suffix
-      end
       return if bonuses.empty?
       # make a special import with the given and possible missing bonus id data from armory
       puts "special import #{id} #{context} #{bonuses.inspect}"
