@@ -136,7 +136,6 @@ module WowArmory
           info["b#{pos}"] = v['bonusLists'][pos]
         end
         info['context'] = v['context']
-        puts info.inspect
         @gear[info['slot'].to_s] = info
       end
     end
