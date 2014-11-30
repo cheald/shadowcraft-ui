@@ -5,6 +5,8 @@ module WowArmory
     @item_enchants = nil
     @item_bonus_map = nil
     @item_bonus_trees = nil
+    @item_hotfixes = nil
+    @rand_prop_points = nil
 
     STAT_LOOKUP = {
         49=>:mastery,
@@ -270,6 +272,29 @@ module WowArmory
         end
       end
 
+      # check if there is hotfix data available
+      if item_hotfixes.has_key? @id.to_s
+        row = item_hotfixes[@id.to_s]
+        base = rand_prop_points[self.ilevel.to_s]
+        self.stats = {}
+        10.times do |i|
+          break if row[5+i] == '-1'
+          statid = row[5+i] # more or less stat-id
+          multiplier = row[25+i].to_f
+          basevalue = base[1 + slot_index(self.equip_location)]
+          if statid != '0'
+            stat = statid.to_i
+            value = ((multiplier / 10000.0) * basevalue.to_f).round
+            self.stats[STAT_LOOKUP[stat]] = value
+            puts STAT_LOOKUP[stat]
+            puts self.stats[STAT_LOOKUP[stat]]
+          end
+        end
+        puts 'Overwritten stats with hotfix data:'
+        puts self.stats.inspect
+      end
+
+
       unless @json['bonusSummary']['chanceBonusLists'].nil?
         self.chance_bonus_lists = @json['bonusSummary']['chanceBonusLists']
       else
@@ -394,6 +419,39 @@ module WowArmory
         FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_SpellItemEnchantments.csv')) do |row|
           hash[row[0].to_s] = row
         end
+      end
+    end
+
+    def item_hotfixes
+      @@item_hotfixes ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_item_hotfixes.csv'), { :col_sep => ';' }) do |row|
+          hash[row[0].to_s] = row
+        end
+      end
+    end
+
+    def rand_prop_points
+      @@rand_prop_points ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_RandPropPoints.csv'), { :col_sep => ';' }) do |row|
+          hash[row[0].to_s] = row
+        end
+      end
+    end
+
+    def slot_index(slot)
+      case slot
+        when 1, 5, 7
+          return 0
+        when 3, 6, 8, 10, 12
+          return 1
+        when 2, 9, 11, 16, 22
+          return 2
+        when 13, 21
+          return 3
+        when 15
+          return 4
+        else
+          return 2
       end
     end
 
