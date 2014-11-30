@@ -100,13 +100,6 @@ class Item
                    ''
                  end
 
-
-    json[:tag] = if properties["tag"] then
-                   properties["tag"]
-                 else
-                   ""
-                 end
-
     unless properties['speed'].blank?
       json[:speed] = properties['speed']
       json[:dps] = properties['dps']

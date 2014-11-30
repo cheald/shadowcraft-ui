@@ -2892,6 +2892,12 @@
           if (gem.id === ShadowcraftGear.LEGENDARY_META_GEM && !canUseLegendaryMetaGem(item)) {
             continue;
           }
+          if (gem.name.indexOf('Taladite') >= 0 && (item != null) && item.quality === 7 && item.ilvl <= 620) {
+            continue;
+          }
+          if (gem.name.indexOf('Taladite') >= 0 && (item != null) && item.id === 102248 && item.ilvl <= 616) {
+            continue;
+          }
           straightGemEP += get_ep(gem, false, null, offset);
           if (returnFull) {
             sGems.push(gem.id);
@@ -4004,6 +4010,12 @@
           continue;
         }
         if (!canUseGem(gem, gemType, otherGearGems, slot)) {
+          continue;
+        }
+        if (gem.name.indexOf('Taladite') >= 0 && (item != null) && item.quality === 7 && item.ilvl <= 620) {
+          continue;
+        }
+        if (gem.name.indexOf('Taladite') >= 0 && (item != null) && item.id === 102248 && item.ilvl <= 616) {
           continue;
         }
         max || (max = gem.__ep);
