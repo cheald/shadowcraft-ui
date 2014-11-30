@@ -3783,6 +3783,9 @@
         if (l.suffix && Shadowcraft.Data.options.general.show_random_items > l.ilvl && lid !== selected_identifier) {
           continue;
         }
+        if ((l.tag != null) && /Tournament$/.test(l.tag) && !Shadowcraft.Data.options.general.pvp) {
+          continue;
+        }
         loc.push(l);
       }
       gear_offset = statOffset(gear[slot], FACETS.ITEM);

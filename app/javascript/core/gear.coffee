@@ -1059,6 +1059,7 @@ class ShadowcraftGear
       #continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and lid != selected_identifier
       continue if l.upgrade_level? and l.upgrade_level > getMaxUpgradeLevel(l)
       continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and lid != selected_identifier
+      continue if l.tag? and /Tournament$/.test(l.tag) and not Shadowcraft.Data.options.general.pvp
       loc.push l
 
     #slot = parseInt($(this).parent().data("slot"), 10)
