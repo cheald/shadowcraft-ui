@@ -271,6 +271,10 @@ class ShadowcraftHistory
         advancedOptions.push v
       options.push advancedOptions
 
+      # Food Buff options
+      buffFood = data.options.buffs.food_buff || 0
+      options.push ShadowcraftOptions.buffFoodMap.indexOf(buffFood)
+
       ret.push options
       ret.push base36Encode(data.achievements || [])
       ret.push base36Encode(data.quests || [])
@@ -359,12 +363,14 @@ class ShadowcraftHistory
       d.options.rotation = {}
       for v, i in rotation by 2
         d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i+1], rotationValueMap)
-      if options[4]
-        advanced = options[4]
+      if options[3]
+        advanced = options[3]
         d.options.advanced = {}
         for v, i in advanced by 2
           d.options.advanced[v] = advanced[i+1]
-        
+
+      buffFood = options[4]
+      d.options.buffs.food_buff = ShadowcraftOptions.buffFoodMap[buffFood]
       #if data[10]
       #  lock = base36Decode(data[10])
       #  for l, slot in lock

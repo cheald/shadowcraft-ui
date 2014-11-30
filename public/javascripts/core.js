@@ -348,7 +348,7 @@
       return this;
     };
     ShadowcraftBackend.prototype.buildPayload = function() {
-      var Gems, GlyphLookup, buffList, data, g, gear_ids, glyph, glyph_list, item, k, key, mh, oh, payload, specName, statSummary, talentArray, talentString, val, _i, _len, _len2, _ref, _ref2, _ref3;
+      var Gems, GlyphLookup, buffFood, buffList, data, g, gear_ids, glyph, glyph_list, item, k, key, mh, oh, payload, specName, statSummary, talentArray, talentString, val, _i, _len, _len2, _ref, _ref2, _ref3;
       data = Shadowcraft.Data;
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP;
@@ -375,6 +375,7 @@
           buffList.push(ShadowcraftOptions.buffMap.indexOf(key));
         }
       }
+      buffFood = ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff);
       talentArray = data.activeTalents.split("");
       for (key = 0, _len2 = talentArray.length; key < _len2; key++) {
         val = talentArray[key];
@@ -403,6 +404,7 @@
         pot: data.options.general.potion ? 1 : 0,
         prepot: data.options.general.prepot ? 1 : 0,
         b: buffList,
+        bf: buffFood,
         ro: data.options.rotation,
         settings: {
           dmg_poison: data.options.general.lethal_poison,
@@ -746,7 +748,7 @@
     };
     compress_handlers = {
       "1": function(data) {
-        var advancedOptions, buff, buffs, gear, gearSet, general, index, k, options, ret, rotationOptions, set, slot, talent, talentSet, v, _i, _len, _len2, _ref, _ref2, _ref3, _ref4;
+        var advancedOptions, buff, buffFood, buffs, gear, gearSet, general, index, k, options, ret, rotationOptions, set, slot, talent, talentSet, v, _i, _len, _len2, _ref, _ref2, _ref3, _ref4;
         ret = [DATA_VERSION];
         gearSet = [];
         for (slot = 0; slot <= 17; slot++) {
@@ -814,6 +816,8 @@
           advancedOptions.push(v);
         }
         options.push(advancedOptions);
+        buffFood = data.options.buffs.food_buff || 0;
+        options.push(ShadowcraftOptions.buffFoodMap.indexOf(buffFood));
         ret.push(options);
         ret.push(base36Encode(data.achievements || []));
         ret.push(base36Encode(data.quests || []));
@@ -822,7 +826,7 @@
     };
     decompress_handlers = {
       "1": function(data) {
-        var advanced, d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _ref, _ref2, _step, _step2, _step3, _step4;
+        var advanced, buffFood, d, gear, general, i, id, index, k, options, rotation, set, slot, talentSets, v, _len, _len2, _len3, _len4, _len5, _ref, _ref2, _step, _step2, _step3, _step4;
         d = {
           gear: {},
           active: data[2],
@@ -912,14 +916,16 @@
           v = rotation[i];
           d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i + 1], rotationValueMap);
         }
-        if (options[4]) {
-          advanced = options[4];
+        if (options[3]) {
+          advanced = options[3];
           d.options.advanced = {};
           for (i = 0, _len5 = advanced.length, _step4 = 2; i < _len5; i += _step4) {
             v = advanced[i];
             d.options.advanced[v] = advanced[i + 1];
           }
         }
+        buffFood = options[4];
+        d.options.buffs.food_buff = ShadowcraftOptions.buffFoodMap[buffFood];
         return d;
       }
     };
@@ -1125,7 +1131,8 @@
   };
   ShadowcraftOptions = (function() {
     var cast, changeCheck, changeInput, changeOption, changeSelect, enforceBounds;
-    ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'haste_buff', 'multistrike_buff', 'attack_power_buff', 'mastery_buff', 'versatility_buff', 'agi_flask_mop', 'food_mop_agi'];
+    ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'haste_buff', 'multistrike_buff', 'attack_power_buff', 'mastery_buff', 'versatility_buff', 'flask_wod_agi'];
+    ShadowcraftOptions.buffFoodMap = ['food_wod_versatility', 'food_wod_mastery', 'food_wod_crit', 'food_wod_haste', 'food_wod_multistrike'];
     cast = function(val, dtype) {
       switch (dtype) {
         case "integer":
@@ -1385,15 +1392,22 @@
         }
       });
       this.setup("#settings #playerBuffs", "buffs", {
-        food_mop_agi: {
+        food_buff: {
           name: "Food Buff",
-          desc: "34 Agility Food",
-          'default': true,
-          datatype: 'bool'
+          type: 'select',
+          datatype: 'string',
+          "default": 'food_wod_versatility',
+          options: {
+            'food_wod_versatility': '75 Versatility',
+            'food_wod_mastery': '75 Mastery',
+            'food_wod_crit': '75 Crit',
+            'food_wod_haste': '75 Haste',
+            'food_wod_multistrike': '75 Multistrike'
+          }
         },
-        agi_flask_mop: {
+        flask_wod_agi: {
           name: "Agility Flask",
-          desc: "Mists Flask (114 Agility)",
+          desc: "WoD Flask (200 Agility)",
           'default': true,
           datatype: 'bool'
         },

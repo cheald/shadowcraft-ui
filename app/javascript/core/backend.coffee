@@ -43,6 +43,8 @@ class ShadowcraftBackend
     for key, val of data.options.buffs
       if val
         buffList.push ShadowcraftOptions.buffMap.indexOf(key)
+
+    buffFood = ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff)
     
     talentArray = data.activeTalents.split ""
     for val, key in talentArray
@@ -62,7 +64,8 @@ class ShadowcraftBackend
       pot: if data.options.general.potion then 1 else 0
       prepot: if data.options.general.prepot then 1 else 0
       b: buffList
-      ro: data.options.rotation,
+      bf: buffFood
+      ro: data.options.rotation
       settings: {
         dmg_poison: data.options.general.lethal_poison
         utl_poison: data.options.general.utility_poison if data.options.general.utility_poison != 'n'

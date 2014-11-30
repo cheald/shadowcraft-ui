@@ -178,7 +178,7 @@ class ShadowcraftComputation:
       'meaty_dragonspine_trophy': [665,671,680,686,695,701],
       'humming_blackiron_trigger': [665,671,680,686,695,701],
       'scales_of_doom': [655,661,670,676,685,691],
-      'skull_of_war': [640,655,670],
+      'skull_of_war': [640,655,665],
       'formidable_jar_of_doom': [655],
       'lucky_doublesided_coin': [665],
       'blackheart_enforcers_medallion': [650,656],
@@ -267,7 +267,14 @@ class ShadowcraftComputation:
         'mastery_buff',
         'versatility_buff',
         'flask_wod_agi',
-        'food_mop_agi'
+    ]
+    
+    buffFoodMap = [
+        'food_wod_versatility',
+        'food_wod_mastery',
+        'food_wod_crit',
+        'food_wod_haste',
+        'food_wod_multistrike'
     ]
     
     if __builtin__.shadowcraft_engine_version == 6.0:
@@ -340,6 +347,9 @@ class ShadowcraftComputation:
             b = int(b)
             if b >= 0 and b < __max:
                 buff_list.append(self.buffMap[b])
+        
+        # Buff Food
+        buff_list.append(self.buffFoodMap[input.get("bf", 0)])
 
         _buffs = buffs.Buffs(*buff_list, level=_level)
 

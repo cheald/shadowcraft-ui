@@ -8,8 +8,15 @@ class ShadowcraftOptions
     'attack_power_buff',
     'mastery_buff',
     'versatility_buff',
-    'agi_flask_mop',
-    'food_mop_agi'
+    'flask_wod_agi'
+  ]
+
+  @buffFoodMap = [
+    'food_wod_versatility',
+    'food_wod_mastery',
+    'food_wod_crit',
+    'food_wod_haste',
+    'food_wod_multistrike'
   ]
 
   cast = (val, dtype) ->
@@ -125,8 +132,8 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #playerBuffs", "buffs", {
-      food_mop_agi: {name: "Food Buff", desc: "34 Agility Food", 'default': true, datatype: 'bool'},
-      agi_flask_mop: {name: "Agility Flask", desc: "Mists Flask (114 Agility)", 'default': true, datatype: 'bool'},
+      food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_wod_versatility', options: {'food_wod_versatility': '75 Versatility', 'food_wod_mastery': '75 Mastery', 'food_wod_crit': '75 Crit', 'food_wod_haste': '75 Haste', 'food_wod_multistrike': '75 Multistrike' } },
+      flask_wod_agi: {name: "Agility Flask", desc: "WoD Flask (200 Agility)", 'default': true, datatype: 'bool'},
       short_term_haste_buff: {name: "+30% Haste/40 sec", desc: "Heroism/Bloodlust/Time Warp", 'default': true, datatype: 'bool'},
       stat_multiplier_buff: {name: "5% All Stats", desc: "Blessing of Kings/Mark of the Wild/Legacy of the Emperor", 'default': true, datatype: 'bool'},
       crit_chance_buff: {name: "5% Crit", desc: "Leader of the Pack/Arcane Brilliance/Legacy of the White Tiger", 'default': true, datatype: 'bool'},
