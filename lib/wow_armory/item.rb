@@ -274,26 +274,24 @@ module WowArmory
 
       # check if there is hotfix data available
       if item_hotfixes.has_key? @id.to_s
-        row = item_hotfixes[@id.to_s]
-        base = rand_prop_points[self.ilevel.to_s]
-        self.stats = {}
-        10.times do |i|
-          break if row[5+i] == '-1'
-          statid = row[5+i] # more or less stat-id
-          multiplier = row[25+i].to_f
-          basevalue = base[1 + slot_index(self.equip_location)]
-          if statid != '0'
-            stat = statid.to_i
-            value = ((multiplier / 10000.0) * basevalue.to_f).round
-            self.stats[STAT_LOOKUP[stat]] = value
-            puts STAT_LOOKUP[stat]
-            puts self.stats[STAT_LOOKUP[stat]]
-          end
-        end
-        puts 'Overwritten stats with hotfix data:'
+        puts 'Stats from wowapi:'
         puts self.stats.inspect
+        row = item_hotfixes[@id.to_s]
+        unless row.nil?
+          write_new_stats(row)
+          puts 'Overwritten stats with hotfix data:'
+          puts self.stats.inspect
+        end
+      elsif item_stats.has_key? @id.to_s
+        puts 'Stats from wowapi:'
+        puts self.stats.inspect
+        row = item_stats[@id.to_s]
+        unless row.nil?
+          write_new_stats(row)
+          puts 'Overwritten stats with stats data:'
+          puts self.stats.inspect
+        end
       end
-
 
       unless @json['bonusSummary']['chanceBonusLists'].nil?
         self.chance_bonus_lists = @json['bonusSummary']['chanceBonusLists']
@@ -373,6 +371,25 @@ module WowArmory
       end
     end
 
+    def write_new_stats(row)
+      base = rand_prop_points[self.ilevel.to_s]
+      if base.nil?
+        return
+      end
+      self.stats = {}
+      10.times do |i|
+        break if row[5+i] == '-1'
+        statid = row[5+i] # more or less stat-id
+        multiplier = row[25+i].to_f
+        basevalue = base[1 + slot_index(self.equip_location)]
+        if statid != '0'
+          stat = statid.to_i
+          value = ((multiplier / 10000.0) * basevalue.to_f).round
+          self.stats[STAT_LOOKUP[stat]] = value
+        end
+      end
+    end
+
     SCAN_ATTRIBUTES = ['agility', 'strength', 'intellect', 'spirit', 'stamina', 'attack power', 'critical strike',
                        'haste', 'mastery', 'pvp resilience', 'pvp power', 'all stats'
     ]
@@ -425,6 +442,14 @@ module WowArmory
     def item_hotfixes
       @@item_hotfixes ||= Hash.new.tap do |hash|
         FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_item_hotfixes.csv'), { :col_sep => ';' }) do |row|
+          hash[row[0].to_s] = row
+        end
+      end
+    end
+
+    def item_stats
+      @@item_stats ||= Hash.new.tap do |hash|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_item_stats.csv'), { :col_sep => ';' }) do |row|
           hash[row[0].to_s] = row
         end
       end

@@ -3968,7 +3968,7 @@
       return item.ilvl - getUpgradeLevelSteps(item) * item.upgrade_level;
     };
     clickSlotGem = function() {
-      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemSlot, gemType, i, item, max, otherGearGems, selected_id, slot, usedNames, _i, _j, _len, _len2;
+      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemSlot, gemType, i, item, max, otherGearGems, selected_id, slot, usedNames, _i, _j, _len, _len2, _ref;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2;
       GemList = Shadowcraft.ServerData.GEMS;
       data = Shadowcraft.Data;
@@ -4015,7 +4015,7 @@
         if (gem.name.indexOf('Taladite') >= 0 && (item != null) && item.quality === 7 && item.ilvl <= 620) {
           continue;
         }
-        if (gem.name.indexOf('Taladite') >= 0 && (item != null) && item.id === 102248 && item.ilvl <= 616) {
+        if (gem.name.indexOf('Taladite') >= 0 && (item != null) && ((_ref = item.id) === 98148 || _ref === 102248) && item.ilvl <= 616) {
           continue;
         }
         max || (max = gem.__ep);

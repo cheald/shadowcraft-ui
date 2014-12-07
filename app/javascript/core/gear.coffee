@@ -1246,7 +1246,7 @@ class ShadowcraftGear
       continue if gem.name.indexOf("Perfect") == 0 and selected_id != gem.id
       continue unless canUseGem gem, gemType, otherGearGems, slot
       continue if gem.name.indexOf('Taladite') >= 0 and item? and item.quality == 7 and item.ilvl <= 620 # do not recommend wod gems to heirlooms
-      continue if gem.name.indexOf('Taladite') >= 0 and item? and item.id == 102248 and item.ilvl <= 616 # do not recommend wod gems for legendary cloak
+      continue if gem.name.indexOf('Taladite') >= 0 and item? and item.id in [98148,102248] and item.ilvl <= 616 # do not recommend wod gems for legendary cloak
       max ||= gem.__ep
       gEP = gem.__ep
       desc = statsToDesc(gem)

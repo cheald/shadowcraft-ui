@@ -141,7 +141,15 @@ class ShadowcraftComputation:
         114610: 'formidable_jar_of_doom',
         116314: 'blackheart_enforcers_medallion',
         118876: 'lucky_doublesided_coin',
+        
+        115149: 'primal_combatants_boc',
+        111222: 'primal_combatants_boc',
         117930: 'primal_combatants_boc',
+        115749: 'primal_combatants_boc',
+        
+        119927: 'primal_combatants_ioc',
+        115150: 'primal_combatants_ioc',
+        111223: 'primal_combatants_ioc',
         115750: 'primal_combatants_ioc',
         
         109998: 'gorashans_lodestone_spike',
@@ -182,8 +190,8 @@ class ShadowcraftComputation:
       'formidable_jar_of_doom': [655],
       'lucky_doublesided_coin': [665],
       'blackheart_enforcers_medallion': [650,656],
-      'primal_combatants_boc': [660],
-      'primal_combatants_ioc': [660],
+      'primal_combatants_boc': [620,626,660],
+      'primal_combatants_ioc': [620,626,660],
       'gorashans_lodestone_spike': [530,550,570,600,615,630,636],
       'kihras_adrenaline_injector': [530,550,570,600,615,630,636],
       'turbulent_vial_of_toxin': [630,636],
