@@ -1334,7 +1334,7 @@
         },
         num_boss_adds: {
           name: "Number of Boss Adds",
-          desc: "Used for Blade Flurry / Trinket Sigil of Rampage / Legendary Cloak",
+          desc: "Used for Blade Flurry",
           datatype: 'float',
           type: 'input',
           min: 0,
@@ -1715,18 +1715,18 @@
     };
     DEFAULT_SPECS = {
       "Stock Assassination": {
-        talents: "2211020",
-        glyphs: [45761],
+        talents: "2211021",
+        glyphs: [45761, 110853, 110850],
         spec: "a"
       },
       "Stock Combat": {
-        talents: "2211020",
-        glyphs: [42972],
+        talents: "2211011",
+        glyphs: [110853, 110850],
         spec: "Z"
       },
       "Stock Subtlety": {
-        talents: "1210020",
-        glyphs: [42970, 63420],
+        talents: "1210011",
+        glyphs: [42970, 63420, 110850],
         spec: "b"
       }
     };
@@ -3752,7 +3752,7 @@
       }
     };
     clickSlotName = function() {
-      var $slot, GemList, bonusIndex, bonus_trees, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, lid, loc, loc_all, maxIEP, max_level, minIEP, requireDagger, selected_identifier, set, setBonEP, setCount, set_name, slot, ttbonus, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _l, _len, _len2, _len3, _len4;
+      var $slot, GemList, bonusIndex, bonus_trees, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, lid, loc, loc_all, maxIEP, max_level, minIEP, requireDagger, selected_identifier, set, setBonEP, setCount, set_name, slot, subtletyNeedsDagger, ttbonus, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -3762,6 +3762,7 @@
       gear = Shadowcraft.Data.gear;
       requireDagger = needsDagger();
       combatSpec = Shadowcraft.Data.activeSpec === "Z";
+      subtletyNeedsDagger = Shadowcraft.Data.activeSpec === "b" && ((_ref = Shadowcraft.Data.options.rotation.use_hemorrhage) === 'uptime' || _ref === 'never');
       loc_all = Shadowcraft.ServerData.SLOT_CHOICES[equip_location];
       loc = [];
       for (_i = 0, _len = loc_all.length; _i < _len; _i++) {
@@ -3781,6 +3782,9 @@
           continue;
         }
         if ((slot === 15) && combatSpec && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
+          continue;
+        }
+        if ((slot === 15) && subtletyNeedsDagger && l.subclass !== 15) {
           continue;
         }
         if ((l.upgrade_level != null) && l.upgrade_level > getMaxUpgradeLevel(l)) {

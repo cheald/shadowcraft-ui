@@ -11,16 +11,16 @@ class ShadowcraftTalents
     "": "class_rogue"
   DEFAULT_SPECS =
     "Stock Assassination":
-      talents: "2211020"
-      glyphs: [45761]
+      talents: "2211021"
+      glyphs: [45761,110853,110850]
       spec: "a"
     "Stock Combat":
-      talents: "2211020"
-      glyphs: [42972]
+      talents: "2211011"
+      glyphs: [110853,110850]
       spec: "Z"
     "Stock Subtlety":
-      talents: "1210020"
-      glyphs: [42970,63420]
+      talents: "1210011"
+      glyphs: [42970,63420,110850]
       spec: "b"
 
   @GetActiveSpecName = ->
