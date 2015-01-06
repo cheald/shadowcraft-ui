@@ -136,7 +136,8 @@ class ShadowcraftComputation:
         118114: 'meaty_dragonspine_trophy',
         113985: 'humming_blackiron_trigger',
         113612: 'scales_of_doom',
-        #118302: 'spellbound_solium_band_of_fatal_strikes',
+        118302: 'archmages_incandescence',
+        118307: 'archmages_greater_incandescence',
         112318: 'skull_of_war',
         114610: 'formidable_jar_of_doom',
         116314: 'blackheart_enforcers_medallion',
@@ -425,9 +426,6 @@ class ShadowcraftComputation:
         if input.get("mg") == "capacitive":
             proclist.append('legendary_capacitive_meta')
             
-        #if len(frozenset([102248]) & gear) >= 1:
-        #    proclist.append('fury_of_xuen')
-
         if input.get("l", 0) == 90:
             if input.get("prepot", 0) == 1:
                 proclist.append('virmens_bite_prepot')
