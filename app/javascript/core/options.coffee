@@ -183,7 +183,7 @@ class ShadowcraftOptions
     })
 
     @setup("#settings section.subtlety .settings", "rotation", {
-      use_hemorrhage: {type: "select", name: "CP Builder", options: {'never': "Backstab", 'always': "Hemorrhage", 'uptime': "Use Backstab and Hemorrhage for 100% DoT uptime"}, default: 'uptime', datatype: 'string'}
+      use_hemorrhage: {type: "select", name: "CP Builder", options: {'never': "Backstab", 'always': "Hemorrhage", 'uptime': "Use Backstab and Hemorrhage for 100% DoT uptime"}, default: 'uptime', datatype: 'string', desc: 'Subtlety modeling requires a MH dagger if Hemorrhage is not the main combo point builder.'}
       opener_name_subtlety: {type: "select", name: "Opener Name", options: {'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
       opener_use_subtlety: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })

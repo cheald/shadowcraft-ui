@@ -1595,7 +1595,8 @@
             'uptime': "Use Backstab and Hemorrhage for 100% DoT uptime"
           },
           "default": 'uptime',
-          datatype: 'string'
+          datatype: 'string',
+          desc: 'Subtlety modeling requires a MH dagger if Hemorrhage is not the main combo point builder.'
         },
         opener_name_subtlety: {
           type: "select",
