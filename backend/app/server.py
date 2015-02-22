@@ -160,7 +160,14 @@ class ShadowcraftComputation:
         109999: 'witherbarks_branch',
         109262: 'draenic_philosophers_stone',
         114891: 'void-touched_totem',
-        116799: 'smoldering_heart_of_hyperious'
+        116799: 'smoldering_heart_of_hyperious',
+
+        # 6.1
+        # alchemy trinkets
+        122601: 'stone_of_wind',
+        122602: 'stone_of_the_earth',
+        122603: 'stone_of_the_waters',
+        122604: 'stone_of_fire',
     }
     
     def createTrinketGroup(base_ilvls, upgrade_level, upgrade_steps):
@@ -183,11 +190,15 @@ class ShadowcraftComputation:
     
     # used for rankings
     trinketGroups = {
+      'stone_of_wind': [640],
+      'stone_of_the_earth': [655],
+      'stone_of_the_waters': [665],
+      'stone_of_fire': [675],
       'beating_heart_of_the_mountain': [665,671,680,686,695,701],
       'meaty_dragonspine_trophy': [665,671,680,686,695,701],
       'humming_blackiron_trigger': [665,671,680,686,695,701],
       'scales_of_doom': [655,661,670,676,685,691],
-      'skull_of_war': [640,655,665],
+      'skull_of_war': [640,655,665,675],
       'formidable_jar_of_doom': [655],
       'lucky_doublesided_coin': [665],
       'blackheart_enforcers_medallion': [650,656],
