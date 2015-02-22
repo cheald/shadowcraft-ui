@@ -1132,7 +1132,7 @@
   ShadowcraftOptions = (function() {
     var cast, changeCheck, changeInput, changeOption, changeSelect, enforceBounds;
     ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'haste_buff', 'multistrike_buff', 'attack_power_buff', 'mastery_buff', 'versatility_buff', 'flask_wod_agi'];
-    ShadowcraftOptions.buffFoodMap = ['food_wod_versatility', 'food_wod_mastery', 'food_wod_crit', 'food_wod_haste', 'food_wod_multistrike'];
+    ShadowcraftOptions.buffFoodMap = ['food_wod_versatility_75', 'food_wod_mastery_75', 'food_wod_crit_75', 'food_wod_haste_75', 'food_wod_multistrike_75', 'food_wod_versatility', 'food_wod_mastery', 'food_wod_crit', 'food_wod_haste', 'food_wod_multistrike', 'food_wod_versatility_125', 'food_wod_mastery_125', 'food_wod_crit_125', 'food_wod_haste_125', 'food_wod_multistrike_125'];
     cast = function(val, dtype) {
       switch (dtype) {
         case "integer":
@@ -1398,11 +1398,21 @@
           datatype: 'string',
           "default": 'food_wod_versatility',
           options: {
-            'food_wod_versatility': '75 Versatility',
-            'food_wod_mastery': '75 Mastery',
-            'food_wod_crit': '75 Crit',
-            'food_wod_haste': '75 Haste',
-            'food_wod_multistrike': '75 Multistrike'
+            'food_wod_versatility_75': '75 Versatility',
+            'food_wod_mastery_75': '75 Mastery',
+            'food_wod_crit_75': '75 Crit',
+            'food_wod_haste_75': '75 Haste',
+            'food_wod_multistrike_75': '75 Multistrike',
+            'food_wod_versatility': '100 Versatility',
+            'food_wod_mastery': '100 Mastery',
+            'food_wod_crit': '100 Crit',
+            'food_wod_haste': '100 Haste',
+            'food_wod_multistrike': '100 Multistrike',
+            'food_wod_versatility_125': '125 Versatility',
+            'food_wod_mastery_125': '125 Mastery',
+            'food_wod_crit_125': '125 Crit',
+            'food_wod_haste_125': '125 Haste',
+            'food_wod_multistrike_125': '125 Multistrike'
           }
         },
         flask_wod_agi: {
@@ -1585,7 +1595,8 @@
             'uptime': "Use Backstab and Hemorrhage for 100% DoT uptime"
           },
           "default": 'uptime',
-          datatype: 'string'
+          datatype: 'string',
+          desc: 'Subtlety modeling requires a MH dagger if Hemorrhage is not the main combo point builder.'
         },
         opener_name_subtlety: {
           type: "select",
@@ -3779,9 +3790,6 @@
           continue;
         }
         if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
-          continue;
-        }
-        if ((slot === 15) && combatSpec && l.subclass === 15 && !(l.id >= 77945 && l.id <= 77950)) {
           continue;
         }
         if ((slot === 15) && subtletyNeedsDagger && l.subclass !== 15) {

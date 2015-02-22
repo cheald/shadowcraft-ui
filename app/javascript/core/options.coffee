@@ -12,11 +12,21 @@ class ShadowcraftOptions
   ]
 
   @buffFoodMap = [
+    'food_wod_versatility_75',
+    'food_wod_mastery_75',
+    'food_wod_crit_75',
+    'food_wod_haste_75',
+    'food_wod_multistrike_75',
     'food_wod_versatility',
     'food_wod_mastery',
     'food_wod_crit',
     'food_wod_haste',
-    'food_wod_multistrike'
+    'food_wod_multistrike',
+    'food_wod_versatility_125',
+    'food_wod_mastery_125',
+    'food_wod_crit_125',
+    'food_wod_haste_125',
+    'food_wod_multistrike_125'
   ]
 
   cast = (val, dtype) ->
@@ -132,7 +142,10 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #playerBuffs", "buffs", {
-      food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_wod_versatility', options: {'food_wod_versatility': '75 Versatility', 'food_wod_mastery': '75 Mastery', 'food_wod_crit': '75 Crit', 'food_wod_haste': '75 Haste', 'food_wod_multistrike': '75 Multistrike' } },
+      food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_wod_versatility', options: {
+                 'food_wod_versatility_75': '75 Versatility', 'food_wod_mastery_75': '75 Mastery', 'food_wod_crit_75': '75 Crit', 'food_wod_haste_75': '75 Haste', 'food_wod_multistrike_75': '75 Multistrike', 
+                 'food_wod_versatility': '100 Versatility', 'food_wod_mastery': '100 Mastery', 'food_wod_crit': '100 Crit', 'food_wod_haste': '100 Haste', 'food_wod_multistrike': '100 Multistrike',
+                 'food_wod_versatility_125': '125 Versatility', 'food_wod_mastery_125': '125 Mastery', 'food_wod_crit_125': '125 Crit', 'food_wod_haste_125': '125 Haste', 'food_wod_multistrike_125': '125 Multistrike' } },
       flask_wod_agi: {name: "Agility Flask", desc: "WoD Flask (200 Agility)", 'default': true, datatype: 'bool'},
       short_term_haste_buff: {name: "+30% Haste/40 sec", desc: "Heroism/Bloodlust/Time Warp", 'default': true, datatype: 'bool'},
       stat_multiplier_buff: {name: "5% All Stats", desc: "Blessing of Kings/Mark of the Wild/Legacy of the Emperor", 'default': true, datatype: 'bool'},
@@ -170,7 +183,7 @@ class ShadowcraftOptions
     })
 
     @setup("#settings section.subtlety .settings", "rotation", {
-      use_hemorrhage: {type: "select", name: "CP Builder", options: {'never': "Backstab", 'always': "Hemorrhage", 'uptime': "Use Backstab and Hemorrhage for 100% DoT uptime"}, default: 'uptime', datatype: 'string'}
+      use_hemorrhage: {type: "select", name: "CP Builder", options: {'never': "Backstab", 'always': "Hemorrhage", 'uptime': "Use Backstab and Hemorrhage for 100% DoT uptime"}, default: 'uptime', datatype: 'string', desc: 'Subtlety modeling requires a MH dagger if Hemorrhage is not the main combo point builder.'}
       opener_name_subtlety: {type: "select", name: "Opener Name", options: {'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
       opener_use_subtlety: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
     })
