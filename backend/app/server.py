@@ -279,11 +279,21 @@ class ShadowcraftComputation:
     ]
     
     buffFoodMap = [
+        'food_wod_versatility_75',
+        'food_wod_mastery_75',
+        'food_wod_crit_75',
+        'food_wod_haste_75',
+        'food_wod_multistrike_75',
         'food_wod_versatility',
         'food_wod_mastery',
         'food_wod_crit',
         'food_wod_haste',
-        'food_wod_multistrike'
+        'food_wod_multistrike',
+        'food_wod_versatility_125',
+        'food_wod_mastery_125',
+        'food_wod_crit_125',
+        'food_wod_haste_125',
+        'food_wod_multistrike_125'
     ]
     
     if __builtin__.shadowcraft_engine_version == 6.0:
@@ -359,6 +369,8 @@ class ShadowcraftComputation:
         
         # Buff Food
         buff_list.append(self.buffFoodMap[input.get("bf", 0)])
+        print self.buffFoodMap[input.get("bf", 0)]
+        print input.get("bf",0)
 
         _buffs = buffs.Buffs(*buff_list, level=_level)
 
