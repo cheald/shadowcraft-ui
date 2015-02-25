@@ -144,6 +144,9 @@ class Item
     item_ids -= [104974, 104725, 102292, 105223, 104476, 105472] # assurance_of_consequence
     item_ids -= [105114, 104865, 102311, 105363, 104616, 105612] # ticking_ebon_detonator
 
+    # add the 6.1 alchemy trinkets since wowhead doesn't include them in the above searches yet
+    item_ids += [122601, 122602, 122603, 122604]
+
     pos = 0
     item_ids.each do |id|
       pos = pos + 1
