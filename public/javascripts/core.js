@@ -320,13 +320,13 @@
     get_engine = function() {
       var endpoint, port;
       switch (Shadowcraft.Data.options.general.patch) {
-        case 61:
+        case 62:
           port = 8880;
-          endpoint = "engine-6.1";
+          endpoint = "engine-6.2";
           return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
         default:
           port = 8881;
-          endpoint = "engine-6.0";
+          endpoint = "engine-6.1";
           if (window.location.host.match(/:/)) {
             return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
           } else {
@@ -1262,7 +1262,7 @@
           'default': 60,
           datatype: 'integer',
           options: {
-            60: '6.0 (Level 100)'
+            60: '6.1'
           }
         },
         level: {
@@ -1398,11 +1398,11 @@
           datatype: 'string',
           "default": 'food_wod_versatility',
           options: {
-            'food_wod_versatility': '75 Versatility',
-            'food_wod_mastery': '75 Mastery',
-            'food_wod_crit': '75 Crit',
-            'food_wod_haste': '75 Haste',
-            'food_wod_multistrike': '75 Multistrike'
+            'food_wod_versatility': '125 Versatility',
+            'food_wod_mastery': '125 Mastery',
+            'food_wod_crit': '125 Crit',
+            'food_wod_haste': '125 Haste',
+            'food_wod_multistrike': '125 Multistrike'
           }
         },
         flask_wod_agi: {
@@ -3471,7 +3471,7 @@
       a_stats = [];
       if (data.options.general.patch) {
         if (data.options.general.patch === 60) {
-          valengine = "6.0";
+          valengine = "6.1";
         } else {
           valengine = data.options.general.patch / 10;
         }

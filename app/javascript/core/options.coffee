@@ -111,7 +111,7 @@ class ShadowcraftOptions
   initOptions: ->
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Patch/Engine", 'default': 60, datatype: 'integer', options: {60: '6.0 (Level 100)'}},
+      patch: {type: "select", name: "Patch/Engine", 'default': 60, datatype: 'integer', options: {60: '6.1'}},
       level: {type: "input", name: "Level", 'default': 100, datatype: 'integer', min: 100, max: 100},
       race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
       night_elf_racial: {name: "Racial (Night Elf)", datatype: 'integer', type: 'select', options: {1: 'Day (1% Crit)', 0: 'Night (1% Haste)'}, default: 0}
@@ -132,7 +132,7 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #playerBuffs", "buffs", {
-      food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_wod_versatility', options: {'food_wod_versatility': '75 Versatility', 'food_wod_mastery': '75 Mastery', 'food_wod_crit': '75 Crit', 'food_wod_haste': '75 Haste', 'food_wod_multistrike': '75 Multistrike' } },
+      food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_wod_versatility', options: {'food_wod_versatility': '125 Versatility', 'food_wod_mastery': '125 Mastery', 'food_wod_crit': '125 Crit', 'food_wod_haste': '125 Haste', 'food_wod_multistrike': '125 Multistrike' } },
       flask_wod_agi: {name: "Agility Flask", desc: "WoD Flask (200 Agility)", 'default': true, datatype: 'bool'},
       short_term_haste_buff: {name: "+30% Haste/40 sec", desc: "Heroism/Bloodlust/Time Warp", 'default': true, datatype: 'bool'},
       stat_multiplier_buff: {name: "5% All Stats", desc: "Blessing of Kings/Mark of the Wild/Legacy of the Emperor", 'default': true, datatype: 'bool'},
