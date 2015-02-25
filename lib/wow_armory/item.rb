@@ -273,25 +273,26 @@ module WowArmory
       end
 
       # check if there is hotfix data available
-      if item_hotfixes.has_key? @id.to_s
-        puts 'Stats from wowapi:'
-        puts self.stats.inspect
-        row = item_hotfixes[@id.to_s]
-        unless row.nil?
-          write_new_stats(row)
-          puts 'Overwritten stats with hotfix data:'
-          puts self.stats.inspect
-        end
-      elsif item_stats.has_key? @id.to_s
-        puts 'Stats from wowapi:'
-        puts self.stats.inspect
-        row = item_stats[@id.to_s]
-        unless row.nil?
-          write_new_stats(row)
-          puts 'Overwritten stats with stats data:'
-          puts self.stats.inspect
-        end
-      end
+      # FIXME temporary remove hotfix and base item stats overwrite
+      # if item_hotfixes.has_key? @id.to_s
+      #   puts 'Stats from wowapi:'
+      #   puts self.stats.inspect
+      #   row = item_hotfixes[@id.to_s]
+      #   unless row.nil?
+      #     write_new_stats(row)
+      #     puts 'Overwritten stats with hotfix data:'
+      #     puts self.stats.inspect
+      #   end
+      # elsif item_stats.has_key? @id.to_s
+      #   puts 'Stats from wowapi:'
+      #   puts self.stats.inspect
+      #   row = item_stats[@id.to_s]
+      #   unless row.nil?
+      #     write_new_stats(row)
+      #     puts 'Overwritten stats with stats data:'
+      #     puts self.stats.inspect
+      #   end
+      # end
 
       unless @json['bonusSummary']['chanceBonusLists'].nil?
         self.chance_bonus_lists = @json['bonusSummary']['chanceBonusLists']
