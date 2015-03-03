@@ -192,8 +192,8 @@ class ShadowcraftComputation:
     trinketGroups = {
       'stone_of_wind': [640],
       'stone_of_the_earth': [655],
-      'stone_of_the_waters': [665],
-      'stone_of_fire': [675],
+      'stone_of_the_waters': [670],
+      'stone_of_fire': [680],
       'beating_heart_of_the_mountain': [665,671,680,686,695,701],
       'meaty_dragonspine_trophy': [665,671,680,686,695,701],
       'humming_blackiron_trigger': [665,671,680,686,695,701],

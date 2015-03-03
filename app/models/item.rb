@@ -138,6 +138,10 @@ class Item
 
     # trinkets
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4.-4?filter=minle=530;ro=1"
+
+    # 6.1 alchemy trinkets
+    item_ids += [122601, 122602, 122603, 122604]
+
     # do not import mop trinkets here, so remove them
     item_ids -= [105029, 104780, 102301, 105278, 104531, 105527] # haromms_talisman
     item_ids -= [105082, 104833, 102302, 105331, 104584, 105580] # sigil_of_rampage
