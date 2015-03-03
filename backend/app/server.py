@@ -199,7 +199,7 @@ class ShadowcraftComputation:
       'humming_blackiron_trigger': [665,671,680,686,695,701],
       'scales_of_doom': [655,661,670,676,685,691],
       'skull_of_war': [640,655,670,680],
-      'formidable_jar_of_doom': [655],
+      'formidable_jar_of_doom': [655,661],
       'lucky_doublesided_coin': [665],
       'blackheart_enforcers_medallion': [650,656],
       'primal_combatants_boc': [620,626,660],
