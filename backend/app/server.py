@@ -198,7 +198,7 @@ class ShadowcraftComputation:
       'meaty_dragonspine_trophy': [665,671,680,686,695,701],
       'humming_blackiron_trigger': [665,671,680,686,695,701],
       'scales_of_doom': [655,661,670,676,685,691],
-      'skull_of_war': [640,655,665,675],
+      'skull_of_war': [640,655,670,680],
       'formidable_jar_of_doom': [655],
       'lucky_doublesided_coin': [665],
       'blackheart_enforcers_medallion': [650,656],
