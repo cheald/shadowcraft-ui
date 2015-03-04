@@ -500,7 +500,7 @@ class Item
       source = 'wowapi'
       options = {
           :remote_id => id,
-          :bonus_trees => bonuses
+          :bonus_trees => bonuses.sort
       }
       db_item_with_bonus = Item.find_or_initialize_by options
       if db_item_with_bonus.properties.nil?

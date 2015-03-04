@@ -190,6 +190,8 @@ class ShadowcraftComputation:
     
     # used for rankings
     trinketGroups = {
+      'archmages_greater_incandescence': [710],
+      'archmages_incandescence': [690],
       'stone_of_wind': [640],
       'stone_of_the_earth': [655],
       'stone_of_the_waters': [670],
