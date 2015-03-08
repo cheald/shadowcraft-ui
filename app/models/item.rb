@@ -374,9 +374,9 @@ class Item
     end
   end
 
-  SKIP_EXTRA_SOCKETS = [3, 497, 523, 563, 564, 565, 572] # extra sockets
+  BLACKLIST_EXTRA_SOCKETS = [3, 497, 523, 563, 564, 565, 572] # extra sockets
 
-  SKIP_RANDOM_SUFFIXES = [3, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 45,
+  BLACKLIST_RANDOM_SUFFIXES = [3, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 45,
                            46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68,
                            69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91,
                            92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,
@@ -402,7 +402,7 @@ class Item
                            469, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 483, 484, 485, 486,
                            487, 488, 489, 490, 491, 492, 497]
 
-  SKIP_TERTIARY_STATS = [40, 41, 42, 43]
+  BLACKLIST_TERTIARY_STATS = [40, 41, 42, 43]
 
   def self.wod_import(id, context = '', bonuses = nil)
     source = 'wowapi'
@@ -419,12 +419,12 @@ class Item
         end
         return if copy == bonuses
       end
-      # if bonus is in skip list filter out
+      # if bonus is in blacklist filter out
       return if bonuses.nil?
       bonuses.clone.each do |bonus|
-        bonuses.delete(bonus) if SKIP_EXTRA_SOCKETS.include? bonus # extra sockets
-        bonuses.delete(bonus) if SKIP_TERTIARY_STATS.include? bonus # avoidance, leech, speed, indestructible
-        bonuses.delete(bonus) if SKIP_RANDOM_SUFFIXES.include? bonus # random suffixes
+        bonuses.delete(bonus) if BLACKLIST_EXTRA_SOCKETS.include? bonus # extra sockets
+        bonuses.delete(bonus) if BLACKLIST_TERTIARY_STATS.include? bonus # avoidance, leech, speed, indestructible
+        bonuses.delete(bonus) if BLACKLIST_RANDOM_SUFFIXES.include? bonus # random suffixes
       end
       return if bonuses.empty?
       # make a special import with the given and possible missing bonus id data from armory
@@ -447,9 +447,9 @@ class Item
         context_data = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id, context], {}, :json
       end
       context_data['bonusSummary']['defaultBonusLists'].clone.each do |defaultBonusListsId|
-        context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) if SKIP_EXTRA_SOCKETS.include? defaultBonusListsId # extra sockets
-        context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) if SKIP_TERTIARY_STATS.include? defaultBonusListsId # avoidance, leech, speed, indestructible
-        context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) if SKIP_RANDOM_SUFFIXES.include? defaultBonusListsId # random suffixes
+        context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) if BLACKLIST_EXTRA_SOCKETS.include? defaultBonusListsId # extra sockets
+        context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) if BLACKLIST_TERTIARY_STATS.include? defaultBonusListsId # avoidance, leech, speed, indestructible
+        context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) if BLACKLIST_RANDOM_SUFFIXES.include? defaultBonusListsId # random suffixes
       end
       if context_data['bonusSummary']['defaultBonusLists'].empty?
         context_data['bonusSummary']['defaultBonusLists'] = [0]
@@ -471,9 +471,9 @@ class Item
           # if available we need to import warforged too
           # the other stuff like extra socket or tertiary stats are added in the UI dynamically
           context_data['bonusSummary']['chanceBonusLists'].each do |bonus|
-            next if SKIP_EXTRA_SOCKETS.include? bonus # avoidance, leech, speed, indestructible
-            next if SKIP_RANDOM_SUFFIXES.include? bonus # random suffix
-            next if SKIP_TERTIARY_STATS.include? bonus # tertiary stats
+            next if BLACKLIST_EXTRA_SOCKETS.include? bonus # avoidance, leech, speed, indestructible
+            next if BLACKLIST_RANDOM_SUFFIXES.include? bonus # random suffix
+            next if BLACKLIST_TERTIARY_STATS.include? bonus # tertiary stats
             puts bonus
             options = {
                 :remote_id => id,

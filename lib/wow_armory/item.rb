@@ -294,10 +294,16 @@ module WowArmory
         end
       end
 
-      unless @json['bonusSummary']['chanceBonusLists'].nil?
-        self.chance_bonus_lists = @json['bonusSummary']['chanceBonusLists']
-      else
+      if @json['bonusSummary']['chanceBonusLists'].nil?
         self.chance_bonus_lists = []
+      else
+        self.chance_bonus_lists = @json['bonusSummary']['chanceBonusLists']
+      end
+
+      @json['bonusSummary']['defaultBonusLists'].each do |bonusId|
+        if [486, 487, 488, 489, 490].include? bonusId then
+          self.chance_bonus_lists.push(bonusId)
+        end
       end
 
       unless @json['weaponInfo'].nil?
