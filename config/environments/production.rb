@@ -47,8 +47,8 @@ Roguesim::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
   
-  config.middleware.use ::ExceptionNotifier,
-    :email_prefix => "[ShadowCraft] ",
-    :sender_address => %{"notifier" <notifier@mmo-mumble.com>},
-    :exception_recipients => %w{cheald+shadowcraft@gmail.com indzlord+shadowcraft@gmail.com}    
+#config.middleware.use ::ExceptionNotifier,
+#    :email_prefix => "[ShadowCraft] ",
+#    :sender_address => %{"notifier" <notifier@mmo-mumble.com>},
+#    :exception_recipients => %w{cheald+shadowcraft@gmail.com indzlord+shadowcraft@gmail.com}    
 end
