@@ -154,6 +154,13 @@ class Item
       puts "item #{pos} of #{item_ids.length}" if pos % 10 == 0
       wod_import id
     end
+
+    # import all stages from skull of war by default
+    wod_special_import 112318, 'trade-skill', [525]
+    wod_special_import 112318, 'trade-skill', [526]
+    wod_special_import 112318, 'trade-skill', [527]
+    wod_special_import 112318, 'trade-skill', [593]
+
     true
   end
 
