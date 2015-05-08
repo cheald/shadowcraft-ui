@@ -148,6 +148,9 @@ class Item
     item_ids -= [104974, 104725, 102292, 105223, 104476, 105472] # assurance_of_consequence
     item_ids -= [105114, 104865, 102311, 105363, 104616, 105612] # ticking_ebon_detonator
 
+    # remove duplicates
+    item_ids = item_ids.uniq
+
     pos = 0
     item_ids.each do |id|
       pos = pos + 1
