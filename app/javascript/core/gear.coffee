@@ -49,6 +49,12 @@ class ShadowcraftGear
     T17_LFR:
       ids: [120384, 120383, 120382, 120381, 120380, 120379]
       bonuses: {4: "rogue_t17_4pc_lfr"}
+    T18:
+      ids: [124248, 124257, 124263, 124269, 124274]
+      bonuses: {4: "rogue_t18_4pc", 2: "rogue_t18_2pc"}
+    T18_LFR:
+      ids: [128130, 128121, 128125, 128054, 128131, 128137]
+      bonuses: {4: "rogue_t18_4pc_lfr"}
 
   Weights =
     attack_power: 1
@@ -896,6 +902,9 @@ class ShadowcraftGear
       t17_2pc: source.other_ep.rogue_t17_2pc || 0
       t17_4pc: source.other_ep.rogue_t17_4pc || 0
       t17_4pc_lfr: source.other_ep.rogue_t17_4pc_lfr || 0
+      t18_2pc: source.other_ep.rogue_t18_2pc || 0
+      t18_4pc: source.other_ep.rogue_t18_4pc || 0
+      t18_4pc_lfr: source.other_ep.rogue_t18_4pc_lfr || 0
 
     all = _.extend(Weights, other)
 
@@ -913,7 +922,7 @@ class ShadowcraftGear
         $.data(exist.get(0), "sortkey", 0)
         if key in ["mainhand_dps","offhand_dps"]
           $.data(exist.get(0), "sortkey", 1)
-        else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc","t16_2pc","t16_4pc","t17_2pc","t17_4pc","t17_4pc_lfr"]
+        else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc","t16_2pc","t16_4pc","t17_2pc","t17_4pc","t17_4pc_lfr","t18_2pc","t18_4pc","t18_4pc_lfr"]
           $.data(exist.get(0), "sortkey", 2)
       $.data(exist.get(0), "weight", weight)
 

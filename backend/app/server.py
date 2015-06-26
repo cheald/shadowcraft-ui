@@ -519,7 +519,7 @@ class ShadowcraftComputation:
             out["glyph_ranking"] = [] # calculator.get_glyphs_ranking(input.get("gly", []))
 
             out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
-            out["other_ep"] = calculator.get_other_ep(['rogue_t17_2pc','rogue_t17_4pc','rogue_t17_4pc_lfr','archmages_incandescence','archmages_greater_incandescence'])
+            out["other_ep"] = calculator.get_other_ep(['rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr','rogue_t17_2pc','rogue_t17_4pc','rogue_t17_4pc_lfr','archmages_incandescence','archmages_greater_incandescence'])
 
             trinket_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
 
