@@ -141,6 +141,8 @@ class Item
 
     # 6.1 alchemy trinkets
     item_ids += [122601, 122602, 122603, 122604]
+    # 6.2 alchemy trinkets
+    item_ids += [128023, 128024]
 
     # do not import mop trinkets here, so remove them
     item_ids -= [105029, 104780, 102301, 105278, 104531, 105527] # haromms_talisman
@@ -163,6 +165,8 @@ class Item
     wod_special_import 112318, 'trade-skill', [526]
     wod_special_import 112318, 'trade-skill', [527]
     wod_special_import 112318, 'trade-skill', [593]
+    wod_special_import 112318, 'trade-skill', [617]
+    wod_special_import 112318, 'trade-skill', [618]
 
     true
   end
@@ -198,87 +202,8 @@ class Item
 
   def self.populate_gear_mop(prefix = 'www', source = 'wowhead')
     @source = source
-    # suffixes = (-137..-133).to_a
-    # random_item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;ub=4;cr=124;crs=0;crv=zephyr"
-    # random_item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4?filter=na=hozen-speed"
-    # random_item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4?filter=na=Stormcrier"
-    #
-    # random_item_ids += (93049..93056).to_a
-    # puts "importing now #{random_item_ids.length} random items"
-    # random_item_ids.each do |id|
-    #   import_mop id,[nil,1,2,3,4,5,6],suffixes
-    # end
-
-    # 5.2 random enchantment items
-    # suffixes = (-340..-336).to_a
-    # random_item_ids = [ 94979, 95796, 96168, 96540, 96912 ]
-    # puts "importing now #{random_item_ids.length} random items for 5.2"
-    # random_item_ids.each do |id|
-    #   import_mop id,[nil,1,2,3,4,5,6],suffixes
-    # end
-
-    # 5.3 random enchantment items
-    # suffixes = (-348..-344).to_a + (-357..-353).to_a
-    # random_item_ids = [ 98279, 98275, 98280, 98271, 98272, 98189, 98172, 98190 ]
-    # random_item_ids += (98173..98180).to_a # tidesplitter ilvl 516
-    # random_item_ids += [ 97663, 97647, 97682, 97633, 97655, 97639, 97675 ] # disowner ilvl 502
-    # puts "importing now #{random_item_ids.length} random items for 5.3"
-    # random_item_ids.each do |id|
-    #   import_mop id,[nil,1,2,3,4,5,6],suffixes
-    # end
-
-    # 5.4 random enchantment items
-    # suffixes = (-348..-344).to_a + (-357..-353).to_a # 0 sockets
-
-    # ilvl 496
-    # suffixes_05 = (-465..-461).to_a + (-474..-470).to_a # 0.5 socket cost ilvl 496
-    # suffixes_15 = (-381..-377).to_a + (-390..-386).to_a # 1.5 socket cost ilvl 496
-    # random_item_ids = [ 101862, 101863, 101865, 101868, 101869 ] # 0 socket items
-    # random_item_ids += [ 101827, 101828, 101829 ] # neck, ring, cloak
-    # random_item_ids_05 = [ 101864, 101867 ] # 1 socket items
-    # random_item_ids_15 = [ 101866 ] # 2 socket items
-    # puts "importing now #{random_item_ids.length+random_item_ids_05.length+random_item_ids_15.length} random items for 5.4 (ilvl 496)"
-    # random_item_ids.each do |id|
-    #   import_mop id,[nil,1,2,3,4,5,6],suffixes
-    # end
-    # random_item_ids_05.each do |id|
-    #   import_mop id,[nil,1,2,3,4,5,6],suffixes_05
-    # end
-    # random_item_ids_15.each do |id|
-    #   import_mop id,[nil,1,2,3,4,5,6],suffixes_15
-    # end
-
-    # ilvl 535
-    # suffixes_05 = (-409..-405).to_a + (-418..-414).to_a # 0.5 socket cost ilvl 535
-    # suffixes_15 = (-437..-433).to_a + (-446..-442).to_a # 1.5 socket cost ilvl 535
-    # random_item_ids = [ 101949, 101950, 101952, 101955, 101956 ] # 0 sockets
-    # random_item_ids += [ 101916, 101917, 101918 ] # neck, ring, cloak
-    # random_item_ids_05 = [ 101951, 101954 ] # 1 socket items
-    # random_item_ids_15 = [ 101953 ] # 2 socket items
-    # puts "importing now #{random_item_ids.length+random_item_ids_05.length+random_item_ids_15.length} random items for 5.4 (ilvl 535)"
-    # random_item_ids.each do |id|
-    #   import_mop id,[nil,1,2,3,4,5,6],suffixes
-    # end
-    # random_item_ids_05.each do |id|
-    #   import_mop id,[nil,1,2,3,4,5,6],suffixes_05
-    # end
-    # random_item_ids_15.each do |id|
-    #   import_mop id,[nil,1,2,3,4,5,6],suffixes_15
-    # end
-
-    # item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=430;maxle=500;ub=4;cr=21;crs=1;crv=0"
-    # item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=430;maxle=483;ub=4;cr=21;crs=1;crv=0"
-    # item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=484;maxle=500;ub=4;cr=21;crs=1;crv=0"
-    # item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=501;maxle=510;ub=4;cr=21;crs=1;crv=0"
-    # item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=511;maxle=530;ub=4;cr=21;crs=1;crv=0"
-    # item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=531;maxle=550;ub=4;cr=21;crs=1;crv=0"
     item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=540;maxle=580;ub=4;cr=21;crs=1;crv=0"
 
-    # item_ids += [ 87057, 86132, 86791, 87574, 81265, 81267, 75274, 87495, 77534, 77530 ] # some extra_items, mostly 5.0 trinkets
-    # item_ids += [ 94523, 96409, 96037, 95665] # bad juju
-    # item_ids += [ 96741, 96369, 95997, 94512, 95625] # renatakis soul charm
-    # item_ids += [ 96174, 94511] # missing other trinkets
-    # item_ids += [ 96741, 96781] # heroic thunderforged, rune of reorigination and talisman of bloodlust still missing
     item_ids += [98148] # ilvl 600 cloak 5.3
 
     # 5.4

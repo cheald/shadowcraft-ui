@@ -34,7 +34,6 @@ class ShadowcraftComputation:
         4083: 'hurricane',
         4099: 'landslide',
         4441: 'windsong',
-        #4443: 'elemental_force',
         4444: 'dancing_steel',
         5125: 'dancing_steel',
         5330: "mark_of_the_thunderlord",
@@ -47,51 +46,6 @@ class ShadowcraftComputation:
 
     gearProcs = {
 
-        # 5.0
-        #81125: "windswept_pages",
-        #79328: "relic_of_xuen",
-        #86332: "terror_in_the_mists",
-        #87167: "terror_in_the_mists",
-        #86890: "terror_in_the_mists",
-        #86132: "bottle_of_infinite_stars",
-        #87057: "bottle_of_infinite_stars",
-        #86791: "bottle_of_infinite_stars",
-        #81267: "searing_words",
-        #87574: "corens_cold_chromium_coaster",
-        #84072: "braid_of_ten_songs",
-        #75274: "zen_alchemist_stone",
-        
-        # 5.1
-        #93253: "woundripper_medallion",
-        #93258: "woundripper_medallion",
-
-        # 5.2
-        #95665: 'bad_juju',
-        #94523: 'bad_juju',
-        #96037: 'bad_juju',
-        #96409: 'bad_juju',
-        #96781: 'bad_juju',
-        
-        #95802: 'rune_of_re_origination',
-        #94532: 'rune_of_re_origination',
-        #96174: 'rune_of_re_origination',
-        #96546: 'rune_of_re_origination',
-        #96918: 'rune_of_re_origination',
-        
-        #95748: 'talisman_of_bloodlust',
-        #94522: 'talisman_of_bloodlust',
-        #96120: 'talisman_of_bloodlust',
-        #96492: 'talisman_of_bloodlust',
-        #96864: 'talisman_of_bloodlust',
-        
-        #95625: 'renatakis_soul_charm',
-        #94512: 'renatakis_soul_charm',
-        #95997: 'renatakis_soul_charm',
-        #96369: 'renatakis_soul_charm',
-        #96741: 'renatakis_soul_charm',
-        
-        #94511: 'vicious_talisman_of_the_shado-pan_assault',
-
         # 5.4
         103686: 'discipline_of_xuen',
         103986: 'discipline_of_xuen',
@@ -102,14 +56,14 @@ class ShadowcraftComputation:
         105278: 'haromms_talisman',
         104531: 'haromms_talisman',
         105527: 'haromms_talisman',
-        
+
         105082: 'sigil_of_rampage',
         104833: 'sigil_of_rampage',
         102302: 'sigil_of_rampage',
         105331: 'sigil_of_rampage',
         104584: 'sigil_of_rampage',
         105580: 'sigil_of_rampage',
-        
+
         104974: 'assurance_of_consequence',
         104725: 'assurance_of_consequence',
         102292: 'assurance_of_consequence',
@@ -130,28 +84,27 @@ class ShadowcraftComputation:
         105360: 'thoks_tail_tip',
         104613: 'thoks_tail_tip',
         105609: 'thoks_tail_tip',
-        
+
         # 6.0
         113931: 'beating_heart_of_the_mountain',
         118114: 'meaty_dragonspine_trophy',
         113985: 'humming_blackiron_trigger',
         113612: 'scales_of_doom',
-        #118302: 'spellbound_solium_band_of_fatal_strikes',
         112318: 'skull_of_war',
         114610: 'formidable_jar_of_doom',
         116314: 'blackheart_enforcers_medallion',
         118876: 'lucky_doublesided_coin',
-        
+
         115149: 'primal_combatants_boc',
         111222: 'primal_combatants_boc',
         117930: 'primal_combatants_boc',
         115749: 'primal_combatants_boc',
-        
+
         119927: 'primal_combatants_ioc',
         115150: 'primal_combatants_ioc',
         111223: 'primal_combatants_ioc',
         115750: 'primal_combatants_ioc',
-        
+
         109998: 'gorashans_lodestone_spike',
         109997: 'kihras_adrenaline_injector',
         114488: 'turbulent_vial_of_toxin',
@@ -160,16 +113,25 @@ class ShadowcraftComputation:
         109262: 'draenic_philosophers_stone',
         114891: 'void-touched_totem',
         116799: 'smoldering_heart_of_hyperious',
-        
+
         # 6.1
         118302: 'archmages_incandescence',
         118307: 'archmages_greater_incandescence',
-        122601: 'stone_of_wind',
-        122602: 'stone_of_the_earth',
-        122603: 'stone_of_the_waters',
-        122604: 'stone_of_fire',
+        124636: 'maalus',
+        122601: 'alchemy_stone', # 'stone_of_wind'
+        122602: 'alchemy_stone', # 'stone_of_the_earth',
+        122603: 'alchemy_stone', # 'stone_of_the_waters',
+        122604: 'alchemy_stone', # 'stone_of_fire',
+
+        # 6.2
+        128023: 'alchemy_stone', # 'stone_of_the_wilds',
+        128024: 'alchemy_stone', # 'stone_of_the_elements',
+        124520: 'bleeding_hollow_toxin_vessel',
+        124226: 'malicious_censer',
+        124225: 'soul_capacitor',
+        124224: 'mirror_of_the_blademaster',
     }
-    
+
     def createTrinketGroup(base_ilvls, upgrade_level, upgrade_steps):
       trinketGroup = []
       for base_ilvl in base_ilvls:
@@ -178,7 +140,7 @@ class ShadowcraftComputation:
           subgroup += (i,)
         trinketGroup.append(subgroup)
       return trinketGroup
-      
+
     def createTrinketGroupFast(base_ilvls, upgrade_level, upgrade_steps):
       trinketGroup = []
       subgroup = ()
@@ -187,15 +149,20 @@ class ShadowcraftComputation:
           subgroup += (i,)
       trinketGroup.append(subgroup)
       return trinketGroup
-    
+
     # used for rankings
     trinketGroups = {
+      # legendary rings
       'archmages_greater_incandescence': [715],
       'archmages_incandescence': [690],
-      'stone_of_wind': [640],
-      'stone_of_the_earth': [655],
-      'stone_of_the_waters': [670],
-      'stone_of_fire': [685],
+      'maalus': [735],
+      'alchemy_stone': [640,655,670,685,700,715],
+      # 6.2 trinkets
+      'bleeding_hollow_toxin_vessel': [705,720,735],
+      'malicious_censer': [700,715,730],
+      'soul_capacitor': [695,710,725],
+      'mirror_of_the_blademaster': [690,705,720],
+      # 6.0 trinkets
       'beating_heart_of_the_mountain': [670,676,685,691,700,706],
       'meaty_dragonspine_trophy': [670,676,685,691,700,706],
       'humming_blackiron_trigger': [670,676,685,691,700,706],
@@ -206,42 +173,24 @@ class ShadowcraftComputation:
       'blackheart_enforcers_medallion': [655,661],
       'primal_combatants_boc': [620,626,660],
       'primal_combatants_ioc': [620,626,660],
-      'gorashans_lodestone_spike': [530,550,570,600,615,630,636],
-      'kihras_adrenaline_injector': [530,550,570,600,615,630,636],
+      'gorashans_lodestone_spike': [530,550,570,600,615,630,636,685,705],
+      'kihras_adrenaline_injector': [530,550,570,600,615,630,636,685,705],
       'turbulent_vial_of_toxin': [630,636],
       'munificent_emblem_of_terror': [615,621],
-      'witherbarks_branch': [530,550,570,600,615,630,636],
+      'witherbarks_branch': [530,550,570,600,615,630,636,685,705],
       'draenic_philosophers_stone': [620],
       'void-touched_totem': [604,614,624,634],
       'smoldering_heart_of_hyperious': [597,607],
-      #'bad_juju': createTrinketGroup((502,522,528,535,541), 6, 4),
-      #'rune_of_re_origination': createTrinketGroup((502,522,528,535,541), 6, 4),
-      #'talisman_of_bloodlust': createTrinketGroup((502,522,528,535,541), 6, 4),
-      #'vicious_talisman_of_the_shado-pan_assault': createTrinketGroup((522,), 6, 4),
-      #'renatakis_soul_charm': createTrinketGroup((502,522,528,535,541), 6, 4),
       'assurance_of_consequence': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
       'haromms_talisman': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
       'sigil_of_rampage': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
       'ticking_ebon_detonator': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
       'thoks_tail_tip': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
       'discipline_of_xuen': createTrinketGroupFast((496,535), 6, 4),
-      #'woundripper_medallion': createTrinketGroup((496,), 6, 4),
-      
-      #'windswept_pages': createTrinketGroup((463,), 1, 8),
-      #'searing_words': createTrinketGroup((463,), 1, 8),
-      #'relic_of_xuen': createTrinketGroup((476,), 4 ,4),
-      #'bottle_of_infinite_stars': createTrinketGroup((476,489,502), 4 , 4),
-      #'corens_cold_chromium_coaster': createTrinketGroup((470,), 4, 4),
-      #'terror_in_the_mists': createTrinketGroup((483,496,509), 4, 4),
-      
-      #'gerps_perfect_arrow': (442,),
-      #'flashing_steel_talisman': createTrinketGroup((463,), 1, 8),
-      #'hawkmasters_talon': createTrinketGroup((489,), 6, 4),
-      #'jade_bandit_figurine': createTrinketGroup((476,489,502), 6, 4),
     }
 
     gearBoosts = {
-        
+
         #5.0
         #87495: "gerps_perfect_arrow",
         #81265: "flashing_steel_talisman",
@@ -250,7 +199,7 @@ class ShadowcraftComputation:
         #86043: "jade_bandit_figurine",
         #86772: "jade_bandit_figurine",
     }
-    
+
     # combines gearProcs and gearBoosts
     trinketMap = dict(gearProcs, **gearBoosts)
 
@@ -259,6 +208,8 @@ class ShadowcraftComputation:
     tier16IDS = frozenset([99006, 99007, 99008, 99009, 99010, 99112, 99113, 99114, 99115, 99116, 99348, 99349, 99350, 99355, 99356, 99629, 99630, 99631, 99634, 99635])
     tier17IDS = frozenset([115570, 115571, 115572, 115573, 115574])
     tier17LFRIDS = frozenset([120384, 120383, 120382, 120381, 120380, 120379])
+    tier18IDS = frozenset([124248, 124257, 124263, 124269, 124274])
+    tier18LFRIDS = frozenset([128130, 128121, 128125, 128054, 128131, 128137])
 
     subclassMap = {
     -1: None,
@@ -278,7 +229,7 @@ class ShadowcraftComputation:
         18: 'crossbow',
         19: 'wand'
     }
-    
+
     buffMap = [
         'short_term_haste_buff',
         'stat_multiplier_buff',
@@ -290,7 +241,7 @@ class ShadowcraftComputation:
         'versatility_buff',
         'flask_wod_agi',
     ]
-    
+
     buffFoodMap = [
         'food_wod_versatility_125',
         'food_wod_mastery_125',
@@ -298,7 +249,7 @@ class ShadowcraftComputation:
         'food_wod_haste_125',
         'food_wod_multistrike_125'
     ]
-    
+
     if __builtin__.shadowcraft_engine_version >= 6.0:
         validCycleKeys = [[
                 'min_envenom_size_non_execute',
@@ -311,7 +262,7 @@ class ShadowcraftComputation:
                 'use_hemorrhage',
             ]
         ]
-    
+
     validOpenerKeys = [[
         'mutilate',
         'ambush',
@@ -331,20 +282,20 @@ class ShadowcraftComputation:
         total=0
         for letter in str(x):
                 total += int(letter)
-                
+
         return total
 
     def weapon(self, input, index):
         i = input.get(index, [])
         if len(i) < 4:
             return stats.Weapon(0.01, 2, None, None)
-            
+
         speed = float(i[0])
         dmg = float(i[1])
         subclass = self.subclassMap.get(i[3], None)
         enchant = self.enchantMap.get( i[2], None )
         return stats.Weapon(dmg, speed, subclass, enchant)
-        
+
     def convert_bools(self, dict):
         for k in dict:
             if dict[k] == "false":
@@ -356,7 +307,7 @@ class ShadowcraftComputation:
     def setup(self, input):
         gear_data = input.get("g", [])
         gear = frozenset([x[0] for x in gear_data])
-        
+
         i18n.set_language('local')
 
         # Base
@@ -369,7 +320,7 @@ class ShadowcraftComputation:
             b = int(b)
             if b >= 0 and b < __max:
                 buff_list.append(self.buffMap[b])
-        
+
         # Buff Food
         buff_list.append(self.buffFoodMap[input.get("bf", 0)])
 
@@ -405,19 +356,30 @@ class ShadowcraftComputation:
 
         if len(self.tier16IDS & gear) >= 4:
             buff_list.append('rogue_t16_4pc')
-            
+
         if len(self.tier17IDS & gear) >= 2:
             buff_list.append('rogue_t17_2pc')
 
         if len(self.tier17IDS & gear) >= 4:
             buff_list.append('rogue_t17_4pc')
-        
+
         if len(self.tier17LFRIDS & gear) >= 4:
             buff_list.append('rogue_t17_4pc_lfr')
-    
+
+        if len(self.tier18IDS & gear) >= 2:
+            buff_list.append('rogue_t18_2pc')
+
+        if len(self.tier18IDS & gear) >= 4:
+            buff_list.append('rogue_t18_4pc')
+
+        if len(self.tier18LFRIDS & gear) >= 4:
+            buff_list.append('rogue_t18_4pc_lfr')
+
         agi_bonus = 0
         if len(self.tier17LFRIDS & gear) >= 2:
             agi_bonus += 100
+        if len(self.tier18LFRIDS & gear) >= 2:
+            agi_bonus += 115
 
         for k in self.gearBoosts:
             if k in gear:
@@ -434,11 +396,11 @@ class ShadowcraftComputation:
                     if gd[0] == k:
                         proclist.append((self.gearProcs[k],gd[1]))
                         break
-        
+
 
         if input.get("mg") == "capacitive":
             proclist.append('legendary_capacitive_meta')
-            
+
         #if len(frozenset([102248]) & gear) >= 1:
         #    proclist.append('fury_of_xuen')
 
@@ -453,7 +415,7 @@ class ShadowcraftComputation:
                 proclist.append('draenic_agi_prepot')
             if input.get("pot", 0) == 1:
                 proclist.append('draenic_agi_pot')
-        
+
         _procs = procs.ProcsList(*proclist)
 
         # ##################################################################################
@@ -466,7 +428,7 @@ class ShadowcraftComputation:
         s = input.get("sta", {})
         _opt = input.get("settings", {})
         duration = int(_opt.get("duration", 300))
-        
+
         _stats = stats.Stats(
             _mh, _oh, _procs, _gear_buffs,
             s[0], # Str
@@ -488,12 +450,12 @@ class ShadowcraftComputation:
         # ##################################################################################
 
         # Talents
-        t = input.get("t", '') 	
+        t = input.get("t", '')
         _talents = talents.Talents(t , "rogue", _level)
 
         # Glyphs
         _glyphs = glyphs.Glyphs("rogue", *input.get("gly", []))
-	
+
         _spec = input.get("spec", 'a')
         if _spec == "a":
             tree = 0
@@ -501,7 +463,7 @@ class ShadowcraftComputation:
             tree = 1
         else:
             tree = 2
-        
+
         rotation_keys = input.get("ro", { 'opener_name': 'default', 'opener_use': 'always'})
         if not rotation_keys["opener_name"] in self.validOpenerKeys[tree]:
           rotation_keys["opener_name"] = "default"
@@ -535,7 +497,7 @@ class ShadowcraftComputation:
         )
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)
         return calculator
-        
+
     def get_all(self, input):
         out = {}
         try:
@@ -555,15 +517,15 @@ class ShadowcraftComputation:
 
             # Glyph ranking is slow
             out["glyph_ranking"] = [] # calculator.get_glyphs_ranking(input.get("gly", []))
-            
+
             out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
             out["other_ep"] = calculator.get_other_ep(['rogue_t17_2pc','rogue_t17_4pc','rogue_t17_4pc_lfr','archmages_incandescence','archmages_greater_incandescence'])
-            
+
             trinket_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
 
             out["proc_ep"] = trinket_rankings
             out["trinket_map"] = self.trinketMap
-            
+
             # Compute weapon ep
             out["mh_ep"], out["oh_ep"] = calculator.get_weapon_ep(dps=True, enchants=True)
             out["mh_speed_ep"], out["oh_speed_ep"] = calculator.get_weapon_ep([2.4, 2.6, 1.7, 1.8])
@@ -573,10 +535,10 @@ class ShadowcraftComputation:
             # oh weapon modifier, pull only for combat spec
             #if input.get("spec", 'a') == "Z":
             #    out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
-            
+
             # Talent ranking is slow. This is done last per a note from nextormento.
-            out["talent_ranking"] = [] # calculator.get_talents_ranking()      
-            
+            out["talent_ranking"] = [] # calculator.get_talents_ranking()
+
             out["engine_info"] = calculator.get_engine_info()
 
             return out
@@ -594,14 +556,14 @@ reactor.suggestThreadPoolSize(16)
 
 class ShadowcraftSite(resource.Resource):
     isLeaf = True
-    allowedMethods = ('POST','OPTIONS', 'GET')  
-    
+    allowedMethods = ('POST','OPTIONS', 'GET')
+
     def render_OPTIONS(self, request):
         request.setHeader("Access-Control-Allow-Origin", "*")
-        request.setHeader("Access-Control-Max-Age", "3600")    
+        request.setHeader("Access-Control-Max-Age", "3600")
         request.setHeader("Access-Control-Allow-Headers", "x-requested-with")
         return ""
-        
+
     def _render_post(self, input):
         start = clock()
         log.msg("Request: %s" % input)
@@ -614,11 +576,11 @@ class ShadowcraftSite(resource.Resource):
 
     def render_POST(self, request):
         request.setHeader("Access-Control-Allow-Origin", "*")
-        
+
         inbound = request.args.get("data", None)
         if not inbound:
             return '{"error": "Invalid input"}'
-        
+
         input = json.loads(inbound[0])
 
         # d = threads.deferToThread(self._render_post, input)
@@ -626,7 +588,7 @@ class ShadowcraftSite(resource.Resource):
         # d.addCallback(lambda _: request.finish())
         # return server.NOT_DONE_YET
         return self._render_post(input)
-    
+
     # Because IE is terrible.
     def render_GET(self, request):
         return self.render_POST(request)
@@ -643,7 +605,7 @@ class ShadowcraftSite(resource.Resource):
             return zbuf.getvalue()
         else:
             return content
-        
+
 
 class ShadowcraftSocket(WebSocketHandler):
     def frameReceived(self, frame):
@@ -655,12 +617,12 @@ class ShadowcraftSocket(WebSocketHandler):
             # stats = hotshot.stats.load("stones.prof")
             # stats.sort_stats('time', 'calls')
             # stats.print_stats(50)
-            
+
             start = clock()
-            response = engine.get_all(input["data"])      
+            response = engine.get_all(input["data"])
             response["calc_time"] = clock() - start
             self.transport.write(json.dumps({'type': 'response', 'data': response}))
-            
+
 if __name__ == "__main__":
     site = WebSocketSite(ShadowcraftSite())
     site.addHandler("/engine", ShadowcraftSocket)
