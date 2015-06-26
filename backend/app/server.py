@@ -173,11 +173,11 @@ class ShadowcraftComputation:
       'blackheart_enforcers_medallion': [655,661],
       'primal_combatants_boc': [620,626,660],
       'primal_combatants_ioc': [620,626,660],
-      'gorashans_lodestone_spike': [530,550,570,600,615,630,636],
-      'kihras_adrenaline_injector': [530,550,570,600,615,630,636],
+      'gorashans_lodestone_spike': [530,550,570,600,615,630,636,685,705],
+      'kihras_adrenaline_injector': [530,550,570,600,615,630,636,685,705],
       'turbulent_vial_of_toxin': [630,636],
       'munificent_emblem_of_terror': [615,621],
-      'witherbarks_branch': [530,550,570,600,615,630,636],
+      'witherbarks_branch': [530,550,570,600,615,630,636,685,705],
       'draenic_philosophers_stone': [620],
       'void-touched_totem': [604,614,624,634],
       'smoldering_heart_of_hyperious': [597,607],
@@ -365,6 +365,9 @@ class ShadowcraftComputation:
 
         if len(self.tier17LFRIDS & gear) >= 4:
             buff_list.append('rogue_t17_4pc_lfr')
+
+        if len(self.tier18IDS & gear) >= 2:
+            buff_list.append('rogue_t18_2pc')
 
         if len(self.tier18IDS & gear) >= 4:
             buff_list.append('rogue_t18_4pc')
