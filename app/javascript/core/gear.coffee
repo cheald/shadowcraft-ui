@@ -814,7 +814,7 @@ class ShadowcraftGear
     a_stats = []
     if data.options.general.patch
       if data.options.general.patch == 60
-        valengine = "6.1"
+        valengine = "6.2"
       else
         valengine = data.options.general.patch / 10
     else
