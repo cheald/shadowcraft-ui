@@ -320,13 +320,13 @@
     get_engine = function() {
       var endpoint, port;
       switch (Shadowcraft.Data.options.general.patch) {
-        case 62:
+        case 63:
           port = 8880;
-          endpoint = "engine-6.2";
+          endpoint = "engine-6.3";
           return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
         default:
           port = 8881;
-          endpoint = "engine-6.1";
+          endpoint = "engine-6.2";
           if (window.location.host.match(/:/)) {
             return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
           } else {
@@ -1262,7 +1262,7 @@
           'default': 60,
           datatype: 'integer',
           options: {
-            60: '6.1'
+            60: '6.2'
           }
         },
         level: {
@@ -2405,6 +2405,19 @@
         bonuses: {
           4: "rogue_t17_4pc_lfr"
         }
+      },
+      T18: {
+        ids: [124248, 124257, 124263, 124269, 124274],
+        bonuses: {
+          4: "rogue_t18_4pc",
+          2: "rogue_t18_2pc"
+        }
+      },
+      T18_LFR: {
+        ids: [128130, 128121, 128125, 128054, 128131, 128137],
+        bonuses: {
+          4: "rogue_t18_4pc_lfr"
+        }
       }
     };
     Weights = {
@@ -3471,7 +3484,7 @@
       a_stats = [];
       if (data.options.general.patch) {
         if (data.options.general.patch === 60) {
-          valengine = "6.1";
+          valengine = "6.2";
         } else {
           valengine = data.options.general.patch / 10;
         }
@@ -3566,7 +3579,10 @@
         t16_4pc: source.other_ep.rogue_t16_4pc || 0,
         t17_2pc: source.other_ep.rogue_t17_2pc || 0,
         t17_4pc: source.other_ep.rogue_t17_4pc || 0,
-        t17_4pc_lfr: source.other_ep.rogue_t17_4pc_lfr || 0
+        t17_4pc_lfr: source.other_ep.rogue_t17_4pc_lfr || 0,
+        t18_2pc: source.other_ep.rogue_t18_2pc || 0,
+        t18_4pc: source.other_ep.rogue_t18_4pc || 0,
+        t18_4pc_lfr: source.other_ep.rogue_t18_4pc_lfr || 0
       };
       all = _.extend(Weights, other);
       $weights = $("#weights .inner");
@@ -3588,7 +3604,7 @@
           $.data(exist.get(0), "sortkey", 0);
           if (key === "mainhand_dps" || key === "offhand_dps") {
             $.data(exist.get(0), "sortkey", 1);
-          } else if (key === "t14_2pc" || key === "t14_4pc" || key === "t15_2pc" || key === "t15_4pc" || key === "t16_2pc" || key === "t16_4pc" || key === "t17_2pc" || key === "t17_4pc" || key === "t17_4pc_lfr") {
+          } else if (key === "t14_2pc" || key === "t14_4pc" || key === "t15_2pc" || key === "t15_4pc" || key === "t16_2pc" || key === "t16_4pc" || key === "t17_2pc" || key === "t17_4pc" || key === "t17_4pc_lfr" || key === "t18_2pc" || key === "t18_4pc" || key === "t18_4pc_lfr") {
             $.data(exist.get(0), "sortkey", 2);
           }
         }
