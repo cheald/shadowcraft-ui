@@ -247,7 +247,8 @@ class ShadowcraftComputation:
         'food_wod_mastery_125',
         'food_wod_crit_125',
         'food_wod_haste_125',
-        'food_wod_multistrike_125'
+        'food_wod_multistrike_125',
+        'food_felmouth_frenzy'
     ]
 
     if __builtin__.shadowcraft_engine_version >= 6.0:

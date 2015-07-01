@@ -16,7 +16,8 @@ class ShadowcraftOptions
     'food_wod_mastery',
     'food_wod_crit',
     'food_wod_haste',
-    'food_wod_multistrike'
+    'food_wod_multistrike',
+    'food_felmouth_frenzy'
   ]
 
   cast = (val, dtype) ->
@@ -132,7 +133,7 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #playerBuffs", "buffs", {
-      food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_wod_versatility', options: {'food_wod_versatility': '125 Versatility', 'food_wod_mastery': '125 Mastery', 'food_wod_crit': '125 Crit', 'food_wod_haste': '125 Haste', 'food_wod_multistrike': '125 Multistrike' } },
+      food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_wod_versatility', options: {'food_wod_versatility': '125 Versatility', 'food_wod_mastery': '125 Mastery', 'food_wod_crit': '125 Crit', 'food_wod_haste': '125 Haste', 'food_wod_multistrike': '125 Multistrike', 'food_felmouth_frenzy': 'Felmouth Frenzy' } },
       flask_wod_agi: {name: "Agility Flask", desc: "WoD Flask (200 Agility)", 'default': true, datatype: 'bool'},
       short_term_haste_buff: {name: "+30% Haste/40 sec", desc: "Heroism/Bloodlust/Time Warp", 'default': true, datatype: 'bool'},
       stat_multiplier_buff: {name: "5% All Stats", desc: "Blessing of Kings/Mark of the Wild/Legacy of the Emperor", 'default': true, datatype: 'bool'},
