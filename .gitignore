@@ -7,3 +7,6 @@ stats.yml
 public/stylesheets/compiled
 backend/log/*.log
 *.pyc
+public/items-rogue.js
+config/auth_key.yml
+vendor/bundle

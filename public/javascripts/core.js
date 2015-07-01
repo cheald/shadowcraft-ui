@@ -1132,7 +1132,7 @@
   ShadowcraftOptions = (function() {
     var cast, changeCheck, changeInput, changeOption, changeSelect, enforceBounds;
     ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'stat_multiplier_buff', 'crit_chance_buff', 'haste_buff', 'multistrike_buff', 'attack_power_buff', 'mastery_buff', 'versatility_buff', 'flask_wod_agi'];
-    ShadowcraftOptions.buffFoodMap = ['food_wod_versatility', 'food_wod_mastery', 'food_wod_crit', 'food_wod_haste', 'food_wod_multistrike'];
+    ShadowcraftOptions.buffFoodMap = ['food_wod_versatility', 'food_wod_mastery', 'food_wod_crit', 'food_wod_haste', 'food_wod_multistrike', 'food_felmouth_frenzy'];
     cast = function(val, dtype) {
       switch (dtype) {
         case "integer":
@@ -1402,7 +1402,8 @@
             'food_wod_mastery': '125 Mastery',
             'food_wod_crit': '125 Crit',
             'food_wod_haste': '125 Haste',
-            'food_wod_multistrike': '125 Multistrike'
+            'food_wod_multistrike': '125 Multistrike',
+            'food_felmouth_frenzy': 'Felmouth Frenzy'
           }
         },
         flask_wod_agi: {
