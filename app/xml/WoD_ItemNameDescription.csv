@@ -1,3 +1,4 @@
+id;desc;flags
 2;Now with extra description;0x00ffffff
 20;Season 10;0xff00ff00
 226;Season 10 Elite;0xff00ff00
@@ -86,12 +87,12 @@
 13174;of the Pious;0x00000000
 13175;of the Unbreakable;0x00000000
 13176;of the Decimator;0x00000000
-13178;Warlords Season 1 Tournament;0x0000ff00
+13178;Warlords Tournament;0x0000ff00
 13181;Cooking Ingredient;0xff66bbff
 13184;Crafting Reagent;0xff66bbff
-13185;Stage 2 of 3;0x0000ff00
-13186;Stage 3 of 3;0x0000ff00
-13187;Stage 1 of 3;0x0000ff00
+13185;Stage 2 of 6;0x0000ff00
+13186;Stage 3 of 6;0x0000ff00
+13187;Stage 1 of 6;0x0000ff00
 13188;Mythic Warforged;0xff00ff00
 13190;Follower Equipment;0xff71d5ff
 13191;Garrison Resource;0xff66bbff
@@ -102,3 +103,16 @@
 13196;Warlords Season 1;0x0000ff00
 13197;Racial PvP Token;0xff88aaff
 13198;Warlords Season 1 Elite;0x0000ff00
+13208;Stage 4 of 6;0x0000ff00
+13209;Garrison Blueprint;0xff66bbff
+13210;Timewalker;0xffe6cc80
+13211;Warlords Season 2;0x0000ff00
+13212;Warlords Season 2 Elite;0x0000ff00
+13213;Warlords Season 3;0x0000ff00
+13214;Warlords Season 3 Elite;0x0000ff00
+13215;Pickpocketing;0xff00ccff
+13216;Timewarped;0xff00ff00
+13217;Stage 5 of 6;0x0000ff00
+13218;Stage 6 of 6;0x0000ff00
+13220;Timewarped Warforged;0xff00ff00
+13222;Empowered;0x0000ff00
