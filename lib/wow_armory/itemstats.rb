@@ -7,48 +7,46 @@ module WowArmory
     @rand_prop_points = nil
     @item_data = nil
     @item_damage_one_hand = nil
-    @item_bonus_trees = nil
-    @item_bonus_data = nil
 
     STAT_LOOKUP = {
-      49=>:mastery, 
-      38=>:attack_power, 
-      5=>:intellect,
-      44=>:armor_penetration,
-      33=>:hit_avoidance,
-      6=>:spirit,
-      12=>:defense,
-      45=>:power,
-      34=>:critical_strike_avoidance,
       1=>:health,
-      7=>:stamina,
-      3=>:agility,
       2=>:mana,
-      13=>:dodge,
-      46=>:health_every_5_seconds,
-      57=>:pvp_power,
-      35=>:pvp_resilience,
-      41=>:damage_done,
-      14=>:parry,
-      36=>:haste,
-      47=>:penetration,
-      31=>:hit,
-      42=>:healing_done,
+      3=>:agility,
       4=>:strength, 
-      37=>:expertise,
+      5=>:intellect,
+      6=>:spirit,
+      7=>:stamina,
+      12=>:defense,
+      13=>:dodge,
+      14=>:parry,
       15=>:shield_block,
-      48=>:block_value,
+      31=>:hit,
       32=>:crit,
+      33=>:hit_avoidance,
+      34=>:critical_strike_avoidance,
+      35=>:pvp_resilience,
+      36=>:haste,
+      37=>:expertise,
+      38=>:attack_power, 
+      40=>:versatility,
+      41=>:damage_done,
+      42=>:healing_done,
       43=>:mana_every_5_seconds,
+      44=>:armor_penetration,
+      45=>:power,
+      46=>:health_every_5_seconds,
+      47=>:penetration,
+      48=>:block_value,
+      49=>:mastery, 
+      50=>:bonus_armor,
+      57=>:pvp_power,
+      58=>:amplify,
+      59=>:multistrike,
+      63=>:avoidance,
+      67=>:versatility
       71=>:agility,
       72=>:agility,
       73=>:agility,
-      40=>:versatility,
-      59=>:multistrike,
-      58=>:amplify,
-      50=>:bonus_armor,
-      63=>:avoidance,
-      67=>:versatility
     }
 
     WOWHEAD_MAP = {
@@ -148,38 +146,11 @@ module WowArmory
       end
     end
 
-    def populate_item_upgrade_level_not_accurate   
-      ori_base = rand_prop_points[@ori_ilevel.to_s]
-      base = rand_prop_points[@properties[:ilevel].to_s]
-      ori_basevalue = ori_base[1+quality_index(@properties[:quality])*5+slot_index(@properties[:equip_location])]
-      basevalue = base[1+quality_index(@properties[:quality])*5+slot_index(@properties[:equip_location])]
-      self.stats.each do |stat, val|
-        new_val = (val * basevalue.to_f) / ori_basevalue.to_f
-        self.stats[stat] = new_val.round
-      end
-    end
-
-    def populate_random_suffix_item
-      row = random_suffixes[random_suffix.abs.to_s]
-      base = rand_prop_points[@properties[:ilevel].to_s]
-
-      populate_item_upgrade_level
-      4.times do |i|
-        enchantid = row[3+i]
-        multiplier = row[8+i].to_f / 10000.0
-        basevalue = base[1+quality_index(@properties[:quality])*5+slot_index(@properties[:equip_location])]
-        if enchantid != "0"
-          stat = item_enchants[enchantid][14].to_i
-          self.stats[STAT_LOOKUP[stat]] = (multiplier * basevalue.to_i).to_i # looks like round is wrong and floor is correct
-        end
-      end
-    end
-
     def random_suffixes
       @@random_suffix_csv ||= Hash.new.tap do |hash|
         FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "ItemRandomSuffix.dbc.csv")) do |row|
           hash[row[0].to_s] = row
-        end
+        erand
       end
     end
 
@@ -210,22 +181,6 @@ module WowArmory
     def item_damage_one_hand
       @@item_damage_one_hand ||= Hash.new.tap do |hash|
         FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_ItemDamageOneHand.dbc.csv")) do |row|
-          hash[row[0].to_s] = row
-        end
-      end
-    end
-
-    def item_bonus_trees
-      @@item_bonus_trees ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_item_bonus_tree_data.csv')) do |row|
-          hash[row[1].to_s] = row
-        end
-      end
-    end
-
-    def item_bonus_data
-      @@item_bonus_data ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_item_bonus_data.csv')) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -316,16 +271,6 @@ module WowArmory
       end
       puts "#{self.name} #{@properties[:tag]} #{@properties[:ilevel]}"
       puts self.stats.inspect
-    end
-
-    def get_bonus_data_rows(bonus_id)
-      bonus_data_rows = []
-      item_bonus_data.each_value do |row|
-        if row[1] == bonus_id
-          bonus_data_rows.push(row)
-        end
-      end
-      return bonus_data_rows
     end
 
     SCAN_ATTRIBUTES = ['agility', 'strength', 'intellect', 'spirit', 'stamina', 'attack power', 'critical strike', 'versatility', 'multistrike',

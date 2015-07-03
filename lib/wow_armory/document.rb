@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'hmac-sha1'
 require 'digest/sha1'
 require 'base64'

@@ -5,48 +5,46 @@ module WowArmory
     @item_enchants = nil
     @item_bonus_map = nil
     @item_bonus_trees = nil
-    @item_hotfixes = nil
-    @rand_prop_points = nil
 
     STAT_LOOKUP = {
-        49=>:mastery,
-        38=>:attack_power,
-        5=>:intellect,
-        44=>:armor_penetration,
-        33=>:hit_avoidance,
-        6=>:spirit,
-        12=>:defense,
-        45=>:power,
-        34=>:critical_strike_avoidance,
         1=>:health,
-        7=>:stamina,
-        3=>:agility,
         2=>:mana,
-        13=>:dodge,
-        46=>:health_every_5_seconds,
-        57=>:pvp_power,
-        35=>:pvp_resilience,
-        41=>:damage_done,
-        14=>:parry,
-        36=>:haste,
-        47=>:penetration,
-        31=>:hit,
-        42=>:healing_done,
+        3=>:agility,
         4=>:strength,
-        37=>:expertise,
+        5=>:intellect,
+        6=>:spirit,
+        7=>:stamina,
+        12=>:defense,
+        13=>:dodge,
+        14=>:parry,
         15=>:shield_block,
-        48=>:block_value,
+        31=>:hit,
         32=>:crit,
+        33=>:hit_avoidance,
+        34=>:critical_strike_avoidance,
+        35=>:pvp_resilience,
+        36=>:haste,
+        37=>:expertise,
+        38=>:attack_power,
+        40=>:versatility,
+        41=>:damage_done,
+        42=>:healing_done,
         43=>:mana_every_5_seconds,
+        44=>:armor_penetration,
+        45=>:power,
+        46=>:health_every_5_seconds,
+        47=>:penetration,
+        48=>:block_value,
+        49=>:mastery,
+        50=>:bonus_armor,
+        57=>:pvp_power,
+        58=>:amplify,
+        59=>:multistrike,
+        63=>:avoidance,
+        67=>:versatility
         71=>:agility,
         72=>:agility,
         73=>:agility,
-        40=>:versatility,
-        59=>:multistrike,
-        58=>:amplify,
-        50=>:bonus_armor,
-        63=>:avoidance,
-        67=>:versatility
     }
 
     WOWHEAD_MAP = {
@@ -85,29 +83,6 @@ module WowArmory
       4 => 'Plate'
     }
 
-    SUFFIX_NAME_MAP = {
-      133 => 'of the Stormblast',
-      134 => 'of the Galeburst',
-      135 => 'of the Windflurry',
-      136 => 'of the Zephyr',
-      137 => 'of the Windstorm',
-      336 => '[Crit]',
-      337 => '[Hit]',
-      338 => '[Exp]',
-      339 => '[Mastery]',
-      340 => '[Haste]',
-      344 => 'of the Decimator', # 5.3 Barrens
-      345 => 'of the Unerring',
-      346 => 'of the Adroit',
-      347 => 'of the Savant',
-      348 => 'of the Impatient', # 5.3 Barrens
-      353 => 'of the Stormblast', # 5.3 Stormblast - Agi
-      354 => 'of the Galeburst', # 5.3 Galeburst - Agi
-      355 => 'of the Windflurry', # 5.3 Windflurry - Agi
-      356 => 'of the Windstorm', # 5.3 Windstorm - Agi
-      357 => 'of the Zephyr', # 5.3 Zephyr - Agi
-    }
-
     SOCKET_MAP = {
       1 => 'Meta',
       2 => 'Red',
@@ -130,40 +105,6 @@ module WowArmory
       8 => 'Prismatic',
       9 => 'Hydraulic',
       10 => 'Cogwheel'
-    }
-
-    EQUIP_LOCATIONS = {
-      'head' => 1,
-      'neck' => 2,
-      'shoulder' => 3,
-      'shirt' => 4,
-      'chest' => 5,
-      'robe' => 5,
-      'waist' => 6,
-      'legs' => 7,
-      'feet' => 8,
-      'wrists' => 9,
-      'hands' => 10,
-      'finger' => 11,
-      'trinket' => 12,
-      'back' => 16,
-      'main-hand' => 21,
-      'one-hand' => 21,
-      'two-hand' => 17,
-      'off-hand' => 22,
-      'shield' => 14,
-      'held in off hand' => 23,
-      'ranged' => 15,
-      'relic' => 28,
-      'thrown' => 25
-    }
-
-    WEAPON_SUBCLASSES = {
-      'axe' => 0,
-      'sword' => 7,
-      'mace' => 4,
-      'fist weapon' => 13,
-      'dagger' => 15,
     }
 
     ENCHANT_SCALING = 10.0 # for lvl 90 // lvl100 = 80
@@ -272,31 +213,6 @@ module WowArmory
         end
       end
 
-      # check if there is hotfix data available
-      # if item_hotfixes.has_key? @id.to_s
-      #   puts 'Stats from wowapi:'
-      #   puts self.stats.inspect
-      #   puts self.ilevel
-      #   row = item_hotfixes[@id.to_s]
-      #   unless row.nil?
-      #     write_new_stats(row)
-      #     puts 'Overwritten stats with hotfix data:'
-      #     puts self.stats.inspect
-      #     puts self.ilevel
-      #   end
-      # elsif item_stats.has_key? @id.to_s
-      #   puts 'Stats from wowapi:'
-      #   puts self.stats.inspect
-      #   puts self.ilevel
-      #   row = item_stats[@id.to_s]
-      #   unless row.nil?
-      #     write_new_stats(row)
-      #     puts 'Overwritten stats with stats data:'
-      #     puts self.stats.inspect
-      #     puts self.ilevel
-      #   end
-      # end
-
       if @json['bonusSummary']['chanceBonusLists'].nil?
         self.chance_bonus_lists = []
       else
@@ -381,26 +297,6 @@ module WowArmory
       end
     end
 
-    def write_new_stats(row)
-      base = rand_prop_points[self.ilevel.to_s]
-      if base.nil?
-        return
-      end
-      #self.ilevel = row[3].to_i
-      self.stats = {}
-      10.times do |i|
-        break if row[5+i] == '-1'
-        statid = row[5+i] # more or less stat-id
-        multiplier = row[25+i].to_f
-        basevalue = base[1 + slot_index(self.equip_location)]
-        if statid != '0'
-          stat = statid.to_i
-          value = ((multiplier / 10000.0) * basevalue.to_f).round
-          self.stats[STAT_LOOKUP[stat]] = value
-        end
-      end
-    end
-
     SCAN_ATTRIBUTES = ['agility', 'strength', 'intellect', 'spirit', 'stamina', 'attack power', 'critical strike',
                        'haste', 'mastery', 'pvp resilience', 'pvp power', 'all stats'
     ]
@@ -444,31 +340,7 @@ module WowArmory
 
     def item_enchants
       @@item_enchants ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_SpellItemEnchantments.csv')) do |row|
-          hash[row[0].to_s] = row
-        end
-      end
-    end
-
-    def item_hotfixes
-      @@item_hotfixes ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_item_hotfixes.csv'), { :col_sep => ';' }) do |row|
-          hash[row[0].to_s] = row
-        end
-      end
-    end
-
-    def item_stats
-      @@item_stats ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_item_stats.csv'), { :col_sep => ';' }) do |row|
-          hash[row[0].to_s] = row
-        end
-      end
-    end
-
-    def rand_prop_points
-      @@rand_prop_points ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'WoD_RandPropPoints.csv'), { :col_sep => ';' }) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'SpellItemEnchantments.csv')) do |row|
           hash[row[0].to_s] = row
         end
       end
