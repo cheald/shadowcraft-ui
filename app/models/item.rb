@@ -172,7 +172,29 @@ class Item
   end
 
   def self.populate_gems_wod(prefix = 'www', source = 'wowhead')
-    gem_ids = [115809, 115811, 115812, 115813, 115814, 115815, 115803, 115804, 115805, 115806, 115807, 115808]
+    gem_ids = [
+      115803, # crit taladite
+      115804, # haste taladite
+      115805, # mastery taladite
+      115806, # multistrike taladite
+      115807, # versatility taladite
+      115808, # stamina taladite
+      115809, # greater crit taladite
+      115811, # greater haste taladite
+      115812, # greater mastery taladite
+      115813, # greater multistrike taladite
+      115814, # greater versatility taladite
+      115815, # greater stamina taladite
+      127760, # immaculate crit taladite
+      127761, # immaculate haste taladite
+      127762, # immaculate mastery taladite
+      127763, # immaculate multistrike taladite
+      127764, # immaculate versatility taladite
+      127765, # immaculate stamina taladite
+      127414, # eye of rukhmar (+50 crit)
+      127415, # eye of anzu (+50 haste)
+      127416, # eye of sethe (+50 mastery)
+    ]
 
     puts "importing now #{gem_ids.length} gems"
     pos = 0
