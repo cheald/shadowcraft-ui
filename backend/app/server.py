@@ -362,7 +362,7 @@ class ShadowcraftComputation:
                         proclist.append((self.gearProcs[k],gd[1]))
                         break
 
-        elif input.get("l", 0) > 90:
+        if input.get("l", 0) > 90:
             if input.get("prepot", 0) == 1:
                 proclist.append('draenic_agi_prepot')
             if input.get("pot", 0) == 1:
