@@ -31,11 +31,6 @@ import uuid
 
 class ShadowcraftComputation:
     enchantMap = {
-        4083: 'hurricane',
-        4099: 'landslide',
-        4441: 'windsong',
-        4444: 'dancing_steel',
-        5125: 'dancing_steel',
         5330: "mark_of_the_thunderlord",
         5331: "mark_of_the_shattered_hand",
         5334: "mark_of_the_frostwolf",
@@ -158,16 +153,16 @@ class ShadowcraftComputation:
       'maalus': [735],
       'alchemy_stone': [640,655,670,685,700,715],
       # 6.2 trinkets
-      'bleeding_hollow_toxin_vessel': [705,720,735],
-      'malicious_censer': [700,715,730],
-      'soul_capacitor': [695,710,725],
-      'mirror_of_the_blademaster': [690,705,720],
+      'bleeding_hollow_toxin_vessel': [705,711,720,726,735,741],
+      'malicious_censer': [700,706,715,721,730,736],
+      'soul_capacitor': [695,701,710,716,725,731],
+      'mirror_of_the_blademaster': [690,696,705,711,720,726],
       # 6.0 trinkets
       'beating_heart_of_the_mountain': [670,676,685,691,700,706],
       'meaty_dragonspine_trophy': [670,676,685,691,700,706],
       'humming_blackiron_trigger': [670,676,685,691,700,706],
       'scales_of_doom': [655,661,670,676,685,691],
-      'skull_of_war': [640,655,670,685],
+      'skull_of_war': [640,655,670,685,700,715],
       'formidable_jar_of_doom': [655,661],
       'lucky_doublesided_coin': [665],
       'blackheart_enforcers_medallion': [655,661],
@@ -190,22 +185,11 @@ class ShadowcraftComputation:
     }
 
     gearBoosts = {
-
-        #5.0
-        #87495: "gerps_perfect_arrow",
-        #81265: "flashing_steel_talisman",
-        #89082: "hawkmasters_talon",
-        #87079: "jade_bandit_figurine",
-        #86043: "jade_bandit_figurine",
-        #86772: "jade_bandit_figurine",
     }
 
     # combines gearProcs and gearBoosts
     trinketMap = dict(gearProcs, **gearBoosts)
 
-    tier14IDS = frozenset([85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128])
-    tier15IDS = frozenset([95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679])
-    tier16IDS = frozenset([99006, 99007, 99008, 99009, 99010, 99112, 99113, 99114, 99115, 99116, 99348, 99349, 99350, 99355, 99356, 99629, 99630, 99631, 99634, 99635])
     tier17IDS = frozenset([115570, 115571, 115572, 115573, 115574])
     tier17LFRIDS = frozenset([120384, 120383, 120382, 120381, 120380, 120379])
     tier18IDS = frozenset([124248, 124257, 124263, 124269, 124274])
@@ -337,26 +321,6 @@ class ShadowcraftComputation:
         # Set up gear buffs.
         buff_list = []
         buff_list.append('gear_specialization')
-        if input.get("mg") == "chaotic":
-            buff_list.append('chaotic_metagem')
-
-        if len(self.tier14IDS & gear) >= 2:
-            buff_list.append('rogue_t14_2pc')
-
-        if len(self.tier14IDS & gear) >= 4:
-            buff_list.append('rogue_t14_4pc')
-
-        if len(self.tier15IDS & gear) >= 2:
-            buff_list.append('rogue_t15_2pc')
-
-        if len(self.tier15IDS & gear) >= 4:
-            buff_list.append('rogue_t15_4pc')
-
-        if len(self.tier16IDS & gear) >= 2:
-            buff_list.append('rogue_t16_2pc')
-
-        if len(self.tier16IDS & gear) >= 4:
-            buff_list.append('rogue_t16_4pc')
 
         if len(self.tier17IDS & gear) >= 2:
             buff_list.append('rogue_t17_2pc')
@@ -397,19 +361,6 @@ class ShadowcraftComputation:
                     if gd[0] == k:
                         proclist.append((self.gearProcs[k],gd[1]))
                         break
-
-
-        if input.get("mg") == "capacitive":
-            proclist.append('legendary_capacitive_meta')
-
-        #if len(frozenset([102248]) & gear) >= 1:
-        #    proclist.append('fury_of_xuen')
-
-        if input.get("l", 0) == 90:
-            if input.get("prepot", 0) == 1:
-                proclist.append('virmens_bite_prepot')
-            if input.get("pot", 0) == 1:
-                proclist.append('virmens_bite')
 
         elif input.get("l", 0) > 90:
             if input.get("prepot", 0) == 1:
@@ -533,10 +484,6 @@ class ShadowcraftComputation:
             if input.get("spec", 'a') == "Z":
               out["mh_type_ep"], out["oh_type_ep"] = calculator.get_weapon_type_ep()
 
-            # oh weapon modifier, pull only for combat spec
-            #if input.get("spec", 'a') == "Z":
-            #    out["oh_weapon_modifier"] = calculator.get_oh_weapon_modifier()
-
             # Talent ranking is slow. This is done last per a note from nextormento.
             out["talent_ranking"] = [] # calculator.get_talents_ranking()
 
@@ -584,10 +531,6 @@ class ShadowcraftSite(resource.Resource):
 
         input = json.loads(inbound[0])
 
-        # d = threads.deferToThread(self._render_post, input)
-        # d.addCallback(request.write)
-        # d.addCallback(lambda _: request.finish())
-        # return server.NOT_DONE_YET
         return self._render_post(input)
 
     # Because IE is terrible.
