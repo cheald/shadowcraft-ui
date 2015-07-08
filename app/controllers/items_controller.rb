@@ -1,4 +1,6 @@
 class ItemsController < ApplicationController
+  include WowArmory::Constants
+
   respond_to :json, :only => [:create]
   VALID_SLOTS = (1..28).to_a - [18, 19, 20, 24, 26, 27]
   VALID_CLASSES = %w"rogue"
@@ -52,60 +54,6 @@ class ItemsController < ApplicationController
 
   private
 
-  SOCKET_MAP = {
-      1 => 'Meta',
-      2 => 'Red',
-      8 => 'Blue',
-      4 => 'Yellow',
-      14 => 'Prismatic',
-      16 => 'Hydraulic',
-      32 => 'Cogwheel'
-  }
-
-  STAT_LOOKUP = {
-      49 => :mastery,
-      38 => :attack_power,
-      5 => :intellect,
-      44 => :armor_penetration,
-      33 => :hit_avoidance,
-      6 => :spirit,
-      12 => :defense,
-      45 => :power,
-      34 => :critical_strike_avoidance,
-      1 => :health,
-      7 => :stamina,
-      3 => :agility,
-      2 => :mana,
-      13 => :dodge,
-      46 => :health_every_5_seconds,
-      57 => :pvp_power,
-      35 => :pvp_resilience,
-      41 => :damage_done,
-      14 => :parry,
-      36 => :haste,
-      47 => :penetration,
-      31 => :hit,
-      42 => :healing_done,
-      4 => :strength,
-      37 => :expertise,
-      15 => :shield_block,
-      48 => :block_value,
-      32 => :crit,
-      43 => :mana_every_5_seconds,
-      71 => :agility,
-      72 => :agility,
-      73 => :agility,
-      40 => :versatility,
-      59 => :multistrike,
-      58 => :amplify,
-      50 => :bonus_armor,
-      63 => :avoidance,
-      67 => :versatility,
-      61 => :speed,
-      62 => :leech,
-      64 => :indestructible,
-  }
-
   # Get all items, gems, etc. and filter out not needed ones for rogues
   def index_rogue
     @alt_items = []
@@ -119,8 +67,8 @@ class ItemsController < ApplicationController
     @alt_items.reject! {|item| !(item.stats.keys & bad_keys).empty? }
     @alt_items.reject! {|item| item.stats.empty? and (item.equip_location != 12 and item.remote_id != 88149) } # Don't reject trinkets with empty stats
     @alt_items.reject! {|item| bad_classes.include? item.properties['armor_class'] }
+	# only allow cloth items in back slots (16 is the slot in API data for backs)
     @alt_items.reject! {|item| item.properties['armor_class'] == "Cloth" && item.equip_location != 16 }
-    @alt_items.reject! {|item| item.properties['name'].match(/DONTUSE/) }
     @alt_items.reject! {|item| !item.properties['upgradable'] and [1,2,3,4,5,6].include? item.properties['upgrade_level'] } # reject items which are upgrades but are not allowed
     @alt_items.reject! {|item| item.properties['quality'] == 3 and [2,3,4,5,6].include? item.properties['upgrade_level'] } # reject blue items with upgrade_level >= 2
 
@@ -142,15 +90,23 @@ class ItemsController < ApplicationController
         :val1 => row[3].to_i,
         :val2 => row[4].to_i
       }
-      if entry[:type] == 5
-        entry[:val1] = item_name_description[entry[:val1]]
-      end
+
+      # Bonus Types (value of column 3):
+      # 2 = Stat.  This is for items with random stats.  Take the value of column 4 and
+      #     replace it with the stat from the STAT_LOOKUP array in WowArmory::Constants
+      # 5 = Name (heroic, stages, etc).  Take the value of column 4 and replace it with
+      #     the name from the item from the item_name_description lookup.  This pulls data
+      #     from the WoD_ItemNameDescription.csv file.  These entries are used to display
+	  #     the green text next to items in the list.
+      # 6 = Socket.  Take the value of column 4 and replace it with the socket type from
+      #     the SOCKET_MAP array in WowArmory::Constants.
       if entry[:type] == 2
         if STAT_LOOKUP[entry[:val1]]
           entry[:val1] = STAT_LOOKUP[entry[:val1]]
         end
-      end
-      if entry[:type] == 6
+      elsif entry[:type] == 5
+        entry[:val1] = item_name_description[entry[:val1]]
+      elsif entry[:type] == 6
         entry[:val2] = SOCKET_MAP[entry[:val2].to_i]
       end
       item_bonuses[row[1].to_i].push entry

@@ -1,6 +1,7 @@
 class Item
   include Mongoid::Document
   include Mongoid::Timestamps
+  include WowArmory::Constants
 
   @item_bonus_map = nil
 
@@ -15,8 +16,6 @@ class Item
   field :requires, :type => Hash
   field :is_gem, :type => Boolean, :index => true
   field :is_glyph, :type => Boolean, :index => true
-
-  referenced_in :loadout
 
   attr_accessor :item_name_override
 
