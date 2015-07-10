@@ -84,7 +84,7 @@ module WowArmory
       @@random_suffix_csv ||= Hash.new.tap do |hash|
         FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "ItemRandomSuffix.dbc.csv")) do |row|
           hash[row[0].to_s] = row
-        erand
+        end
       end
     end
 
