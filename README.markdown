@@ -1,10 +1,12 @@
-# ShadowCraft
+# ShadowCraft-UI
 
 ## About
 
-ShadowCraft is a framework for rogue gear, talent, gem, reforge, enchant, glyph, and rotation optimization. The goal is to have a tool that can run as close to entirely clientside as possible.
+ShadowCraft is a framework for rogue gear, talent, gem, reforge, enchant, glyph, and rotation optimization. The goal is to have a tool that can run as close to entirely clientside as possible.  This project is the UI portion of this system.  The current version of the backend engine resides at https://github.com/Fierydemise/ShadowCraft-Engine.
 
 Currently, ShadowCraft uses server-side Ruby for Armory/Wowhead data import and distilling into JS files for consumption by the client.
+
+If you are interested in assisting with development on either the UI or engine, look at the [Shadowcraft-VM](https://github.com/timwoj/shadowcraft-vm) project for easy startup.
 
 ## Requirements
 
