@@ -144,6 +144,9 @@ class Item
     # 6.2 alchemy trinkets
     item_ids += [128023, 128024]
 
+    # legendary ring
+    item_ids += [124636]
+
     # do not import mop trinkets here, so remove them
     item_ids -= [105029, 104780, 102301, 105278, 104531, 105527] # haromms_talisman
     item_ids -= [105082, 104833, 102302, 105331, 104584, 105580] # sigil_of_rampage
