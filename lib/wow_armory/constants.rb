@@ -138,7 +138,7 @@ module WowArmory
       197 => 'tailoring',
       202 => 'engineering',
       333 => 'enchanting',
-      393 => 'skinning'
+      393 => 'skinning',
       755 => 'jewelcrafting',
       773 => 'inscription',
     }

@@ -4,7 +4,6 @@ require 'open-uri'
 require File.join(Rails.root, "lib", "wow_armory", "document")
 require File.join(Rails.root, "lib", "wow_armory", "item")
 require File.join(Rails.root, "lib", "wow_armory", "character")
-require File.join(Rails.root, "lib", "wow_armory", "talents")
 
 credentials = File.join(Rails.root, "config", "auth_key.yml")
 if File.exists?(credentials)

@@ -10,3 +10,4 @@ backend/log/*.log
 public/items-rogue.js
 config/auth_key.yml
 vendor/bundle
+backend/twistd.pid
