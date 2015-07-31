@@ -126,21 +126,15 @@ class ShadowcraftComputation:
         124225: 'soul_capacitor',
         124224: 'mirror_of_the_blademaster',
     }
-
-    def createTrinketGroup(base_ilvls, upgrade_level, upgrade_steps):
-      trinketGroup = []
-      for base_ilvl in base_ilvls:
-        subgroup = ()
-        for i in xrange(base_ilvl,base_ilvl + (upgrade_level+1)*upgrade_steps ,upgrade_steps):
-          subgroup += (i,)
-        trinketGroup.append(subgroup)
-      return trinketGroup
-
-    def createTrinketGroupFast(base_ilvls, upgrade_level, upgrade_steps):
+  
+    # Creates a group of warforged items based on the base ilvls passed in.  For each
+    # entry in the base_ilvls array, it will create additional entries stepping by step_size
+    # up to num_steps times.
+    def createWFGroup(base_ilvls, num_steps, step_size):
       trinketGroup = []
       subgroup = ()
       for base_ilvl in base_ilvls:
-        for i in xrange(base_ilvl,base_ilvl + (upgrade_level+1)*upgrade_steps ,upgrade_steps):
+        for i in xrange(base_ilvl,base_ilvl + (num_steps+1)*step_size, step_size):
           subgroup += (i,)
       trinketGroup.append(subgroup)
       return trinketGroup
@@ -150,18 +144,18 @@ class ShadowcraftComputation:
       # legendary rings
       'archmages_greater_incandescence': [715],
       'archmages_incandescence': [690],
-      'maalus': [735],
+      'maalus': createWFGroup([735], 20, 3),
       'alchemy_stone': [640,655,670,685,700,715],
       # 6.2 trinkets
-      'bleeding_hollow_toxin_vessel': [705,711,720,726,735,741],
-      'malicious_censer': [700,706,715,721,730,736],
-      'soul_capacitor': [695,701,710,716,725,731],
-      'mirror_of_the_blademaster': [690,696,705,711,720,726],
+      'bleeding_hollow_toxin_vessel': createWFGroup([705,720,735], 1, 6),
+      'malicious_censer': createWFGroup([700,715,730], 1, 6),
+      'soul_capacitor': createWFGroup([695,710,725], 1, 6),
+      'mirror_of_the_blademaster': createWFGroup([690,705,720], 1, 6),
       # 6.0 trinkets
-      'beating_heart_of_the_mountain': [670,676,685,691,700,706],
-      'meaty_dragonspine_trophy': [670,676,685,691,700,706],
-      'humming_blackiron_trigger': [670,676,685,691,700,706],
-      'scales_of_doom': [655,661,670,676,685,691],
+      'beating_heart_of_the_mountain': createWFGroup([670,685,700], 1, 6),
+      'meaty_dragonspine_trophy': createWFGroup([670,685,700], 1, 6),
+      'humming_blackiron_trigger': createWFGroup([670,685,700], 1, 6),
+      'scales_of_doom': createWFGroup([655,670,685], 1, 6),
       'skull_of_war': [640,655,670,685,700,715],
       'formidable_jar_of_doom': [655,661],
       'lucky_doublesided_coin': [665],
@@ -176,12 +170,6 @@ class ShadowcraftComputation:
       'draenic_philosophers_stone': [620],
       'void-touched_totem': [604,614,624,634],
       'smoldering_heart_of_hyperious': [597,607],
-      'assurance_of_consequence': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
-      'haromms_talisman': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
-      'sigil_of_rampage': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
-      'ticking_ebon_detonator': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
-      'thoks_tail_tip': createTrinketGroupFast((528,540,553,559,566,572), 6, 4),
-      'discipline_of_xuen': createTrinketGroupFast((496,535), 6, 4),
     }
 
     gearBoosts = {
@@ -471,7 +459,7 @@ class ShadowcraftComputation:
             out["glyph_ranking"] = [] # calculator.get_glyphs_ranking(input.get("gly", []))
 
             out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
-            out["other_ep"] = calculator.get_other_ep(['rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr','rogue_t17_2pc','rogue_t17_4pc','rogue_t17_4pc_lfr','archmages_incandescence','archmages_greater_incandescence'])
+            out["other_ep"] = calculator.get_other_ep(['rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr','rogue_t17_2pc','rogue_t17_4pc','rogue_t17_4pc_lfr'])
 
             trinket_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
 

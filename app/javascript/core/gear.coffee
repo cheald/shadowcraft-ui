@@ -149,16 +149,6 @@ class ShadowcraftGear
               total += c.oh_type_ep["oh_type_dagger"]
             else
               total += c.oh_type_ep["oh_type_one-hander"]
-      else if ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0
-        total += c.meta.chaotic_metagem
-#      else if ShadowcraftGear.LEGENDARY_META_GEM == item.id
-#        total += c.meta.legendary_capacitive_meta || 0
-#      else if ShadowcraftGear.FURY_OF_XUEN_CLOAK == item.original_id
-#        total += c["other_ep"]["fury_of_xuen"]
-      else if 118302 == item.original_id
-        total += c["other_ep"]["archmages_incandescence"]
-      else if 118307 == item.original_id
-        total += c["other_ep"]["archmages_greater_incandescence"]
       else if PROC_ENCHANTS[item.id]
         switch slot
           when 14

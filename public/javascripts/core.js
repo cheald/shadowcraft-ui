@@ -2535,12 +2535,6 @@
               }
             }
           }
-        } else if (ShadowcraftGear.CHAOTIC_METAGEMS.indexOf(item.id) >= 0) {
-          total += c.meta.chaotic_metagem;
-        } else if (118302 === item.original_id) {
-          total += c["other_ep"]["archmages_incandescence"];
-        } else if (118307 === item.original_id) {
-          total += c["other_ep"]["archmages_greater_incandescence"];
         } else if (PROC_ENCHANTS[item.id]) {
           switch (slot) {
             case 14:
