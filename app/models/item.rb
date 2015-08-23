@@ -124,6 +124,8 @@ class Item
     json
   end
 
+  KAZZAK_ITEMS = [124545, 124546, 127971, 127975, 127976, 127980, 127982]
+
   def self.populate_gear_wod(prefix = 'www', source = 'wowapi')
     @source = source
 
@@ -152,6 +154,11 @@ class Item
     item_ids -= [104974, 104725, 102292, 105223, 104476, 105472] # assurance_of_consequence
     item_ids -= [105114, 104865, 102311, 105363, 104616, 105612] # ticking_ebon_detonator
 
+    # remove the Kazzak items so they can be imported separately.  Right now, Blizzard includes
+    # all of the various versions of the items, even though Normal-mode items are the only ones
+    # actually available in-game.
+    item_ids -= KAZZAK_ITEMS
+
     # remove duplicates
     item_ids = item_ids.uniq
 
@@ -162,13 +169,19 @@ class Item
       wod_import id
     end
 
+    # only import the Normal version of all of the Kazzak items.  No warforged, no heroic, and
+    # no mythic.
+    KAZZAK_ITEMS.each do |id|
+      wod_special_import id, 'raid-normal', [0]
+    end
+
     # import all stages from skull of war by default
-    wod_special_import 112318, 'trade-skill', [525]
-    wod_special_import 112318, 'trade-skill', [526]
-    wod_special_import 112318, 'trade-skill', [527]
-    wod_special_import 112318, 'trade-skill', [593]
-    wod_special_import 112318, 'trade-skill', [617]
-    wod_special_import 112318, 'trade-skill', [618]
+    # wod_special_import 112318, 'trade-skill', [525]
+    # wod_special_import 112318, 'trade-skill', [526]
+    # wod_special_import 112318, 'trade-skill', [527]
+    # wod_special_import 112318, 'trade-skill', [593]
+    # wod_special_import 112318, 'trade-skill', [617]
+    # wod_special_import 112318, 'trade-skill', [618]
 
     true
   end
