@@ -175,13 +175,9 @@ class Item
       wod_special_import id, 'raid-normal', [0]
     end
 
-    # import all stages from skull of war by default
-    # wod_special_import 112318, 'trade-skill', [525]
-    # wod_special_import 112318, 'trade-skill', [526]
-    # wod_special_import 112318, 'trade-skill', [527]
-    # wod_special_import 112318, 'trade-skill', [593]
-    # wod_special_import 112318, 'trade-skill', [617]
-    # wod_special_import 112318, 'trade-skill', [618]
+    # fix-up items removing intellect and replacing it with agility.  this fixes items that are
+    # stored in the API wrong
+    fixup_item 124545
 
     true
   end
@@ -245,14 +241,14 @@ class Item
   # we don't.
   # 
   # This whitelist skips any of the randomly generated bonus IDs such as any "of the"
-  # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.
+  # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.  
   # TODO: make this autogenerate from the CASC game data
   # TODO: add ring bonus IDs 622-641 separately in a loop
   BONUS_ID_WHITELIST = [1, 15, 17, 18, 44, 171, 448, 449, 450, 451, 499, 526, 527, 545, 546, 547,
                         553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 566, 567, 571, 573, 575,
                         576, 577, 582, 583, 591, 592, 593, 594, 602, 609, 615, 617, 618, 619, 620,
                         642, 644, 645, 646, 648, 651, 656, 692]
-
+  
   # For some reason the crafted items don't come with the "stage" bonus IDs in their
   # chanceBonusList entry.  This is the list of bonus IDs for those stages and is
   # handled slightly differently.  See below for the check for trade-skill for more
@@ -380,6 +376,26 @@ class Item
       Rails.logger.debug id
       Rails.logger.debug e.message
       return
+    end
+  end
+
+  def self.fixup_intellect_item(id)
+    begin
+      db_item = Item.where(:remote_id => 124545).first
+      ps = db_item.properties['stats']
+      if ps.key?('intellect') and not ps.key?('agility')
+        puts "Updating properties"
+        ps['agility'] = ps['intellect']
+        ps.delete('intellect')
+      end
+
+      if db_item.stats.key?('intellect') and not db_item.stats.key?('agility')
+        puts "Updating stats"
+        db_item.stats['agility'] = db_item.stats['intellect']
+        db_item.stats.delete('intellect')
+      end
+
+      db_item.save
     end
   end
 
