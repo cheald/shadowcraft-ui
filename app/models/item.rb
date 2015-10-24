@@ -41,7 +41,7 @@ class Item
     true
   end
 
-  def icon(size = 51)
+  def icon
     return '' if self.properties.nil?
     self.properties['icon'].split('/').last
   end
@@ -124,6 +124,8 @@ class Item
     json
   end
 
+  KAZZAK_ITEMS = [124545, 124546, 127971, 127975, 127976, 127980, 127982]
+
   def self.populate_gear_wod(prefix = 'www', source = 'wowapi')
     @source = source
 
@@ -152,6 +154,11 @@ class Item
     item_ids -= [104974, 104725, 102292, 105223, 104476, 105472] # assurance_of_consequence
     item_ids -= [105114, 104865, 102311, 105363, 104616, 105612] # ticking_ebon_detonator
 
+    # remove the Kazzak items so they can be imported separately.  Right now, Blizzard includes
+    # all of the various versions of the items, even though Normal-mode items are the only ones
+    # actually available in-game.
+    item_ids -= KAZZAK_ITEMS
+
     # remove duplicates
     item_ids = item_ids.uniq
 
@@ -162,13 +169,10 @@ class Item
       wod_import id
     end
 
-    # import all stages from skull of war by default
-    wod_special_import 112318, 'trade-skill', [525]
-    wod_special_import 112318, 'trade-skill', [526]
-    wod_special_import 112318, 'trade-skill', [527]
-    wod_special_import 112318, 'trade-skill', [593]
-    wod_special_import 112318, 'trade-skill', [617]
-    wod_special_import 112318, 'trade-skill', [618]
+    # only import the Normal version of all of the Kazzak items.  No heroic and no mythic.
+    KAZZAK_ITEMS.each do |id|
+      wod_import id, 'raid-normal'
+    end
 
     true
   end
@@ -232,13 +236,16 @@ class Item
   # we don't.
   # 
   # This whitelist skips any of the randomly generated bonus IDs such as any "of the"
-  # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.
+  # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.  
   # TODO: make this autogenerate from the CASC game data
-  # TODO: add ring bonus IDs 622-641 separately in a loop
   BONUS_ID_WHITELIST = [1, 15, 17, 18, 44, 171, 448, 449, 450, 451, 499, 526, 527, 545, 546, 547,
                         553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 566, 567, 571, 573, 575,
                         576, 577, 582, 583, 591, 592, 593, 594, 602, 609, 615, 617, 618, 619, 620,
                         642, 644, 645, 646, 648, 651, 656, 692]
+
+  # These are kept separate because we don't want to import all of them all at once.
+  # Just import them organically as each ilvl becomes available.t
+  LEGENDARY_RING_BONUS_IDS = (622..641).to_a
 
   # For some reason the crafted items don't come with the "stage" bonus IDs in their
   # chanceBonusList entry.  This is the list of bonus IDs for those stages and is
@@ -263,9 +270,7 @@ class Item
       end
       # if bonus is in blacklist filter out
       return if bonuses.nil?
-      bonuses.clone.each do |bonus|
-        bonuses.delete(bonus) unless BONUS_ID_WHITELIST.include? bonus
-      end
+      bonuses.delete_if { |bonus| !BONUS_ID_WHITELIST.include? bonus and !LEGENDARY_RING_BONUS_IDS.include? bonus }
       return if bonuses.empty?
       # make a special import with the given and possible missing bonus id data from armory
       puts "special import #{id} #{context} #{bonuses.inspect}"
@@ -367,6 +372,26 @@ class Item
       Rails.logger.debug id
       Rails.logger.debug e.message
       return
+    end
+  end
+
+  def self.fixup_intellect_item(id)
+    begin
+      db_item = Item.where(:remote_id => 124545).first
+      ps = db_item.properties['stats']
+      if ps.key?('intellect') and not ps.key?('agility')
+        puts "Updating properties"
+        ps['agility'] = ps['intellect']
+        ps.delete('intellect')
+      end
+
+      if db_item.stats.key?('intellect') and not db_item.stats.key?('agility')
+        puts "Updating stats"
+        db_item.stats['agility'] = db_item.stats['intellect']
+        db_item.stats.delete('intellect')
+      end
+
+      db_item.save
     end
   end
 
