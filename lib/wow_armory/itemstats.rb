@@ -1,80 +1,14 @@
 module WowArmory
   class Itemstats
     unloadable
+  
+    include Constants
 
     @random_suffix_csv = nil
     @item_enchants = nil
     @rand_prop_points = nil
     @item_data = nil
     @item_damage_one_hand = nil
-
-    STAT_LOOKUP = {
-      1=>:health,
-      2=>:mana,
-      3=>:agility,
-      4=>:strength, 
-      5=>:intellect,
-      6=>:spirit,
-      7=>:stamina,
-      12=>:defense,
-      13=>:dodge,
-      14=>:parry,
-      15=>:shield_block,
-      31=>:hit,
-      32=>:crit,
-      33=>:hit_avoidance,
-      34=>:critical_strike_avoidance,
-      35=>:pvp_resilience,
-      36=>:haste,
-      37=>:expertise,
-      38=>:attack_power, 
-      40=>:versatility,
-      41=>:damage_done,
-      42=>:healing_done,
-      43=>:mana_every_5_seconds,
-      44=>:armor_penetration,
-      45=>:power,
-      46=>:health_every_5_seconds,
-      47=>:penetration,
-      48=>:block_value,
-      49=>:mastery, 
-      50=>:bonus_armor,
-      57=>:pvp_power,
-      58=>:amplify,
-      59=>:multistrike,
-      63=>:avoidance,
-      67=>:versatility
-      71=>:agility,
-      72=>:agility,
-      73=>:agility,
-    }
-
-    WOWHEAD_MAP = {
-      "hitrtng" => "hit",
-      "hastertng" => "haste",
-      "critstrkrtng" => "crit",
-      "mastrtng" => "mastery",
-      "exprtng" => "expertise",
-      "agi" => "agility",
-      "sta" => "stamina",
-      "pvppower" => "pvp_power",
-      "resirtng" => "pvp_resilience",
-      "multistrike" => "multistrike",
-      "versatility" => "versatility"
-    }
-
-    BONUS_ACTIONS = {
-       1 => :ADJUST_ITEM_LEVEL,
-       2 => :MODIFY_STATS,
-       3 => :CHANGE_ITEM_QUALITY,
-       4 => :ADD_ITEM_TITLES,
-       5 => :APPEND_WORDS_TO_ITEM_NAME,
-       6 => :ADD_SOCKETS,
-       7 => :ADJUST_ITEM_APPEARANCE_ID,
-       8 => :ADJUST_EQUIP_LEVEL,
-       9 => :UNKNOWN_1,
-      10 => :UNKNOWN_2,
-    }
 
     ITEM_SOCKET_COST = 8.0 # lvl 100 = 30.
 
@@ -150,7 +84,7 @@ module WowArmory
       @@random_suffix_csv ||= Hash.new.tap do |hash|
         FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "ItemRandomSuffix.dbc.csv")) do |row|
           hash[row[0].to_s] = row
-        erand
+        end
       end
     end
 
@@ -203,7 +137,7 @@ module WowArmory
       eqstats = JSON::load("{%s}" % doc.css("jsonEquip").text)
       stats1 = JSON::load("{%s}" % doc.css("json").text)
       eqstats.each do |stat, val|
-        stat2 = WOWHEAD_MAP[stat]
+        stat2 = WOWHEAD_STAT_MAP[stat]
         unless stat2.nil?
           stats[stat2] = val
         end
@@ -271,47 +205,6 @@ module WowArmory
       end
       puts "#{self.name} #{@properties[:tag]} #{@properties[:ilevel]}"
       puts self.stats.inspect
-    end
-
-    SCAN_ATTRIBUTES = ['agility', 'strength', 'intellect', 'spirit', 'stamina', 'attack power', 'critical strike', 'versatility', 'multistrike',
-                       'haste', 'mastery', 'pvp resilience', 'pvp power', 'all stats', 'dodge', 'block', 'parry'
-    ]
-    SCAN_OVERRIDE = { 'critical strike' => 'crit',
-                        #"hit" => "hit rating",
-                        #"expertise" => "expertise rating",
-                        #"haste" => "haste rating",
-                        #"mastery" => "mastery rating",
-                        #"pvp resilience" => "resilience",
-                        #"pvp power" => "pvp power rating"
-                      }
-
-    def scan_str(str)
-      map = SCAN_ATTRIBUTES.map do |attr|
-        if str =~/\+(\d+) (#{attr})/i
-          qty = $1.to_i
-          [(SCAN_OVERRIDE[attr] || attr).gsub(/ /, "_").to_sym, qty]
-        elsif str =~/Equip:.*(#{attr}) by (\d+)/i
-          qty = $2.to_i
-          [(SCAN_OVERRIDE[attr] || attr).gsub(/ /, "_").to_sym, qty]
-        else
-          nil
-        end
-      end.compact
-      Hash[*map.flatten]
-    end
-
-    def fix_gem_colors(color)
-      return nil if color.nil?
-      case color
-      when 'Red or Yellow'
-        return 'Orange'
-      when 'Red or Blue'
-        return 'Purple'
-      when 'Blue or Yellow', 'Yellow or Blue'
-        return 'Green'
-      else
-        color
-      end
     end
 
     def quality_index(quality)

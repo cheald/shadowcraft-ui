@@ -6,109 +6,7 @@ module WowArmory
     @item_bonus_map = nil
     @item_bonus_trees = nil
 
-    STAT_LOOKUP = {
-        1=>:health,
-        2=>:mana,
-        3=>:agility,
-        4=>:strength,
-        5=>:intellect,
-        6=>:spirit,
-        7=>:stamina,
-        12=>:defense,
-        13=>:dodge,
-        14=>:parry,
-        15=>:shield_block,
-        31=>:hit,
-        32=>:crit,
-        33=>:hit_avoidance,
-        34=>:critical_strike_avoidance,
-        35=>:pvp_resilience,
-        36=>:haste,
-        37=>:expertise,
-        38=>:attack_power,
-        40=>:versatility,
-        41=>:damage_done,
-        42=>:healing_done,
-        43=>:mana_every_5_seconds,
-        44=>:armor_penetration,
-        45=>:power,
-        46=>:health_every_5_seconds,
-        47=>:penetration,
-        48=>:block_value,
-        49=>:mastery,
-        50=>:bonus_armor,
-        57=>:pvp_power,
-        58=>:amplify,
-        59=>:multistrike,
-        63=>:avoidance,
-        67=>:versatility
-        71=>:agility,
-        72=>:agility,
-        73=>:agility,
-    }
-
-    WOWHEAD_MAP = {
-      'hitrtng' => 'hit',
-      'hastertng' => 'haste',
-      'critstrkrtng' => 'crit',
-      'mastrtng' => 'mastery',
-      'exprtng' => 'expertise',
-      'agi' => 'agility',
-      'sta' => 'stamina',
-      'pvppower' => 'pvp_power',
-      'resirtng' => 'pvp_resilience',
-      'multistrike' => 'multistrike',
-      'versatility' => 'versatility'
-    }
-
-    # redundant to character.rb
-    PROF_MAP = {
-      755 => 'jewelcrafting',
-      164 => 'blacksmithing',
-      165 => 'leatherworking',
-      333 => 'enchanting',
-      202 => 'engineering',
-      171 => 'alchemy',
-      197 => 'tailoring',
-      773 => 'inscription',
-      182 => 'herbalism',
-      186 => 'mining',
-      393 => 'skinning'
-    }
-
-    ARMOR_CLASS = {
-      1 => 'Cloth',
-      2 => 'Leather',
-      3 => 'Mail',
-      4 => 'Plate'
-    }
-
-    SOCKET_MAP = {
-      1 => 'Meta',
-      2 => 'Red',
-      8 => 'Blue',
-      4 => 'Yellow',
-      14 => 'Prismatic',
-      16 => 'Hydraulic',
-      32 => 'Cogwheel'
-    }
-
-    GEM_SUBCLASS_MAP = {
-      0 => 'Red',
-      1 => 'Blue',
-      2 => 'Yellow',
-      3 => 'Purple',
-      4 => 'Green',
-      5 => 'Orange',
-      6 => 'Meta',
-      #7 => "Simple",
-      8 => 'Prismatic',
-      9 => 'Hydraulic',
-      10 => 'Cogwheel'
-    }
-
-    ENCHANT_SCALING = 10.0 # for lvl 90 // lvl100 = 80
-
+    include Constants
     include Document
     ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :bonus_trees, :chance_bonus_lists
     attr_accessor *ACCESSORS
@@ -259,7 +157,7 @@ module WowArmory
         self.gem_slot = GEM_SUBCLASS_MAP[stats['subclass'].to_i]
         self.stats = {}
         eqstats.each do |stat, val|
-         stat2 = WOWHEAD_MAP[stat]
+         stat2 = WOWHEAD_STAT_MAP[stat]
          unless stat2.nil?
            self.stats[stat2] = val
          end
@@ -297,18 +195,6 @@ module WowArmory
       end
     end
 
-    SCAN_ATTRIBUTES = ['agility', 'strength', 'intellect', 'spirit', 'stamina', 'attack power', 'critical strike',
-                       'haste', 'mastery', 'pvp resilience', 'pvp power', 'all stats'
-    ]
-    SCAN_OVERRIDE = { 'critical strike' => 'crit',
-                        #"hit" => "hit rating",
-                        #"expertise" => "expertise rating",
-                        #"haste" => "haste rating",
-                        #"mastery" => "mastery rating",
-                        #"pvp resilience" => "resilience",
-                        #"pvp power" => "pvp power rating"
-                      }
-
     def scan_str(str)
       map = SCAN_ATTRIBUTES.map do |attr|
         if str =~/\+(\d+) (#{attr})/i
@@ -324,42 +210,11 @@ module WowArmory
       Hash[*map.flatten]
     end
 
-    def fix_gem_colors(color)
-      return nil if color.nil?
-      case color
-      when 'Red or Yellow'
-        return 'Orange'
-      when 'Red or Blue'
-        return 'Purple'
-      when 'Blue or Yellow', 'Yellow or Blue'
-        return 'Green'
-      else
-        color
-      end
-    end
-
     def item_enchants
       @@item_enchants ||= Hash.new.tap do |hash|
         FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'SpellItemEnchantments.csv')) do |row|
           hash[row[0].to_s] = row
         end
-      end
-    end
-
-    def slot_index(slot)
-      case slot
-        when 1, 5, 7
-          return 0
-        when 3, 6, 8, 10, 12
-          return 1
-        when 2, 9, 11, 16, 22
-          return 2
-        when 13, 21
-          return 3
-        when 15
-          return 4
-        else
-          return 2
       end
     end
 

@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   end
 
   # Recompiles the coffeescript files in development mode.
-  # Productive Mode uses the generated core.js file.
+  # Production Mode uses the generated core.js file.
   def recompile_coffeescript
     return unless Rails.env.development?
     

@@ -2,6 +2,8 @@ require 'csv'
 
 class Enchant
   include Mongoid::Document
+  include WowArmory::Constants
+
   field :spell_id, :type => Integer
   field :stats, :type => Hash
   field :icon
@@ -39,17 +41,6 @@ class Enchant
     }
   end
 
-  JSON_TO_INTERNAL = {
-      'agi' => 'agility',
-      'atkpwr' => 'attack_power',
-      'critstrkrtng' => 'crit',
-      'exprtng' => 'expertise',
-      'hastertng' => 'haste',
-      'hitrtng' => 'hit',
-      'str' => 'strength',
-      'sta' => 'stamina',
-      'mastrtng' => 'mastery'
-  }
   SLOT_MAP = [
       0x1, 0x2, 0x4, 0x8,
       0x10, 0x20, 0x40, 0x80,
@@ -70,7 +61,7 @@ class Enchant
 
   def self.update_from_json!
     self.destroy_all
-    keys = JSON_TO_INTERNAL.keys
+    keys = WOWHEAD_STAT_MAP.keys
     j = JSON::load open(File.join(Rails.root, 'app/xml/converted_enchants.json')).read
     j.each do |k, i|
       slots = [i['slots']].flatten
@@ -85,7 +76,7 @@ class Enchant
           next if slot == 1 # do not import head enchants
           Enchant.create({
                              :spell_id => k.to_i,
-                             :stats => Hash[*x.map { |rk| [JSON_TO_INTERNAL[rk], i['jsonequip'][rk].to_i] }.flatten],
+                             :stats => Hash[*x.map { |rk| [WOWHEAD_STAT_MAP[rk], i['jsonequip'][rk].to_i] }.flatten],
                              :icon => [i['icon']].flatten.first.downcase,
                              :item_name => name,
                              :equip_location => slot
@@ -101,7 +92,7 @@ class Enchant
   end
 
   def self.hardcoded_import
-    # first delete all existing enchants int he database
+    # first delete all existing enchants in the database
     Enchant.delete_all
 
     # WOD WEAPON
@@ -619,7 +610,7 @@ class Enchant
         slot = get_slots(slots[index].to_i)
         Enchant.create({
                            :spell_id => k.to_i,
-                           :stats => Hash[*x.map { |rk| [JSON_TO_INTERNAL[rk], jsonequip[rk].to_i] }.flatten],
+                           :stats => Hash[*x.map { |rk| [WOWHEAD_STAT_MAP[rk], jsonequip[rk].to_i] }.flatten],
                            :icon => [i['icon']].flatten.first.downcase,
                            :item_name => name,
                            :equip_location => slot

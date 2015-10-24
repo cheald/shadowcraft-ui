@@ -2,52 +2,10 @@ module WowArmory
   class Character
     unloadable
 
-    CLASS_MAP = {
-      4 => 'rogue'
-    }
-
-    POWER_TYPES = [:mana, :rage, :focus, :energy]
-
-    RACE_MAP = {
-      1 => 'Human',
-      2 => 'Orc',
-      3 => 'Dwarf',
-      4 => 'Night Elf',
-      5 => 'Undead',
-      6 => 'Tauren',
-      7 => 'Gnome',
-      8 => 'Troll',
-      9 => 'Goblin',
-      10 => 'Blood Elf',
-      11 => 'Draenei',
-      22 => 'Worgen',
-      24 => 'Pandaren',
-      25 => 'Pandaren',
-      26 => 'Pandaren'
-    }
-
-    SLOT_MAP = {
-      'head' => 0,
-      'neck' => 1,
-      'shoulder' => 2,
-      'back' => 14,
-      'chest' => 4,
-      'wrist' => 8,
-      'hands' => 9,
-      'waist' => 5,
-      'legs' => 6,
-      'feet' => 7,
-      'finger1' => 10,
-      'finger2' => 11,
-      'trinket1' => 12,
-      'trinket2' => 13,
-      'mainHand' => 15,
-      'offHand' => 16,
-    }
-
     ACHIEVEMENTS = [7534, 8008, 7535]
     QUESTS = [32595]
 
+    include Constants
     include Document
 
     attr_accessor :realm, :region, :name, :active, :gear, :race, :level, :player_class, :talents, :portrait, :achievements, :quests
