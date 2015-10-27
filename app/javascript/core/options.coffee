@@ -121,7 +121,7 @@ class ShadowcraftOptions
       time_in_execute_range: {type: "input", name: "Time in Execute Range", desc: "Only used in Assassination Spec", 'default': 0.35, datatype: 'float', min: 0, max: 1}
       lethal_poison: {name: "Lethal Poison", type: 'select', options: {'dp': 'Deadly Poison', 'wp': 'Wound Poison'}, 'default': 'dp'}
       utility_poison: {name: "Utility Poison", type: 'select', options: {'lp': 'Leeching Poison', 'n': 'Other/None'}, 'default': 'lp'}
-      num_boss_adds: {name: "Number of Boss Adds", desc: "Used for Blade Flurry", datatype: 'float', type: 'input', min: 0, max: 20, 'default': 0}
+      num_boss_adds: {name: "Number of Boss Adds", datatype: 'float', type: 'input', min: 0, max: 20, 'default': 0}
     })
 
     @setup("#settings #generalFilter", "general", {

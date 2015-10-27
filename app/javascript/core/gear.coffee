@@ -824,14 +824,14 @@ class ShadowcraftGear
       name: "Spec"
       val: ShadowcraftTalents.GetActiveSpecName() || "n/a"
     }
+    a_stats.push {
+      name: "Boss Adds"
+      val: if data.options.general.num_boss_adds? and (data.options.general.num_boss_adds > 0) then Math.min(4, data.options.general.num_boss_adds) else "0"
+    }
     if ShadowcraftTalents.GetActiveSpecName() == "Combat"
       a_stats.push {
-      name: "Blade Flurry"
-      val: 
-        if data.options.rotation.blade_flurry 
-          "ON " + if data.options.general.num_boss_adds? then Math.min(4, data.options.general.num_boss_adds) + " Target/s" else ""
-        else 
-          "OFF"
+        name: "Blade Flurry"
+        val: if data.options.rotation.blade_flurry then "ON" else "OFF"
       }
     else if ShadowcraftTalents.GetActiveSpecName() == "Subtlety"
       a_stats.push {

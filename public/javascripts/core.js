@@ -1334,7 +1334,6 @@
         },
         num_boss_adds: {
           name: "Number of Boss Adds",
-          desc: "Used for Blade Flurry",
           datatype: 'float',
           type: 'input',
           min: 0,
@@ -3495,10 +3494,14 @@
         name: "Spec",
         val: ShadowcraftTalents.GetActiveSpecName() || "n/a"
       });
+      a_stats.push({
+        name: "Boss Adds",
+        val: (data.options.general.num_boss_adds != null) && (data.options.general.num_boss_adds > 0) ? Math.min(4, data.options.general.num_boss_adds) : "0"
+      });
       if (ShadowcraftTalents.GetActiveSpecName() === "Combat") {
         a_stats.push({
           name: "Blade Flurry",
-          val: data.options.rotation.blade_flurry ? "ON " + (data.options.general.num_boss_adds != null ? Math.min(4, data.options.general.num_boss_adds) + " Target/s" : "") : "OFF"
+          val: data.options.rotation.blade_flurry ? "ON" : "OFF"
         });
       } else if (ShadowcraftTalents.GetActiveSpecName() === "Subtlety") {
         a_stats.push({
