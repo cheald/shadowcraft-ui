@@ -90,7 +90,7 @@ module WowArmory
 
     def item_enchants
       @@item_enchants ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_SpellItemEnchantments.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "SpellItemEnchantment.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -98,7 +98,7 @@ module WowArmory
 
     def rand_prop_points
       @@rand_prop_points ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_RandPropPoints.dbc.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "RandPropPoints.dbc.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -114,7 +114,7 @@ module WowArmory
 
     def item_damage_one_hand
       @@item_damage_one_hand ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "WoD_ItemDamageOneHand.dbc.csv")) do |row|
+        FasterCSV.foreach(File.join(File.dirname(__FILE__), "data", "ItemDamageOneHand.dbc.csv")) do |row|
           hash[row[0].to_s] = row
         end
       end

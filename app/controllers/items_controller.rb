@@ -81,7 +81,7 @@ class ItemsController < ApplicationController
     @glyphs = Glyph.asc(:name).all
 
     item_bonuses = {}
-    FasterCSV.foreach(File.join(Rails.root, 'app', 'xml', 'WoD_ItemBonusIDs.csv'), { :col_sep => ';'}) do |row|
+    FasterCSV.foreach(File.join(Rails.root, 'lib', 'wow_armory', 'data', 'ItemBonus.dbc.csv')) do |row|
       unless item_bonuses.has_key? row[1].to_i
         item_bonuses[row[1].to_i] = []
       end
@@ -117,7 +117,7 @@ class ItemsController < ApplicationController
 
   def item_name_description
     @@item_name_description ||= Hash.new.tap do |hash|
-      FasterCSV.foreach(File.join(Rails.root, 'app', 'xml', 'WoD_ItemNameDescription.csv'), { :col_sep => ';'}) do |row|
+      FasterCSV.foreach(File.join(Rails.root, 'lib', 'wow_armory', 'data', 'ItemNameDescription.dbc.csv')) do |row|
         hash[row[0].to_i] = row[1]
       end
     end
@@ -125,7 +125,7 @@ class ItemsController < ApplicationController
 
   def rand_prop_points
     @@rand_prop_points ||= Hash.new.tap do |hash|
-      FasterCSV.foreach(File.join(Rails.root, 'app', 'xml', 'WoD_RandPropPoints.csv'), { :col_sep => ';'}) do |row|
+      FasterCSV.foreach(File.join(Rails.root, 'lib', 'wow_armory', 'data', 'RandPropPoints.dbc.csv')) do |row|
         hash[row[0].to_i] = row
       end
     end
