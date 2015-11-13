@@ -2649,7 +2649,7 @@
           continue;
         }
         gear = Shadowcraft.Data.gear[slot];
-        _item_id = gear.item_id;
+        _item_id = gear.upgrade_level ? Math.floor(gear.item_id / 1000000) : gear.item_id;
         if (__indexOf.call(setIds, _item_id) >= 0) {
           count++;
         }
@@ -3621,23 +3621,10 @@
       return _.where(Shadowcraft.ServerData.ITEM_LOOKUP2, filter);
     };
     getMaxUpgradeLevel = function(item) {
-      var _ref;
-      if (item.quality === 3) {
-        return 1;
-      } else {
-        if ((_ref = Shadowcraft.region) === "KR" || _ref === "TW" || _ref === "CN") {
-          return 6;
-        } else {
-          return 4;
-        }
-      }
+      return 2;
     };
     getUpgradeLevelSteps = function(item) {
-      if (item.quality === 3) {
-        return 8;
-      } else {
-        return 4;
-      }
+      return 5;
     };
     clickSlotName = function() {
       var $slot, GemList, bonusIndex, bonus_trees, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, l, lid, loc, loc_all, maxIEP, max_level, minIEP, requireDagger, selected_identifier, set, setBonEP, setCount, set_name, slot, subtletyNeedsDagger, ttbonus, ttid, ttrand, ttupgd, upgrade, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref;
@@ -3670,6 +3657,9 @@
           continue;
         }
         if ((slot === 15) && subtletyNeedsDagger && l.subclass !== 15) {
+          continue;
+        }
+        if ((l.upgrade_level != null) && Shadowcraft.Data.options.general.show_upgrades === 0 && lid !== selected_identifier) {
           continue;
         }
         if ((l.upgrade_level != null) && l.upgrade_level > getMaxUpgradeLevel(l)) {

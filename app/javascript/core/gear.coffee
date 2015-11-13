@@ -234,7 +234,7 @@ class ShadowcraftGear
     for slot in SLOT_ORDER
       continue if SLOT_INVTYPES[slot] == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
-      _item_id = gear.item_id
+      _item_id = if gear.upgrade_level then Math.floor(gear.item_id/1000000) else gear.item_id
       if _item_id in setIds
         count++
     return count
@@ -938,19 +938,10 @@ class ShadowcraftGear
     _.where(Shadowcraft.ServerData.ITEM_LOOKUP2, filter)
 
   getMaxUpgradeLevel = (item) ->
-    if item.quality == 3
-      return 1
-    else
-      if Shadowcraft.region in ["KR", "TW", "CN"]
-        return 6
-      else
-        return 4
+    return 2
 
   getUpgradeLevelSteps = (item) ->
-    if item.quality == 3
-      return 8
-    else
-      return 4
+    return 5
 
   # Click a name in a slot, for binding to event delegation
   clickSlotName = ->
@@ -978,16 +969,12 @@ class ShadowcraftGear
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
-      #continue if (slot == 15) && combatSpec && l.subclass == 15 && !(l.id >= 77945 && l.id <= 77950)  # If combat, filter all daggers EXCEPT the legendaries.
       continue if (slot == 15) && subtletyNeedsDagger && l.subclass != 15
-      #continue if l.ilvl > patch_max_ilevel(Shadowcraft.Data.options.general.patch)
-      #continue if l.upgrade_level and not Shadowcraft.Data.options.general.show_upgrades and lid != selected_identifier
+      continue if l.upgrade_level? and Shadowcraft.Data.options.general.show_upgrades == 0 and lid != selected_identifier
       continue if l.upgrade_level? and l.upgrade_level > getMaxUpgradeLevel(l)
       continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and lid != selected_identifier
       continue if l.tag? and /Tournament$/.test(l.tag) and not Shadowcraft.Data.options.general.pvp
       loc.push l
-
-    #slot = parseInt($(this).parent().data("slot"), 10)
 
     gear_offset = statOffset(gear[slot], FACETS.ITEM)
     gem_offset = statOffset(gear[slot], FACETS.GEMS)
@@ -1274,8 +1261,6 @@ class ShadowcraftGear
     slot = buf[1]
 
     data = Shadowcraft.Data
-
-    #slot = parseInt($(this).parent().data("slot"), 10)
 
     gear = data.gear[slot]
     item = getItem(gear.original_id, gear.item_level, gear.suffix)

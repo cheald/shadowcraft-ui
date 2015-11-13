@@ -7,6 +7,7 @@ class Item
 
   field :remote_id, :type => Integer, :index => true
   field :bonus_tree, :type => Integer
+  field :upgrade_level, :type => Integer
   field :equip_location, :type => Integer, :index => true
   field :item_level, :type => Integer
   field :properties, :type => Hash
@@ -29,16 +30,28 @@ class Item
   def update_from_armory_if_necessary
     return if remote_id == 0
     if self.properties.nil?
-      Rails.logger.debug "Loading item #{remote_id}"
-      item = WowArmory::Item.new(remote_id, item_name_override)
+      Rails.logger.debug "Loading item #{remote_id} during validation"
+      item = WowArmory::Item.new(remote_id, 'wowapi', item_name_override)
+      puts item
       # return false if item.stats.empty?
       self.properties = item.as_json.with_indifferent_access
-      item_stats = WowArmory::Itemstats.new(self.properties)
+      item_stats = WowArmory::Itemstats.new(self.properties, upgrade_level)
       self.properties = self.properties.merge(item_stats.as_json.with_indifferent_access)
       self.equip_location = self.properties['equip_location']
       self.is_gem = !self.properties['gem_slot'].blank?
     end
     true
+  end
+
+  # Unique Item identifier
+  # TODO subject to change
+  def uid
+    # a bit silly
+    uid = remote_id
+    if not properties["upgrade_level"].nil?
+      uid = uid * 1000000 + properties["upgrade_level"].to_i
+    end
+    uid
   end
 
   def icon
@@ -61,7 +74,7 @@ class Item
 
   def as_json(options={})
     json = {
-        :id => remote_id,
+        :id => uid.to_i,
         :oid => remote_id,
         :n => properties['name'],
         :i => if icon.nil?
@@ -236,8 +249,7 @@ class Item
   # we don't.
   # 
   # This whitelist skips any of the randomly generated bonus IDs such as any "of the"
-  # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.  
-  # TODO: make this autogenerate from the CASC game data
+  # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.
   BONUS_ID_WHITELIST = [1, 15, 17, 18, 44, 171, 448, 449, 450, 451, 499, 526, 527, 545, 546, 547,
                         553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 566, 567, 571, 573, 575,
                         576, 577, 582, 583, 591, 592, 593, 594, 602, 609, 615, 617, 618, 619, 620,
@@ -286,58 +298,78 @@ class Item
       return
     end
 
+    upgradable = WowArmory::Item.check_upgradable(id)
+    if upgradable
+      upgrade_levels = [0,1,2]
+    else
+      upgrade_levels = [0]
+    end
+
     json_data['availableContexts'].each do |context|
-      if context == ''
-        context_data = json_data
-      else
-        context_data = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id, context], {}, :json
-      end
-      context_data['bonusSummary']['defaultBonusLists'].clone.each do |defaultBonusListsId|
-        context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) unless BONUS_ID_WHITELIST.include? defaultBonusListsId
-      end
+      upgrade_levels.each do |upgrade_level|
+        if context == ''
+          context_data = json_data
+        else
+          context_data = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id, context], {}, :json
+        end
+        context_data['bonusSummary']['defaultBonusLists'].clone.each do |defaultBonusListsId|
+          context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) unless BONUS_ID_WHITELIST.include? defaultBonusListsId
+        end
 
-      # if the context is trade-skill, add these bonus IDs manually since they don't
-      # aren't in the data returned from Blizzard for whatever reason.
-      if context == 'trade-skill'
-        context_data['bonusSummary']['defaultBonusLists'] =
-          context_data['bonusSummary']['defaultBonusLists'] + TRADESKILL_BONUS_IDS
-      end
+        # if the context is trade-skill, add these bonus IDs manually since they don't
+        # aren't in the data returned from Blizzard for whatever reason.
+        if context == 'trade-skill'
+          context_data['bonusSummary']['defaultBonusLists'] =
+            context_data['bonusSummary']['defaultBonusLists'] + TRADESKILL_BONUS_IDS
+        end
 
-      if context_data['bonusSummary']['defaultBonusLists'].empty?
-        context_data['bonusSummary']['defaultBonusLists'] = [0]
-      end
+        if context_data['bonusSummary']['defaultBonusLists'].empty?
+          context_data['bonusSummary']['defaultBonusLists'] = [0]
+        end
 
-      context_data['bonusSummary']['defaultBonusLists'].each do |defaultBonus|
-        options = {
+        context_data['bonusSummary']['defaultBonusLists'].each do |defaultBonus|
+          options = {
             :remote_id => id,
-            :bonus_trees => [defaultBonus]
-        }
-        db_item = Item.find_or_initialize_by options
-        if db_item.properties.nil?
-          item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees], nil, false)
-          db_item.properties = item.as_json.with_indifferent_access
-          db_item.equip_location = db_item.properties['equip_location']
-          db_item.is_gem = !db_item.properties['gem_slot'].blank?
-          if db_item.new_record?
-            db_item.save
-          end
-          # if available we need to import warforged too
-          # the other stuff like extra socket or tertiary stats are added in the UI dynamically
-          context_data['bonusSummary']['chanceBonusLists'].each do |bonus|
-            next unless BONUS_ID_WHITELIST.include? bonus
-            puts bonus
-            options = {
+            :bonus_trees => [defaultBonus],
+            :item_level => json_data["itemLevel"]+5*upgrade_level
+          }
+          db_item = Item.find_or_initialize_by options
+          if db_item.properties.nil?
+            item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees])
+
+            db_item.properties = item.as_json.with_indifferent_access
+            if (upgrade_level != 0)
+              item_stats = WowArmory::Itemstats.new(db_item.properties, upgrade_level)
+              db_item.properties = db_item.properties.merge(item_stats.as_json.with_indifferent_access)
+            end
+            db_item.equip_location = db_item.properties['equip_location']
+            db_item.is_gem = !db_item.properties['gem_slot'].blank?
+            if db_item.new_record?
+              db_item.save
+            end
+            # if available we need to import warforged too
+            # the other stuff like extra socket or tertiary stats are added in the UI dynamically
+            context_data['bonusSummary']['chanceBonusLists'].each do |bonus|
+              next unless BONUS_ID_WHITELIST.include? bonus
+              puts bonus
+              options = {
                 :remote_id => id,
-                :bonus_trees => [defaultBonus] + [bonus]
-            }
-            db_item_with_bonus = Item.find_or_initialize_by options
-            if db_item_with_bonus.properties.nil?
-              item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees], nil, false)
-              db_item_with_bonus.properties = item.as_json.with_indifferent_access
-              db_item_with_bonus.equip_location = db_item_with_bonus.properties['equip_location']
-              db_item_with_bonus.is_gem = !db_item_with_bonus.properties['gem_slot'].blank?
-              if db_item_with_bonus.new_record?
-                db_item_with_bonus.save
+                :bonus_trees => [defaultBonus] + [bonus],
+                :item_level => json_data["itemLevel"]+5*upgrade_level
+              }
+              db_item_with_bonus = Item.find_or_initialize_by options
+              if db_item_with_bonus.properties.nil?
+                item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees])
+                db_item_with_bonus.properties = item.as_json.with_indifferent_access
+                if (upgrade_level != 0)
+                  item_stats = WowArmory::Itemstats.new(db_item_with_bonus.properties, upgrade_level)
+                  db_item_with_bonus.properties = db_item_with_bonus.properties.merge(item_stats.as_json.with_indifferent_access)
+                end
+                db_item_with_bonus.equip_location = db_item_with_bonus.properties['equip_location']
+                db_item_with_bonus.is_gem = !db_item_with_bonus.properties['gem_slot'].blank?
+                if db_item_with_bonus.new_record?
+                  db_item_with_bonus.save
+                end
               end
             end
           end
@@ -349,49 +381,55 @@ class Item
   def self.wod_special_import(id, context, bonuses)
     begin
       source = 'wowapi'
-      options = {
-          :remote_id => id,
-          :bonus_trees => bonuses.sort
-      }
-      db_item_with_bonus = Item.find_or_initialize_by options
-      if db_item_with_bonus.properties.nil?
-        begin
-          item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees], nil, false)
-        rescue WowArmory::MissingDocument => e
-          # try without context
-          item = WowArmory::Item.new(id, source, nil, '', options[:bonus_trees], nil, false)
+
+      begin
+        url = '/wow/item/%d' % id
+        if context.length != 0
+          url << '/%s/' % context
         end
-        db_item_with_bonus.properties = item.as_json.with_indifferent_access
-        db_item_with_bonus.equip_location = db_item_with_bonus.properties['equip_location']
-        db_item_with_bonus.is_gem = !db_item_with_bonus.properties['gem_slot'].blank?
-        if db_item_with_bonus.new_record?
-          db_item_with_bonus.save
+        json_data = WowArmory::Document.fetch 'us', url, {}, :json
+      rescue WowArmory::MissingDocument => e
+        puts id
+        puts e.message
+        return
+      end
+
+      if WowArmory::Item.check_upgradable(id)
+        upgradelevels = [0,1,2]
+      else
+        upgradelevels = [0]
+      end
+
+      upgradelevels.each do |upgrade_level|
+        options = {
+          :remote_id => id,
+          :bonus_trees => bonuses.sort,
+          :item_level => json_data["itemLevel"]+5*upgrade_level
+        }
+        db_item_with_bonus = Item.find_or_initialize_by options
+        if db_item_with_bonus.properties.nil?
+          begin
+            item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees], nil)
+          rescue WowArmory::MissingDocument => e
+            # try without context
+            item = WowArmory::Item.new(id, source, nil, '', options[:bonus_trees], nil)
+          end
+          db_item_with_bonus.properties = item.as_json.with_indifferent_access
+          if (upgrade_level != 0)
+            item_stats = WowArmory::Itemstats.new(db_item_with_bonus.properties, upgrade_level)
+            db_item_with_bonus.properties = db_item_with_bonus.properties.merge(item_stats.as_json.with_indifferent_access)
+          end
+          db_item_with_bonus.equip_location = db_item_with_bonus.properties['equip_location']
+          db_item_with_bonus.is_gem = !db_item_with_bonus.properties['gem_slot'].blank?
+          if db_item_with_bonus.new_record?
+            db_item_with_bonus.save
+          end
         end
       end
     rescue WowArmory::MissingDocument => e
       Rails.logger.debug id
       Rails.logger.debug e.message
       return
-    end
-  end
-
-  def self.fixup_intellect_item(id)
-    begin
-      db_item = Item.where(:remote_id => 124545).first
-      ps = db_item.properties['stats']
-      if ps.key?('intellect') and not ps.key?('agility')
-        puts "Updating properties"
-        ps['agility'] = ps['intellect']
-        ps.delete('intellect')
-      end
-
-      if db_item.stats.key?('intellect') and not db_item.stats.key?('agility')
-        puts "Updating stats"
-        db_item.stats['agility'] = db_item.stats['intellect']
-        db_item.stats.delete('intellect')
-      end
-
-      db_item.save
     end
   end
 
