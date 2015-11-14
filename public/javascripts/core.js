@@ -2340,12 +2340,7 @@
     return ShadowcraftTalents;
   })();
   ShadowcraftGear = (function() {
-    var $altslots, $popup, $slots, CHAPTER_2_ACHIEVEMENTS, EP_PRE_REGEM, EP_TOTAL, FACETS, JC_ONLY_GEMS, LEGENDARY_META_GEM_QUESTS, MAX_ENGINEERING_GEMS, MAX_HYDRAULIC_GEMS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, addAchievementBonuses, applyBonusToItem, canUseGem, canUseLegendaryMetaGem, canUsePrismaticSocket, clearBonuses, clickItemLock, clickItemUpgrade, clickSlot, clickSlotBonuses, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getApplicableEnchants, getBaseItemLevel, getBestNormalGem, getEnchantRecommendation, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getItem, getItems, getMaxUpgradeLevel, getRandPropRow, getStatWeight, getUpgradeLevelSteps, get_ep, greenWhite, hasAchievement, hasQuest, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateEngineInfoWindow, updateStatWeights, whiteWhite, __epSort;
-    MAX_ENGINEERING_GEMS = 1;
-    MAX_HYDRAULIC_GEMS = 1;
-    JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"];
-    CHAPTER_2_ACHIEVEMENTS = [7534, 8008];
-    LEGENDARY_META_GEM_QUESTS = [32595];
+    var $altslots, $popup, $slots, EP_PRE_REGEM, EP_TOTAL, FACETS, PROC_ENCHANTS, SLOT_DISPLAY_ORDER, SLOT_INVTYPES, SLOT_ORDER, Sets, Weights, applyBonusToItem, canUseGem, canUsePrismaticSocket, clearBonuses, clickItemLock, clickItemUpgrade, clickSlot, clickSlotBonuses, clickSlotEnchant, clickSlotGem, clickSlotName, clickWowhead, colorSpan, epSort, equalGemStats, getApplicableEnchants, getBaseItemLevel, getBestNormalGem, getEnchantRecommendation, getEquippedGemCount, getEquippedSetCount, getGemRecommendationList, getGemTypeCount, getGemmingRecommendation, getItem, getItems, getMaxUpgradeLevel, getRandPropRow, getStatWeight, getUpgradeLevelSteps, get_ep, greenWhite, isProfessionalGem, needsDagger, patch_max_ilevel, pctColor, redGreen, redWhite, setBonusEP, statOffset, statsToDesc, sumItem, updateDpsBreakdown, updateEngineInfoWindow, updateStatWeights, whiteWhite, __epSort;
     FACETS = {
       ITEM: 1,
       GEMS: 2,
@@ -2356,43 +2351,13 @@
     SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"];
     SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13"]];
     PROC_ENCHANTS = {
-      4099: "landslide",
-      4083: "hurricane",
-      4441: "windsong",
-      4443: "elemental_force",
-      4444: "dancing_steel",
-      5125: "dancing_steel",
       5330: "mark_of_the_thunderlord",
       5331: "mark_of_the_shattered_hand",
       5334: "mark_of_the_frostwolf",
       5337: "mark_of_warsong",
       5384: "mark_of_the_bleeding_hollow"
     };
-    ShadowcraftGear.CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886];
-    ShadowcraftGear.LEGENDARY_META_GEM = 95346;
-    ShadowcraftGear.FURY_OF_XUEN_CLOAK = 102248;
     Sets = {
-      T14: {
-        ids: [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128],
-        bonuses: {
-          4: "rogue_t14_4pc",
-          2: "rogue_t14_2pc"
-        }
-      },
-      T15: {
-        ids: [95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679],
-        bonuses: {
-          4: "rogue_t15_4pc",
-          2: "rogue_t15_2pc"
-        }
-      },
-      T16: {
-        ids: [99006, 99007, 99008, 99009, 99010, 99112, 99113, 99114, 99115, 99116, 99348, 99349, 99350, 99355, 99356, 99629, 99630, 99631, 99634, 99635],
-        bonuses: {
-          4: "rogue_t16_4pc",
-          2: "rogue_t16_2pc"
-        }
-      },
       T17: {
         ids: [115570, 115571, 115572, 115573, 115574],
         bonuses: {
@@ -2762,94 +2727,12 @@
       if (!gem[gemType]) {
         return false;
       }
-      if (gem.slot === "Cogwheel" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS) {
-        return false;
-      }
-      if (gem.slot === "Hydraulic" && getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS) {
-        return false;
-      }
-      if ((gemType === "Meta" || gemType === "Cogwheel" || gemType === "Hydraulic") && gem.slot !== gemType) {
-        return false;
-      }
-      if ((gem.slot === "Meta" || gem.slot === "Cogwheel" || gem.slot === "Hydraulic") && gem.slot !== gemType) {
-        return false;
-      }
-      return true;
-    };
-    addAchievementBonuses = function(item) {
-      var chapter2, last, _ref;
-      item.sockets || (item.sockets = []);
-      if ((_ref = item.equip_location) === "mainhand" || _ref === "offhand") {
-        chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS);
-        last = item.sockets[item.sockets.length - 1];
-        if (canUsePrismaticSocket(item) && last !== "Prismatic" && chapter2) {
-          return item.sockets.push("Prismatic");
-        } else if (last !== "Prismatic" && last === "Hydraulic" && chapter2) {
-          return item.sockets.push("Prismatic");
-        } else if (!chapter2 && last === "Prismatic") {
-          return item.sockets.pop();
-        }
-      }
-    };
-    hasAchievement = function(achievements) {
-      var id, _i, _len, _ref;
-      if (!Shadowcraft.Data.achievements) {
-        return false;
-      }
-      _ref = Shadowcraft.Data.achievements;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        id = _ref[_i];
-        if (__indexOf.call(achievements, id) >= 0) {
-          return true;
-        }
-      }
-      return false;
-    };
-    hasQuest = function(quests) {
-      var id, _i, _len, _ref;
-      if (!Shadowcraft.Data.quests) {
-        return false;
-      }
-      _ref = Shadowcraft.Data.quests;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        id = _ref[_i];
-        if (__indexOf.call(quests, id) >= 0) {
-          return true;
-        }
-      }
-      return false;
-    };
-    canUseLegendaryMetaGem = function(item) {
-      if (!hasQuest(LEGENDARY_META_GEM_QUESTS)) {
-        return false;
-      }
-      if (item.ilvl < 502) {
-        return false;
-      }
-      if (item.ilvl >= 502 && item.ilvl < 522) {
-        if (item.name.indexOf("Tidesplitter Hood") >= 0) {
-          return true;
-        } else if (item.tag === "Raid Finder") {
-          return true;
-        }
-        return false;
-      }
       return true;
     };
     canUsePrismaticSocket = function(item) {
-      var last, _ref;
+      var _ref;
       if ((_ref = item.equip_location) !== "mainhand" && _ref !== "offhand") {
         return false;
-      }
-      if (!hasAchievement(CHAPTER_2_ACHIEVEMENTS)) {
-        return false;
-      }
-      last = item.sockets.length - 1;
-      if (last > -1 && item.sockets[last] === "Hydraulic") {
-        return true;
-      }
-      if (last > 0 && item.sockets[last] === "Prismatic" && item.sockets[last - 1] === "Hydraulic") {
-        return true;
       }
       if (item.ilvl < 502 || item.ilvl > 549) {
         return false;
@@ -2894,9 +2777,6 @@
         for (_j = 0, _len2 = gem_list.length; _j < _len2; _j++) {
           gem = gem_list[_j];
           if (!canUseGem(gem, gemType, sGems, ignoreSlotIndex)) {
-            continue;
-          }
-          if (gem.id === ShadowcraftGear.LEGENDARY_META_GEM && !canUseLegendaryMetaGem(item)) {
             continue;
           }
           if (gem.name.indexOf('Taladite') >= 0 && (item != null) && item.quality === 7 && item.ilvl <= 620) {
@@ -3300,11 +3180,11 @@
           upgradable = null;
           bonusable = null;
           if (item) {
-            addAchievementBonuses(item);
+            item.sockets || (item.sockets = []);
             enchantable = (EnchantSlots[item.equip_location] != null) && getApplicableEnchants(i, item).length > 0;
             bonus_keys = _.keys(Shadowcraft.ServerData.ITEM_BONUSES);
             bonuses_equipped = [];
-            if (item.sockets.length > 0) {
+            if (item.sockets && item.sockets.length > 0) {
               for (socketIndex = _ref = item.sockets.length - 1; _ref <= 0 ? socketIndex <= 0 : socketIndex >= 0; _ref <= 0 ? socketIndex++ : socketIndex--) {
                 last = item.sockets[socketIndex];
                 if (last === "Prismatic") {
@@ -3569,12 +3449,6 @@
       other = {
         mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps,
         offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps,
-        t14_2pc: source.other_ep.rogue_t14_2pc || 0,
-        t14_4pc: source.other_ep.rogue_t14_4pc || 0,
-        t15_2pc: source.other_ep.rogue_t15_2pc || 0,
-        t15_4pc: source.other_ep.rogue_t15_4pc || 0,
-        t16_2pc: source.other_ep.rogue_t16_2pc || 0,
-        t16_4pc: source.other_ep.rogue_t16_4pc || 0,
         t17_2pc: source.other_ep.rogue_t17_2pc || 0,
         t17_4pc: source.other_ep.rogue_t17_4pc || 0,
         t17_4pc_lfr: source.other_ep.rogue_t17_4pc_lfr || 0,
@@ -3602,7 +3476,7 @@
           $.data(exist.get(0), "sortkey", 0);
           if (key === "mainhand_dps" || key === "offhand_dps") {
             $.data(exist.get(0), "sortkey", 1);
-          } else if (key === "t14_2pc" || key === "t14_4pc" || key === "t15_2pc" || key === "t15_4pc" || key === "t16_2pc" || key === "t16_4pc" || key === "t17_2pc" || key === "t17_4pc" || key === "t17_4pc_lfr" || key === "t18_2pc" || key === "t18_4pc" || key === "t18_4pc_lfr") {
+          } else if (key === "t17_2pc" || key === "t17_4pc" || key === "t17_4pc_lfr" || key === "t18_2pc" || key === "t18_4pc" || key === "t18_4pc_lfr") {
             $.data(exist.get(0), "sortkey", 2);
           }
         }
@@ -3821,7 +3695,7 @@
       }
       for (_j = 0, _len2 = loc.length; _j < _len2; _j++) {
         l = loc[_j];
-        addAchievementBonuses(l);
+        l.sockets || (l.sockets = []);
         l.__gemRec = getGemmingRecommendation(GemList, l, true, slot, gem_offset);
         l.__setBonusEP = 0;
         for (set_name in Sets) {
@@ -4375,9 +4249,7 @@
                     } else if (data.gear[slot]["g" + i] != null) {
                       gem = Gems[data.gear[slot]["g" + i]];
                       if (gem) {
-                        if (gem.id === ShadowcraftGear.LEGENDARY_META_GEM && !canUseLegendaryMetaGem(item)) {
-                          data.gear[slot]["g" + i] = null;
-                        } else if (!canUseGem(Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot)) {
+                        if (!canUseGem(Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot)) {
                           data.gear[slot]["g" + i] = null;
                         }
                       }

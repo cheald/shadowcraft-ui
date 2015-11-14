@@ -1,9 +1,4 @@
 class ShadowcraftGear
-  MAX_ENGINEERING_GEMS = 1
-  MAX_HYDRAULIC_GEMS = 1
-  JC_ONLY_GEMS = ["Dragon's Eye", "Chimera's Eye", "Serpent's Eye"]
-  CHAPTER_2_ACHIEVEMENTS = [7534, 8008]
-  LEGENDARY_META_GEM_QUESTS = [32595]
 
   FACETS = {
     ITEM: 1
@@ -16,33 +11,13 @@ class ShadowcraftGear
   SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"]
   SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13"]]
   PROC_ENCHANTS =
-    4099: "landslide"
-    4083: "hurricane"
-    4441: "windsong"
-    4443: "elemental_force"
-    4444: "dancing_steel"
-    5125: "dancing_steel"
     5330: "mark_of_the_thunderlord"
     5331: "mark_of_the_shattered_hand"
     5334: "mark_of_the_frostwolf"
     5337: "mark_of_warsong"
     5384: "mark_of_the_bleeding_hollow"
 
-
-  @CHAOTIC_METAGEMS = [52291, 34220, 41285, 68778, 68780, 41398, 32409, 68779, 76884, 76885, 76886]
-  @LEGENDARY_META_GEM = 95346
-  @FURY_OF_XUEN_CLOAK = 102248
-
   Sets =
-    T14:
-      ids: [85299, 85300, 85301, 85302, 85303, 86639, 86640, 86641, 86642, 86643, 87124, 87125, 87126, 87127, 87128]
-      bonuses: {4: "rogue_t14_4pc", 2: "rogue_t14_2pc"}
-    T15:
-      ids: [95935, 95306, 95307, 95305, 95939, 96683, 95938, 96682, 95937, 96681, 95308, 95936, 95309, 96680, 96679]
-      bonuses: {4: "rogue_t15_4pc", 2: "rogue_t15_2pc"}
-    T16:
-      ids: [99006, 99007, 99008, 99009, 99010, 99112, 99113, 99114, 99115, 99116, 99348, 99349, 99350, 99355, 99356, 99629, 99630, 99631, 99634, 99635]
-      bonuses: {4: "rogue_t16_4pc", 2: "rogue_t16_2pc"}
     T17:
       ids: [115570, 115571, 115572, 115573, 115574]
       bonuses: {4: "rogue_t17_4pc", 2: "rogue_t17_2pc"}
@@ -304,56 +279,10 @@ class ShadowcraftGear
       return false if isProfessionalGem(gem, 'jewelcrafting')
 
     return false if not gem[gemType]
-    return false if gem.slot == "Cogwheel" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_ENGINEERING_GEMS
-    return false if gem.slot == "Hydraulic" and getEquippedGemCount(gem, pendingChanges, ignoreSlotIndex) >= MAX_HYDRAULIC_GEMS
-    return false if (gemType == "Meta" or gemType == "Cogwheel" or gemType == "Hydraulic") and gem.slot != gemType
-    return false if (gem.slot == "Meta" or gem.slot == "Cogwheel" or gem.slot == "Hydraulic") and gem.slot != gemType
-    true
-
-  addAchievementBonuses = (item) ->
-    item.sockets ||= []
-    if item.equip_location in ["mainhand","offhand"]
-      chapter2 = hasAchievement(CHAPTER_2_ACHIEVEMENTS)
-      last = item.sockets[item.sockets.length - 1]
-      if canUsePrismaticSocket(item) and last != "Prismatic" and chapter2
-        item.sockets.push "Prismatic"
-      else if last != "Prismatic" and last == "Hydraulic" and chapter2
-        item.sockets.push "Prismatic"
-      else if !chapter2 and last == "Prismatic"
-        item.sockets.pop()
-
-  hasAchievement = (achievements) ->
-    return false unless Shadowcraft.Data.achievements
-    for id in Shadowcraft.Data.achievements
-      if id in achievements
-        return true
-    return false
-
-  hasQuest = (quests) ->
-    return false unless Shadowcraft.Data.quests
-    for id in Shadowcraft.Data.quests
-      if id in quests
-        return true
-    return false
-
-  canUseLegendaryMetaGem = (item) ->
-    return false if not hasQuest(LEGENDARY_META_GEM_QUESTS)
-    # TODO identify ToT items with a better method
-    return false if item.ilvl < 502
-    if item.ilvl >= 502 and item.ilvl < 522
-      if item.name.indexOf("Tidesplitter Hood") >= 0
-        return true
-      else if item.tag == "Raid Finder"
-        return true
-      return false
     true
 
   canUsePrismaticSocket = (item) ->
     return false if item.equip_location not in ["mainhand","offhand"]
-    return false if not hasAchievement(CHAPTER_2_ACHIEVEMENTS)
-    last = item.sockets.length - 1
-    return true if last > -1 and item.sockets[last] == "Hydraulic"
-    return true if last > 0 and item.sockets[last] == "Prismatic" and item.sockets[last-1] == "Hydraulic"
     return false if item.ilvl < 502 or item.ilvl > 549
     return false if item.ilvl >= 528 and (item.tag.indexOf("Raid Finder") >= 0 or item.tag.indexOf("Flexible") >= 0)
     return false if item.original_id == 87012 or item.original_id == 87032 or item.tag.indexOf("Season") >= 0 or item.name.indexOf("Immaculate") >= 0
@@ -382,7 +311,6 @@ class ShadowcraftGear
       broke = false
       for gem in gem_list
         continue unless canUseGem gem, gemType, sGems, ignoreSlotIndex
-        continue if gem.id == ShadowcraftGear.LEGENDARY_META_GEM and not canUseLegendaryMetaGem(item)
         continue if gem.name.indexOf('Taladite') >= 0 and item? and item.quality == 7 and item.ilvl <= 620 # do not recommend wod gems to heirlooms
         continue if gem.name.indexOf('Taladite') >= 0 and item? and item.id == 102248 and item.ilvl <= 616 # do not recommend wod gems for legendary cloak
         straightGemEP += get_ep(gem, false, null, offset)
@@ -684,12 +612,12 @@ class ShadowcraftGear
         upgradable = null
         bonusable = null
         if item
-          addAchievementBonuses(item)
+          item.sockets ||= []
           enchantable = EnchantSlots[item.equip_location]? && getApplicableEnchants(i, item).length > 0
 
           bonus_keys = _.keys(Shadowcraft.ServerData.ITEM_BONUSES)
           bonuses_equipped = []
-          if item.sockets.length > 0
+          if item.sockets and item.sockets.length > 0
             for socketIndex in [item.sockets.length-1..0]
               last = item.sockets[socketIndex]
               if last == "Prismatic"
@@ -883,12 +811,6 @@ class ShadowcraftGear
     other =
       mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps
       offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps
-      t14_2pc: source.other_ep.rogue_t14_2pc || 0
-      t14_4pc: source.other_ep.rogue_t14_4pc || 0
-      t15_2pc: source.other_ep.rogue_t15_2pc || 0
-      t15_4pc: source.other_ep.rogue_t15_4pc || 0
-      t16_2pc: source.other_ep.rogue_t16_2pc || 0
-      t16_4pc: source.other_ep.rogue_t16_4pc || 0
       t17_2pc: source.other_ep.rogue_t17_2pc || 0
       t17_4pc: source.other_ep.rogue_t17_4pc || 0
       t17_4pc_lfr: source.other_ep.rogue_t17_4pc_lfr || 0
@@ -912,7 +834,7 @@ class ShadowcraftGear
         $.data(exist.get(0), "sortkey", 0)
         if key in ["mainhand_dps","offhand_dps"]
           $.data(exist.get(0), "sortkey", 1)
-        else if key in ["t14_2pc","t14_4pc","t15_2pc","t15_4pc","t16_2pc","t16_4pc","t17_2pc","t17_4pc","t17_4pc_lfr","t18_2pc","t18_4pc","t18_4pc_lfr"]
+        else if key in ["t17_2pc","t17_4pc","t17_4pc_lfr","t18_2pc","t18_4pc","t18_4pc_lfr"]
           $.data(exist.get(0), "sortkey", 2)
       $.data(exist.get(0), "weight", weight)
 
@@ -1078,7 +1000,8 @@ class ShadowcraftGear
       setBonEP[set_name] ||= 0
       setBonEP[set_name] += setBonusEP(set, setCount)
     for l in loc
-      addAchievementBonuses(l)
+      # TODO variable might not be necessary anymore
+      l.sockets ||= []
       l.__gemRec = getGemmingRecommendation(GemList, l, true, slot, gem_offset)
       l.__setBonusEP = 0
       for set_name, set of Sets
@@ -1552,9 +1475,7 @@ class ShadowcraftGear
                   else if data.gear[slot]["g" + i]?
                     gem = Gems[data.gear[slot]["g" + i]]
                     if gem
-                      if gem.id == ShadowcraftGear.LEGENDARY_META_GEM and not canUseLegendaryMetaGem(item)
-                        data.gear[slot]["g" + i] = null
-                      else if not canUseGem Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot
+                      if not canUseGem Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot
                         data.gear[slot]["g" + i] = null
               if item.bonus_trees
                 for bonusIndex in [0..9]
