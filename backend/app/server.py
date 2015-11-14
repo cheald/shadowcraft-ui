@@ -41,45 +41,6 @@ class ShadowcraftComputation:
 
     gearProcs = {
 
-        # 5.4
-        103686: 'discipline_of_xuen',
-        103986: 'discipline_of_xuen',
-
-        105029: 'haromms_talisman',
-        104780: 'haromms_talisman',
-        102301: 'haromms_talisman',
-        105278: 'haromms_talisman',
-        104531: 'haromms_talisman',
-        105527: 'haromms_talisman',
-
-        105082: 'sigil_of_rampage',
-        104833: 'sigil_of_rampage',
-        102302: 'sigil_of_rampage',
-        105331: 'sigil_of_rampage',
-        104584: 'sigil_of_rampage',
-        105580: 'sigil_of_rampage',
-
-        104974: 'assurance_of_consequence',
-        104725: 'assurance_of_consequence',
-        102292: 'assurance_of_consequence',
-        105223: 'assurance_of_consequence',
-        104476: 'assurance_of_consequence',
-        105472: 'assurance_of_consequence',
-
-        105114: 'ticking_ebon_detonator',
-        104865: 'ticking_ebon_detonator',
-        102311: 'ticking_ebon_detonator',
-        105363: 'ticking_ebon_detonator',
-        104616: 'ticking_ebon_detonator',
-        105612: 'ticking_ebon_detonator',
-
-        105111: 'thoks_tail_tip',
-        104862: 'thoks_tail_tip',
-        102305: 'thoks_tail_tip',
-        105360: 'thoks_tail_tip',
-        104613: 'thoks_tail_tip',
-        105609: 'thoks_tail_tip',
-
         # 6.0
         113931: 'beating_heart_of_the_mountain',
         118114: 'meaty_dragonspine_trophy',
@@ -458,7 +419,6 @@ class ShadowcraftComputation:
             # Glyph ranking is slow
             out["glyph_ranking"] = [] # calculator.get_glyphs_ranking(input.get("gly", []))
 
-            out["meta"] = calculator.get_other_ep(['chaotic_metagem'])
             out["other_ep"] = calculator.get_other_ep(['rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr','rogue_t17_2pc','rogue_t17_4pc','rogue_t17_4pc_lfr'])
 
             trinket_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
