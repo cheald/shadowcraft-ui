@@ -3,8 +3,6 @@ class Item
   include Mongoid::Timestamps
   include WowArmory::Constants
 
-  @item_bonus_map = nil
-
   field :remote_id, :type => Integer, :index => true
   field :bonus_tree, :type => Integer
   field :upgrade_level, :type => Integer
@@ -256,7 +254,7 @@ class Item
                         642, 644, 645, 646, 648, 651, 656, 692]
 
   # These are kept separate because we don't want to import all of them all at once.
-  # Just import them organically as each ilvl becomes available.t
+  # Just import them organically as each ilvl becomes available.
   LEGENDARY_RING_BONUS_IDS = (622..641).to_a
 
   # For some reason the crafted items don't come with the "stage" bonus IDs in their
@@ -280,10 +278,15 @@ class Item
         end
         return if copy == bonuses
       end
-      # if bonus is in blacklist filter out
       return if bonuses.nil?
+
+      # if the bonus isn't in the whitelist and isn't one of the legendary ring
+      # IDs, remove it so it doesn't get loaded.
       bonuses.delete_if { |bonus| !BONUS_ID_WHITELIST.include? bonus and !LEGENDARY_RING_BONUS_IDS.include? bonus }
+
+      # if we're left with no bonuses to load, give up
       return if bonuses.empty?
+      
       # make a special import with the given and possible missing bonus id data from armory
       puts "special import #{id} #{context} #{bonuses.inspect}"
       self.wod_special_import id, context, bonuses
@@ -293,8 +296,7 @@ class Item
     begin
       json_data = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {}, :json
     rescue WowArmory::MissingDocument => e
-      puts id
-      puts e.message
+      puts "wod_import failed initial fetch of #{id}: #{e.message}"
       return
     end
 
@@ -312,6 +314,7 @@ class Item
         else
           context_data = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id, context], {}, :json
         end
+
         context_data['bonusSummary']['defaultBonusLists'].clone.each do |defaultBonusListsId|
           context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) unless BONUS_ID_WHITELIST.include? defaultBonusListsId
         end
@@ -321,6 +324,11 @@ class Item
         if context == 'trade-skill'
           context_data['bonusSummary']['defaultBonusLists'] =
             context_data['bonusSummary']['defaultBonusLists'] + TRADESKILL_BONUS_IDS
+        end
+
+        if id = 124636
+          context_data['bonusSummary']['defaultBonusLists'] =
+            context_data['bonusSummary']['defaultBonusLists'] + LEGENDARY_RING_BONUS_IDS
         end
 
         if context_data['bonusSummary']['defaultBonusLists'].empty?
@@ -384,13 +392,13 @@ class Item
 
       begin
         url = '/wow/item/%d' % id
-        if context.length != 0
+        if context.length != 0 and context != 'quest-reward'
           url << '/%s/' % context
         end
         json_data = WowArmory::Document.fetch 'us', url, {}, :json
       rescue WowArmory::MissingDocument => e
-        puts id
-        puts e.message
+        puts "wod_special_import: initial fetch of #{id}: #{e.message}"
+        puts "url was #{url}"
         return
       end
 
@@ -406,6 +414,7 @@ class Item
           :bonus_trees => bonuses.sort,
           :item_level => json_data["itemLevel"]+5*upgrade_level
         }
+        
         db_item_with_bonus = Item.find_or_initialize_by options
         if db_item_with_bonus.properties.nil?
           begin
