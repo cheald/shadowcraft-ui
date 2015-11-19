@@ -86,6 +86,9 @@ class ShadowcraftComputation:
         124226: 'malicious_censer',
         124225: 'soul_capacitor',
         124224: 'mirror_of_the_blademaster',
+
+        # 6.2.3
+        133597: 'infallible_tracking_charm',
     }
   
     # Creates a group of warforged items based on the base ilvls passed in.  For each

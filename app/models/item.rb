@@ -28,7 +28,9 @@ class Item
   def update_from_armory_if_necessary
     return if remote_id == 0
     if self.properties.nil?
+      puts "Loading item #{remote_id} during validation"
       Rails.logger.debug "Loading item #{remote_id} during validation"
+      
       item = WowArmory::Item.new(remote_id, 'wowapi', item_name_override)
       puts item
       # return false if item.stats.empty?
@@ -155,6 +157,8 @@ class Item
     item_ids += [122601, 122602, 122603, 122604]
     # 6.2 alchemy trinkets
     item_ids += [128023, 128024]
+    # 6.2.3 heirloom trinket
+    item_ids += [133597]
 
     # legendary ring
     item_ids += [124636]
@@ -326,7 +330,7 @@ class Item
             context_data['bonusSummary']['defaultBonusLists'] + TRADESKILL_BONUS_IDS
         end
 
-        if id = 124636
+        if id == 124636
           context_data['bonusSummary']['defaultBonusLists'] =
             context_data['bonusSummary']['defaultBonusLists'] + LEGENDARY_RING_BONUS_IDS
         end
