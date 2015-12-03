@@ -222,7 +222,7 @@ module WowArmory
 
     def item_enchants
       @@item_enchants ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'SpellItemEnchantments.dbc.csv')) do |row|
+        CSV.foreach(File.join(File.dirname(__FILE__), 'data', 'SpellItemEnchantments.dbc.csv')) do |row|
           hash[row[0].to_s] = row
         end
       end
@@ -235,7 +235,7 @@ module WowArmory
       # id,upgrade_group,upgrade_ilevel,prev_id,id_currency_type,cost
       # We only care about the prev_id and id_currency_type ones
       @@item_upgrades ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'ItemUpgrade.dbc.csv')) do |row|
+        CSV.foreach(File.join(File.dirname(__FILE__), 'data', 'ItemUpgrade.dbc.csv')) do |row|
           row3 = row[3].to_i
           row4 = row[4].to_i
           if row3 != 0 and row4 != 0
@@ -250,7 +250,7 @@ module WowArmory
       # id,upgrade_level,id_upgrade_base,id_item
       # We only care about the last two of these.
       @@upgrade_rulesets ||= Hash.new.tap do |hash|
-        FasterCSV.foreach(File.join(File.dirname(__FILE__), 'data', 'RulesetItemUpgrade.dbc.csv')) do |row|
+        CSV.foreach(File.join(File.dirname(__FILE__), 'data', 'RulesetItemUpgrade.dbc.csv')) do |row|
           hash[row[3]] = row[2].to_i
         end
       end

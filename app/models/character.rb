@@ -45,10 +45,12 @@ class Character
         char = WowArmory::Character.new(name, realm, region)
       rescue WowArmory::ArmoryError => e
         # thrown if character has no items, or no data could be loaded
+        Rails.logger.error e.message
         errors.add :base, e.message
         return false
       rescue WowArmory::MissingDocument => e
         # character does not exist
+        Rails.logger.error e.message
         errors.add :base, 'Character not found in the Armory'
         return false
       end
