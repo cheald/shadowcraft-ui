@@ -3,7 +3,7 @@ $top-pane-height: 34px
 body
   font-size: 12px
   font-family: "lucida grande", "verdana"
-  color: #fff
+  color: white
   overflow: none
   position: fixed
   top: 0
@@ -18,6 +18,50 @@ section
 
 button
   margin: 2px 0
+
+=clearfix
+  overflow: hidden
+  *zoom: 1
+
+=transition($args...)
+  -webkit-transition: $args
+  -moz-transition: $args
+  -ms-transition: $args
+  -o-transition: $args
+  transition: $args
+
+=inline-block
+  display: -moz-inline-box
+  -moz-box-orient: vertical
+  display: inline-block
+  vertical-align: middle
+  *vertical-align: auto
+
+=linear-gradient($anchor, $colors...)
+  background-image: -moz-linear-gradient($anchor, $colors)
+  background-image: linear-gradient($anchor, $colors)
+
+=border-bottom-left-radius($radius)
+  -moz-border-radius-bottomleft: $radius
+  -webkit-border-bottom-left-radius: $radius
+  -o-border-bottom-left-radius: $radius
+  -ms-border-bottom-left-radius: $radius
+  -khtml-border-bottom-left-radius: $radius
+  border-bottom-left-radius: $radius
+
+=border-bottom-right-radius($radius)
+  -moz-border-radius-bottomright: $radius
+  -webkit-border-bottom-right-radius: $radius
+  -o-border-bottom-right-radius: $radius
+  -ms-border-bottom-right-radius: $radius
+  -khtml-border-bottom-right-radius: $radius
+  border-bottom-right-radius: $radius
+
+=box-shadow($color, $top, $left, $blur, $spread)
+  -moz-box-shadow: $color $top $left $blur $spread
+  -webkit-box-shadow: $color $top $left $blur $spread
+  -o-box-shadow: $color $top $left $blur $spread
+  box-shadow: $color $top $left $blur $spread
 
 .clearfix
   +clearfix
@@ -34,14 +78,13 @@ button
     background: rgba(0, 0, 0, 0.4)
     padding: 30px
     +border-radius(15px)
-    // +box-shadow(rgba(90, 30, 30, 0.1), 0px, 0px, 125px)
     span
       display: inline-block
       margin-right: 10px
       label
         font-size: 2em
         margin-bottom: 10px
-        color: #ccc
+        color: #cccccc
       .regions
         white-space: nowrap
         label
@@ -72,7 +115,7 @@ button
         white-space: nowrap
       em
         font-size: 0.85em
-        color: #444
+        color: #444444
   background: rgba(0, 0, 0, 0.4)
   padding: 30px
   +border-radius(15px)
@@ -84,7 +127,7 @@ button
 
 .requires-js
   font-size: 1.2em
-  color: #f00
+  color: red
 
 html.js
   .requires-js
@@ -95,7 +138,7 @@ html.websockets, html.history, html.canvas
     display: none
 
 #notfound, #errorpage
-  background: #111 url(../../images/404.jpg) center center no-repeat
+  background: #111111 url(/images/404.jpg) center center no-repeat
   position: absolute
   left: 0
   right: 0
@@ -105,7 +148,7 @@ html.websockets, html.history, html.canvas
     display: none
 
 #errorpage
-  background-image: url(../../images/500.jpg)
+  background-image: url(/images/500.jpg)
 
 #container
   background: #0a0a0a
@@ -116,7 +159,7 @@ html.websockets, html.history, html.canvas
   top: 0
 
   &.characters-new, &.characters-create, &.characters-refresh
-    background: #050505 url(../../images/splash-l.jpg) bottom left no-repeat
+    background: #050505 url(/images/splash-l.jpg) bottom left no-repeat
 
 #tabs > div.ui-tabs-panel
   overflow-y: auto
@@ -126,7 +169,7 @@ html.websockets, html.history, html.canvas
   bottom: 34px
   right: 370px
   left: 0
-  border: 1px solid #333
+  border: 1px solid #333333
 
 #footer
   position: absolute
@@ -137,18 +180,17 @@ html.websockets, html.history, html.canvas
   padding: 10px
   vertical-align: middle
   background: #050505
-  color: #555
-  +transition(background, 0.25s)
+  color: #555555
+  +transition(background 0.25s)
   &:hover
     background-color: #050a0f
   a
-    color: #888
+    color: #888888
     font-weight: bold
 
 
 .panel-tools
   width: 180px
-  // background: #111 url(../../images/hatch.png)
   border-right: 1px solid #1a1a1a
   float: left
   section
@@ -193,7 +235,7 @@ html.websockets, html.history, html.canvas
       padding-right: 10px
       width: 105px
       text-align: right
-      color: #aaa
+      color: #aaaaaa
     span.val
       font-weight: bold
       width: 60px
@@ -208,7 +250,6 @@ html.websockets, html.history, html.canvas
       width: 100px
 
 .panel-content
-  // display: inline-block
   padding-left: 180px
 
 #gear .panel-content
@@ -226,7 +267,7 @@ html.websockets, html.history, html.canvas
   bottom: 0
   right: 0
   left: 0
-  background: rgba(0, 0, 0, 0.7) url(../../images/wait.gif) center center no-repeat
+  background: rgba(0, 0, 0, 0.7) url(/images/wait.gif) center center no-repeat
   z-index: 1000
   #waitMsg
     position: absolute
@@ -234,20 +275,18 @@ html.websockets, html.history, html.canvas
     left: 0
     right: 0
     font-size: 2em
-    color: #fff
+    color: white
     font-weight: bold
     text-align: center
 
 .with-tools
-  background-image: url(../../images/panel-left.png) !important
+  background-image: url(/images/panel-left.png) !important
   background-repeat: repeat-y !important
   background-position: top left
 
 .dropdownMenu
-  // background: #262626
-  +linear-gradient(color-stops(#262626, #1a1a1a), top)
-
-  border: 1px solid #444
+  +linear-gradient(top, #262626, #1a1a1a)
+  border: 1px solid #444444
   position: absolute
   z-index: 101
   font-size: 0.85em
@@ -255,10 +294,10 @@ html.websockets, html.history, html.canvas
     display: block
     font-weight: bold
     padding: 5px 10px
-    +transition(color, 0.2s)
+    +transition(color 0.2s)
     &:hover
-      +linear-gradient(color-stops(#111, #050505), top)
-      color: #fff
+      +linear-gradient(top, #111111, #050505)
+      color: white
 
 #tabs
   position: absolute
@@ -274,7 +313,7 @@ html.websockets, html.history, html.canvas
     display: block
     padding: 3px 3px 2px
     +border-radius(3px)
-    +linear-gradient(color-stops(#222222, #323232, #4b4b4b), bottom)
+    +linear-gradient(bottom, #222222, #323232, #4b4b4b)
     border: 1px solid #444444
     left: 380px
     &.active
@@ -290,7 +329,7 @@ html.websockets, html.history, html.canvas
       position: absolute
       width: 319px
       height: 30px
-      background: url(../../images/logo3s.jpg) bottom right no-repeat
+      background: url(/images/logo3s.jpg) bottom right no-repeat
     .social
       right: 240px
       top: 7px
@@ -316,21 +355,20 @@ html.websockets, html.history, html.canvas
         padding-bottom: 1px
         margin-bottom: -1px
         a
-          text-shadow: #111 1px 1px 0px
+          text-shadow: #111111 1px 1px 0px
       a
         outline: none
         text-shadow: #050505 -1px -1px 0px
 
   #console-footer
-    // background: rgba(0,0,0,0.8)
-    overflow: none
+    overflow: hidden
     position: absolute
     bottom: 34px
     top: $top-pane-height
     right: 0px
     width: 370px
-    border-top: 1px solid #333
-    border-bottom: 1px solid #333
+    border-top: 1px solid #333333
+    border-bottom: 1px solid #333333
 
     .ad
       position: absolute
@@ -362,7 +400,7 @@ html.websockets, html.history, html.canvas
       text-align: center
       margin: 5px
       border: 1px solid #1a1a1a
-      background: #111 url(../../images/hatch.png)
+      background: #111111 url(/images/hatch.png)
       padding: 5px
       font-weight: bold
       position: relative
@@ -373,17 +411,17 @@ html.websockets, html.history, html.canvas
         vertical-align: middle
         font-size: 0.7em
         &.p
-          color: #0a0
+          color: #00aa00
         &.n
-          color: #a00
+          color: #aa0000
     #dpsgraph
       height: 120px
       margin: 0 8px 0 10px
 
 span.pos
-  color: #0a0
+  color: #00aa00
 span.neg
-  color: #a00
+  color: #aa0000
 
 h1#head
   +border-radius(10px)
@@ -393,8 +431,8 @@ h1#head
     display: block
 
 #card
-  background: #111 url(../../images/hatch.png)
-  +transition(background, 0.2s)
+  background: #111111 url(/images/hatch.png)
+  +transition(background 0.2s)
   &:hover
     background-color: #0972A5
   border-bottom: 1px solid #1a1a1a
@@ -406,7 +444,7 @@ h1#head
   text-shadow: #050505 3px 3px 3px
   .img
     width: 130px
-    border: 1px solid #555
+    border: 1px solid #555555
     height: 70px
     overflow: hidden
     float: left
@@ -443,11 +481,11 @@ h1
   margin: 0.5em 0
   font-size: 2.5em
   font-weight: bold
-  color: #777
+  color: #777777
   .info
     font-size: 0.35em
     font-weight: normal
-    color: #333
+    color: #333333
 a
   color: #3aaaf9
 
@@ -457,19 +495,19 @@ a
 input[type='text'] //, input[type='search']
   background-color: rgba(80, 80, 80, 0.2)
   border: 0px
-  color: #999
+  color: #999999
   padding: 3px 6px
   +border-radius(3px)
-  +transition(all, 0.25s)
+  +transition(all 0.25s)
   &:focus
     outline: none
     background-color: rgba(192, 192, 212, 0.5)
-    color: #111
+    color: #111111
 
 .window
   .inner
     padding: 1em
-  border: 1px solid #333
+  border: 1px solid #333333
   border-width: 0 0 1px
   font-size: 0.9em
   &:first-child
@@ -477,7 +515,7 @@ input[type='text'] //, input[type='search']
   h3
     cursor: pointer
     background: rgba(0, 0, 0, 0.2)
-    border-bottom: 1px solid #111
+    border-bottom: 1px solid #111111
     padding: 4px 10px
     font-weight: bold
     margin: 0 0 0.5em
@@ -491,17 +529,16 @@ input[type='text'] //, input[type='search']
   border: 1px solid rgba(80, 80, 80, 0.3)
   border-width: 1px
   margin: 10px
-  +box-shadow(rgba(0, 0, 0, 0.3), 3px, 3px, 3px)
+  +box-shadow(rgba(0, 0, 0, 0.3), 3px, 3px, 3px, 0)
   font-size: 0.8em
   h3
     cursor: pointer
     background: rgba(0, 0, 0, 0.2)
-    border-bottom: 1px solid #111
+    border-bottom: 1px solid #111111
     padding: 4px 10px
     font-size: 1.3em
     font-weight: bold
     margin: 0 0 0.5em
-
 
 .flash
   position: fixed
@@ -510,7 +547,6 @@ input[type='text'] //, input[type='search']
   max-width: 600px
   border: 2px solid rgba(255, 255, 255, 0.2)
   cursor: pointer
-  // +box-shadow(#111, 0px, 0px, 7px, 4px)
   +border-radius(10px)
   background: rgba(0, 20, 40, 0.9)
   font-size: 1.5em
@@ -519,9 +555,9 @@ input[type='text'] //, input[type='search']
 
 #header
   padding: 10px 0px 10px 25px
-  text-shadow: #000 -1px -1px 1px
-  border-bottom: 1px solid #111
-  color: #333
+  text-shadow: black -1px -1px 1px
+  border-bottom: 1px solid #111111
+  color: #333333
   font-size: 2.25em
   background: #1a1a1a
   margin-bottom: 20px
@@ -529,7 +565,7 @@ input[type='text'] //, input[type='search']
 
 .ui-selectmenu-menu
   background: #050505
-  border-color: #222
+  border-color: #222222
   min-width: 150px
   font-size: 0.8em
 
@@ -540,13 +576,13 @@ a
 
 a.wowhead
   opacity: 0.2
-  background: url(../../images/wowhead.png) center center no-repeat
+  background: url(/images/wowhead.png) center center no-repeat
   text-indent: -9999px
   display: block
   width: 16px
   height: 16px
   float: right
-  +transition(opacity, 0.1s)
+  +transition(opacity 0.1s)
   &:hover
     opacity: 1.0
 
@@ -567,7 +603,7 @@ img.upgrade
     line-height: 2em
     padding-left: 30px
     margin-right: 20px
-    background: url(../../images/controls.png) top left no-repeat
+    background: url(/images/controls.png) top left no-repeat
     -webkit-user-select: none
     -moz-user-select: none
 
@@ -582,7 +618,7 @@ img.upgrade
     background-position: left -418px !important
 
   .c_on, .r_on
-    color: #fff !important
+    color: white !important
 
   .label_check input, .label_radio input
     position: absolute
@@ -603,13 +639,13 @@ img.upgrade
       background: #0c0c0c
       padding: 1em
       margin-bottom: 1em
-      border: 1px solid #222
-      +border-radius
+      border: 1px solid #222222
+      +border-radius(5px)
 
     select
-      background: #222
-      color: #fff
-      border-color: #000
+      background: #222222
+      color: white
+      border-color: black
       padding: 5px
       option
         padding: 2px 0
@@ -621,7 +657,7 @@ img.upgrade
       min-height: 22px
       font-weight: bold
       font-size: 0.9em
-      +border-radius
+      +border-radius(5px)
       &:hover
         background-color: rgba(0, 0, 0, 0.4)
 
@@ -642,7 +678,7 @@ img.upgrade
         clear: left
         margin-top: 0.25em
         font-size: 0.8em
-        color: #666
+        color: #666666
         font-weight: normal
         margin-left: 170px
     .label_check
@@ -651,7 +687,7 @@ img.upgrade
         font-weight: normal
         display: block
         font-size: 0.9em
-        color: #777
+        color: #777777
         margin-top: -0.5em
 
   #bonuses
@@ -671,7 +707,7 @@ img.upgrade
 .pct
   +inline-block
   height: 13px
-  border: 1px solid #333
+  border: 1px solid #333333
   width: 350px
   position: relative
   height: 13px
@@ -695,15 +731,13 @@ img.upgrade
     z-index: 10
     left: 0px
     width: 77%
-    // +linear-gradient(color-stops(#222, #666), left)
-    background: #666
+    background: #666666
 
 .popup
   min-width: 500px
   position: absolute
   top: 60px
   +box-shadow(rgba(0,0,0,0.3), 0px, 0px, 5px, 5px)
-  // background: rgba(100, 100, 100, 0.1)
   background: rgba(20, 20, 20, 0.95)
   visibility: hidden
   z-index: 1000
@@ -714,10 +748,10 @@ img.upgrade
   h1
     margin: -1em -1em 1em
     font-size: 1em
-    color: #fff
+    color: white
     background: rgba(0, 0, 0, 0.3)
     padding: 0.5em 1em
-    border-bottom: 1px solid #333
+    border-bottom: 1px solid #333333
   .body
     overflow-y: auto
     overflow-x: hidden
@@ -739,11 +773,11 @@ img.upgrade
       left: 5px
       right: 25px
       top: 5px
-      background: #333
-      color: #aaa
+      background: #333333
+      color: #aaaaaa
 
 .ui-button-text
-  text-shadow: #111 -1px -1px 0px
+  text-shadow: #111111 -1px -1px 0px
 #reforge
   padding: 1em
   fieldset
@@ -756,10 +790,10 @@ img.upgrade
   .recommended
     margin-bottom: 0.5em
     .oldstat
-      color: #d00
+      color: #dd0000
       font-weight: bold
     .newstat
-      color: #0d0
+      color: #00dd00
       font-weight: bold
   .newstats
     .stat
@@ -770,9 +804,9 @@ img.upgrade
     width: 200px
   .pct-inner
     left: 100px
-    +linear-gradient(color-stops(#2F2, #080), left)
+    +linear-gradient(left, #22FF22, #008800)
     &.reverse
-      +linear-gradient(color-stops(#800, #F22), left)
+      +linear-gradient(left, #880000, #FF2222)
       right: 100px
       left: auto
 
@@ -824,7 +858,7 @@ img.upgrade
   .gold
     color: #ffdc89
   .underline
-    border-bottom: 1px dotted #333
+    border-bottom: 1px dotted #333333
 
 #console
   color: #ccc
@@ -833,7 +867,7 @@ img.upgrade
     .sub
       margin: 2px
       font-size: 0.9em
-      color: #666
+      color: #666666
     padding: 8px 0 8px 24px
     margin-bottom: 0.5em 0
     border-top: 1px solid #1c1c1c
@@ -842,28 +876,28 @@ img.upgrade
       border-top: 0
     &:last-child
       border-bottom: 0
-    background: url(../../images/log.png) 5px 10px no-repeat
+    background: url(/images/log.png) 5px 10px no-repeat
     &.warning
-      background-image: url(../../images/alert.png)
+      background-image: url(/images/alert.png)
     &.error
-      background-image: url(../../images/delete.png)
+      background-image: url(/images/delete.png)
 
 #tooltip
   max-width: 300px
   background: rgba(0, 0, 0, 0.85)
   padding: 1em
   position: absolute
-  +box-shadow(#111, 0px, 0px, 16px, 3px)
-  border: 1px solid #666
+  +box-shadow(#111111, 0px, 0px, 16px, 3px)
+  border: 1px solid #666666
   line-height: 1.6
-  border-top-color: #aaa
-  border-left-color: #aaa
+  border-top-color: #aaaaaa
+  border-left-color: #aaaaaa
   +border-radius(5px)
   font-size: 0.9em
   .title
     font-size: 1.1em
     font-weight: bold
-    color: #fff
+    color: white
     margin-bottom: 0.3em
   .desc
     p
@@ -876,10 +910,10 @@ img.upgrade
       margin: 0
   &.clean
     border: 0
-    +box-shadow(#000, 0px, 0px, 3px, 3px)
+    +box-shadow(black, 0px, 0px, 3px, 3px)
     background: rgba(0, 0, 0, 0.75)
     .title
-      color: #edc
+      color: #eeddcc
 
 #talents
   .panel-content
@@ -890,7 +924,7 @@ img.upgrade
     font-size: 2em
     text-align: left
     margin-bottom: 10px
-    border: 1px solid #333
+    border: 1px solid #333333
     background: #050505
     padding: 5px
     font-weight: bold
@@ -907,11 +941,11 @@ img.upgrade
       top: 3px
       border: 1px solid #434445
       +border-radius(3px)
-      box-shadow: 0 0 4px 0 #000000
+      box-shadow: 0 0 4px 0 black
 
   #talentframe
     padding: 3px
-    border: 1px solid #333
+    border: 1px solid #333333
     background: #050505
     +inline-block
   .tiers
@@ -924,7 +958,7 @@ img.upgrade
         top: (70px * $i) + 10px
         left: 10px
     .level
-      border: 1px solid #333
+      border: 1px solid #333333
       background-color: rgba(0,0,0, 0.4)
       background-position: center center
       position: relative
@@ -956,8 +990,8 @@ img.upgrade
 
     .talent
       cursor: pointer
-      border: 1px solid #333
-      box-shadow: 0 0 4px 0 #000000
+      border: 1px solid #333333
+      box-shadow: 0 0 4px 0 black
       background-color: rgba(0,0,0, 0.4)
       background-position: center center
       position: relative
@@ -973,9 +1007,9 @@ img.upgrade
         display: none
       &.active
         opacity: 1
-        border-color: #fd0
+        border-color: #ffdd00
       &:hover
-        border-color: #0f0
+        border-color: lime
       +border-radius(3px)
       width: 56px
       height: 56px
@@ -987,16 +1021,16 @@ img.upgrade
         bottom: -6px
         right: -11px
         padding: 2px 4px
-        border: 1px solid #aaa
+        border: 1px solid #aaaaaa
         +border-radius(3px)
         background: rgba(0, 0, 0, 0.8)
-        color: #fff
+        color: white
         &.partial
-          color: #0f0
-          border-color: #0f0
+          color: lime
+          border-color: lime
         &.full
-          color: #fd0
-          border-color: #fd0
+          color: #ffdd00
+          border-color: #ffdd00
         
 #talentrankings, #upgraderankings, #dpsbreakdown
   .pct
@@ -1005,7 +1039,7 @@ img.upgrade
     .label
       margin-top: -3px
   .pct-inner
-    +transition(width, 1s)
+    +transition(width 1s)
   .talent_contribution
     margin-bottom: 14px
     font-weight: bold
@@ -1017,13 +1051,10 @@ img.upgrade
 
   .glyphset
     float: left
-    // background: rgba(0, 0, 0, 0.3)
-    // padding: 10px
-    //border: 1px solid #333
     margin-right: 10px
     &.full
       .glyph_slot
-        color: #444
+        color: #444444
         &:hover
           background: transparent
     h2
@@ -1031,8 +1062,8 @@ img.upgrade
       margin-bottom: 1em
     .glyph_slot
       background: rgba(0, 0, 0, 0.1)
-      border: 1px solid #333
-      border-top-color: #333
+      border: 1px solid #333333
+      border-top-color: #333333
       border-bottom-color: #050505
       border-right-color: #050505
       padding: 5px
@@ -1049,7 +1080,7 @@ img.upgrade
         background: rgba(0, 120, 180, 0.2)
       &.activated
         background: darken(#0972a5, 10%) !important
-        color: #fff
+        color: white
         border-color: lighten(#0972a5, 10%)
         text-shadow: darken(#0972a5, 25%) 1px 1px
         img
@@ -1058,10 +1089,9 @@ img.upgrade
           border-color: lighten(#0972a5, 10%)
         .pct-inner
           background-color: lighten(#0972a5, 10%)
-          +transition(width, 1s)
+          +transition(width 1s)
       .pct
         width: 160px
-        // background: #050505
         height: 8px
       .label
         top: 0
@@ -1069,8 +1099,7 @@ img.upgrade
         padding-left: 4px
         font-size: 0.8em
       img
-        // vertical-align: middle
-        border: 1px solid #333
+        border: 1px solid #333333
         margin-right: 10px
         width: 24px
         float: left
@@ -1081,9 +1110,7 @@ img.upgrade
     padding: 2em
 
   .ui-tabs-panel
-    // background: rgba(0, 0, 0, 0.6)
-    // background: #0d0d0d
-    border: 1px solid #333
+    border: 1px solid #333333
     label
       white-space: nowrap
       vertical-align: middle
@@ -1092,9 +1119,9 @@ img.upgrade
       padding-top: 4px
       padding-bottom: 4px
       cursor: pointer
-      color: #777
+      color: #777777
       &:hover
-        color: #fff
+        color: white
 
 .slots
   width: 49%
@@ -1110,24 +1137,23 @@ img.upgrade
       left: 13px
 
   .gems .gem, .enchant, .reforge, .bonuses, .name
-    background: #0e0e0e url(../../images/texture.png)
+    background: #0e0e0e url(/images/texture.png)
     margin-bottom: 2px
     +border-radius(2px)
     padding: 5px
     font-size: 0.9em
     min-height: 14px
-    +transition(background, 0.2s)
+    +transition(background 0.2s)
     &:hover, &.active
       background-color: rgba(0,128,255,0.15)
     .img
-      background: url(../../images/empty.png)
+      background: url(/images/empty.png)
       width: 13px
       height: 13px
       margin-right: 12px
       overflow: hidden
       position: relative
-      border: 1px solid #333
-      // +box-shadow(#000)
+      border: 1px solid #333333
       img
         width: 17px
         margin-left: -2px
@@ -1143,7 +1169,7 @@ img.upgrade
         width: 24px
 
   .bonus
-    color: #0f0
+    color: lime
     margin-bottom: 4px
     font-size: 0.9em
     padding: 4px 4px 4px 35px
@@ -1152,14 +1178,14 @@ img.upgrade
       vertical-align: middle
       margin-right: 5px
     .oldstat
-      color: #e00
+      color: #ee0000
       padding-right: 1em
     .newstat
-      color: #0e0
+      color: #00ee00
       padding-right: 1em
 
   .enchant
-    color: #0f0
+    color: lime
     font-size: 0.9em
 
 .slot
@@ -1169,7 +1195,7 @@ img.upgrade
   margin: 10px
   margin-left: 66px
   +border-radius(3px)
-  +transition(background, 0.2s)
+  +transition(background 0.2s)
   background: #0a0a0a
   &:hover
     background-color: #1f232a
@@ -1196,34 +1222,34 @@ img.upgrade
         background: rgba( 0, $full, 0, $opac )
 
   .image
-    background: url(../../images/empty.png)
+    background: url(/images/empty.png)
     position: absolute
     top: 2px
     left: -60px
     width: 48px
     height: 48px
     overflow: hidden
-    border: 1px solid #333
-    +box-shadow(#000)
+    border: 1px solid #333333
+    +box-shadow(black, 1px, 1px, 5px, 0px)
     +border-radius(3px)
     img
       width: 48px
     .ilvl
       font-size: 0.7em
-      color: #fff
+      color: white
       position: absolute
       bottom: 1px
       right: 1px
       background: rgba(0, 0, 0, 0.85)
       padding: 1px 2px
-      color: #0f0
+      color: lime
       +border-radius(2px)
   .lock
     opacity: 0.3
     position: absolute
     top: 55px
     left: -24px
-    +transition(hover, 0.1s)
+    +transition(hover 0.1s)
     &.lock_on
       opacity: 1.0
     &:hover
@@ -1232,29 +1258,28 @@ img.upgrade
   .name
     font-weight: bold
     font-size: 1.07em
-    text-shadow: #000 -1px -1px
+    text-shadow: black -1px -1px
     .aep
-      color: #fff
+      color: white
       font:
         weight: normal
         size: 0.7em
         style: normal
     .heroic
-      color: #0f0
+      color: lime
       padding: 0 0em
       font:
-        //style: italic
         weight: normal
         size: 0.7em
   .desc
     display: block
     font-size: 0.8em
-    color: #aaa
+    color: #aaaaaa
     padding: 2px 0
 
 .alternatives
   padding-top: 40px
-  border: 1px solid #222 !important
+  border: 1px solid #222222 !important
   .slot
     margin: 5px 15px 5px 50px
     min-height: 46px
@@ -1264,7 +1289,7 @@ img.upgrade
     &:hover
       background: rgba(30, 35, 40, 0.9)
     &.active, .active
-      background: lighten(#031e33, 7%) // +linear-gradient(color-stops(#031e33, lighten(#031e33, 12%)))
+      background: lighten(#031e33, 7%)
       .pct
         border-color: lighten(#031e33, 35%)
       .pct-inner
@@ -1283,8 +1308,6 @@ img.upgrade
         margin-left: -2px
         margin-top: -2px
         width: 40px
-      //.ilvl
-      //  display: none
 
 .quality-2
   color: lighten(#00A900, 10%)
@@ -1309,16 +1332,16 @@ img.upgrade
     font-family: 'liberation mono', 'courier new', monospace
     font-size: 0.8em
     padding: 1em
-    border: 1px solid #333
-    background: #111
-    color: #aaa
+    border: 1px solid #333333
+    background: #111111
+    color: #aaaaaa
     width: 80%
     height: 100px
 
 @media screen and (max-width: 1281px)
   #container
     &.characters-new, &.characters-create, &.characters-refresh
-      background: #050505 url(../../images/splash-s.jpg) bottom left no-repeat
+      background: #050505 url(/images/splash-s.jpg) bottom left no-repeat
 
   #create_character
     bottom: 200px
@@ -1346,10 +1369,10 @@ img.upgrade
 .ui-dialog
   background: rgba(10, 15, 20, 0.9)
   border: 2px solid #065175
-  +border-radius
+  +border-radius(5px)
 
 .ui-widget-content.ui-dialog-buttonpane
-  border-color: #222
+  border-color: #222222
 
 #saveSnapshot
   label

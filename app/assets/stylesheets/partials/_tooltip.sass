@@ -1,3 +1,11 @@
+=border-radius($radius)
+  -moz-border-radius:    $radius
+  -webkit-border-radius: $radius
+  -o-border-radius:      $radius
+  -ms-border-radius:     $radius
+  -khtml-border-radius:  $radius
+  border-radius:         $radius
+
 .ea-tooltip
   position: absolute
   visibility: hidden
@@ -5,16 +13,15 @@
   background-color: rgba(10, 10, 10, 0.8)
   max-width: 370px
   div.border		
-    border-top: 1px solid #ccc
-    border-right: 1px solid #777
-    border-bottom: 1px solid #777
-    border-left: 1px solid #ccc
+    border-top: 1px solid #cccccc
+    border-right: 1px solid #777777
+    border-bottom: 1px solid #777777
+    border-left: 1px solid #cccccc
     +border-radius(5px)
-    -moz-border-radius: 0.55ex
     -moz-box-shadow: black 1px 1px 5px
     -webkit-box-shadow: black 1px 1px 5px
     -webkit-border-radius: 0.55ex
-    color: #fff
+    color: white
     text-align: left
     z-index: 65000
     margin: 0
@@ -146,7 +153,7 @@ a span
 .q0, .q0 a
   color: #9d9d9d !important
 .q1, .q1 a
-  color: #fff !important
+  color: white !important
 .q2, .q2 a
   color: #1eff00 !important
 .q3, .q3 a
@@ -164,15 +171,15 @@ a span
 .q9, .q9 a
   color: #71d5ff !important
 .q10, .q10 a
-  color: #f00 !important
+  color: red !important
 .r1
   color: #FF8040 !important
 .r2
-  color: #FF0 !important
+  color: yellow !important
 .r3
   color: #40BF40 !important
 .r4
-  color: #808080 !important
+  color: gray !important
 .c1, .c1 a
   color: #C69B6D !important
 .c2, .c2 a
@@ -182,7 +189,7 @@ a span
 .c4, .c4 a
   color: #FFF468 !important
 .c5, .c5 a
-  color: #FFF !important
+  color: white !important
 .c6, .c6 a
   color: #C41E3B !important
 .c7, .c7 a
@@ -208,7 +215,7 @@ a span
 .gem12
   color: #22c516 !important
 .gem14
-  color: #FFF !important
+  color: white !important
 
 .socket-meta
   padding-left: 26px

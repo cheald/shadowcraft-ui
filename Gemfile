@@ -17,6 +17,7 @@ gem "curb", '0.8.8'
 gem 'ruby-hmac', :require => 'hmac-sha1'
 gem 'sass-rails'
 gem 'test-unit', '~> 3.0'
+gem 'uglifier'
 
 group :development do
   gem "coffee-script"
