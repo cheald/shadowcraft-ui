@@ -163,7 +163,7 @@ class ShadowcraftHistory
   decompress = (data) ->
     version = data[0].toString()
     unless decompress_handlers[version]?
-      throw "Data version mismatch"
+      throw new Error("Data version mismatch")
 
     decompress_handlers[version](data)
 
@@ -184,7 +184,7 @@ class ShadowcraftHistory
   unmap = (value, m) ->
     m[value]
 
-  compress_handlers =  
+  compress_handlers =
     "1": (data) ->
       ret = [DATA_VERSION]
 
@@ -302,7 +302,7 @@ class ShadowcraftHistory
       talentSets = data[6]
       for id, index in talentSets by 3
         set = (index / 3).toString()
-        d.talents[set] = 
+        d.talents[set] =
           spec: talentSets[index]
           talents: talentSets[index + 1]
           glyphs: base36Decode(talentSets[index + 2])

@@ -106,7 +106,6 @@ class ShadowcraftGear
       weight = getStatWeight(stat, value, ignore) || 0
       total += weight
 
-    delete stats
     c = Shadowcraft.lastCalculation
     if c and key != "socketbonus"
       if item.dps
@@ -164,12 +163,12 @@ class ShadowcraftGear
     if (facets & FACETS.GEMS) == FACETS.GEMS
       matchesAllSockets = item.sockets and item.sockets.length > 0
       for socketIndex, socket of item.sockets
-          gid = gear["g" + socketIndex]
-          if gid and gid > 0
-            gem = Gems[gid]
-            sumItem(out, gem) if(gem)
-          matchesAllSockets = false if !gem or !gem[socket]
-      
+        gid = gear["g" + socketIndex]
+        if gid and gid > 0
+          gem = Gems[gid]
+          sumItem(out, gem) if(gem)
+        matchesAllSockets = false if !gem or !gem[socket]
+
       if matchesAllSockets
         sumItem(out, item, "socketbonus")
 
@@ -218,10 +217,10 @@ class ShadowcraftGear
 
   needsDagger = ->
     Shadowcraft.Data.activeSpec == "a"
-  
+
   setBonusEP = (set, count) ->
     return 0 unless c = Shadowcraft.lastCalculation
-  
+
     total = 0
     for p, bonus_name of set.bonuses
       if count == (p-1)
@@ -288,7 +287,7 @@ class ShadowcraftGear
     return false if item.original_id == 87012 or item.original_id == 87032 or item.tag.indexOf("Season") >= 0 or item.name.indexOf("Immaculate") >= 0
     return true
 
-  # Check if the gems have equal stats to pretend that optimize gems 
+  # Check if the gems have equal stats to pretend that optimize gems
   # not change gems to stat equal gems
   equalGemStats = (from_gem,to_gem) ->
     for stat of from_gem["stats"]
@@ -584,7 +583,6 @@ class ShadowcraftGear
             item.stats[bonus_entry.val1] = value
           else
             item.stats[bonus_entry.val1] -= value
-          delete item.stats[bonus_entry.val1] if item.stats[bonus_entry.val1] == 0
 
   ###
   # View helpers
@@ -626,7 +624,7 @@ class ShadowcraftGear
             continue unless gear["b" + bonusIndex]?
             bonuses_equipped.push gear["b" + bonusIndex]
             if _.contains(bonus_keys, gear["b" + bonusIndex]+"")
-                applyBonusToItem(item, gear["b" + bonusIndex], i) # here happens all the magic
+              applyBonusToItem(item, gear["b" + bonusIndex], i) # here happens all the magic
           if item.chance_bonus_lists?
             for bonusId in item.chance_bonus_lists
               continue if not bonusId?
@@ -646,7 +644,7 @@ class ShadowcraftGear
             continue if socket == "Prismatic" # prismatic sockets don't contribute to socket bonus
             if !gem or !gem[socket]
               allSlotsMatch = false
-          
+
           if allSlotsMatch
             bonuses = []
             for stat, amt of item.socketbonus
@@ -659,7 +657,7 @@ class ShadowcraftGear
             curr_level = "0"
             curr_level = gear.upgrade_level if gear.upgrade_level?
             max_level = getMaxUpgradeLevel(item)
-            upgrade = 
+            upgrade =
               curr_level: curr_level
               max_level: max_level
         if enchant and enchant.desc == ""
@@ -904,7 +902,7 @@ class ShadowcraftGear
       ad = $.data(a, "val")
       bd = $.data(b, "val")
       if ad > bd then -1 else 1
-    
+
 
   # Standard setup for the popup
   clickSlot = (slot, prop) ->
@@ -1032,7 +1030,7 @@ class ShadowcraftGear
         curr_level = "0"
         curr_level = l.upgrade_level if l.upgrade_level?
         max_level = getMaxUpgradeLevel(l)
-        upgrade = 
+        upgrade =
           curr_level: curr_level
           max_level: max_level
       buffer += Templates.itemSlot(
@@ -1172,7 +1170,7 @@ class ShadowcraftGear
         search: escape(gem.name + " " + statsToDesc(gem) + " " + gem.slot)
         percent: gEP / max * 100
         desc: desc
-    
+
     buffer += Templates.itemSlot(
       item: {name: "[No gem]"}
       desc: "Clear this gem"

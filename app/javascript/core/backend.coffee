@@ -45,7 +45,7 @@ class ShadowcraftBackend
         buffList.push ShadowcraftOptions.buffMap.indexOf(key)
 
     buffFood = ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff)
-    
+
     talentArray = data.activeTalents.split ""
     for val, key in talentArray
       talentArray[key] = switch val
@@ -57,7 +57,7 @@ class ShadowcraftBackend
     specName = {a: 'assassination', Z: 'combat', b: 'subtlety'}[data.activeSpec]
     data.options.rotation['opener_name'] = data.options.rotation["opener_name_#{specName}"]
     data.options.rotation['opener_use'] = data.options.rotation["opener_use_#{specName}"]
-    
+
     payload =
       r: data.options.general.race
       l: data.options.general.level
@@ -154,7 +154,7 @@ class ShadowcraftBackend
       @ws.send "m", payload
 
   recompute_via_post: (payload) ->
-   if /msie/.test(navigator.userAgent.toLowerCase()) and window.XDomainRequest
+    if /msie/.test(navigator.userAgent.toLowerCase()) and window.XDomainRequest
       this.recompute_via_xdr payload
     else
       this.recompute_via_xhr payload

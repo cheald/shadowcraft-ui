@@ -4,7 +4,7 @@ class ShadowcraftTalents
   TREE_SIZE = 7
   ALWAYS_SHOW_GLYPHS = []
   CHARACTER_SPEC = ""
-  SPEC_ICONS = 
+  SPEC_ICONS =
     "a": "ability_rogue_eviscerate"
     "Z": "ability_backstab"
     "b": "ability_stealth"

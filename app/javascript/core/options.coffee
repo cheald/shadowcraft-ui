@@ -44,7 +44,7 @@ class ShadowcraftOptions
 
   setup: (selector, namespace, checkData) ->
     data = Shadowcraft.Data
-    s = $(selector);
+    s = $(selector)
     for key, opt of checkData
       ns = data.options[namespace]
       val = null
@@ -99,7 +99,7 @@ class ShadowcraftOptions
         $.data(e0, "datatype", opt.datatype)
         $.data(e0, "min", opt.min)
         $.data(e0, "max", opt.max)
-      
+
       switch inputType
         when "check"
           exist.attr("checked", val)
@@ -122,7 +122,7 @@ class ShadowcraftOptions
       lethal_poison: {name: "Lethal Poison", type: 'select', options: {'dp': 'Deadly Poison', 'wp': 'Wound Poison'}, 'default': 'dp'}
       utility_poison: {name: "Utility Poison", type: 'select', options: {'lp': 'Leeching Poison', 'n': 'Other/None'}, 'default': 'lp'}
       num_boss_adds: {name: "Number of Boss Adds", datatype: 'float', type: 'input', min: 0, max: 20, 'default': 0}
-      demon_enemy: {name: "Enemy is Demon", desc: "Enables damage buff from heirloom trinket against demons", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
+      demon_enemy: {name: "Enemy is Demon", desc: 'Enables damage buff from heirloom trinket against demons (The Demon Button)', datatype: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
     })
 
     @setup("#settings #generalFilter", "general", {
@@ -205,7 +205,7 @@ class ShadowcraftOptions
     Shadowcraft.Options.trigger("update", ns + "." + name, val)
     if ns not in ['advanced'] or name in ['latency','adv_params']
       Shadowcraft.update()
-    
+
   changeCheck = ->
     $this = $(this)
     changeOption($this, "check", not $this.attr("checked")?)

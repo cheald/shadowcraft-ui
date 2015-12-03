@@ -1,4 +1,4 @@
-$ = window.jQuery 
+$ = window.jQuery
 
 class ShadowcraftApp
 
@@ -15,8 +15,6 @@ class ShadowcraftApp
       $(this).parent()[(if $(this).attr("checked")? or $(this).val() == "true" then "add" else "remove")+"Class"] 'c_on'
     selector.find('.label_radio').removeClass 'r_on'
     selector.find('.label_radio input:checked').parent().addClass 'r_on'
-
-
 
   commonInit: ->
     $( "button, input:submit, .button").button()
@@ -37,7 +35,7 @@ class ShadowcraftApp
     _.extend(this, Backbone.Events)
 
   boot: (@uuid, @region, data, @ServerData) ->
-    try  
+    try
       @_boot @uuid, data, @ServerData
     catch error
       $("#curtain").html("<div id='loaderror'>A fatal error occurred while loading this page.</div>").show()
@@ -60,7 +58,7 @@ class ShadowcraftApp
         if patch
           data.options = Object.deepExtend(@Data.options, data.options)
           @Data = _.extend(@Data, data)
-          
+
           @Data.active = data.active
           @Data.activeSpec = data.activeSpec
           @Data.activeTalents = data.activeTalents
