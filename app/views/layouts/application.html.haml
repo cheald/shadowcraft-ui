@@ -8,16 +8,30 @@
     %meta(name="apple-mobile-web-app-status-bar-style" content="black-translucent")
     %meta(name="keywords" content="wow,warcraft,rogue,game,dps,raid")
     %meta(name="description" content="A World of Warcraft rogue DPS optimizer and gear planner")
-    %link(rel="shortcut icon" href="/images/favicon.png" type="image/png")
+    %link(rel="shortcut icon" href="/assets/favicon.png" type="image/png")
     %link(type="text/plain" rel="author" href="http://shadowcraft.mmo-mumble.com/humans.txt")
 
-    =include_stylesheets :app
-    =include_stylesheets :print
-    /[if IE]
-      = stylesheet_link_tag 'compiled/ie.css', :media => 'screen, projection'
-    = csrf_meta_tag
+    =stylesheet_link_tag "screen.css"
+    =stylesheet_link_tag "custom-theme/jquery-ui-1.8.5.custom.css"
+    =csrf_meta_tag
     =javascript_include_tag "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"
-    =include_javascripts  :app
+    =javascript_include_tag "/javascripts/modernizr-2.6.2.js"
+    =javascript_include_tag "/javascripts/jquery-ui-1.8.24.custom.min.js"
+    =javascript_include_tag "/javascripts/jquery.browser.min.js"
+    =javascript_include_tag "/javascripts/tooltip.js"
+    =javascript_include_tag "/javascripts/underscore.js"
+    =javascript_include_tag "/javascripts/backbone-min.js"
+    =javascript_include_tag "/javascripts/handlebars.js"
+    =javascript_include_tag "/javascripts/jstorage.js"
+    =javascript_include_tag "/javascripts/jquery.json-2.2.js"
+    =javascript_include_tag "/javascripts/flot/jquery.flot.js"
+    =javascript_include_tag "/javascripts/flot/jquery.flot.crosshair.js"
+    =javascript_include_tag "/javascripts/jquery.websocket-0.0.1.js"
+    =javascript_include_tag "/javascripts/base64.js"
+    =javascript_include_tag "/javascripts/convertBase.js"
+    =javascript_include_tag "/javascripts/deflate.js"
+    =javascript_include_tag "/javascripts/inflate.js"
+    =javascript_include_tag "/javascripts/core.js"
 
     #{yield :head}
     :javascript

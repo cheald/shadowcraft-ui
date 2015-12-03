@@ -9,26 +9,21 @@
         For best results, use:
       .browsers
         %a{:href => "http://www.google.com/chrome/intl/en/landing_chrome.html"}
-          =image_tag "browser/chrome.png"
+          =image_tag "/images/browser/chrome.png"
           %span Google Chrome
           %em Best
         %a{:href => "http://www.apple.com/safari/"}
-          =image_tag "browser/safari.png"
+          =image_tag "/images/browser/safari.png"
           %span Apple Safari
           %em Best
         %a{:href => "http://www.mozilla.com/en-US/firefox/RC/"}
-          =image_tag "browser/firefox.png"
+          =image_tag "/images/browser/firefox.png"
           %span Mozilla Firefox
           %em Good
         %a{:href => "http://www.beautyoftheweb.com"}
-          =image_tag "browser/ie.png"
+          =image_tag "/images/browser/ie.png"
           %span Internet Explorer
           %em Good
-    = flash.each do |key, value|
-      .alert{ :class => "alert-#{key}" }
-      %button.close{ :data => { :dismiss => "alert" } } x
-      %strong
-        = value
     =error_messages_for :character, :header_message => "Oops - something's not quite right!", :message => ""
     =form_for @character, :url => characters_path do |f|
       %span
