@@ -143,8 +143,6 @@ class ShadowcraftComputation:
         'smoldering_heart_of_hyperious': [597,607],
     }
 
-    print trinketGroups
-
     gearBoosts = {
     }
 
@@ -436,13 +434,7 @@ class ShadowcraftComputation:
             out["other_ep"] = calculator.get_other_ep(['rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr','rogue_t17_2pc','rogue_t17_4pc','rogue_t17_4pc_lfr'])
 
             exclude_items = [item for item in gear if item in self.trinkets]
-            print "#########################################"
-            print exclude_items
-            print "#########################################"
             exclude_procs = [self.gearProcs[x] for x in exclude_items]
-            print exclude_procs
-            print "#########################################"
-
             trinket_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
 
             out["proc_ep"] = trinket_rankings
