@@ -39,7 +39,7 @@ class ShadowcraftComputation:
         0: None
     }
 
-    gearProcs = {
+    trinkets = {
 
         # 6.0
         113931: 'beating_heart_of_the_mountain',
@@ -71,9 +71,6 @@ class ShadowcraftComputation:
         116799: 'smoldering_heart_of_hyperious',
 
         # 6.1
-        118302: 'archmages_incandescence',
-        118307: 'archmages_greater_incandescence',
-        124636: 'maalus',
         122601: 'alchemy_stone', # 'stone_of_wind'
         122602: 'alchemy_stone', # 'stone_of_the_earth',
         122603: 'alchemy_stone', # 'stone_of_the_waters',
@@ -90,51 +87,63 @@ class ShadowcraftComputation:
         # 6.2.3
         133597: 'infallible_tracking_charm',
     }
-  
-    # Creates a group of warforged items based on the base ilvls passed in.  For each
-    # entry in the base_ilvls array, it will create additional entries stepping by step_size
-    # up to num_steps times.
-    def createWFGroup(base_ilvls, num_steps, step_size):
+
+    otherProcs = {
+        # 6.1
+        118302: 'archmages_incandescence',
+        118307: 'archmages_greater_incandescence',
+        124636: 'maalus',
+    }
+
+    gearProcs = trinkets.copy()
+    gearProcs.update(otherProcs)
+
+    # Creates a group of items based on the base ilvls passed in.  For each entry in the
+    # base_ilvls array, it will create additional entries stepping by step_size up to
+    # num_steps times.
+    def createGroup(base_ilvls, num_steps, step_size):
       trinketGroup = []
       subgroup = ()
       for base_ilvl in base_ilvls:
         for i in xrange(base_ilvl,base_ilvl + (num_steps+1)*step_size, step_size):
           subgroup += (i,)
-      trinketGroup.append(subgroup)
+      trinketGroup.extend(list(subgroup))
       return trinketGroup
 
     # used for rankings
     trinketGroups = {
-      # legendary rings
-      'archmages_greater_incandescence': [715],
-      'archmages_incandescence': [690],
-      'maalus': createWFGroup([735], 20, 3),
-      'alchemy_stone': [640,655,670,685,700,715],
-      # 6.2 trinkets
-      'bleeding_hollow_toxin_vessel': createWFGroup([705,720,735], 1, 6),
-      'malicious_censer': createWFGroup([700,715,730], 1, 6),
-      'soul_capacitor': createWFGroup([695,710,725], 1, 6),
-      'mirror_of_the_blademaster': createWFGroup([690,705,720], 1, 6),
-      # 6.0 trinkets
-      'beating_heart_of_the_mountain': createWFGroup([670,685,700], 1, 6),
-      'meaty_dragonspine_trophy': createWFGroup([670,685,700], 1, 6),
-      'humming_blackiron_trigger': createWFGroup([670,685,700], 1, 6),
-      'scales_of_doom': createWFGroup([655,670,685], 1, 6),
-      'skull_of_war': [640,655,670,685,700,715],
-      'formidable_jar_of_doom': [655,661],
-      'lucky_doublesided_coin': [665],
-      'blackheart_enforcers_medallion': [655,661],
-      'primal_combatants_boc': [620,626,660],
-      'primal_combatants_ioc': [620,626,660],
-      'gorashans_lodestone_spike': [530,550,570,600,615,630,636,685,705],
-      'kihras_adrenaline_injector': [530,550,570,600,615,630,636,685,705],
-      'turbulent_vial_of_toxin': [630,636],
-      'munificent_emblem_of_terror': [615,621],
-      'witherbarks_branch': [530,550,570,600,615,630,636,685,705],
-      'draenic_philosophers_stone': [620],
-      'void-touched_totem': [604,614,624,634],
-      'smoldering_heart_of_hyperious': [597,607],
+        # legendary rings
+        'archmages_greater_incandescence': [715],
+        'archmages_incandescence': [690],
+        'maalus': createGroup([735], 20, 3),
+        'alchemy_stone': createGroup([640,655,670,685,700,715], 2, 5),
+        # 6.2 trinkets
+        'bleeding_hollow_toxin_vessel': createGroup(createGroup([705,720,735], 1, 6), 2, 5),
+        'malicious_censer': createGroup(createGroup([700,715,730], 1, 6), 2, 5),
+        'soul_capacitor': createGroup(createGroup([695,710,725], 1, 6), 2, 5),
+        'mirror_of_the_blademaster': createGroup(createGroup([690,705,720], 1, 6), 2, 5),
+        # 6.0 trinkets
+        'beating_heart_of_the_mountain': createGroup([670,685,700], 1, 6),
+        'meaty_dragonspine_trophy': createGroup([670,685,700], 1, 6),
+        'humming_blackiron_trigger': createGroup([670,685,700], 1, 6),
+        'scales_of_doom': createGroup([655,670,685], 1, 6),
+        'skull_of_war': createGroup([640,655,670,685,700,715], 2, 5),
+        'formidable_jar_of_doom': [655,661],
+        'lucky_doublesided_coin': [665],
+        'blackheart_enforcers_medallion': [655,661],
+        'primal_combatants_boc': [620,626,660],
+        'primal_combatants_ioc': [620,626,660],
+        'gorashans_lodestone_spike': createGroup([530,550,570,600,615,630,636,685,705], 2, 5),
+        'kihras_adrenaline_injector': createGroup([530,550,570,600,615,630,636,685,705], 2, 5),
+        'turbulent_vial_of_toxin': [630,636],
+        'munificent_emblem_of_terror': [615,621],
+        'witherbarks_branch': createGroup([530,550,570,600,615,630,636,685,705], 2, 5),
+        'draenic_philosophers_stone': [620],
+        'void-touched_totem': [604,614,624,634],
+        'smoldering_heart_of_hyperious': [597,607],
     }
+
+    print trinketGroups
 
     gearBoosts = {
     }
@@ -384,7 +393,6 @@ class ShadowcraftComputation:
             _cycle = settings.CombatCycle(**rotation_options)
         else:
             _cycle = settings.SubtletyCycle(5, **rotation_options)
-        # test_settings = settings.Settings(test_cycle, response_time=.5, duration=360, dmg_poison='dp', utl_poison='lp', is_pvp=charInfo['pvp'], shiv_interval=charInfo['shiv'])
         _settings = settings.Settings(_cycle,
             time_in_execute_range = _opt.get("time_in_execute_range", 0.35),
             response_time = _opt.get("response_time", 0.5),
@@ -406,6 +414,8 @@ class ShadowcraftComputation:
         out = {}
         try:
             calculator = self.setup(input)
+            gear_data = input.get("g", [])
+            gear = frozenset([x[0] for x in gear_data])
 
             # Compute DPS Breakdown.
             out["breakdown"] = calculator.get_dps_breakdown()
@@ -423,6 +433,14 @@ class ShadowcraftComputation:
             out["glyph_ranking"] = [] # calculator.get_glyphs_ranking(input.get("gly", []))
 
             out["other_ep"] = calculator.get_other_ep(['rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr','rogue_t17_2pc','rogue_t17_4pc','rogue_t17_4pc_lfr'])
+
+            exclude_items = [item for item in gear if item in self.trinkets]
+            print "#########################################"
+            print exclude_items
+            print "#########################################"
+            exclude_procs = [self.gearProcs[x] for x in exclude_items]
+            print exclude_procs
+            print "#########################################"
 
             trinket_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
 
