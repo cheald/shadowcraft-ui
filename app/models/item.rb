@@ -293,7 +293,8 @@ class Item
       
       # make a special import with the given and possible missing bonus id data from armory
       puts "special import #{id} #{context} #{bonuses.inspect}"
-      self.wod_special_import id, context, bonuses
+      # NOTE: Disabled due to the legendary ring breaking things
+#      self.wod_special_import id, context, bonuses
       return
     end
 
@@ -332,7 +333,7 @@ class Item
 
         if id == 124636
           context_data['bonusSummary']['defaultBonusLists'] =
-            context_data['bonusSummary']['defaultBonusLists'] + LEGENDARY_RING_BONUS_IDS
+            context_data['bonusSummary']['defaultBonusLists'] + LEGENDARY_RING_BONUS_IDS + [0]
         end
 
         if context_data['bonusSummary']['defaultBonusLists'].empty?

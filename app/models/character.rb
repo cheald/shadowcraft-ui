@@ -72,10 +72,10 @@ class Character
 
       # iterate over the players gear and if an item or gem is missing import it from external sources
       properties['gear'].each do |slot, item|
-        Rails.logger.debug
         # import item and all their upgrade_levels. This will also automatically import
         # items that are missing from the database
-        Item.wod_import item['item_id'].to_i, item['context'], item['bonus_trees']
+        # NOTE: disabled due to the legendary ring breaking stuff.
+#        Item.wod_import item['item_id'].to_i, item['context'], item['bonus_trees']
         # import every gem from the equipped item
         [item['g0'], item['g1'], item['g2']].each do |gemid|
           # only proceed if there is a gem
