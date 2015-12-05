@@ -247,6 +247,7 @@ class ShadowcraftHistory
         data.options.general.response_time * 100 || 50
         data.options.general.time_in_execute_range * 100 || 35
         data.options.general.night_elf_racial || 0
+        data.options.general.demon_enemy || 0
       ]
       options.push base36Encode(general)
 
@@ -354,6 +355,7 @@ class ShadowcraftHistory
         response_time:          general[15] / 100 || 0.5
         time_in_execute_range:  general[16] / 100 || 0.35
         night_elf_racial:       general[17] || 0
+        demon_enemy:            general[18] || 0
 
       d.options.buffs = {}
       for v, i in options[1]

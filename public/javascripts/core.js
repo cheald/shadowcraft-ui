@@ -416,7 +416,8 @@
           num_boss_adds: data.options.general.num_boss_adds,
           latency: data.options.advanced.latency,
           adv_params: data.options.advanced.adv_params,
-          night_elf_racial: data.options.general.night_elf_racial
+          night_elf_racial: data.options.general.night_elf_racial,
+          demon_enemy: data.options.general.demon_enemy
         },
         spec: data.activeSpec,
         t: talentString,
@@ -790,7 +791,7 @@
         }
         ret.push(talentSet);
         options = [];
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.potion ? 1 : 0, data.options.general.max_ilvl, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 600, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35, data.options.general.night_elf_racial || 0];
+        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.potion ? 1 : 0, data.options.general.max_ilvl, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 600, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35, data.options.general.night_elf_racial || 0, data.options.general.demon_enemy || 0];
         options.push(base36Encode(general));
         buffs = [];
         _ref2 = ShadowcraftOptions.buffMap;
@@ -902,7 +903,8 @@
           num_boss_adds: general[14] / 100 || 0,
           response_time: general[15] / 100 || 0.5,
           time_in_execute_range: general[16] / 100 || 0.35,
-          night_elf_racial: general[17] || 0
+          night_elf_racial: general[17] || 0,
+          demon_enemy: general[18] || 0
         };
         d.options.buffs = {};
         _ref2 = options[1];
@@ -1338,6 +1340,16 @@
           type: 'input',
           min: 0,
           max: 20,
+          'default': 0
+        },
+        demon_enemy: {
+          name: "Enemy is Demon",
+          desc: 'Enables damage buff from heirloom trinket against demons (The Demon Button)',
+          datatype: 'select',
+          options: {
+            1: 'Yes',
+            0: 'No'
+          },
           'default': 0
         }
       });

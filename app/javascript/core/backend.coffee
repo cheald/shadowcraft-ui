@@ -77,6 +77,7 @@ class ShadowcraftBackend
         latency: data.options.advanced.latency
         adv_params: data.options.advanced.adv_params
         night_elf_racial: data.options.general.night_elf_racial
+        demon_enemy: data.options.general.demon_enemy
       }
       spec: data.activeSpec,
       t: talentString,
