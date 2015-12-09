@@ -255,7 +255,7 @@ class Item
   BONUS_ID_WHITELIST = [1, 15, 17, 18, 44, 171, 448, 449, 450, 451, 499, 526, 527, 545, 546, 547,
                         553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 566, 567, 571, 573, 575,
                         576, 577, 582, 583, 591, 592, 593, 594, 602, 609, 615, 617, 618, 619, 620,
-                        642, 644, 645, 646, 648, 651, 656, 692]
+                        642, 644, 645, 646, 648, 651, 656, 692, 755, 756, 757, 758, 759, 760]
 
   # These are kept separate because we don't want to import all of them all at once.
   # Just import them organically as each ilvl becomes available.
