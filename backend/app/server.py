@@ -141,6 +141,7 @@ class ShadowcraftComputation:
         'draenic_philosophers_stone': [620],
         'void-touched_totem': [604,614,624,634],
         'smoldering_heart_of_hyperious': [597,607],
+        'infallible_tracking_charm': [715],
     }
 
     gearBoosts = {
