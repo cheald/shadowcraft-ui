@@ -122,7 +122,7 @@ class ShadowcraftOptions
       lethal_poison: {name: "Lethal Poison", type: 'select', options: {'dp': 'Deadly Poison', 'wp': 'Wound Poison'}, 'default': 'dp'}
       utility_poison: {name: "Utility Poison", type: 'select', options: {'lp': 'Leeching Poison', 'n': 'Other/None'}, 'default': 'lp'}
       num_boss_adds: {name: "Number of Boss Adds", datatype: 'float', type: 'input', min: 0, max: 20, 'default': 0}
-      demon_enemy: {name: "Enemy is Demon", desc: 'Enables damage buff from heirloom trinket against demons (The Demon Button)', datatype: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
+      demon_enemy: {name: "Enemy is Demon", desc: "Enables damage buff from heirloom trinket against demons", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
     })
 
     @setup("#settings #generalFilter", "general", {

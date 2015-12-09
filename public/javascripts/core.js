@@ -1344,8 +1344,9 @@
         },
         demon_enemy: {
           name: "Enemy is Demon",
-          desc: 'Enables damage buff from heirloom trinket against demons (The Demon Button)',
-          datatype: 'select',
+          desc: "Enables damage buff from heirloom trinket against demons",
+          datatype: 'integer',
+          type: 'select',
           options: {
             1: 'Yes',
             0: 'No'
