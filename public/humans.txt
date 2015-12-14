@@ -1,10 +1,10 @@
 /* TEAM */
-  Since Mists of Pandaria (5.0):
+  Since Legion (7.0):
     
-    Shadowcraft UI, and engine optimizations
-      Indz
-      Contact: indzlord@gmail.com
-      WoW: Indz @ Blackmoore-EU
+    Shadowcraft UI
+      Tamen
+      Twitter: @tamenctr
+      WoW: Tamen @ Aerie Peak-US
 
     Server Guru
       Chris "Antiarc" Heald
@@ -14,13 +14,13 @@
       WoW: Adrine @ Cenarion Circle-US
 
     Shadowcraft Engine Lead
-      Pathal
-      WoW: Pins @ Doomhammer-US
+      FieryDemise
+      Twitter: @fierydemise
 
-    Reforger Engine Service & reforger optimizations
-      Tini
-      WoW: Tini @ Silvermoon-EU
-    
+    ProofCrafter
+      riphie
+      WoW: Riff @ Ravencrest-EU
+
   Former Team Members:
 
     Armory integration, Rails backend, Javascript frontend, CSS/HTML, non-WoW graphics, engine Twisted server, and engine performance optimizations:
@@ -30,10 +30,18 @@
       From: Phoenix, Arizona, USA
       WoW: Adrine @ Cenarion Circle-US
 
+    Shadowcraft UI, and engine optimizations
+      Indz
+      Contact: indzlord@gmail.com
+      WoW: Indz @ Blackmoore-EU
+
     Shadowcraft Engine Lead
       Aldriana
       Contact: aldriana@elitistjerks.com
       WoW: Aldriana @ Doomhammer-US
+
+      Pathal
+      WoW: Pins @ Doomhammer-US
 
     Reforger Engine
       bsoft
@@ -51,7 +59,7 @@
 
   Language: English
   Doctype: HTML5 with CSS3
-  Tools: Rails 3, Coffeescript, Compass
+  Tools: Rails 3, Coffeescript
   Source URL: https://github.com/cheald/shadowcraft-ui
 
 /* ENGINE */
@@ -60,10 +68,4 @@
   Tools: Python 2.6
   Source URL:
     Origin: https://github.com/dazer/ShadowCraft-Engine
-    Active fork: https://github.com/indz/ShadowCraft-Engine
-
-/* REFORGER */
-  Language: Agnostic
-  Tools: Java
-  Endpoint URL: http://shadowref.appspot.com/
-  Source URL: http://powerofb.wsnetwork.net/reforger/src.zip
+    Active fork: https://github.com/fierydemise/ShadowCraft-Engine
