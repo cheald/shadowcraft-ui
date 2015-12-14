@@ -166,11 +166,9 @@ class ShadowcraftBackend
     xdr.open "get", get_engine() + "?rnd=#{new Date().getTime()}&data=" + JSON.stringify(payload)
     xdr.send()
     xdr.onload = ->
-      #stopWait()
       data = JSON.parse xdr.responseText
       app.handleRecompute(data)
     xdr.onerror = ->
-      #stopWait()
       app.recomputeFailed()
       flash "Error contacting backend engine"
       false
@@ -184,15 +182,7 @@ class ShadowcraftBackend
       dataType: 'json'
       success: (data) ->
         app.handleRecompute(data)
-        #stopWait()
       error: (xhr, textStatus, error) ->
         app.recomputeFailed()
-
-    #$.post(get_engine(), {
-    #  data: $.toJSON(payload)
-    #}, (data) ->
-    #  app.handleRecompute(data)
-    #  #stopWait()
-    #, 'json')
 
 loadingSnapshot = false

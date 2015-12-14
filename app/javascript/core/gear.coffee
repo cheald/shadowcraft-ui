@@ -242,51 +242,12 @@ class ShadowcraftGear
     return false unless gem?
     gem.requires?.profession? and gem.requires.profession == profession
 
-  getEquippedGemCount = (gem, pendingChanges, ignoreSlotIndex) ->
-    count = 0
-    for slot in SLOT_ORDER
-      continue if parseInt(slot, 10) == ignoreSlotIndex
-      gear = Shadowcraft.Data.gear[slot]
-      if gem.id == gear.g0 or gem.id == gear.g1 or gem.id == gear.g2
-        count++
-    if pendingChanges?
-      for g in pendingChanges
-        count++ if g == gem.id
-    return count
-
-  getGemTypeCount = (gemType, pendingChanges, ignoreSlotIndex) ->
-    count = 0
-    Gems = Shadowcraft.ServerData.GEM_LOOKUP
-
-    for slot in SLOT_ORDER
-      continue if parseInt(slot, 10) == ignoreSlotIndex
-      gear = Shadowcraft.Data.gear[slot]
-      if gear.gems?
-        for i in [0..2]
-          gem = gear.gems[i]? and Gems[gear.gems[i]]
-          continue unless gem
-          if gem.slot == gemType
-            count++
-
-    if pendingChanges?
-      for g in pendingChanges
-        gem = Gems[g]
-        count++ if gem.slot == gemType
-    return count
-
   canUseGem = (gem, gemType, pendingChanges, ignoreSlotIndex) ->
     if gem.requires?.profession?
       return false if isProfessionalGem(gem, 'jewelcrafting')
 
     return false if not gem[gemType]
     true
-
-  canUsePrismaticSocket = (item) ->
-    return false if item.equip_location not in ["mainhand","offhand"]
-    return false if item.ilvl < 502 or item.ilvl > 549
-    return false if item.ilvl >= 528 and (item.tag.indexOf("Raid Finder") >= 0 or item.tag.indexOf("Flexible") >= 0)
-    return false if item.original_id == 87012 or item.original_id == 87032 or item.tag.indexOf("Season") >= 0 or item.name.indexOf("Immaculate") >= 0
-    return true
 
   # Check if the gems have equal stats to pretend that optimize gems
   # not change gems to stat equal gems
@@ -695,32 +656,6 @@ class ShadowcraftGear
     this.updateSummaryWindow()
     checkForWarnings('gear')
 
-  whiteWhite = (v, s) ->
-    s
-
-  redWhite = (v, s) ->
-    s ||= v
-    c = if v < 0 then "neg" else ""
-    colorSpan s, c
-
-  greenWhite = (v, s) ->
-    s ||= v
-    c = if v < 0 then "" else "pos"
-    colorSpan s, c
-
-  redGreen = (v, s) ->
-    s ||= v
-    c = if v < 0 then "neg" else "pos"
-    colorSpan s, c
-
-  colorSpan = (s, c) ->
-    "<span class='#{c}'>#{s}</span>"
-
-  pctColor = (v, func, reverse) ->
-    func ||= redGreen
-    reverse ||= 1
-    func v * reverse, v.toFixed(2) + "%"
-
   getEPTotal: ->
     this.sumStats()
     keys = _.keys(@statSum).sort()
@@ -913,13 +848,6 @@ class ShadowcraftGear
     $.data(document.body, "selecting-slot", slotIndex)
     $.data(document.body, "selecting-prop", prop)
     return [$slot, slotIndex]
-
-  patch_max_ilevel = (patch) ->
-    switch patch
-      when 60
-        1000
-      else
-        1000
 
   getItem = (itemId, itemLevel, suffix) ->
     arm = [itemId, itemLevel, suffix || 0]
