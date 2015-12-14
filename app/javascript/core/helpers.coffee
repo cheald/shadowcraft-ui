@@ -102,10 +102,6 @@ wait = (msg) ->
   $("#waitMsg").html(msg)
   $("#wait").data('timeout', setTimeout('$("#wait").show()', 1000))
 
-stopWait = ->
-  clearTimeout($("#wait").hide().data('timeout'))
-  $("#wait").hide()
-
 showPopup = (popup) ->
   $(".popup").removeClass("visible")
   if popup.find(".close-popup").length == 0

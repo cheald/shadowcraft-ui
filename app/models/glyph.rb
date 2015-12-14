@@ -7,6 +7,9 @@ class Glyph
   field :icon
   field :rank, :type => Integer
 
+  # Rogues only for now.
+  VALID_GLYPH_CLASSES = [8]
+
   def as_json(options = {})
     {
       :name => name,
@@ -23,7 +26,8 @@ class Glyph
   end
 
   def self.populate!
-    populate_from_wowhead "http://www.wowhead.com/items=16.4"
+    # TODO: Remove this later
+    populate_from_wowhead "http://www.wowhead.com/items=16.4?filter=eb=1"
   end
 
   def self.populate_from_wowhead(url, options = {})
@@ -35,6 +39,12 @@ class Glyph
       xml = Nokogiri::XML(doc)
       json = JSON::load("{%s}" % xml.css("json").text)
       puts json.inspect
+
+      # Skip anything that isn't for a valid class. Wowhead sometimes has bugs that return
+      # glyphs that aren't for us, even if we didn't request them.
+      unless VALID_GLYPH_CLASSES.include?(json['reqclass'].to_i) or 
+        next
+      end
 
       if matches = doc.match(/spell=(\d+)\"/)
         spellDoc = open("http://www.wowhead.com/spell=%d" % matches[1], 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
