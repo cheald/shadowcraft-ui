@@ -43,41 +43,6 @@
     %span.key {{name}}
     %span.val {{{val}}}
   {{/stats}}
-- mustache "reforge" do
-  %h1 Reforge Item
-  %form#reforge
-    {{#recommended}}
-    .recommended
-      Recommended: Reforge
-      %span.oldstat -{{amount}} {{from}}
-      into
-      %span.newstat +{{amount}} {{to}}
-    {{/recommended}}
-    %fieldset.oldstats
-      %legend Old Stat
-      {{#stats}}
-      %label.label_radio
-        %input{:type => "radio", :name => "oldstat", :value => "{{key}}"}
-        \-{{use}} {{name}}
-      {{/stats}}
-
-
-    %fieldset.newstats
-      %Legend New Stat
-      {{#newstats}}
-      .stat{:"data-stat" => "{{key}}"}
-        %label.label_radio
-          %input{:type => "radio", :name => "newstat", :value => "{{key}}"}
-          {{val}}
-        %span.pct<>
-          .label
-          .pct-inner<>
-      {{/newstats}}
-    .results
-      .remove
-      .add
-    %input.ui-button.ui-widget.ui-state-default.ui-corner-all.doReforge{:type => "Button", :value => "Reforge"}
-    %input.ui-button.ui-widget.ui-state-default.ui-corner-all.clearReforge{:type => "Button", :value => "Undo Reforging"}
 
 - mustache "bonuses" do
   %h1 Item Bonuses
@@ -162,18 +127,6 @@
       -#{{#item/id}}
       %a.wowhead{:href => "http://wod.wowhead.com/item={{ttid}}", :target => "_blank"} Wowhead
       -#{{/item/id}}
-
-    {{#reforgable}}
-    .reforge<
-      =image_tag "/images/reforge.png"
-      {{#reforge}}
-      %span.oldstat -{{value}} {{from}}
-      %span.newstat +{{value}} {{to}}
-      {{/reforge}}
-      {{^reforge}}
-      Reforge item
-      {{/reforge}}
-    {{/reforgable}}
 
     {{#bonusable}}
     .bonuses<

@@ -123,7 +123,7 @@ class ShadowcraftHistory
       window.location.reload()
 
   takeSnapshot: ->
-    return compress(deepCopy(@app.Data))
+    return compress(@app.Data)
 
   loadSnapshot: (snapshot) ->
     @app.Data = decompress (snapshot)
@@ -194,7 +194,6 @@ class ShadowcraftHistory
         gear = data.gear[slot] || {}
         gearSet.push gear.item_id || 0
         gearSet.push gear.enchant || 0
-        gearSet.push gear.reforge || 0
         gearSet.push gear.upgrade_level || 0
         gearSet.push gear.original_id || 0
         gearSet.push gear.item_level || 0
@@ -279,8 +278,6 @@ class ShadowcraftHistory
       options.push ShadowcraftOptions.buffFoodMap.indexOf(buffFood)
 
       ret.push options
-      ret.push base36Encode(data.achievements || [])
-      ret.push base36Encode(data.quests || [])
       return ret
 
   decompress_handlers =
@@ -293,8 +290,6 @@ class ShadowcraftHistory
         glyphs: base36Decode(data[5])
         options: {}
         talents: []
-        achievements: if data[8] then base36Decode(data[8]) else []
-        quests: if data[9] then base36Decode(data[9]) else []
 
       talentSets = data[6]
       for id, index in talentSets by 3
@@ -310,7 +305,6 @@ class ShadowcraftHistory
         d.gear[slot] =
           item_id: gear[index++]
           enchant: gear[index++]
-          reforge: gear[index++]
           upgrade_level: gear[index++]
           original_id: gear[index++]
           item_level: gear[index++]

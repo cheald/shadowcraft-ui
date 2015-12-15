@@ -53,28 +53,6 @@ $.fn.oneFingerScroll = ->
     )
   ).call(this)
 
-deepCopy = (obj) ->
-  if obj instanceof Array
-    out = []
-    i = 0
-    len = obj.length
-    for i in [0..len]
-      out[i] = arguments.callee(obj[i])
-    return out
-
-  if typeof obj == 'object'
-    out = {}
-    for i, k of obj
-      out[i] = arguments.callee(k)
-    return out
-  return obj
-
-String.prototype.capitalize = ->
-  return this.replace( /(^|\s)([a-z])/g , (m,p1,p2) ->
-    p1+p2.toUpperCase()
-  )
-
-
 $.fn.sortElements = (->
   shift = [].shift
   sort = [].sort

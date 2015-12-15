@@ -3,7 +3,6 @@ ShadowcraftApp.bind "boot", ->
   Templates =
     itemSlot:           Handlebars.compile $("#template-itemSlot").html()
     stats:              Handlebars.compile $("#template-stats").html()
-    reforge:            Handlebars.compile $("#template-reforge").html()
     bonuses:            Handlebars.compile $("#template-bonuses").html()
     checkbox:           Handlebars.compile $("#template-checkbox").html()
     select:             Handlebars.compile $("#template-select").html()

@@ -100,9 +100,7 @@ class Character
           :level => properties['level'],
           :race => properties['race']
         },
-      },
-      :achievements => properties['achievements'],
-      :quests => properties['quests']
+      }
     }
   end
 

@@ -566,8 +566,6 @@ class ShadowcraftGear
         bonuses = null
         enchant = EnchantLookup[gear.enchant]
         enchantable = null
-        reforge = null
-        reforgable = null
         upgradable = null
         bonusable = null
         if item
@@ -616,7 +614,7 @@ class ShadowcraftGear
 
           if item.upgradable
             curr_level = "0"
-            curr_level = gear.upgrade_level if gear.upgrade_level?
+            curr_level = gear.upgrade_level.toString() if gear.upgrade_level?
             max_level = getMaxUpgradeLevel(item)
             upgrade =
               curr_level: curr_level
@@ -635,8 +633,6 @@ class ShadowcraftGear
         opt.slot = i + ''
         opt.gems = gems
         opt.socketbonus = bonuses
-        opt.reforgable = reforgable
-        opt.reforge = reforge
         opt.bonusable = true # TODO
         opt.sockets = if item then item.sockets else null
         opt.enchantable = enchantable
@@ -896,8 +892,8 @@ class ShadowcraftGear
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && subtletyNeedsDagger && l.subclass != 15
-      continue if l.upgrade_level? and Shadowcraft.Data.options.general.show_upgrades == 0 and lid != selected_identifier
-      continue if l.upgrade_level? and l.upgrade_level > getMaxUpgradeLevel(l)
+      continue if l.upgrade_level != 0 and Shadowcraft.Data.options.general.show_upgrades == 0 and lid != selected_identifier
+      continue if l.upgrade_level != 0 and l.upgrade_level > getMaxUpgradeLevel(l)
       continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and lid != selected_identifier
       continue if l.tag? and /Tournament$/.test(l.tag) and not Shadowcraft.Data.options.general.pvp
       loc.push l
@@ -949,12 +945,12 @@ class ShadowcraftGear
       ttupgd = if l.upgrade_level? then l.upgrade_level else ""
       ttbonus = if l.bonus_trees? then l.bonus_trees.join(":") else ""
       if l.identifier == selected_identifier
-        bonus_trees = gear.bonuses
+        bonus_trees = gear[slot].bonuses
         ttbonus = bonus_trees.join(":")
       upgrade = []
       if l.upgradable
         curr_level = "0"
-        curr_level = l.upgrade_level if l.upgrade_level?
+        curr_level = l.upgrade_level.toString() if l.upgrade_level?
         max_level = getMaxUpgradeLevel(l)
         upgrade =
           curr_level: curr_level
@@ -985,7 +981,7 @@ class ShadowcraftGear
 
     $altslots.get(0).innerHTML = buffer
     $altslots.find(".slot[data-identifier='#{selected_identifier}']").addClass("active")
-    showPopup($popup) # TODO
+    showPopup($popup)
     false
 
   # Change out an enchant, for binding to event delegation
@@ -1035,7 +1031,7 @@ class ShadowcraftGear
 
     $altslots.get(0).innerHTML = buffer
     $altslots.find(".slot[id='#{selected_id}']").addClass("active")
-    showPopup($popup) # TODO
+    showPopup($popup)
     false
 
   getBaseItemLevel = (item) ->
@@ -1106,7 +1102,7 @@ class ShadowcraftGear
 
     $altslots.get(0).innerHTML = buffer
     $altslots.find(".slot[id='" + selected_id + "']").addClass("active")
-    showPopup($popup) # TODO
+    showPopup($popup)
     false
 
   clickSlotBonuses = ->
@@ -1170,7 +1166,7 @@ class ShadowcraftGear
     $("#bonuses").html Templates.bonuses
       groups: groups
     Shadowcraft.setupLabels("#bonuses")
-    showPopup $("#bonuses.popup") # TODO
+    showPopup $("#bonuses.popup")
     false
 
   clickWowhead = (e) ->
@@ -1362,7 +1358,6 @@ class ShadowcraftGear
           data.gear[slot][update] = if val != 0 then val else null
           if update == "item_id"
             item = ItemLookup[identifier]
-            data.gear[slot].reforge = null
             if data.gear[slot].item_id and item.upgrade_level
               data.gear[slot].upgrade_level = item.upgrade_level
             else

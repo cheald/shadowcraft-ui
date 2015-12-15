@@ -31,7 +31,6 @@ class ShadowcraftDpsGraph
     )
 
   datapoint: (data) ->
-    # if data.total_dps != @lastDPS
     snapshot = Shadowcraft.History.takeSnapshot()
 
     delta = data.total_dps - (@lastDPS || 0)
