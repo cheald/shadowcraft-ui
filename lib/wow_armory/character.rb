@@ -5,7 +5,7 @@ module WowArmory
     include Constants
     include Document
 
-    attr_accessor :realm, :region, :name, :active_spec, :gear, :race, :level, :player_class, :talents, :portrait
+    attr_accessor :realm, :region, :name, :active, :gear, :race, :level, :player_class, :talents, :portrait
 
     def initialize(character, realm, region = 'US')
       @character = character
@@ -19,7 +19,7 @@ module WowArmory
       populate!
 
       @json['talents'].each_with_index do |tree, index|
-        self.active_spec = index if tree['selected']
+        self.active = index if tree['selected']
       end
     end
 
@@ -32,7 +32,7 @@ module WowArmory
         :gear => gear,
         :race => race,
         :level => level,
-        :active_spec => active_spec,
+        :active => active,
         :player_class => player_class,
         :talents => self.talents.map do |tree|
           glyphs = tree['glyphs'].map do |glyphset, set|
