@@ -5,6 +5,7 @@ backend
 history
 helpers
 options
+artifact
 talents
 gear
 dps_graph

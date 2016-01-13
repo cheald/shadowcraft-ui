@@ -1,5 +1,5 @@
 (function() {
-  var $, $doc, NOOP, ShadowcraftApp, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftDpsGraph, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, Templates, checkForWarnings, flash, hideFlash, json_encode, loadingSnapshot, modal, showPopup, tip, titleize, tooltip, wait,
+  var $, $doc, NOOP, ShadowcraftApp, ShadowcraftArtifact, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftDpsGraph, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, Templates, checkForWarnings, flash, hideFlash, json_encode, loadingSnapshot, modal, showPopup, tip, titleize, tooltip, wait,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   $ = window.jQuery;
@@ -94,10 +94,12 @@
       ShadowcraftApp.trigger("boot");
       this.Console = new ShadowcraftConsole(this);
       this.Backend = new ShadowcraftBackend(this).boot();
+      this.Artifact = new ShadowcraftArtifact(this);
       this.Talents = new ShadowcraftTalents(this);
       this.Options = new ShadowcraftOptions(this).boot();
       this.Gear = new ShadowcraftGear(this);
       this.DpsGraph = new ShadowcraftDpsGraph(this);
+      this.Artifact.boot();
       this.Talents.boot();
       this.Gear.boot();
       this.commonInit();
@@ -304,12 +306,16 @@
       talentTree: Handlebars.compile($("#template-tree").html()),
       talentTier: Handlebars.compile($("#template-tier").html()),
       specActive: Handlebars.compile($("#template-specactive").html()),
+      artifactActive: Handlebars.compile($("#template-artifactactive").html()),
       tooltip: Handlebars.compile($("#template-tooltip").html()),
       talentSet: Handlebars.compile($("#template-talent_set").html()),
       log: Handlebars.compile($("#template-log").html()),
       glyphSlot: Handlebars.compile($("#template-glyph_slot").html()),
       talentContribution: Handlebars.compile($("#template-talent_contribution").html()),
-      loadSnapshots: Handlebars.compile($("#template-loadSnapshots").html())
+      loadSnapshots: Handlebars.compile($("#template-loadSnapshots").html()),
+      artifactKingslayers: Handlebars.compile($("#template-artifactKingslayers").html()),
+      artifactDreadblades: Handlebars.compile($("#template-artifactDreadblades").html()),
+      artifactFangs: Handlebars.compile($("#template-artifactFangs").html())
     };
   });
 
@@ -1770,6 +1776,121 @@
 
   })();
 
+  ShadowcraftArtifact = (function() {
+    var SPEC_ARTIFACT, displayDreadblades, displayFangs, displayKingslayers;
+
+    SPEC_ARTIFACT = {
+      "a": {
+        icon: "inv_knife_1h_artifactgarona_d_01",
+        text: "The Kingslayers"
+      },
+      "Z": {
+        icon: "inv_sword_1h_artifactskywall_d_01",
+        text: "The Dreadblades"
+      },
+      "b": {
+        icon: "inv_knife_1h_artifactfangs_d_01",
+        text: "Fangs of the Devourer"
+      }
+    };
+
+    displayKingslayers = function() {
+      var buffer;
+      buffer = Templates.artifactKingslayers();
+      return $("#artifactframe").get(0).innerHTML = buffer;
+    };
+
+    displayDreadblades = function() {
+      var buffer;
+      buffer = Templates.artifactDreadblades();
+      return $("#artifactframe").get(0).innerHTML = buffer;
+    };
+
+    displayFangs = function() {
+      var buffer;
+      buffer = Templates.artifactFangs();
+      return $("#artifactframe").get(0).innerHTML = buffer;
+    };
+
+    ShadowcraftArtifact.prototype.setSpec = function(str) {
+      var artifactframe, buffer;
+      buffer = Templates.artifactActive({
+        name: SPEC_ARTIFACT[str].text,
+        icon: SPEC_ARTIFACT[str].icon
+      });
+      $("#artifactactive").get(0).innerHTML = buffer;
+      if (str === "a") {
+        displayKingslayers();
+      } else if (str === "Z") {
+        displayDreadblades();
+      } else if (str === "b") {
+        displayFangs();
+      }
+      artifactframe = $("#artifactframe");
+      $("#artifactframe .trait").each(function() {}).mousedown(function(e) {
+        if (Modernizr.touch) {
+          return;
+        }
+        switch (e.button) {
+          case 0:
+            return console.log("left click on ");
+          case 2:
+            return console.log("right click on ");
+        }
+      }).bind("contextmenu", function() {
+        return false;
+      }).mouseover($.delegate({
+        ".tt": ttlib.requestTooltip
+      })).mouseout($.delegate({
+        ".tt": ttlib.hide
+      })).bind("touchstart", function(e) {
+        $.data(this, "removed", false);
+        $.data(this, "listening", true);
+        return $.data(tframe, "listening", this);
+      }).bind("touchend", function(e) {
+        $.data(this, "listening", false);
+        if (!($.data(this, "removed") || !$(this).hasClass("active"))) {
+          return console.log("touchend");
+        }
+      });
+      return artifactframe.bind("touchstart", function(e) {
+        var listening;
+        listening = $.data(tframe, "listening");
+        if (e.originalEvent.touches.length > 1 && listening && $.data(listening, "listening")) {
+          console.log("touch start");
+          return $.data(listening, "removed", true);
+        }
+      });
+    };
+
+    ShadowcraftArtifact.prototype.boot = function() {
+      var app;
+      app = this;
+      Shadowcraft.bind("loadData", function() {
+        var data, spec;
+        data = Shadowcraft.Data;
+        spec = data.activeSpec;
+        return app.setSpec(spec);
+      });
+      Shadowcraft.Talents.bind("changedSpec", function(spec) {
+        return app.setSpec(spec);
+      });
+      return this;
+    };
+
+    function ShadowcraftArtifact(app1) {
+      this.app = app1;
+      this.app.Artifact = this;
+      this.displayKingslayers = displayKingslayers;
+      this.displayDreadblades = displayDreadblades;
+      this.displayFangs = displayFangs;
+      _.extend(this, Backbone.Events);
+    }
+
+    return ShadowcraftArtifact;
+
+  })();
+
   ShadowcraftTalents = (function() {
     var ALWAYS_SHOW_GLYPHS, CHARACTER_SPEC, DEFAULT_SPECS, MAX_TALENT_POINTS, SPEC_ICONS, TREE_SIZE, applyTalentToButton, getSpec, getSpecName, getTalents, glyphRankCount, hoverTalent, resetTalents, setGlyph, setSpec, setTalents, talentsSpent, toggleGlyph, updateGlyphWeights, updateTalentAvailability, updateTalentContribution;
 
@@ -1927,6 +2048,7 @@
         icon: SPEC_ICONS[str]
       });
       $("#specactive").get(0).innerHTML = buffer;
+      Shadowcraft.Talents.trigger("changedSpec", str);
       return data.activeSpec = str;
     };
 
@@ -1987,15 +2109,8 @@
 
     ShadowcraftTalents.prototype.initTalentTree = function() {
       var TalentLookup, Talents, buffer, talentTiers, talentTrees, talentframe, tframe, tree, treeIndex;
-      switch (Shadowcraft.Data.options.general.patch) {
-        case 60:
-          Talents = Shadowcraft.ServerData.TALENTS_WOD;
-          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD;
-          break;
-        default:
-          Talents = Shadowcraft.ServerData.TALENTS_WOD;
-          TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD;
-      }
+      Talents = Shadowcraft.ServerData.TALENTS_WOD;
+      TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD;
       buffer = "";
       talentTiers = [
         {
@@ -2407,6 +2522,7 @@
           }
           glyphs = _.compact(glyphs);
           setSpec(spec);
+          Shadowcraft.Artifact.setSpec(str);
           setTalents(talents);
           return app.setGlyphs(glyphs);
         }

@@ -109,6 +109,7 @@ class ShadowcraftTalents
       icon: SPEC_ICONS[str]
     })
     $("#specactive").get(0).innerHTML = buffer
+    Shadowcraft.Talents.trigger("changedSpec", str)
     data.activeSpec = str
 
   getSpec = ->
@@ -159,13 +160,8 @@ class ShadowcraftTalents
     this.setGlyphs data.glyphs
 
   initTalentTree: ->
-    switch Shadowcraft.Data.options.general.patch
-      when 60
-        Talents = Shadowcraft.ServerData.TALENTS_WOD
-        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD
-      else
-        Talents = Shadowcraft.ServerData.TALENTS_WOD
-        TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD
+    Talents = Shadowcraft.ServerData.TALENTS_WOD
+    TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD
 
     buffer = ""
 
@@ -446,6 +442,7 @@ class ShadowcraftTalents
           glyphs[i] = parseInt(glyph, 10)
         glyphs = _.compact(glyphs)
         setSpec spec
+        Shadowcraft.Artifact.setSpec str
         setTalents talents
         app.setGlyphs glyphs
     })

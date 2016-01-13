@@ -1,6 +1,4 @@
 ---
-websocket.js: websocket.js
-websocket/index.js: websocket.js
 screen.css: screen.css
 screen/index.css: screen.css
 scroll.css: scroll.css
@@ -39,20 +37,6 @@ tip-twitter/tip-twitter_arrows.gif: tip-twitter/tip-twitter_arrows.gif
 tip-twitter/tip-twitter_arrows/index.gif: tip-twitter/tip-twitter_arrows.gif
 ui.selectmenu.css: ui.selectmenu.css
 ui/index.selectmenu.css: ui.selectmenu.css
-websocket_rails/abstract_connection.js: websocket_rails/abstract_connection.js
-websocket_rails/abstract_connection/index.js: websocket_rails/abstract_connection.js
-websocket_rails/channel.js: websocket_rails/channel.js
-websocket_rails/channel/index.js: websocket_rails/channel.js
-websocket_rails/event.js: websocket_rails/event.js
-websocket_rails/event/index.js: websocket_rails/event.js
-websocket_rails/http_connection.js: websocket_rails/http_connection.js
-websocket_rails/http_connection/index.js: websocket_rails/http_connection.js
-websocket_rails/main.js: websocket_rails/main.js
-websocket_rails/main/index.js: websocket_rails/main.js
-websocket_rails/websocket_connection.js: websocket_rails/websocket_connection.js
-websocket_rails/websocket_connection/index.js: websocket_rails/websocket_connection.js
-websocket_rails/websocket_rails.js: websocket_rails/websocket_rails.js
-websocket_rails/websocket_rails/index.js: websocket_rails/websocket_rails.js
 jquery.js: jquery.js
 jquery/index.js: jquery.js
 jquery.min.js: jquery.min.js

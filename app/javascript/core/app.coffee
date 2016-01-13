@@ -71,11 +71,13 @@ class ShadowcraftApp
     ShadowcraftApp.trigger("boot")
     @Console  = new ShadowcraftConsole(this)
     @Backend  = new ShadowcraftBackend(this).boot()
+    @Artifact = new ShadowcraftArtifact(this)
     @Talents  = new ShadowcraftTalents(this)
     @Options  = new ShadowcraftOptions(this).boot()
     @Gear     = new ShadowcraftGear(this)
     @DpsGraph = new ShadowcraftDpsGraph(this)
 
+    @Artifact.boot()
     @Talents.boot()
     @Gear.boot()
 

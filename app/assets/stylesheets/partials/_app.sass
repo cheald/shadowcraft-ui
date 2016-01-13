@@ -315,7 +315,7 @@ html.websockets, html.history, html.canvas
     +border-radius(3px)
     +linear-gradient(bottom, #222222, #323232, #4b4b4b)
     border: 1px solid #444444
-    left: 380px
+    left: 632px
     &.active
     +border-bottom-left-radius(0)
     +border-bottom-right-radius(0)
@@ -932,7 +932,7 @@ img.upgrade
     width: 399px
     height: 34px
     .spec-name
-      padding-left: 40px
+      padding-left: 44px
     .spec-icon
       position: absolute
       width: 36px
@@ -1031,7 +1031,7 @@ img.upgrade
         &.full
           color: #ffdd00
           border-color: #ffdd00
-        
+
 #talentrankings, #upgraderankings, #dpsbreakdown
   .pct
     width: 120px
@@ -1103,6 +1103,102 @@ img.upgrade
         margin-right: 10px
         width: 24px
         float: left
+
+#artifact
+  .panel-content
+    padding-top: 18px
+    padding-left: 198px
+
+  // This is for the header of the artifact frame that contains the icon
+  // and name of the artifact
+  #artifactactive
+    font-size: 2em
+    text-align: left
+    margin-bottom: 10px
+    border: 1px solid #333333
+    background: #050505
+    padding: 5px
+    font-weight: bold
+    position: relative
+    width: 700px
+    height: 34px
+    .spec-name
+      padding-left: 44px
+    .spec-icon
+      position: absolute
+      width: 36px
+      height: 36px
+      left: 3px
+      top: 3px
+      border: 1px solid #434445
+      +border-radius(3px)
+      box-shadow: 0 0 4px 0 black
+
+  // This is for the artifact frame itself
+  #artifactframe
+    padding: 3px
+    border: 1px solid #333333
+    background: #050505
+    +inline-block
+    height: 615px
+    width: 720px
+    position: relative
+
+    .trait
+      position: absolute
+      height: 90px
+      width: 90px
+      cursor: pointer
+
+    .relic
+      z-index: 0
+      visibility: hidden
+      height: 90px
+      width: 90px
+      cursor: pointer
+
+    .icon
+      position: absolute
+      z-index: 1
+      border-radius: 50%
+      left: 22px
+      top: 22px
+      height: 46px
+      width: 46px
+      cursor: pointer
+
+    .ring
+      position: absolute
+      z-index: 2
+      left: 5px
+      top: 5px
+      cursor: pointer
+
+      .ring-thin
+        left: 17px
+        top: 17px
+
+    .line
+      position: absolute
+      background-image: url("http://wow.zamimg.com/images/wow/interface/artifacts/_artifacts-dependencybar-bg.png")
+      background-repeat: repeat-x
+      height: 16px
+      transform-origin: 50% 50%
+
+    .level
+      background-color: black
+      border: 1px solid #666666
+      border-radius: 20%
+      color: rgb(255, 209, 0)
+      cursor: pointer
+      display: block
+      font-family: 'Open Sans', Arial
+      position: absolute
+      text-align: center
+      left: calc((100% - 2em - 2px) / 2)
+      top: 65%
+      width: 2em
+      z-index: 3
 
 #tabs
   border: 0
@@ -1321,7 +1417,7 @@ img.upgrade
   color: #E5CC80
 .quality-7
   color: #E5CC80
-  
+
 #impex
   padding: 1em
   h3

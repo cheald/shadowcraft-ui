@@ -6,23 +6,31 @@
     {{#submsg}}
     .sub {{.}}
     {{/submsg}}
+
 - mustache "talent_set" do
   %button.talent_set{:"data-spec" => "{{spec}}", :"data-talents" => "{{talent_string}}", :"data-glyphs" => "{{glyphs}}"} {{name}}
+
 - mustache "tree" do
   .tree
     {{#talents}}
     .talent.tt{:class => "row-{{tier}} col-{{column}}", :"data-tooltip-type" => "spell", :"data-tooltip-id" => "{{spell}}", :style => "background-image: url(http://wow.zamimg.com/images/wow/icons/large/{{icon}}.jpg);"}
       .grey
-    //.points 0/{{maxRank}}
     {{/talents}}
+
 - mustache "tier" do
   .tiers
     {{#levels}}
     .level{:class => "row-level-{{tier}}"} {{level}}
     {{/levels}}
+
 - mustache "specactive" do
   %span.spec-icon{:style => "background-image: url(http://wow.zamimg.com/images/wow/icons/medium/{{icon}}.jpg);"}
   %span.spec-name {{name}}
+
+- mustache "artifactactive" do
+  %span.spec-icon{:style => "background-image: url(http://wow.zamimg.com/images/wow/icons/medium/{{icon}}.jpg);"}
+  %span.spec-name {{name}}
+
 - mustache "tooltip" do
   {{#title}}
   .title {{.}}
@@ -37,6 +45,7 @@
     %p {{.}}
     {{/nextdesc}}
   {{/desc}}
+
 - mustache "stats" do
   {{#stats}}
   .stat
@@ -227,5 +236,109 @@
           %a{:href => '#', :'data-snapshot' => "{{.}}", :class => 'deleteSnapshot' } Delete
       {{/snapshots}}
 
+- mustache("artifactKingslayers") do
+  Kingslayers
 
+- mustache("artifactDreadblades") do
+  #artifactframe{:style => "background-image:url('/images/artifacts/44-small.jpg');"}
 
+    .trait.tt{:style => "left:69.512%;top:4.286%;", :id => "db_greed", "data-tooltip-type" => "spell", "data-tooltip-id" => "202533", "data-tooltip-rank" => "0"}
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/warrior_skullbanner.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-dragon.png", :class => "ring"
+      .level 0/1
+    .trait.tt{:style => "left:-1.220%;top:53.143%;", :id => "db_fatebringer", "data-tooltip-type" => "spell", "data-tooltip-id" => "202524", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/ability_rogue_cuttothechase.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:28.049%;top:87.000%;", :id => "db_gunslinger", "data-tooltip-type" => "spell", "data-tooltip-id" => "202522", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/inv_weapon_rifle_07.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:15.244%;top:44.143%;", :id => "db_bladedancer", "data-tooltip-type" => "spell", "data-tooltip-id" => "202507", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/ability_warrior_bladestorm.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:66.707%;top:38.000%;", :id => "db_fatesthirst", "data-tooltip-type" => "spell", "data-tooltip-id" => "202514", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/ability_rogue_waylay.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:56.463%;top:45.714%;", :id => "db_curse", "data-tooltip-type" => "spell", "data-tooltip-id" => "202665", "data-tooltip-rank" => "0"}
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/inv_sword_1h_artifactskywall_d_01dual.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thick.png", :class => "ring"
+      .level 0/1
+    .trait.tt{:style => "left:57.317%;top:29.714%;", :id => "db_cursedleather", "data-tooltip-type" => "spell", "data-tooltip-id" => "202521", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/ability_rogue_masterofsubtlety.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:7.073%;top:81.571%;", :id => "db_blademaster", "data-tooltip-type" => "spell", "data-tooltip-id" => "202628", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/ability_warrior_challange.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:44.634%;top:27.857%;", :id => "db_ghostlyshell", "data-tooltip-type" => "spell", "data-tooltip-id" => "202533", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/spell_shadow_nethercloak.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:71.341%;top:22.857%;", :id => "db_fortunesboon", "data-tooltip-type" => "spell", "data-tooltip-id" => "202907", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/ability_rogue_surpriseattack2.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:46.585%;top:55.286%;", :id => "db_cursededges", "data-tooltip-type" => "spell", "data-tooltip-id" => "202463", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/inv_sword_33.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:89.634%;top:25.000%;", :id => "db_hiddenblade", "data-tooltip-type" => "spell", "data-tooltip-id" => "202753", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/ability_ironmaidens_bladerush.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:19.634%;top:69.143%;", :id => "db_blunderbuss", "data-tooltip-type" => "spell", "data-tooltip-id" => "202897", "data-tooltip-rank" => "0"}
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/inv_weapon_rifle_01.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-dragon.png", :class => "ring"
+      .level 0/1
+    .trait.tt{:style => "left:33.293%;top:51.286%;", :id => "db_fortunestrikes", "data-tooltip-type" => "spell", "data-tooltip-id" => "202530", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/ability_rogue_improvedrecuperate.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:57.195%;top:16.429%;", :id => "db_deception", "data-tooltip-type" => "spell", "data-tooltip-id" => "202755", "data-tooltip-rank" => "0"}
+      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/ability_rogue_disguise.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-thin.png", :class => "ring ring-thin"
+      .level 0/3
+    .trait.tt{:style => "left:30.854%;top:35.857%;", :id => "db_blurredtime", "data-tooltip-type" => "spell", "data-tooltip-id" => "202769", "data-tooltip-rank" => "0"}
+      =image_tag "http://wow.zamimg.com/images/wow/icons/large/ability_rogue_quickrecovery.jpg", :class => "icon"
+      =image_tag "/images/artifacts/ring-dragon.png", :class => "ring"
+      .level 0/1
+    .line{:style => "width:112px;left:55.488%;top:43.714%;transform:rotate(-86.424deg);"}
+    .line{:style => "width:105px;left:50.610%;top:56.429%;transform:rotate(140.404deg);"}
+    .line{:style => "width:204px;left:2.195%;top:67.143%;transform:rotate(-146.776deg);"}
+    .line{:style => "width:135px;left:10.610%;top:81.286%;transform:rotate(139.814deg);"}
+    .line{:style => "width:143px;left:20.610%;top:84.000%;transform:rotate(61.101deg);"}
+    .line{:style => "width:126px;left:35.488%;top:37.857%;transform:rotate(-26.362deg);"}
+    .line{:style => "width:141px;left:20.000%;top:46.000%;transform:rotate(155.624deg);"}
+    .line{:style => "width:132px;left:60.732%;top:16.286%;transform:rotate(139.917deg);"}
+    .line{:style => "width:220px;left:71.585%;top:20.571%;transform:rotate(41.309deg);"}
+    .line{:style => "width:149px;left:3.415%;top:54.571%;transform:rotate(154.983deg);"}
+    .line{:style => "width:156px;left:20.244%;top:53.714%;transform:rotate(18.667deg);"}
+    .line{:style => "width:210px;left:-4.390%;top:73.286%;transform:rotate(-108.866deg);"}
+    .line{:style => "width:176px;left:12.317%;top:90.286%;transform:rotate(12.458deg);"}
+    .line{:style => "width:113px;left:38.537%;top:59.286%;transform:rotate(-165.593deg);"}
+    .line{:style => "width:96px;left:61.585%;top:39.857%;transform:rotate(36.989deg);"}
+    .line{:style => "width:130px;left:48.415%;top:28.143%;transform:rotate(142.164deg);"}
+    .line{:style => "width:113px;left:67.683%;top:36.429%;transform:rotate(-70.278deg);"}
+    .line{:style => "width:189px;left:32.927%;top:45.571%;transform:rotate(-60.444deg);"}
+    .line{:style => "width:254px;left:20.610%;top:75.143%;transform:rotate(99.759deg);"}
+    .line{:style => "width:131px;left:67.927%;top:19.571%;transform:rotate(-96.582deg);"}
+    .line{:style => "width:151px;left:76.829%;top:29.857%;transform:rotate(5.711deg);"}
+
+- mustache("artifactFangs") do
+  Fangs

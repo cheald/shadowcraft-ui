@@ -24,9 +24,13 @@
         %li
           %a{:href => "#talents"} Talents &amp; Glyphs
         %li
+          %a{:href => "#artifact"} Artifact Weapon
+        %li
           %a{:href => "#settings"} Settings
         %li
           %a{:href => "#advanced"} Advanced
+        %li
+          %a{:href => "#docs"} Documentation
       %a.dropdown#settingsDropdown{:href => "#", :"data-menu" => "settingsDropdownMenu"}<
         =image_tag "/images/cog.png"
 
@@ -88,6 +92,18 @@
           #minor-glyphs.glyphset
             %h2 Minor Glyphs
             .inner
+
+    #artifact.with-tools
+      .panel-tools
+      .panel-content
+        #artifactactive
+        .inner
+        #artifactframe
+        %div
+          %button#reset_artifact Reset Choices
+        
+        #relics
+
     #settings
       %section.cluster.combat
         .option-list
@@ -110,7 +126,7 @@
         .option-list
           %h3 Other
           #raidOther
-        
+
         .option-list
           %h3 PvP Mode
           #pvp
@@ -137,6 +153,9 @@
           %h3 Engine Info
           .inner
       .panel-content
+
+    #documentation
+      Fill in the documentation here
 
     #console-footer
       %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :target => "_blank", :class => @character.properties['race'].downcase.gsub(/ /, "_")}
