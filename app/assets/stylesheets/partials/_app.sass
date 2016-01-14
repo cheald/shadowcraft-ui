@@ -21,7 +21,6 @@ button
 
 =clearfix
   overflow: hidden
-  *zoom: 1
 
 =transition($args...)
   -webkit-transition: $args
@@ -31,37 +30,12 @@ button
   transition: $args
 
 =inline-block
-  display: -moz-inline-box
-  -moz-box-orient: vertical
   display: inline-block
   vertical-align: middle
-  *vertical-align: auto
 
 =linear-gradient($anchor, $colors...)
   background-image: -moz-linear-gradient($anchor, $colors)
   background-image: linear-gradient($anchor, $colors)
-
-=border-bottom-left-radius($radius)
-  -moz-border-radius-bottomleft: $radius
-  -webkit-border-bottom-left-radius: $radius
-  -o-border-bottom-left-radius: $radius
-  -ms-border-bottom-left-radius: $radius
-  -khtml-border-bottom-left-radius: $radius
-  border-bottom-left-radius: $radius
-
-=border-bottom-right-radius($radius)
-  -moz-border-radius-bottomright: $radius
-  -webkit-border-bottom-right-radius: $radius
-  -o-border-bottom-right-radius: $radius
-  -ms-border-bottom-right-radius: $radius
-  -khtml-border-bottom-right-radius: $radius
-  border-bottom-right-radius: $radius
-
-=box-shadow($color, $top, $left, $blur, $spread)
-  -moz-box-shadow: $color $top $left $blur $spread
-  -webkit-box-shadow: $color $top $left $blur $spread
-  -o-box-shadow: $color $top $left $blur $spread
-  box-shadow: $color $top $left $blur $spread
 
 .clearfix
   +clearfix
@@ -77,7 +51,7 @@ button
     margin: auto
     background: rgba(0, 0, 0, 0.4)
     padding: 30px
-    +border-radius(15px)
+    border-radius: 15px
     span
       display: inline-block
       margin-right: 10px
@@ -118,7 +92,7 @@ button
         color: #444444
   background: rgba(0, 0, 0, 0.4)
   padding: 30px
-  +border-radius(15px)
+  border-radius: 15px
   text-align: center
   position: absolute
   left: 0
@@ -312,13 +286,13 @@ html.websockets, html.history, html.canvas
     bottom: 0px
     display: block
     padding: 3px 3px 2px
-    +border-radius(3px)
+    border-radius: 3px
     +linear-gradient(bottom, #222222, #323232, #4b4b4b)
     border: 1px solid #444444
     left: 632px
     &.active
-    +border-bottom-left-radius(0)
-    +border-bottom-right-radius(0)
+    border-bottom-left-radius: 0
+    border-bottom-right-radius: 0
     border-bottom: 0
 
   #top-pane
@@ -346,8 +320,8 @@ html.websockets, html.history, html.canvas
     li
       width: auto
       clear: none
-      +border-bottom-left-radius(0)
-      +border-bottom-right-radius(0)
+      border-bottom-left-radius: 0
+      border-bottom-right-radius: 0
       border-width: 1px 1px 0px
       font-size: 0.85em
       font-weight: bold
@@ -424,7 +398,7 @@ span.neg
   color: #aa0000
 
 h1#head
-  +border-radius(10px)
+  border-radius: 10px
   padding: 25px
   background: #1a1a1a url(http://us.battle.net/static-render/us/cenarion-circle/66/1873474-card.jpg) bottom right no-repeat
   span
@@ -497,7 +471,7 @@ input[type='text'] //, input[type='search']
   border: 0px
   color: #999999
   padding: 3px 6px
-  +border-radius(3px)
+  border-radius: 3px
   +transition(all 0.25s)
   &:focus
     outline: none
@@ -529,7 +503,7 @@ input[type='text'] //, input[type='search']
   border: 1px solid rgba(80, 80, 80, 0.3)
   border-width: 1px
   margin: 10px
-  +box-shadow(rgba(0, 0, 0, 0.3), 3px, 3px, 3px, 0)
+  box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.3)
   font-size: 0.8em
   h3
     cursor: pointer
@@ -547,7 +521,7 @@ input[type='text'] //, input[type='search']
   max-width: 600px
   border: 2px solid rgba(255, 255, 255, 0.2)
   cursor: pointer
-  +border-radius(10px)
+  border-radius: 10px
   background: rgba(0, 20, 40, 0.9)
   font-size: 1.5em
   z-index: 1000
@@ -640,7 +614,7 @@ img.upgrade
       padding: 1em
       margin-bottom: 1em
       border: 1px solid #222222
-      +border-radius(5px)
+      border-radius: 5px
 
     select
       background: #222222
@@ -657,7 +631,7 @@ img.upgrade
       min-height: 22px
       font-weight: bold
       font-size: 0.9em
-      +border-radius(5px)
+      border-radius: 5px
       &:hover
         background-color: rgba(0, 0, 0, 0.4)
 
@@ -737,7 +711,7 @@ img.upgrade
   min-width: 500px
   position: absolute
   top: 60px
-  +box-shadow(rgba(0,0,0,0.3), 0px, 0px, 5px, 5px)
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.3)
   background: rgba(20, 20, 20, 0.95)
   visibility: hidden
   z-index: 1000
@@ -887,12 +861,12 @@ img.upgrade
   background: rgba(0, 0, 0, 0.85)
   padding: 1em
   position: absolute
-  +box-shadow(#111111, 0px, 0px, 16px, 3px)
+  box-shadow: 0px 0px 16px 3px #111111
   border: 1px solid #666666
   line-height: 1.6
   border-top-color: #aaaaaa
   border-left-color: #aaaaaa
-  +border-radius(5px)
+  border-radius: 5px
   font-size: 0.9em
   .title
     font-size: 1.1em
@@ -910,7 +884,7 @@ img.upgrade
       margin: 0
   &.clean
     border: 0
-    +box-shadow(black, 0px, 0px, 3px, 3px)
+    box-shadow: 0px 0px 3px 3px black
     background: rgba(0, 0, 0, 0.75)
     .title
       color: #eeddcc
@@ -940,7 +914,7 @@ img.upgrade
       left: 3px
       top: 3px
       border: 1px solid #434445
-      +border-radius(3px)
+      border-radius: 3px
       box-shadow: 0 0 4px 0 black
 
   #talentframe
@@ -962,7 +936,7 @@ img.upgrade
       background-color: rgba(0,0,0, 0.4)
       background-position: center center
       position: relative
-      +border-radius(3px)
+      border-radius: 3px
       width: 56px
       height: 56px
       position: absolute
@@ -971,7 +945,7 @@ img.upgrade
       font-size: 2em
       color: rgba(255, 255, 255, 0.8)
       background: rgba(0, 0, 0, 0.6)
-      +border-radius(3px)
+      border-radius: 3px
       line-height: 52px
       text-align: center
   .tree
@@ -1002,7 +976,7 @@ img.upgrade
         bottom: 0
         right: 0
         background: rgba(0, 0, 0, 0.7)
-        +border-radius(3px)
+        border-radius: 3px
       &.active .grey
         display: none
       &.active
@@ -1010,27 +984,10 @@ img.upgrade
         border-color: #ffdd00
       &:hover
         border-color: lime
-      +border-radius(3px)
+      border-radius: 3px
       width: 56px
       height: 56px
       position: absolute
-      .points
-        position: absolute
-        height: 1em
-        font-size: 0.7em
-        bottom: -6px
-        right: -11px
-        padding: 2px 4px
-        border: 1px solid #aaaaaa
-        +border-radius(3px)
-        background: rgba(0, 0, 0, 0.8)
-        color: white
-        &.partial
-          color: lime
-          border-color: lime
-        &.full
-          color: #ffdd00
-          border-color: #ffdd00
 
 #talentrankings, #upgraderankings, #dpsbreakdown
   .pct
@@ -1072,10 +1029,10 @@ img.upgrade
       margin-bottom: 10px
       cursor: pointer
       width: 250px
-      +border-radius(3px)
+      border-radius: 3px
       height: 26px
       img
-        +border-radius(3px)
+        border-radius: 3px
       &:hover
         background: rgba(0, 120, 180, 0.2)
       &.activated
@@ -1131,7 +1088,7 @@ img.upgrade
       left: 3px
       top: 3px
       border: 1px solid #434445
-      +border-radius(3px)
+      border-radius: 3px
       box-shadow: 0 0 4px 0 black
 
   // This is for the artifact frame itself
@@ -1174,9 +1131,9 @@ img.upgrade
       top: 5px
       cursor: pointer
 
-      .ring-thin
-        left: 17px
-        top: 17px
+    .ring-thin
+      left: 17px
+      top: 17px
 
     .line
       position: absolute
@@ -1199,6 +1156,9 @@ img.upgrade
       top: 65%
       width: 2em
       z-index: 3
+
+      .inactive
+        display: none
 
 #tabs
   border: 0
@@ -1235,7 +1195,7 @@ img.upgrade
   .gems .gem, .enchant, .reforge, .bonuses, .name
     background: #0e0e0e url(/images/texture.png)
     margin-bottom: 2px
-    +border-radius(2px)
+    border-radius: 2px
     padding: 5px
     font-size: 0.9em
     min-height: 14px
@@ -1290,7 +1250,7 @@ img.upgrade
   padding: 2px 2px 1px
   margin: 10px
   margin-left: 66px
-  +border-radius(3px)
+  border-radius: 3px
   +transition(background 0.2s)
   background: #0a0a0a
   &:hover
@@ -1326,8 +1286,8 @@ img.upgrade
     height: 48px
     overflow: hidden
     border: 1px solid #333333
-    +box-shadow(black, 1px, 1px, 5px, 0px)
-    +border-radius(3px)
+    box-shadow: 1px 1px 5px 0px black
+    border-radius: 3px
     img
       width: 48px
     .ilvl
@@ -1339,7 +1299,7 @@ img.upgrade
       background: rgba(0, 0, 0, 0.85)
       padding: 1px 2px
       color: lime
-      +border-radius(2px)
+      border-radius: 2px
   .lock
     opacity: 0.3
     position: absolute
@@ -1380,7 +1340,7 @@ img.upgrade
     margin: 5px 15px 5px 50px
     min-height: 46px
     padding: 3px 5px 5px
-    +border-radius(5px)
+    border-radius: 5px
     background: transparent
     &:hover
       background: rgba(30, 35, 40, 0.9)
@@ -1465,7 +1425,7 @@ img.upgrade
 .ui-dialog
   background: rgba(10, 15, 20, 0.9)
   border: 2px solid #065175
-  +border-radius(5px)
+  border-radius: 5px
 
 .ui-widget-content.ui-dialog-buttonpane
   border-color: #222222

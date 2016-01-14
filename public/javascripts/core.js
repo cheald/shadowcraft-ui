@@ -2085,7 +2085,6 @@
         tree.points += dir;
         talentsSpent += dir;
         tree.rowPoints[position.row] += dir;
-        $.data(button, "spentButton").text(tree.points);
         if (!skipUpdate) {
           data.activeTalents = getTalents();
           updateTalentAvailability($(button).parent());
@@ -2156,7 +2155,7 @@
       talentframe = $("#talentframe");
       tframe = talentframe.get(0);
       tframe.innerHTML = buffer;
-      $(".tree, .tree .talent, .tree .talent .points").disableTextSelection();
+      $(".tree, .tree .talent, .tree .talent").disableTextSelection();
       talentTrees = $("#talentframe .tree");
       $("#talentframe .talent").each(function() {
         var $this, col, myTree, row, talent, trees;
@@ -2182,8 +2181,6 @@
           cur: 0,
           max: talent.maxRank
         });
-        $.data(this, "pointsButton", $this.find(".points"));
-        $.data(this, "spentButton", trees.find(".spent"));
         return $.data(this, "icons", {
           grey: $this.css("backgroundImage"),
           normal: $this.css("backgroundImage").replace(/\/grey\//, "/")
@@ -2522,7 +2519,7 @@
           }
           glyphs = _.compact(glyphs);
           setSpec(spec);
-          Shadowcraft.Artifact.setSpec(str);
+          Shadowcraft.Artifact.setSpec(spec);
           setTalents(talents);
           return app.setGlyphs(glyphs);
         }

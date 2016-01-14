@@ -143,7 +143,6 @@ class ShadowcraftTalents
       talentsSpent += dir
       tree.rowPoints[position.row] += dir
 
-      $.data(button, "spentButton").text(tree.points)
       unless skipUpdate
         data.activeTalents = getTalents()
         updateTalentAvailability $(button).parent()
@@ -185,7 +184,7 @@ class ShadowcraftTalents
     talentframe = $("#talentframe")
     tframe = talentframe.get(0)
     tframe.innerHTML = buffer
-    $(".tree, .tree .talent, .tree .talent .points").disableTextSelection()
+    $(".tree, .tree .talent, .tree .talent").disableTextSelection()
 
     talentTrees = $("#talentframe .tree")
     $("#talentframe .talent").each(->
@@ -200,11 +199,8 @@ class ShadowcraftTalents
       $.data(myTree, "info", {points: 0, rowPoints: [0, 0, 0, 0, 0, 0, 0]})
       $.data(this, "talent", talent)
       $.data(this, "points", {cur: 0, max: talent.maxRank})
-      $.data(this, "pointsButton", $this.find(".points"))
-      $.data(this, "spentButton", trees.find(".spent"))
       $.data(this, "icons", {grey: $this.css("backgroundImage"), normal: $this.css("backgroundImage").replace(/\/grey\//, "/")})
     ).mousedown((e) ->
-      #return if !$(this).hasClass("active")
       return if Modernizr.touch
       switch(e.button)
         when 0
@@ -442,7 +438,7 @@ class ShadowcraftTalents
           glyphs[i] = parseInt(glyph, 10)
         glyphs = _.compact(glyphs)
         setSpec spec
-        Shadowcraft.Artifact.setSpec str
+        Shadowcraft.Artifact.setSpec spec
         setTalents talents
         app.setGlyphs glyphs
     })

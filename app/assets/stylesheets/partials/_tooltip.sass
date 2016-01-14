@@ -1,11 +1,3 @@
-=border-radius($radius)
-  -moz-border-radius:    $radius
-  -webkit-border-radius: $radius
-  -o-border-radius:      $radius
-  -ms-border-radius:     $radius
-  -khtml-border-radius:  $radius
-  border-radius:         $radius
-
 .ea-tooltip
   position: absolute
   visibility: hidden
@@ -17,10 +9,8 @@
     border-right: 1px solid #777777
     border-bottom: 1px solid #777777
     border-left: 1px solid #cccccc
-    +border-radius(5px)
-    -moz-box-shadow: black 1px 1px 5px
-    -webkit-box-shadow: black 1px 1px 5px
-    -webkit-border-radius: 0.55ex
+    border-radius: 5px
+    box-shadow: black 1px 1px 5px
     color: white
     text-align: left
     z-index: 65000
