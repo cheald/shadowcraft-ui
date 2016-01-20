@@ -438,7 +438,6 @@ class ShadowcraftTalents
           glyphs[i] = parseInt(glyph, 10)
         glyphs = _.compact(glyphs)
         setSpec spec
-        Shadowcraft.Artifact.setSpec spec
         setTalents talents
         app.setGlyphs glyphs
     })
@@ -446,7 +445,6 @@ class ShadowcraftTalents
 
     Shadowcraft.bind "loadData", ->
       app.updateActiveTalents()
-      #app.updateGlyphDisplay()
 
     Shadowcraft.Options.bind "update", (opt, val) ->
       if opt in ['general.patch','general.level']

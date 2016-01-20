@@ -1093,7 +1093,6 @@ img.upgrade
 
   // This is for the artifact frame itself
   #artifactframe
-    padding: 3px
     border: 1px solid #333333
     background: #050505
     +inline-block
@@ -1122,14 +1121,15 @@ img.upgrade
       top: 22px
       height: 46px
       width: 46px
-      cursor: pointer
+      background: black
+      &.inactive
+        opacity: 0.6
 
     .ring
       position: absolute
       z-index: 2
       left: 5px
       top: 5px
-      cursor: pointer
 
     .ring-thin
       left: 17px
@@ -1147,7 +1147,6 @@ img.upgrade
       border: 1px solid #666666
       border-radius: 20%
       color: rgb(255, 209, 0)
-      cursor: pointer
       display: block
       font-family: 'Open Sans', Arial
       position: absolute
@@ -1157,8 +1156,11 @@ img.upgrade
       width: 2em
       z-index: 3
 
-      .inactive
+      &.inactive
         display: none
+
+#artifact_button_div
+  padding: 10px
 
 #tabs
   border: 0

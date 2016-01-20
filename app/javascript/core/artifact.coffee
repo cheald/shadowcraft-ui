@@ -4,12 +4,93 @@ class ShadowcraftArtifact
     "a":
       icon: "inv_knife_1h_artifactgarona_d_01"
       text: "The Kingslayers"
+      main: 0
     "Z":
       icon: "inv_sword_1h_artifactskywall_d_01"
       text: "The Dreadblades"
+      main: 202665
     "b":
       icon: "inv_knife_1h_artifactfangs_d_01"
       text: "Fangs of the Devourer"
+      main: 0
+
+  updateTraits = ->
+
+    main_spell_id = 202665
+    traits = $("#artifactframe .trait")
+
+    # Disable everything.
+    traits.each(->
+      $(this).children(".level").addClass("inactive")
+      $(this).children(".icon").addClass("inactive")
+    )
+    $("#artifactframe .line").each(->
+      # TODO: set the line to a lighter version
+    )
+
+    # if there's no artifact data in the data object, just return and don't do
+    # anything else. this is mostly here for testing right now, but it's best
+    # to check instead of throwing an error.
+    if (!Shadowcraft.Data.artifact)
+      return
+
+    # get the element for the main proc of the artifact
+    main = $("#artifactframe .trait[data-tooltip-id='"+main_spell_id+"']")
+
+    # if the current level for the main proc is zero, disable everything
+    if (Shadowcraft.Data.artifact.settings[main_spell_id] == 0)
+
+      # enable the level for the main icon and set the level to 0/1
+      main.children(".level").text("0/"+trait.attr("max_level"))
+      main.children(".level").removeClass("inactive")
+      main.children(".icon").removeClass("inactive")
+
+    else
+      # starting at main, run a search to enable all of the icons that need
+      # to be enabled based on the line endpoints. while enabling/disabling
+      # icons, also set the level display based on the current level stored in
+      # the data.
+      done = []
+      stack = [main_spell_id]
+
+      while (stack.length > 0)
+        spell_id = stack.pop()
+        console.log("processing icon for "+ spell_id)
+
+        # if we've already processed this one (covers loops), skip it and go
+        # on to the next one
+        if (jQuery.inArray(spell_id, done) != -1)
+          continue
+
+        # find the trait element with this spell ID
+        trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
+        max_level = parseInt(trait.attr("max_level"))
+        icon = trait.children(".icon")
+        level = trait.children(".level")
+        current_level = Shadowcraft.Data.artifact.settings[spell_id]
+
+        level.text("" + current_level + "/" +max_level)
+        level.removeClass("inactive")
+        icon.removeClass("inactive")
+
+        # if the level is equal to the max level, then enable the lines
+        # attached to this icon and insert the spell IDs for the icons
+        # at the other ends to the stack so they'll get processed too.
+        if (current_level == max_level)
+          $("#artifactframe .line[spell1='"+spell_id+"']").each(->
+            # TODO: enable line
+            if (jQuery.inArray($(this).attr("spell2"), done) == -1)
+              stack.push($(this).attr("spell2"))
+          )
+          $("#artifactframe .line[spell2='"+spell_id+"']").each(->
+            # TODO: enable line
+            if (jQuery.inArray($(this).attr("spell1"), done) == -1)
+              stack.push($(this).attr("spell1"))
+          )
+
+        # insert this spell ID into the list of "done" IDs so it doesn't
+        # get procesed again
+        done.push(spell_id)
 
   displayKingslayers = ->
     buffer = Templates.artifactKingslayers()
@@ -22,6 +103,57 @@ class ShadowcraftArtifact
   displayFangs = ->
     buffer = Templates.artifactFangs()
     $("#artifactframe").get(0).innerHTML = buffer
+
+  increaseTrait = (e) ->
+    spell_id = parseInt(e.delegateTarget.attributes["data-tooltip-id"].value)
+    trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
+    max_level = parseInt(trait.attr("max_level"))
+    if (Shadowcraft.Data.artifact.settings[spell_id] == max_level)
+      return
+
+    old_level = Shadowcraft.Data.artifact.settings[spell_id]
+    Shadowcraft.Data.artifact.settings[spell_id] += 1
+    current_level = Shadowcraft.Data.artifact.settings[spell_id]
+
+    level = trait.children(".level")
+    level.text("" + current_level + "/" +max_level)
+    stack = []
+    if (current_level == max_level)
+      $("#artifactframe .line[spell1='"+spell_id+"']").each(->
+        # TODO: enable line
+        stack.push($(this).attr("spell2"))
+      )
+      $("#artifactframe .line[spell2='"+spell_id+"']").each(->
+        # TODO: enable line
+        stack.push($(this).attr("spell1"))
+      )
+
+      for id in stack
+        traits = $("#artifactframe .trait[data-tooltip-id='"+id+"']")
+        traits.each(->
+          $(this).children(".icon").removeClass("inactive")
+          $(this).children(".level").removeClass("inactive")
+        )
+
+    else if (old_level == max_level)
+      $("#artifactframe .line[spell1='"+spell_id+"']").each(->
+        # TODO: enable line
+        stack.push($(this).attr("spell2"))
+      )
+      $("#artifactframe .line[spell2='"+spell_id+"']").each(->
+        # TODO: enable line
+        stack.push($(this).attr("spell1"))
+      )
+
+      for id in stack
+        traits = $("#artifactframe .trait[data-tooltip-id='"+id+"']")
+        traits.each(->
+          $(this).children(".icon").addClass("inactive")
+          $(this).children(".level").addClass("inactive")
+        )
+
+  decreaseTrait = (e) ->
+    console.log e.delegateTarget.id
 
   setSpec: (str) ->
     buffer = Templates.artifactActive({
@@ -37,15 +169,15 @@ class ShadowcraftArtifact
     else if str == "b"
       displayFangs()
 
-    artifactframe = $("#artifactframe")
+    updateTraits()
+
     $("#artifactframe .trait").each(->
     ).mousedown((e) ->
-      return if Modernizr.touch
       switch(e.button)
         when 0
-          console.log "left click on "
+          increaseTrait(e)
         when 2
-          console.log "right click on "
+          decreaseTrait(e)
     ).bind("contextmenu", -> false
     ).mouseover($.delegate
       ".tt": ttlib.requestTooltip
@@ -53,22 +185,9 @@ class ShadowcraftArtifact
     .mouseout($.delegate
       ".tt": ttlib.hide
     )
-    .bind("touchstart", (e) ->
-      $.data(this, "removed", false)
-      $.data(this, "listening", true)
-      $.data(tframe, "listening", this)
-    ).bind("touchend", (e) ->
-      $.data(this, "listening", false)
-      unless $.data(this, "removed") or !$(this).hasClass("active")
-        console.log("touchend")
-    )
 
-    artifactframe.bind("touchstart", (e) ->
-      listening = $.data(tframe, "listening")
-      if e.originalEvent.touches.length > 1 and listening and $.data(listening, "listening")
-        console.log("touch start")
-        $.data(listening, "removed", true)
-    )
+  resetTraits: ->
+    console.log "clicked reset button"
 
   boot: ->
     app = this
@@ -83,6 +202,12 @@ class ShadowcraftArtifact
     Shadowcraft.Talents.bind "changedSpec", (spec) ->
       app.setSpec(spec)
 
+    $("#reset_artifact").mousedown((e) ->
+      switch(e.button)
+        when 0
+          app.resetTraits()
+    ).bind("contextmenu", -> false
+    )
     this
 
   constructor: (@app) ->

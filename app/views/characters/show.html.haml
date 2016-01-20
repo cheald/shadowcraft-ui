@@ -83,7 +83,7 @@
         .inner
         #talentframe
         %div
-          %button#reset_talents Reset Talents
+          %button#reset_talents .inner Reset Talents
 
         #glyphs
           #major-glyphs.glyphset
@@ -95,13 +95,15 @@
 
     #artifact.with-tools
       .panel-tools
+        %div#artifact_button_div
+          %button#reset_artifact Reset Traits
+        %section
+          %h3 Trait Rankings
+          #traitrankings.inner
       .panel-content
         #artifactactive
         .inner
         #artifactframe
-        %div
-          %button#reset_artifact Reset Choices
-        
         #relics
 
     #settings
