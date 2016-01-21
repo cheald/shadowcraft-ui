@@ -137,7 +137,7 @@ PLATFORMS
 DEPENDENCIES
   bson_ext
   coffee-script
-  curb (= 0.8.8)
+  curb (>= 0.8.5)
   dynamic_form
   exception_notification!
   formtastic
@@ -147,7 +147,7 @@ DEPENDENCIES
   json
   mongo
   mongoid
-  nokogiri
+  nokogiri (>= 1.6.0)
   rails (= 3.2.22)
   ruby-hmac
   sass-rails

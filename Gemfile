@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.2.22'
-gem 'nokogiri'
+gem 'nokogiri', '>= 1.6.0'
 gem "formtastic"
 gem 'dynamic_form'
 gem "haml"
@@ -13,7 +13,7 @@ gem "exception_notification", :git => "http://github.com/rails/exception_notific
 gem "will_paginate"
 gem "json"
 gem "jammit"
-gem "curb", '0.8.8'
+gem "curb", '>= 0.8.5'
 gem 'ruby-hmac', :require => 'hmac-sha1'
 gem 'sass-rails'
 gem 'test-unit', '~> 3.0'
