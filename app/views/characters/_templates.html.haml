@@ -8,7 +8,7 @@
     {{/submsg}}
 
 - mustache "talent_set" do
-  %button.talent_set{:"data-spec" => "{{spec}}", :"data-talents" => "{{talent_string}}", :"data-glyphs" => "{{glyphs}}"} {{name}}
+  %button.talent_set{:"data-spec" => "{{spec}}", :"data-talents" => "{{talent_string}}"} {{name}}
 
 - mustache "tree" do
   .tree
@@ -204,15 +204,6 @@
       {{/options}}
       </select>
     %span.desc {{desc}}
-
-- mustache("glyph_slot") do
-  %div.glyph_slot{:"data-id" => "{{id}}", :"data-tooltip-type" => "spell", :"data-tooltip-id" => "{{spell}}"}
-    %span.img<
-      %img{:src => "http://us.media.blizzard.com/wow/icons/56/{{icon}}.jpg"}
-    {{name}}
-    .pct
-      .label
-      .pct-inner
 
 - mustache("talent_contribution") do
   .talent_contribution{:"data-val" => "{{width}}", :id => "talent-weight-{{raw_name}}"}

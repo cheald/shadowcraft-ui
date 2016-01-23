@@ -2,7 +2,6 @@ class ShadowcraftTalents
   talentsSpent = 0
   MAX_TALENT_POINTS = 7
   TREE_SIZE = 7
-  ALWAYS_SHOW_GLYPHS = []
   CHARACTER_SPEC = ""
   SPEC_ICONS =
     "a": "ability_rogue_eviscerate"
@@ -12,15 +11,12 @@ class ShadowcraftTalents
   DEFAULT_SPECS =
     "Stock Assassination":
       talents: "2211021"
-      glyphs: [45761,110853,110850]
       spec: "a"
     "Stock Combat":
       talents: "2211011"
-      glyphs: [110853,110850]
       spec: "Z"
     "Stock Subtlety":
       talents: "1210011"
-      glyphs: [42970,63420,110850]
       spec: "b"
 
   @GetActiveSpecName = ->
@@ -54,20 +50,6 @@ class ShadowcraftTalents
     Shadowcraft.Talents.trigger("changed")
     Shadowcraft.update()
     checkForWarnings("talents")
-
-  hoverTalent = ->
-    return if Modernizr.touch
-    points = $.data(this, "points")
-    talent = $.data(this, "talent")
-    rank = if talent.rank.length then talent.rank[points.cur - 1] else talent.rank
-    nextRank = if talent.rank.length then talent.rank[points.cur] else null
-    pos = $(this).offset()
-    tooltip({
-      title: talent.name + " (" + points.cur + "/" + points.max + ")",
-      desc: if rank then rank.description else null,
-      nextdesc: if nextRank then "Next rank: " + nextRank.description else null
-
-    }, pos.left, pos.top, 130, -20)
 
   resetTalents = ->
     data = Shadowcraft.Data
@@ -153,10 +135,8 @@ class ShadowcraftTalents
     if not data.activeSpec
       data.activeTalents = data.talents[data.active].talents
       data.activeSpec = data.talents[data.active].spec
-      data.glyphs = data.talents[data.active].glyphs
     setSpec data.activeSpec
     setTalents data.activeTalents
-    this.setGlyphs data.glyphs
 
   initTalentTree: ->
     Talents = Shadowcraft.ServerData.TALENTS_WOD
@@ -242,7 +222,6 @@ class ShadowcraftTalents
     for talent in data.talents
       buffer += Templates.talentSet({
         talent_string: talent.talents,
-        glyphs: talent.glyphs.join(","),
         name: "Imported " + getSpecName(talent.spec),
         spec: talent.spec
       })
@@ -250,127 +229,12 @@ class ShadowcraftTalents
     for talentName, talentSet of DEFAULT_SPECS
       buffer += Templates.talentSet({
         talent_string: talentSet.talents,
-        glyphs: talentSet.glyphs.join(","),
         name: talentName,
         spec: talentSet.spec
       })
 
     $("#talentsets").get(0).innerHTML = buffer
     this.updateActiveTalents()
-
-  setGlyphs: (glyphs) ->
-    Shadowcraft.Data.glyphs = glyphs
-    this.updateGlyphDisplay()
-
-  initGlyphs: ->
-    buffer = [null, "", ""]
-    Glyphs = Shadowcraft.ServerData.GLYPHS
-    data = Shadowcraft.Data
-    if not data.glyphs
-      data.glyphs = data.talents[data.active].glyphs
-
-    for g, idx in Glyphs
-      buffer[g.rank] += Templates.glyphSlot(g)
-
-    $("#major-glyphs .inner").get(0).innerHTML = buffer[1]
-    $("#minor-glyphs .inner").get(0).innerHTML = buffer[2]
-    this.updateGlyphDisplay()
-
-  updateGlyphDisplay: ->
-    Glyphs = Shadowcraft.ServerData.GLYPHS
-    data = Shadowcraft.Data
-    return unless data.glyphs?
-
-    for glyph, idx in Glyphs
-      g = $(".glyph_slot[data-id='" + glyph.id + "']")
-      if glyph.id in data.glyphs
-        setGlyph(g, true)
-      else
-        setGlyph(g, false)
-    checkForWarnings('glyphs')
-
-  updateGlyphWeights = (data) ->
-    max = _.max(data.glyph_ranking)
-    # $(".glyph_slot:not(.activated)").hide()
-    $(".glyph_slot .pct-inner").css({width: 0})
-    for key, weight of data.glyph_ranking
-      g = Shadowcraft.ServerData.GLYPHNAME_LOOKUP[key]
-      if g
-        width = weight / max * 100
-        slot = $(".glyph_slot[data-id='" + g.id + "']")
-        $.data(slot[0], "weight", weight)
-        slot.show().find(".pct-inner").css({width: width + "%"})
-        slot.find(".label").text(weight.toFixed(1) + " DPS")
-
-    for id in ALWAYS_SHOW_GLYPHS
-      $(".glyph_slot[data-id='#{id}']").show()
-
-    glyphSets = $(".glyphset")
-    for glyphSet in glyphSets
-      $(glyphSet).find(".glyph_slot").sortElements (a, b) ->
-        gl = Shadowcraft.ServerData.GLYPH_LOOKUP
-        aa = if $(a).hasClass("activated") then 1 else 0
-        ba = if $(b).hasClass("activated") then 1 else 0
-        aw = $.data(a, "weight")
-        bw = $.data(b, "weight")
-        if gl
-          an = gl[$.data(a, "id")].name
-          bn = gl[$.data(b, "id")].name
-        aw ||= -1; bw ||= -1; an ||= ""; bn ||= ""
-        if aw != bw
-          if aw > bw then -1 else 1
-        else
-          if aa != ba
-            if aa > ba then -1 else 1
-          else
-            if an > bn then 1 else -1
-
-  glyphRankCount = (rank, g) ->
-    data = Shadowcraft.Data
-    GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
-    if g and !rank
-      rank = GlyphLookup[g].rank
-
-    count = 0
-    for glyph in data.glyphs
-      if GlyphLookup[glyph]?
-        count++ if GlyphLookup[glyph].rank == rank
-    count
-
-  setGlyph = (e, active) ->
-    $e = $(e)
-    $set = $e.parents(".glyphset")
-    id = parseInt($e.data("id"), 10)
-    if active
-      $e.addClass("activated")
-    else
-      $e.removeClass("activated")
-      $set.removeClass("full")
-    if glyphRankCount(null, id) >= 3
-      $set.addClass("full")
-    else
-      $set.removeClass("full")
-
-  toggleGlyph = (e, override) ->
-    data = Shadowcraft.Data
-
-    $e = $(e)
-    $set = $e.parents(".glyphset")
-    id = parseInt($e.data("id"), 10)
-    if $e.hasClass("activated")
-      $e.removeClass("activated")
-      data.glyphs = _.without(data.glyphs, id)
-      $set.removeClass("full")
-    else
-      return if glyphRankCount(null, id) >= 3 and !override
-      $e.addClass("activated")
-      if !override and data.glyphs.indexOf(id) == -1
-        data.glyphs.push(id)
-      if glyphRankCount(null, id) >= 3
-        $set.addClass("full")
-
-    checkForWarnings('glyphs')
-    Shadowcraft.update()
 
   updateTalentContribution = (LC) ->
     return unless LC.talent_ranking
@@ -415,31 +279,16 @@ class ShadowcraftTalents
 
   boot: ->
     this.initTalentsPane()
-    this.initGlyphs()
     app = this
 
     Shadowcraft.Backend.bind("recompute", updateTalentContribution)
-    Shadowcraft.Backend.bind("recompute", updateGlyphWeights)
-
-    $("#glyphs").click($.delegate
-      ".glyph_slot": -> toggleGlyph(this)
-    ).mouseover($.delegate
-      ".glyph_slot": ttlib.requestTooltip
-    ).mouseout($.delegate
-      ".glyph_slot": ttlib.hide
-    )
 
     $("#talentsets").click $.delegate({
       ".talent_set": ->
         spec = $(this).data("spec")
         talents = $(this).data("talents")+""
-        glyphs = ($(this).data("glyphs")+"" || "").split ","
-        for glyph, i in glyphs
-          glyphs[i] = parseInt(glyph, 10)
-        glyphs = _.compact(glyphs)
         setSpec spec
         setTalents talents
-        app.setGlyphs glyphs
     })
     $("#reset_talents").click(resetTalents)
 

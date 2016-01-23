@@ -216,13 +216,11 @@ class ShadowcraftHistory
       ret.push data.active
       ret.push data.activeSpec
       ret.push data.activeTalents
-      ret.push base36Encode(data.glyphs)
       talentSet = []
       for set in [0,1]
         talent = data.talents[set]
         talentSet.push talent.spec
         talentSet.push talent.talents
-        talentSet.push base36Encode(talent.glyphs)
       ret.push talentSet
 
       # Options
@@ -287,17 +285,15 @@ class ShadowcraftHistory
         active: data[2]
         activeSpec: data[3]
         activeTalents: data[4]
-        glyphs: base36Decode(data[5])
         options: {}
         talents: []
 
-      talentSets = data[6]
+      talentSets = data[5]
       for id, index in talentSets by 3
         set = (index / 3).toString()
         d.talents[set] =
           spec: talentSets[index]
           talents: talentSets[index + 1]
-          glyphs: base36Decode(talentSets[index + 2])
 
       gear = base36Decode data[1]
       index = 0
@@ -326,7 +322,7 @@ class ShadowcraftHistory
         for k, v of d.gear[slot]
           delete d.gear[slot][k] if v == 0
 
-      options = data[7]
+      options = data[6]
       general = base36Decode options[0]
       d.options.general =
         level:                  general[0]

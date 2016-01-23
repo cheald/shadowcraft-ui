@@ -65,12 +65,6 @@ checkForWarnings = (section) ->
     if parseInt(data.options.general.patch) < 60
       Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to the newest Patch and/or clear all saved data and refresh from armory.", null, 'warn', 'options')
 
-  if section == undefined or section == "glyphs"
-    # Warn glyphs
-    Shadowcraft.Console.remove(".glyphs")
-    if data.glyphs.length < 1
-      Shadowcraft.Console.warn({}, "You have no Glyphs selected", null, 'warn', 'glyphs')
-
   if section == undefined or section == "talents"
     # Warn talents
     Shadowcraft.Console.remove(".talents")

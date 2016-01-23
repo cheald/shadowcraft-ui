@@ -24,17 +24,11 @@ class ShadowcraftBackend
   buildPayload: ->
     data = Shadowcraft.Data
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
-    GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP
 
     statSummary = Shadowcraft.Gear.sumStats()
 
     mh = Shadowcraft.Gear.getItem(data.gear[15].original_id, data.gear[15].item_level, data.gear[15].suffix) if data.gear[15]
     oh = Shadowcraft.Gear.getItem(data.gear[16].original_id, data.gear[16].item_level, data.gear[16].suffix) if data.gear[16]
-    glyph_list = []
-
-    for glyph in data.glyphs
-      if GlyphLookup[glyph]?
-        glyph_list.push GlyphLookup[glyph].ename
 
     buffList = []
     for key, val of data.options.buffs
@@ -90,7 +84,6 @@ class ShadowcraftBackend
         statSummary.resilience || 0,
         statSummary.pvp_power || 0
       ],
-      gly: glyph_list
 
     if mh?
       payload.mh = [
