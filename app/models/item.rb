@@ -114,6 +114,7 @@ class Item
     # the game anymore?
     # blue items
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 600, 665)
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 695, 705) # pvp
 
     # epic items
     # TODO: no idea why we break this up into three parts. It's probably something
@@ -439,7 +440,7 @@ class Item
 
   # Retrieves a set of item IDs from wowhead using a filter on ilvl and quality
   def self.get_ids_from_wowhead_by_ilvl(prefix, quality, min_ilvl, max_ilvl)
-    url = "http://#{prefix}.wowhead.com/items?filter=qu=#{quality};minle=#{min_ilvl};maxle=#{max_ilvl};ub=4;cr=21;crs=1;crv=0"
+    url = "http://#{prefix}.wowhead.com/items?filter=qu=#{quality};minle=#{min_ilvl};maxle=#{max_ilvl};ub=4;cr=21;crs=1;crv=0;eb=1"
     get_ids_from_wowhead(url)
   end
 
