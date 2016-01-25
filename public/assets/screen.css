@@ -1859,14 +1859,14 @@ img.upgrade {
 }
 
 /* line 602, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings h3, #tabs #advanced .panel-content h3, #tabs #bonuses h3, #create_character #settings h3, #create_character #advanced .panel-content h3, #create_character #bonuses h3 {
+#tabs #settings h3, #tabs #advanced .panel-content h3, #tabs #bonuses h3, #tabs #docs h3, #create_character #settings h3, #create_character #advanced .panel-content h3, #create_character #bonuses h3, #create_character #docs h3 {
   font-size: 1.3em;
   font-weight: bold;
   margin: 0 0.5em 1em;
 }
 
 /* line 606, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings .option-list, #tabs #advanced .panel-content .option-list, #tabs #bonuses .option-list, #create_character #settings .option-list, #create_character #advanced .panel-content .option-list, #create_character #bonuses .option-list {
+#tabs #settings .option-list, #tabs #advanced .panel-content .option-list, #tabs #bonuses .option-list, #tabs #docs .option-list, #create_character #settings .option-list, #create_character #advanced .panel-content .option-list, #create_character #bonuses .option-list, #create_character #docs .option-list {
   float: left;
   display: inline-block;
   vertical-align: middle;
@@ -1875,7 +1875,7 @@ img.upgrade {
 }
 
 /* line 611, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings section.cluster, #tabs #advanced .panel-content section.cluster, #tabs #bonuses section.cluster, #create_character #settings section.cluster, #create_character #advanced .panel-content section.cluster, #create_character #bonuses section.cluster {
+#tabs #settings section.cluster, #tabs #advanced .panel-content section.cluster, #tabs #bonuses section.cluster, #tabs #docs section.cluster, #create_character #settings section.cluster, #create_character #advanced .panel-content section.cluster, #create_character #bonuses section.cluster, #create_character #docs section.cluster {
   overflow: hidden;
   background: #0c0c0c;
   padding: 1em;
@@ -1885,7 +1885,7 @@ img.upgrade {
 }
 
 /* line 619, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings select, #tabs #advanced .panel-content select, #tabs #bonuses select, #create_character #settings select, #create_character #advanced .panel-content select, #create_character #bonuses select {
+#tabs #settings select, #tabs #advanced .panel-content select, #tabs #bonuses select, #tabs #docs select, #create_character #settings select, #create_character #advanced .panel-content select, #create_character #bonuses select, #create_character #docs select {
   background: #222222;
   color: white;
   border-color: black;
@@ -1893,12 +1893,12 @@ img.upgrade {
 }
 
 /* line 624, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings select option, #tabs #advanced .panel-content select option, #tabs #bonuses select option, #create_character #settings select option, #create_character #advanced .panel-content select option, #create_character #bonuses select option {
+#tabs #settings select option, #tabs #advanced .panel-content select option, #tabs #bonuses select option, #tabs #docs select option, #create_character #settings select option, #create_character #advanced .panel-content select option, #create_character #bonuses select option, #create_character #docs select option {
   padding: 2px 0;
 }
 
 /* line 627, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings .label_check, #tabs #settings .input, #tabs #settings .select, #tabs #advanced .panel-content .label_check, #tabs #advanced .panel-content .input, #tabs #advanced .panel-content .select, #tabs #bonuses .label_check, #tabs #bonuses .input, #tabs #bonuses .select, #create_character #settings .label_check, #create_character #settings .input, #create_character #settings .select, #create_character #advanced .panel-content .label_check, #create_character #advanced .panel-content .input, #create_character #advanced .panel-content .select, #create_character #bonuses .label_check, #create_character #bonuses .input, #create_character #bonuses .select {
+#tabs #settings .label_check, #tabs #settings .input, #tabs #settings .select, #tabs #advanced .panel-content .label_check, #tabs #advanced .panel-content .input, #tabs #advanced .panel-content .select, #tabs #bonuses .label_check, #tabs #bonuses .input, #tabs #bonuses .select, #tabs #docs .label_check, #tabs #docs .input, #tabs #docs .select, #create_character #settings .label_check, #create_character #settings .input, #create_character #settings .select, #create_character #advanced .panel-content .label_check, #create_character #advanced .panel-content .input, #create_character #advanced .panel-content .select, #create_character #bonuses .label_check, #create_character #bonuses .input, #create_character #bonuses .select, #create_character #docs .label_check, #create_character #docs .input, #create_character #docs .select {
   display: block;
   width: 500px;
   background-color: #080808;
@@ -1909,24 +1909,24 @@ img.upgrade {
 }
 
 /* line 635, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings .label_check:hover, #tabs #settings .input:hover, #tabs #settings .select:hover, #tabs #advanced .panel-content .label_check:hover, #tabs #advanced .panel-content .input:hover, #tabs #advanced .panel-content .select:hover, #tabs #bonuses .label_check:hover, #tabs #bonuses .input:hover, #tabs #bonuses .select:hover, #create_character #settings .label_check:hover, #create_character #settings .input:hover, #create_character #settings .select:hover, #create_character #advanced .panel-content .label_check:hover, #create_character #advanced .panel-content .input:hover, #create_character #advanced .panel-content .select:hover, #create_character #bonuses .label_check:hover, #create_character #bonuses .input:hover, #create_character #bonuses .select:hover {
+#tabs #settings .label_check:hover, #tabs #settings .input:hover, #tabs #settings .select:hover, #tabs #advanced .panel-content .label_check:hover, #tabs #advanced .panel-content .input:hover, #tabs #advanced .panel-content .select:hover, #tabs #bonuses .label_check:hover, #tabs #bonuses .input:hover, #tabs #bonuses .select:hover, #tabs #docs .label_check:hover, #tabs #docs .input:hover, #tabs #docs .select:hover, #create_character #settings .label_check:hover, #create_character #settings .input:hover, #create_character #settings .select:hover, #create_character #advanced .panel-content .label_check:hover, #create_character #advanced .panel-content .input:hover, #create_character #advanced .panel-content .select:hover, #create_character #bonuses .label_check:hover, #create_character #bonuses .input:hover, #create_character #bonuses .select:hover, #create_character #docs .label_check:hover, #create_character #docs .input:hover, #create_character #docs .select:hover {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
 /* line 638, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings .input, #tabs #settings .select, #tabs #advanced .panel-content .input, #tabs #advanced .panel-content .select, #tabs #bonuses .input, #tabs #bonuses .select, #create_character #settings .input, #create_character #settings .select, #create_character #advanced .panel-content .input, #create_character #advanced .panel-content .select, #create_character #bonuses .input, #create_character #bonuses .select {
+#tabs #settings .input, #tabs #settings .select, #tabs #advanced .panel-content .input, #tabs #advanced .panel-content .select, #tabs #bonuses .input, #tabs #bonuses .select, #tabs #docs .input, #tabs #docs .select, #create_character #settings .input, #create_character #settings .select, #create_character #advanced .panel-content .input, #create_character #advanced .panel-content .select, #create_character #bonuses .input, #create_character #bonuses .select, #create_character #docs .input, #create_character #docs .select {
   padding-left: 10px;
   width: 520px;
 }
 
 /* line 641, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings .input .select-container, #tabs #settings .select .select-container, #tabs #advanced .panel-content .input .select-container, #tabs #advanced .panel-content .select .select-container, #tabs #bonuses .input .select-container, #tabs #bonuses .select .select-container, #create_character #settings .input .select-container, #create_character #settings .select .select-container, #create_character #advanced .panel-content .input .select-container, #create_character #advanced .panel-content .select .select-container, #create_character #bonuses .input .select-container, #create_character #bonuses .select .select-container {
+#tabs #settings .input .select-container, #tabs #settings .select .select-container, #tabs #advanced .panel-content .input .select-container, #tabs #advanced .panel-content .select .select-container, #tabs #bonuses .input .select-container, #tabs #bonuses .select .select-container, #tabs #docs .input .select-container, #tabs #docs .select .select-container, #create_character #settings .input .select-container, #create_character #settings .select .select-container, #create_character #advanced .panel-content .input .select-container, #create_character #advanced .panel-content .select .select-container, #create_character #bonuses .input .select-container, #create_character #bonuses .select .select-container, #create_character #docs .input .select-container, #create_character #docs .select .select-container {
   display: inline-block;
   vertical-align: middle;
 }
 
 /* line 643, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings .input span.label, #tabs #settings .select span.label, #tabs #advanced .panel-content .input span.label, #tabs #advanced .panel-content .select span.label, #tabs #bonuses .input span.label, #tabs #bonuses .select span.label, #create_character #settings .input span.label, #create_character #settings .select span.label, #create_character #advanced .panel-content .input span.label, #create_character #advanced .panel-content .select span.label, #create_character #bonuses .input span.label, #create_character #bonuses .select span.label {
+#tabs #settings .input span.label, #tabs #settings .select span.label, #tabs #advanced .panel-content .input span.label, #tabs #advanced .panel-content .select span.label, #tabs #bonuses .input span.label, #tabs #bonuses .select span.label, #tabs #docs .input span.label, #tabs #docs .select span.label, #create_character #settings .input span.label, #create_character #settings .select span.label, #create_character #advanced .panel-content .input span.label, #create_character #advanced .panel-content .select span.label, #create_character #bonuses .input span.label, #create_character #bonuses .select span.label, #create_character #docs .input span.label, #create_character #docs .select span.label {
   display: inline-block;
   vertical-align: middle;
   width: 150px;
@@ -1935,7 +1935,7 @@ img.upgrade {
 }
 
 /* line 650, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings .select span.desc, #tabs #settings .input span.desc, #tabs #advanced .panel-content .select span.desc, #tabs #advanced .panel-content .input span.desc, #tabs #bonuses .select span.desc, #tabs #bonuses .input span.desc, #create_character #settings .select span.desc, #create_character #settings .input span.desc, #create_character #advanced .panel-content .select span.desc, #create_character #advanced .panel-content .input span.desc, #create_character #bonuses .select span.desc, #create_character #bonuses .input span.desc {
+#tabs #settings .select span.desc, #tabs #settings .input span.desc, #tabs #advanced .panel-content .select span.desc, #tabs #advanced .panel-content .input span.desc, #tabs #bonuses .select span.desc, #tabs #bonuses .input span.desc, #tabs #docs .select span.desc, #tabs #docs .input span.desc, #create_character #settings .select span.desc, #create_character #settings .input span.desc, #create_character #advanced .panel-content .select span.desc, #create_character #advanced .panel-content .input span.desc, #create_character #bonuses .select span.desc, #create_character #bonuses .input span.desc, #create_character #docs .select span.desc, #create_character #docs .input span.desc {
   display: block;
   clear: left;
   margin-top: 0.25em;
@@ -1946,12 +1946,12 @@ img.upgrade {
 }
 
 /* line 658, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings .label_check, #tabs #advanced .panel-content .label_check, #tabs #bonuses .label_check, #create_character #settings .label_check, #create_character #advanced .panel-content .label_check, #create_character #bonuses .label_check {
+#tabs #settings .label_check, #tabs #advanced .panel-content .label_check, #tabs #bonuses .label_check, #tabs #docs .label_check, #create_character #settings .label_check, #create_character #advanced .panel-content .label_check, #create_character #bonuses .label_check, #create_character #docs .label_check {
   background-position: 3px 2px;
 }
 
 /* line 660, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings .label_check span, #tabs #advanced .panel-content .label_check span, #tabs #bonuses .label_check span, #create_character #settings .label_check span, #create_character #advanced .panel-content .label_check span, #create_character #bonuses .label_check span {
+#tabs #settings .label_check span, #tabs #advanced .panel-content .label_check span, #tabs #bonuses .label_check span, #tabs #docs .label_check span, #create_character #settings .label_check span, #create_character #advanced .panel-content .label_check span, #create_character #bonuses .label_check span, #create_character #docs .label_check span {
   font-weight: normal;
   display: block;
   font-size: 0.9em;
@@ -2706,7 +2706,7 @@ img.upgrade {
 }
 
 /* line 1111, ../../app/assets/stylesheets/partials/_app.sass */
-#tabs #settings, #tabs #buffs, #tabs #target {
+#tabs #settings, #tabs #buffs, #tabs #target, #tabs #docs {
   padding: 2em;
 }
 
