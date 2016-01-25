@@ -361,8 +361,27 @@ class ShadowcraftHistory
 
       buffFood = options[4]
       d.options.buffs.food_buff = ShadowcraftOptions.buffFoodMap[buffFood]
-      #if data[10]
-      #  lock = base36Decode(data[10])
-      #  for l, slot in lock
-      #    d.gear[slot].locked = l == 1
+
+      d.artifact =
+        settings: {}
+        relic1: 0
+        relic2: 0
+        relic3: 0
+        
+      d.artifact.settings["202665"] = 0
+      d.artifact.settings["202897"] = 0
+      d.artifact.settings["202769"] = 0
+      d.artifact.settings["202820"] = 0
+      d.artifact.settings["202507"] = 0
+      d.artifact.settings["202628"] = 0
+      d.artifact.settings["202463"] = 0
+      d.artifact.settings["202521"] = 0
+      d.artifact.settings["202755"] = 0
+      d.artifact.settings["202524"] = 0
+      d.artifact.settings["202514"] = 0
+      d.artifact.settings["202530"] = 0
+      d.artifact.settings["202907"] = 0
+      d.artifact.settings["202533"] = 0
+      d.artifact.settings["202522"] = 0
+      d.artifact.settings["202753"] = 0
       return d

@@ -1079,10 +1079,12 @@ img.upgrade
 
     .line
       position: absolute
-      background-image: url("http://wow.zamimg.com/images/wow/interface/artifacts/_artifacts-dependencybar-bg.png")
+      background-image: url(/images/artifacts/artifact-line-active.png)
       background-repeat: repeat-x
       height: 16px
       transform-origin: 50% 50%
+      &.inactive
+        background-image: url(/images/artifacts/artifact-line-inactive.png)
 
     .level
       background-color: black
