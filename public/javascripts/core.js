@@ -310,7 +310,6 @@
       tooltip: Handlebars.compile($("#template-tooltip").html()),
       talentSet: Handlebars.compile($("#template-talent_set").html()),
       log: Handlebars.compile($("#template-log").html()),
-      glyphSlot: Handlebars.compile($("#template-glyph_slot").html()),
       talentContribution: Handlebars.compile($("#template-talent_contribution").html()),
       loadSnapshots: Handlebars.compile($("#template-loadSnapshots").html()),
       artifactKingslayers: Handlebars.compile($("#template-artifactKingslayers").html()),
@@ -332,11 +331,7 @@
         default:
           port = 8881;
           endpoint = "engine-6.2";
-          if (window.location.host.match(/:/)) {
-            return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
-          } else {
-            return "http://" + window.location.hostname + "/" + endpoint;
-          }
+          return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
       }
     };
 
@@ -356,10 +351,9 @@
     };
 
     ShadowcraftBackend.prototype.buildPayload = function() {
-      var Gems, GlyphLookup, buffFood, buffList, data, g, gear_ids, glyph, glyph_list, item, j, k, key, len, len1, mh, n, oh, payload, ref, ref1, ref2, specName, statSummary, talentArray, talentString, val;
+      var Gems, buffFood, buffList, data, g, gear_ids, item, j, k, key, len, mh, oh, payload, ref, ref1, specName, statSummary, talentArray, talentString, val;
       data = Shadowcraft.Data;
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
-      GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP;
       statSummary = Shadowcraft.Gear.sumStats();
       if (data.gear[15]) {
         mh = Shadowcraft.Gear.getItem(data.gear[15].original_id, data.gear[15].item_level, data.gear[15].suffix);
@@ -367,25 +361,17 @@
       if (data.gear[16]) {
         oh = Shadowcraft.Gear.getItem(data.gear[16].original_id, data.gear[16].item_level, data.gear[16].suffix);
       }
-      glyph_list = [];
-      ref = data.glyphs;
-      for (j = 0, len = ref.length; j < len; j++) {
-        glyph = ref[j];
-        if (GlyphLookup[glyph] != null) {
-          glyph_list.push(GlyphLookup[glyph].ename);
-        }
-      }
       buffList = [];
-      ref1 = data.options.buffs;
-      for (key in ref1) {
-        val = ref1[key];
+      ref = data.options.buffs;
+      for (key in ref) {
+        val = ref[key];
         if (val) {
           buffList.push(ShadowcraftOptions.buffMap.indexOf(key));
         }
       }
       buffFood = ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff);
       talentArray = data.activeTalents.split("");
-      for (key = n = 0, len1 = talentArray.length; n < len1; key = ++n) {
+      for (key = j = 0, len = talentArray.length; j < len; key = ++j) {
         val = talentArray[key];
         talentArray[key] = (function() {
           switch (val) {
@@ -429,8 +415,7 @@
         },
         spec: data.activeSpec,
         t: talentString,
-        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit || 0, statSummary.haste || 0, statSummary.mastery || 0, statSummary.multistrike || 0, statSummary.versatility || 0, statSummary.resilience || 0, statSummary.pvp_power || 0],
-        gly: glyph_list
+        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit || 0, statSummary.haste || 0, statSummary.mastery || 0, statSummary.multistrike || 0, statSummary.versatility || 0, statSummary.resilience || 0, statSummary.pvp_power || 0]
       };
       if (mh != null) {
         payload.mh = [mh.speed, mh.dps * mh.speed, data.gear[15].enchant, mh.subclass];
@@ -439,9 +424,9 @@
         payload.oh = [oh.speed, oh.dps * oh.speed, data.gear[16].enchant, oh.subclass];
       }
       gear_ids = [];
-      ref2 = data.gear;
-      for (k in ref2) {
-        g = ref2[k];
+      ref1 = data.gear;
+      for (k in ref1) {
+        g = ref1[k];
         if (g.original_id) {
           item = [g.original_id, g.item_level];
           gear_ids.push(item);
@@ -834,7 +819,6 @@
         ret.push(data.active);
         ret.push(data.activeSpec);
         ret.push(data.activeTalents);
-        ret.push(base36Encode(data.glyphs));
         talentSet = [];
         ref1 = [0, 1];
         for (o = 0, len1 = ref1.length; o < len1; o++) {
@@ -842,7 +826,6 @@
           talent = data.talents[set];
           talentSet.push(talent.spec);
           talentSet.push(talent.talents);
-          talentSet.push(base36Encode(talent.glyphs));
         }
         ret.push(talentSet);
         options = [];
@@ -887,18 +870,16 @@
           active: data[2],
           activeSpec: data[3],
           activeTalents: data[4],
-          glyphs: base36Decode(data[5]),
           options: {},
           talents: []
         };
-        talentSets = data[6];
+        talentSets = data[5];
         for (index = j = 0, len = talentSets.length; j < len; index = j += 3) {
           id = talentSets[index];
           set = (index / 3).toString();
           d.talents[set] = {
             spec: talentSets[index],
-            talents: talentSets[index + 1],
-            glyphs: base36Decode(talentSets[index + 2])
+            talents: talentSets[index + 1]
           };
         }
         gear = base36Decode(data[1]);
@@ -934,7 +915,7 @@
             }
           }
         }
-        options = data[7];
+        options = data[6];
         general = base36Decode(options[0]);
         d.options.general = {
           level: general[0],
@@ -985,10 +966,10 @@
           relic2: 0,
           relic3: 0
         };
-        d.artifact.settings["202665"] = 1;
+        d.artifact.settings["202665"] = 0;
         d.artifact.settings["202897"] = 0;
         d.artifact.settings["202769"] = 0;
-        d.artifact.settings["202533"] = 0;
+        d.artifact.settings["202820"] = 0;
         d.artifact.settings["202507"] = 0;
         d.artifact.settings["202628"] = 0;
         d.artifact.settings["202463"] = 0;
@@ -1092,12 +1073,6 @@
       Shadowcraft.Console.remove(".options");
       if (parseInt(data.options.general.patch) < 60) {
         Shadowcraft.Console.warn({}, "You are using an old Engine. Please switch to the newest Patch and/or clear all saved data and refresh from armory.", null, 'warn', 'options');
-      }
-    }
-    if (section === void 0 || section === "glyphs") {
-      Shadowcraft.Console.remove(".glyphs");
-      if (data.glyphs.length < 1) {
-        Shadowcraft.Console.warn({}, "You have no Glyphs selected", null, 'warn', 'glyphs');
       }
     }
     if (section === void 0 || section === "talents") {
@@ -1799,7 +1774,7 @@
   })();
 
   ShadowcraftArtifact = (function() {
-    var SPEC_ARTIFACT, decreaseTrait, displayDreadblades, displayFangs, displayKingslayers, increaseTrait, updateTraits;
+    var SPEC_ARTIFACT, activateTrait, active_mapping, deactivateTrait, decreaseTrait, displayDreadblades, displayFangs, displayKingslayers, increaseTrait, route_mapping, updateTraits;
 
     SPEC_ARTIFACT = {
       "a": {
@@ -1819,21 +1794,60 @@
       }
     };
 
+    route_mapping = {};
+
+    active_mapping = {};
+
+    activateTrait = function(spell_id) {
+      var level, max_level, trait;
+      trait = $("#artifactframe .trait[data-tooltip-id='" + spell_id + "']");
+      trait.children(".icon").removeClass("inactive");
+      trait.children(".level").removeClass("inactive");
+      active_mapping[parseInt(trait.attr("data-tooltip-id"))] = true;
+      level = Shadowcraft.Data.artifact.settings[spell_id];
+      max_level = parseInt(trait.attr("max_level"));
+      trait.children(".level").text("" + level + "/" + max_level);
+      return {
+        current: level,
+        max: max_level
+      };
+    };
+
+    deactivateTrait = function(spell_id) {
+      var max_level, trait;
+      trait = $("#artifactframe .trait[data-tooltip-id='" + spell_id + "']");
+      trait.children(".icon").addClass("inactive");
+      trait.children(".level").addClass("inactive");
+      active_mapping[parseInt(trait.attr("data-tooltip-id"))] = false;
+      Shadowcraft.Data.artifact.settings[spell_id] = 0;
+      max_level = parseInt(trait.attr("max_level"));
+      trait.children(".level").text("0/" + max_level);
+      return {
+        current: 0,
+        max: max_level
+      };
+    };
+
     updateTraits = function() {
-      var current_level, done, icon, level, main, main_spell_id, max_level, results, spell_id, stack, trait, traits;
+      var done, id, j, len, len1, levels, main, main_spell_id, n, newroute, ref, results, route, route_stack, spell_id, stack;
       main_spell_id = 202665;
-      traits = $("#artifactframe .trait");
-      traits.each(function() {
+      active_mapping = {};
+      $("#artifactframe .trait").each(function() {
+        active_mapping[parseInt($(this).attr("data-tooltip-id"))] = false;
         $(this).children(".level").addClass("inactive");
         return $(this).children(".icon").addClass("inactive");
       });
-      $("#artifactframe .line").each(function() {});
+      $("#artifactframe .line").each(function() {
+        return $(this).addClass("inactive");
+      });
       if (!Shadowcraft.Data.artifact) {
         return;
       }
-      main = $("#artifactframe .trait[data-tooltip-id='" + main_spell_id + "']");
+      route_mapping[main_spell_id] = [[]];
       if (Shadowcraft.Data.artifact.settings[main_spell_id] === 0) {
-        main.children(".level").text("0/" + trait.attr("max_level"));
+        active_mapping[main_spell_id] = true;
+        main = $("#artifactframe .trait[data-tooltip-id='" + main_spell_id + "']");
+        main.children(".level").text("0/" + main.attr("max_level"));
         main.children(".level").removeClass("inactive");
         return main.children(".icon").removeClass("inactive");
       } else {
@@ -1842,29 +1856,46 @@
         results = [];
         while (stack.length > 0) {
           spell_id = stack.pop();
-          console.log("processing icon for " + spell_id);
           if (jQuery.inArray(spell_id, done) !== -1) {
             continue;
           }
-          trait = $("#artifactframe .trait[data-tooltip-id='" + spell_id + "']");
-          max_level = parseInt(trait.attr("max_level"));
-          icon = trait.children(".icon");
-          level = trait.children(".level");
-          current_level = Shadowcraft.Data.artifact.settings[spell_id];
-          level.text("" + current_level + "/" + max_level);
-          level.removeClass("inactive");
-          icon.removeClass("inactive");
-          if (current_level === max_level) {
+          levels = activateTrait(spell_id);
+          if (levels.current === levels.max) {
+            route_stack = [];
             $("#artifactframe .line[spell1='" + spell_id + "']").each(function() {
-              if (jQuery.inArray($(this).attr("spell2"), done) === -1) {
-                return stack.push($(this).attr("spell2"));
+              var other_end;
+              $(this).removeClass("inactive");
+              other_end = $(this).attr("spell2");
+              if (jQuery.inArray(other_end, done) === -1) {
+                stack.push(other_end);
               }
+              return route_stack.push(other_end);
             });
             $("#artifactframe .line[spell2='" + spell_id + "']").each(function() {
-              if (jQuery.inArray($(this).attr("spell1"), done) === -1) {
-                return stack.push($(this).attr("spell1"));
+              var other_end;
+              $(this).removeClass("inactive");
+              other_end = $(this).attr("spell1");
+              if (jQuery.inArray(other_end, done) === -1) {
+                stack.push(other_end);
               }
+              return route_stack.push(other_end);
             });
+            for (j = 0, len = route_stack.length; j < len; j++) {
+              id = route_stack[j];
+              if (!(indexOf.call(route_mapping, id) >= 0)) {
+                route_mapping[id] = [];
+              }
+              ref = route_mapping[spell_id];
+              for (n = 0, len1 = ref.length; n < len1; n++) {
+                route = ref[n];
+                if (indexOf.call(route, spell_id) >= 0) {
+                  continue;
+                }
+                newroute = route.slice(0);
+                newroute.push(spell_id);
+                route_mapping[id].push(newroute);
+              }
+            }
           }
           results.push(done.push(spell_id));
         }
@@ -1891,9 +1922,12 @@
     };
 
     increaseTrait = function(e) {
-      var current_level, id, j, len, len1, level, max_level, n, old_level, results, results1, spell_id, stack, trait, traits;
+      var current_level, id, j, len, len1, level, max_level, n, newroute, old_level, ref, route, spell_id, stack, trait;
       spell_id = parseInt(e.delegateTarget.attributes["data-tooltip-id"].value);
       trait = $("#artifactframe .trait[data-tooltip-id='" + spell_id + "']");
+      if (trait.children(".icon").hasClass("inactive")) {
+        return;
+      }
       max_level = parseInt(trait.attr("max_level"));
       if (Shadowcraft.Data.artifact.settings[spell_id] === max_level) {
         return;
@@ -1906,43 +1940,84 @@
       stack = [];
       if (current_level === max_level) {
         $("#artifactframe .line[spell1='" + spell_id + "']").each(function() {
-          return stack.push($(this).attr("spell2"));
+          if (active_mapping[parseInt($(this).attr("spell2"))] === false) {
+            $(this).removeClass("inactive");
+            return stack.push($(this).attr("spell2"));
+          }
         });
         $("#artifactframe .line[spell2='" + spell_id + "']").each(function() {
-          return stack.push($(this).attr("spell1"));
+          if (active_mapping[parseInt($(this).attr("spell1"))] === false) {
+            $(this).removeClass("inactive");
+            return stack.push($(this).attr("spell1"));
+          }
         });
-        results = [];
         for (j = 0, len = stack.length; j < len; j++) {
           id = stack[j];
-          traits = $("#artifactframe .trait[data-tooltip-id='" + id + "']");
-          results.push(traits.each(function() {
-            $(this).children(".icon").removeClass("inactive");
-            return $(this).children(".level").removeClass("inactive");
-          }));
+          activateTrait(id);
+          if (!(indexOf.call(route_mapping, id) >= 0)) {
+            route_mapping[id] = [];
+          }
+          ref = route_mapping[spell_id];
+          for (n = 0, len1 = ref.length; n < len1; n++) {
+            route = ref[n];
+            if (indexOf.call(route, spell_id) >= 0) {
+              continue;
+            }
+            newroute = route.slice(0);
+            newroute.push(spell_id);
+            route_mapping[id].push(newroute);
+          }
         }
-        return results;
-      } else if (old_level === max_level) {
-        $("#artifactframe .line[spell1='" + spell_id + "']").each(function() {
-          return stack.push($(this).attr("spell2"));
-        });
-        $("#artifactframe .line[spell2='" + spell_id + "']").each(function() {
-          return stack.push($(this).attr("spell1"));
-        });
-        results1 = [];
-        for (n = 0, len1 = stack.length; n < len1; n++) {
-          id = stack[n];
-          traits = $("#artifactframe .trait[data-tooltip-id='" + id + "']");
-          results1.push(traits.each(function() {
-            $(this).children(".icon").addClass("inactive");
-            return $(this).children(".level").addClass("inactive");
-          }));
-        }
-        return results1;
       }
+      return Shadowcraft.update();
     };
 
     decreaseTrait = function(e) {
-      return console.log(e.delegateTarget.id);
+      var current_level, index, indexes_to_remove, j, len, len1, level, max_level, n, remove, route, routes, spell, spell_id, trait;
+      spell_id = parseInt(e.delegateTarget.attributes["data-tooltip-id"].value);
+      trait = $("#artifactframe .trait[data-tooltip-id='" + spell_id + "']");
+      if (trait.children(".icon").hasClass("inactive")) {
+        return;
+      }
+      if (Shadowcraft.Data.artifact.settings[spell_id] === 0) {
+        return;
+      }
+      max_level = parseInt(trait.attr("max_level"));
+      Shadowcraft.Data.artifact.settings[spell_id] -= 1;
+      current_level = Shadowcraft.Data.artifact.settings[spell_id];
+      level = trait.children(".level");
+      level.text("" + current_level + "/" + max_level);
+      for (spell in route_mapping) {
+        routes = route_mapping[spell];
+        indexes_to_remove = [];
+        index = 0;
+        for (j = 0, len = routes.length; j < len; j++) {
+          route = routes[j];
+          if (route.indexOf(spell_id) !== -1) {
+            indexes_to_remove.push(index);
+          }
+          index++;
+        }
+        for (n = 0, len1 = indexes_to_remove.length; n < len1; n++) {
+          remove = indexes_to_remove[n];
+          routes.splice(remove, 1);
+        }
+        if (routes.length === 0) {
+          deactivateTrait(spell);
+        }
+      }
+      $("#artifactframe .line").each(function() {
+        var spell1, spell2;
+        if ($(this).hasClass("inactive")) {
+          return;
+        }
+        spell1 = parseInt($(this).attr("spell1"));
+        spell2 = parseInt($(this).attr("spell2"));
+        if (!active_mapping[spell1] || !active_mapping[spell2]) {
+          return $(this).addClass("inactive");
+        }
+      });
+      return Shadowcraft.update();
     };
 
     ShadowcraftArtifact.prototype.setSpec = function(str) {
@@ -1977,7 +2052,11 @@
     };
 
     ShadowcraftArtifact.prototype.resetTraits = function() {
-      return console.log("clicked reset button");
+      var id;
+      for (id in Shadowcraft.Data.artifact.settings) {
+        Shadowcraft.Data.artifact.settings[id] = 0;
+      }
+      return updateTraits();
     };
 
     ShadowcraftArtifact.prototype.boot = function() {
@@ -1992,7 +2071,7 @@
       Shadowcraft.Talents.bind("changedSpec", function(spec) {
         return app.setSpec(spec);
       });
-      $("#reset_artifact").mousedown(function(e) {
+      $("#reset_artifact").click(function(e) {
         switch (e.button) {
           case 0:
             return app.resetTraits();
@@ -2017,15 +2096,13 @@
   })();
 
   ShadowcraftTalents = (function() {
-    var ALWAYS_SHOW_GLYPHS, CHARACTER_SPEC, DEFAULT_SPECS, MAX_TALENT_POINTS, SPEC_ICONS, TREE_SIZE, applyTalentToButton, getSpec, getSpecName, getTalents, glyphRankCount, hoverTalent, resetTalents, setGlyph, setSpec, setTalents, talentsSpent, toggleGlyph, updateGlyphWeights, updateTalentAvailability, updateTalentContribution;
+    var CHARACTER_SPEC, DEFAULT_SPECS, MAX_TALENT_POINTS, SPEC_ICONS, TREE_SIZE, applyTalentToButton, getSpec, getSpecName, getTalents, resetTalents, setSpec, setTalents, talentsSpent, updateTalentAvailability, updateTalentContribution;
 
     talentsSpent = 0;
 
     MAX_TALENT_POINTS = 7;
 
     TREE_SIZE = 7;
-
-    ALWAYS_SHOW_GLYPHS = [];
 
     CHARACTER_SPEC = "";
 
@@ -2039,17 +2116,14 @@
     DEFAULT_SPECS = {
       "Stock Assassination": {
         talents: "2211021",
-        glyphs: [45761, 110853, 110850],
         spec: "a"
       },
       "Stock Combat": {
         talents: "2211011",
-        glyphs: [110853, 110850],
         spec: "Z"
       },
       "Stock Subtlety": {
         talents: "1210011",
-        glyphs: [42970, 63420, 110850],
         spec: "b"
       }
     };
@@ -2098,23 +2172,6 @@
       Shadowcraft.Talents.trigger("changed");
       Shadowcraft.update();
       return checkForWarnings("talents");
-    };
-
-    hoverTalent = function() {
-      var nextRank, points, pos, rank, talent;
-      if (Modernizr.touch) {
-        return;
-      }
-      points = $.data(this, "points");
-      talent = $.data(this, "talent");
-      rank = talent.rank.length ? talent.rank[points.cur - 1] : talent.rank;
-      nextRank = talent.rank.length ? talent.rank[points.cur] : null;
-      pos = $(this).offset();
-      return tooltip({
-        title: talent.name + " (" + points.cur + "/" + points.max + ")",
-        desc: rank ? rank.description : null,
-        nextdesc: nextRank ? "Next rank: " + nextRank.description : null
-      }, pos.left, pos.top, 130, -20);
     };
 
     resetTalents = function() {
@@ -2224,11 +2281,9 @@
       if (!data.activeSpec) {
         data.activeTalents = data.talents[data.active].talents;
         data.activeSpec = data.talents[data.active].spec;
-        data.glyphs = data.talents[data.active].glyphs;
       }
       setSpec(data.activeSpec);
-      setTalents(data.activeTalents);
-      return this.setGlyphs(data.glyphs);
+      return setTalents(data.activeTalents);
     };
 
     ShadowcraftTalents.prototype.initTalentTree = function() {
@@ -2369,7 +2424,6 @@
         talent = ref[j];
         buffer += Templates.talentSet({
           talent_string: talent.talents,
-          glyphs: talent.glyphs.join(","),
           name: "Imported " + getSpecName(talent.spec),
           spec: talent.spec
         });
@@ -2378,187 +2432,12 @@
         talentSet = DEFAULT_SPECS[talentName];
         buffer += Templates.talentSet({
           talent_string: talentSet.talents,
-          glyphs: talentSet.glyphs.join(","),
           name: talentName,
           spec: talentSet.spec
         });
       }
       $("#talentsets").get(0).innerHTML = buffer;
       return this.updateActiveTalents();
-    };
-
-    ShadowcraftTalents.prototype.setGlyphs = function(glyphs) {
-      Shadowcraft.Data.glyphs = glyphs;
-      return this.updateGlyphDisplay();
-    };
-
-    ShadowcraftTalents.prototype.initGlyphs = function() {
-      var Glyphs, buffer, data, g, idx, j, len;
-      buffer = [null, "", ""];
-      Glyphs = Shadowcraft.ServerData.GLYPHS;
-      data = Shadowcraft.Data;
-      if (!data.glyphs) {
-        data.glyphs = data.talents[data.active].glyphs;
-      }
-      for (idx = j = 0, len = Glyphs.length; j < len; idx = ++j) {
-        g = Glyphs[idx];
-        buffer[g.rank] += Templates.glyphSlot(g);
-      }
-      $("#major-glyphs .inner").get(0).innerHTML = buffer[1];
-      $("#minor-glyphs .inner").get(0).innerHTML = buffer[2];
-      return this.updateGlyphDisplay();
-    };
-
-    ShadowcraftTalents.prototype.updateGlyphDisplay = function() {
-      var Glyphs, data, g, glyph, idx, j, len, ref;
-      Glyphs = Shadowcraft.ServerData.GLYPHS;
-      data = Shadowcraft.Data;
-      if (data.glyphs == null) {
-        return;
-      }
-      for (idx = j = 0, len = Glyphs.length; j < len; idx = ++j) {
-        glyph = Glyphs[idx];
-        g = $(".glyph_slot[data-id='" + glyph.id + "']");
-        if (ref = glyph.id, indexOf.call(data.glyphs, ref) >= 0) {
-          setGlyph(g, true);
-        } else {
-          setGlyph(g, false);
-        }
-      }
-      return checkForWarnings('glyphs');
-    };
-
-    updateGlyphWeights = function(data) {
-      var g, glyphSet, glyphSets, id, j, key, len, len1, max, n, ref, results, slot, weight, width;
-      max = _.max(data.glyph_ranking);
-      $(".glyph_slot .pct-inner").css({
-        width: 0
-      });
-      ref = data.glyph_ranking;
-      for (key in ref) {
-        weight = ref[key];
-        g = Shadowcraft.ServerData.GLYPHNAME_LOOKUP[key];
-        if (g) {
-          width = weight / max * 100;
-          slot = $(".glyph_slot[data-id='" + g.id + "']");
-          $.data(slot[0], "weight", weight);
-          slot.show().find(".pct-inner").css({
-            width: width + "%"
-          });
-          slot.find(".label").text(weight.toFixed(1) + " DPS");
-        }
-      }
-      for (j = 0, len = ALWAYS_SHOW_GLYPHS.length; j < len; j++) {
-        id = ALWAYS_SHOW_GLYPHS[j];
-        $(".glyph_slot[data-id='" + id + "']").show();
-      }
-      glyphSets = $(".glyphset");
-      results = [];
-      for (n = 0, len1 = glyphSets.length; n < len1; n++) {
-        glyphSet = glyphSets[n];
-        results.push($(glyphSet).find(".glyph_slot").sortElements(function(a, b) {
-          var aa, an, aw, ba, bn, bw, gl;
-          gl = Shadowcraft.ServerData.GLYPH_LOOKUP;
-          aa = $(a).hasClass("activated") ? 1 : 0;
-          ba = $(b).hasClass("activated") ? 1 : 0;
-          aw = $.data(a, "weight");
-          bw = $.data(b, "weight");
-          if (gl) {
-            an = gl[$.data(a, "id")].name;
-            bn = gl[$.data(b, "id")].name;
-          }
-          aw || (aw = -1);
-          bw || (bw = -1);
-          an || (an = "");
-          bn || (bn = "");
-          if (aw !== bw) {
-            if (aw > bw) {
-              return -1;
-            } else {
-              return 1;
-            }
-          } else {
-            if (aa !== ba) {
-              if (aa > ba) {
-                return -1;
-              } else {
-                return 1;
-              }
-            } else {
-              if (an > bn) {
-                return 1;
-              } else {
-                return -1;
-              }
-            }
-          }
-        }));
-      }
-      return results;
-    };
-
-    glyphRankCount = function(rank, g) {
-      var GlyphLookup, count, data, glyph, j, len, ref;
-      data = Shadowcraft.Data;
-      GlyphLookup = Shadowcraft.ServerData.GLYPH_LOOKUP;
-      if (g && !rank) {
-        rank = GlyphLookup[g].rank;
-      }
-      count = 0;
-      ref = data.glyphs;
-      for (j = 0, len = ref.length; j < len; j++) {
-        glyph = ref[j];
-        if (GlyphLookup[glyph] != null) {
-          if (GlyphLookup[glyph].rank === rank) {
-            count++;
-          }
-        }
-      }
-      return count;
-    };
-
-    setGlyph = function(e, active) {
-      var $e, $set, id;
-      $e = $(e);
-      $set = $e.parents(".glyphset");
-      id = parseInt($e.data("id"), 10);
-      if (active) {
-        $e.addClass("activated");
-      } else {
-        $e.removeClass("activated");
-        $set.removeClass("full");
-      }
-      if (glyphRankCount(null, id) >= 3) {
-        return $set.addClass("full");
-      } else {
-        return $set.removeClass("full");
-      }
-    };
-
-    toggleGlyph = function(e, override) {
-      var $e, $set, data, id;
-      data = Shadowcraft.Data;
-      $e = $(e);
-      $set = $e.parents(".glyphset");
-      id = parseInt($e.data("id"), 10);
-      if ($e.hasClass("activated")) {
-        $e.removeClass("activated");
-        data.glyphs = _.without(data.glyphs, id);
-        $set.removeClass("full");
-      } else {
-        if (glyphRankCount(null, id) >= 3 && !override) {
-          return;
-        }
-        $e.addClass("activated");
-        if (!override && data.glyphs.indexOf(id) === -1) {
-          data.glyphs.push(id);
-        }
-        if (glyphRankCount(null, id) >= 3) {
-          $set.addClass("full");
-        }
-      }
-      checkForWarnings('glyphs');
-      return Shadowcraft.update();
     };
 
     updateTalentContribution = function(LC) {
@@ -2619,33 +2498,15 @@
     ShadowcraftTalents.prototype.boot = function() {
       var app;
       this.initTalentsPane();
-      this.initGlyphs();
       app = this;
       Shadowcraft.Backend.bind("recompute", updateTalentContribution);
-      Shadowcraft.Backend.bind("recompute", updateGlyphWeights);
-      $("#glyphs").click($.delegate({
-        ".glyph_slot": function() {
-          return toggleGlyph(this);
-        }
-      })).mouseover($.delegate({
-        ".glyph_slot": ttlib.requestTooltip
-      })).mouseout($.delegate({
-        ".glyph_slot": ttlib.hide
-      }));
       $("#talentsets").click($.delegate({
         ".talent_set": function() {
-          var glyph, glyphs, i, j, len, spec, talents;
+          var spec, talents;
           spec = $(this).data("spec");
           talents = $(this).data("talents") + "";
-          glyphs = ($(this).data("glyphs") + "" || "").split(",");
-          for (i = j = 0, len = glyphs.length; j < len; i = ++j) {
-            glyph = glyphs[i];
-            glyphs[i] = parseInt(glyph, 10);
-          }
-          glyphs = _.compact(glyphs);
           setSpec(spec);
-          setTalents(talents);
-          return app.setGlyphs(glyphs);
+          return setTalents(talents);
         }
       }));
       $("#reset_talents").click(resetTalents);
