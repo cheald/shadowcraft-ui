@@ -752,37 +752,6 @@ img.upgrade
 
 .ui-button-text
   text-shadow: #111111 -1px -1px 0px
-#reforge
-  padding: 1em
-  fieldset
-    margin: 2em 0
-    border-top: 1px solid darken(#065175, 5%)
-    legend
-      font-weight: bold
-      margin-left: 1em
-      margin-bottom: 0.5em
-  .recommended
-    margin-bottom: 0.5em
-    .oldstat
-      color: #dd0000
-      font-weight: bold
-    .newstat
-      color: #00dd00
-      font-weight: bold
-  .newstats
-    .stat
-      label
-        +inline-block
-        width: 100px
-  .pct
-    width: 200px
-  .pct-inner
-    left: 100px
-    +linear-gradient(left, #22FF22, #008800)
-    &.reverse
-      +linear-gradient(left, #880000, #FF2222)
-      right: 100px
-      left: auto
 
 #bonuses
   padding: 1em
@@ -1032,6 +1001,11 @@ img.upgrade
       border: 1px solid #434445
       border-radius: 3px
       box-shadow: 0 0 4px 0 black
+    .power-spent
+      float: right
+      font-size: 0.75em
+      padding-top: 0.25em
+      padding-right: 5px
 
   // This is for the artifact frame itself
   #artifactframe
@@ -1158,7 +1132,7 @@ img.upgrade
       top: 9px
       left: 13px
 
-  .gems .gem, .enchant, .reforge, .bonuses, .name
+  .gems .gem, .enchant, .bonuses, .name
     background: #0e0e0e url(/images/texture.png)
     margin-bottom: 2px
     border-radius: 2px
@@ -1195,7 +1169,7 @@ img.upgrade
     margin-bottom: 4px
     font-size: 0.9em
     padding: 4px 4px 4px 35px
-  .reforge, .bonuses
+  .bonuses
     img
       vertical-align: middle
       margin-right: 5px
@@ -1319,8 +1293,6 @@ img.upgrade
 
     .gem
       +inline-block
-    .reforge
-      display: none
     .image
       width: 36px
       height: 36px

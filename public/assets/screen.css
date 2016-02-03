@@ -2601,6 +2601,13 @@ img.upgrade {
   box-shadow: 0 0 4px 0 black;
 }
 
+#artifact #artifactactive .power-spent {
+  float: right;
+  padding-right: 5px;
+  font-size: 0.75em;
+  padding-top: 0.25em;
+}
+
 /* line 1037, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe {
   border: 1px solid #333333;
