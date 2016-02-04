@@ -421,13 +421,13 @@ class ShadowcraftArtifact
     $("#artifactactive").get(0).innerHTML = buffer
 
     if str == "a"
-      buffer = Templates.artifactKingslayers()
+      buffer = ArtifactTemplates.useKingslayers()
       $("#artifactframe").get(0).innerHTML = buffer
     else if str == "Z"
-      buffer = Templates.artifactDreadblades()
+      buffer = ArtifactTemplates.useDreadblades()
       $("#artifactframe").get(0).innerHTML = buffer
     else if str == "b"
-      buffer = Templates.artifactFangs()
+      buffer = ArtifactTemplates.useFangs()
       $("#artifactframe").get(0).innerHTML = buffer
 
     $("#relic1").attr("relic-type", SPEC_ARTIFACT[str].relic1)

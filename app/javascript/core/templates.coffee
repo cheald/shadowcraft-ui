@@ -16,6 +16,4 @@ ShadowcraftApp.bind "boot", ->
     log:                 Handlebars.compile $("#template-log").html()
     talentContribution:  Handlebars.compile $("#template-talent_contribution").html()
     loadSnapshots:       Handlebars.compile $("#template-loadSnapshots").html()
-    artifactKingslayers: Handlebars.compile $("#template-artifactKingslayers").html()
-    artifactDreadblades: Handlebars.compile $("#template-artifactDreadblades").html()
-    artifactFangs:       Handlebars.compile $("#template-artifactFangs").html()
+    artifact:            Handlebars.compile $("#template-artifact").html()

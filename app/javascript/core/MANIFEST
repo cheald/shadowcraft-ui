@@ -1,6 +1,7 @@
 app
 utility
 templates
+artifact_templates
 backend
 history
 helpers
