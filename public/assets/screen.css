@@ -1324,8 +1324,8 @@ html.websockets .browser-support, html.history .browser-support, html.canvas .br
 
 /* line 261, ../../app/assets/stylesheets/partials/_app.sass */
 .dropdownMenu {
-  background-image: -moz-linear-gradient(top, #262626, #1a1a1a);
-  background-image: linear-gradient(top, #262626, #1a1a1a);
+  background-image: -moz-linear-gradient(#262626, #1a1a1a);
+  background-image: linear-gradient(#262626, #1a1a1a);
   border: 1px solid #444444;
   position: absolute;
   z-index: 101;
@@ -1371,7 +1371,7 @@ html.websockets .browser-support, html.history .browser-support, html.canvas .br
   background-image: -moz-linear-gradient(bottom, #222222, #323232, #4b4b4b);
   background-image: linear-gradient(bottom, #222222, #323232, #4b4b4b);
   border: 1px solid #444444;
-  left: 632px;
+  left: 528px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-bottom: 0;
@@ -2087,94 +2087,32 @@ img.upgrade {
   text-shadow: #111111 -1px -1px 0px;
 }
 
-/* line 755, ../../app/assets/stylesheets/partials/_app.sass */
-#reforge {
-  padding: 1em;
-}
-
-/* line 757, ../../app/assets/stylesheets/partials/_app.sass */
-#reforge fieldset {
-  margin: 2em 0;
-  border-top: 1px solid #05405d;
-}
-
-/* line 760, ../../app/assets/stylesheets/partials/_app.sass */
-#reforge fieldset legend {
-  font-weight: bold;
-  margin-left: 1em;
-  margin-bottom: 0.5em;
-}
-
-/* line 764, ../../app/assets/stylesheets/partials/_app.sass */
-#reforge .recommended {
-  margin-bottom: 0.5em;
-}
-
-/* line 766, ../../app/assets/stylesheets/partials/_app.sass */
-#reforge .recommended .oldstat {
-  color: #dd0000;
-  font-weight: bold;
-}
-
-/* line 769, ../../app/assets/stylesheets/partials/_app.sass */
-#reforge .recommended .newstat {
-  color: #00dd00;
-  font-weight: bold;
-}
-
-/* line 774, ../../app/assets/stylesheets/partials/_app.sass */
-#reforge .newstats .stat label {
-  display: inline-block;
-  vertical-align: middle;
-  width: 100px;
-}
-
-/* line 777, ../../app/assets/stylesheets/partials/_app.sass */
-#reforge .pct {
-  width: 200px;
-}
-
-/* line 779, ../../app/assets/stylesheets/partials/_app.sass */
-#reforge .pct-inner {
-  left: 100px;
-  background-image: -moz-linear-gradient(left, #22FF22, #008800);
-  background-image: linear-gradient(left, #22FF22, #008800);
-}
-
-/* line 782, ../../app/assets/stylesheets/partials/_app.sass */
-#reforge .pct-inner.reverse {
-  background-image: -moz-linear-gradient(left, #880000, #FF2222);
-  background-image: linear-gradient(left, #880000, #FF2222);
-  right: 100px;
-  left: auto;
-}
-
-/* line 787, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 756, ../../app/assets/stylesheets/partials/_app.sass */
 #bonuses {
   padding: 1em;
 }
 
-/* line 789, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 758, ../../app/assets/stylesheets/partials/_app.sass */
 #bonuses fieldset {
   margin: 2em 0;
   border-top: 1px solid #05405d;
 }
 
-/* line 792, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 761, ../../app/assets/stylesheets/partials/_app.sass */
 #bonuses fieldset legend {
   font-weight: bold;
   margin-left: 1em;
   margin-bottom: 0.5em;
 }
 
-/* line 798, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 767, ../../app/assets/stylesheets/partials/_app.sass */
 #tools button {
   display: block;
   margin: 5px auto;
   min-width: 135px;
 }
 
-/* line 803, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 772, ../../app/assets/stylesheets/partials/_app.sass */
 #logs {
   position: absolute;
   top: 260px;
@@ -2185,44 +2123,44 @@ img.upgrade {
   overflow-y: automatic;
 }
 
-/* line 813, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 782, ../../app/assets/stylesheets/partials/_app.sass */
 .awin-large #logs {
   bottom: 295px;
 }
 
-/* line 817, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 786, ../../app/assets/stylesheets/partials/_app.sass */
 .awin-medium #logs {
   bottom: 265px;
 }
 
-/* line 821, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 790, ../../app/assets/stylesheets/partials/_app.sass */
 .awin-small #logs {
   bottom: 75px;
 }
 
-/* line 826, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 795, ../../app/assets/stylesheets/partials/_app.sass */
 #console .inner, #log .inner {
   max-height: 50%;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-/* line 832, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 801, ../../app/assets/stylesheets/partials/_app.sass */
 #log .gold {
   color: #ffdc89;
 }
 
-/* line 834, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 803, ../../app/assets/stylesheets/partials/_app.sass */
 #log .underline {
   border-bottom: 1px dotted #333333;
 }
 
-/* line 837, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 806, ../../app/assets/stylesheets/partials/_app.sass */
 #console {
   color: #ccc;
 }
 
-/* line 839, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 808, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log {
   font-size: 1.2em;
   padding: 8px 0 8px 24px;
@@ -2232,34 +2170,34 @@ img.upgrade {
   background: url(/images/log.png) 5px 10px no-repeat;
 }
 
-/* line 841, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 810, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log .sub {
   margin: 2px;
   font-size: 0.9em;
   color: #666666;
 }
 
-/* line 849, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 818, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log:first-child {
   border-top: 0;
 }
 
-/* line 851, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 820, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log:last-child {
   border-bottom: 0;
 }
 
-/* line 854, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 823, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log.warning {
   background-image: url(/images/alert.png);
 }
 
-/* line 856, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 825, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log.error {
   background-image: url(/images/delete.png);
 }
 
-/* line 859, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 828, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip {
   max-width: 300px;
   background: rgba(0, 0, 0, 0.85);
@@ -2274,7 +2212,7 @@ img.upgrade {
   font-size: 0.9em;
 }
 
-/* line 871, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 840, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip .title {
   font-size: 1.1em;
   font-weight: bold;
@@ -2282,46 +2220,46 @@ img.upgrade {
   margin-bottom: 0.3em;
 }
 
-/* line 876, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 845, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip .desc {
   color: #ffd200;
 }
 
-/* line 877, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 846, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip .desc p {
   margin: 1em 0;
 }
 
-/* line 880, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 849, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip.small {
   padding: 2px;
   font-size: 0.8em;
 }
 
-/* line 883, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 852, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip.small .title {
   margin: 0;
 }
 
-/* line 885, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 854, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip.clean {
   border: 0;
   box-shadow: 0px 0px 3px 3px black;
   background: rgba(0, 0, 0, 0.75);
 }
 
-/* line 889, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 858, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip.clean .title {
   color: #eeddcc;
 }
 
-/* line 893, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 862, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .panel-content {
   padding-top: 18px;
   padding-left: 198px;
 }
 
-/* line 897, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 866, ../../app/assets/stylesheets/partials/_app.sass */
 #talents #specactive {
   font-size: 2em;
   text-align: left;
@@ -2335,12 +2273,12 @@ img.upgrade {
   height: 34px;
 }
 
-/* line 908, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 877, ../../app/assets/stylesheets/partials/_app.sass */
 #talents #specactive .spec-name {
   padding-left: 44px;
 }
 
-/* line 910, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 879, ../../app/assets/stylesheets/partials/_app.sass */
 #talents #specactive .spec-icon {
   position: absolute;
   width: 36px;
@@ -2352,7 +2290,7 @@ img.upgrade {
   box-shadow: 0 0 4px 0 black;
 }
 
-/* line 920, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 889, ../../app/assets/stylesheets/partials/_app.sass */
 #talents #talentframe {
   padding: 3px;
   border: 1px solid #333333;
@@ -2361,7 +2299,7 @@ img.upgrade {
   vertical-align: middle;
 }
 
-/* line 925, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 894, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers {
   display: inline-block;
   vertical-align: middle;
@@ -2370,49 +2308,49 @@ img.upgrade {
   height: 509px;
 }
 
-/* line 931, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 900, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-0 {
   top: 10px;
   left: 10px;
 }
 
-/* line 931, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 900, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-1 {
   top: 80px;
   left: 10px;
 }
 
-/* line 931, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 900, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-2 {
   top: 150px;
   left: 10px;
 }
 
-/* line 931, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 900, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-3 {
   top: 220px;
   left: 10px;
 }
 
-/* line 931, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 900, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-4 {
   top: 290px;
   left: 10px;
 }
 
-/* line 931, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 900, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-5 {
   top: 360px;
   left: 10px;
 }
 
-/* line 931, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 900, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-6 {
   top: 430px;
   left: 10px;
 }
 
-/* line 934, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 903, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .level {
   border: 1px solid #333333;
   background-color: rgba(0, 0, 0, 0.4);
@@ -2432,7 +2370,7 @@ img.upgrade {
   text-align: center;
 }
 
-/* line 951, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 920, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree {
   display: inline-block;
   vertical-align: middle;
@@ -2442,57 +2380,57 @@ img.upgrade {
   background-repeat: no-repeat;
 }
 
-/* line 959, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 928, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-0 {
   top: 10px;
 }
 
-/* line 959, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 928, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-1 {
   top: 80px;
 }
 
-/* line 959, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 928, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-2 {
   top: 150px;
 }
 
-/* line 959, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 928, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-3 {
   top: 220px;
 }
 
-/* line 959, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 928, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-4 {
   top: 290px;
 }
 
-/* line 959, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 928, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-5 {
   top: 360px;
 }
 
-/* line 959, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 928, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-6 {
   top: 430px;
 }
 
-/* line 962, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 931, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .col-0 {
   left: 10px;
 }
 
-/* line 962, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 931, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .col-1 {
   left: 110px;
 }
 
-/* line 962, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 931, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .col-2 {
   left: 210px;
 }
 
-/* line 965, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 934, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .talent {
   cursor: pointer;
   border: 1px solid #333333;
@@ -2506,7 +2444,7 @@ img.upgrade {
   position: absolute;
 }
 
-/* line 972, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 941, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .talent .grey {
   position: absolute;
   top: 0;
@@ -2517,34 +2455,34 @@ img.upgrade {
   border-radius: 3px;
 }
 
-/* line 980, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 949, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .talent.active .grey {
   display: none;
 }
 
-/* line 982, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 951, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .talent.active {
   opacity: 1;
   border-color: #ffdd00;
 }
 
-/* line 985, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 954, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .talent:hover {
   border-color: lime;
 }
 
-/* line 993, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 962, ../../app/assets/stylesheets/partials/_app.sass */
 #talentrankings .pct, #upgraderankings .pct, #dpsbreakdown .pct {
   width: 120px;
   height: 7px;
 }
 
-/* line 996, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 965, ../../app/assets/stylesheets/partials/_app.sass */
 #talentrankings .pct .label, #upgraderankings .pct .label, #dpsbreakdown .pct .label {
   margin-top: -3px;
 }
 
-/* line 998, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 967, ../../app/assets/stylesheets/partials/_app.sass */
 #talentrankings .pct-inner, #upgraderankings .pct-inner, #dpsbreakdown .pct-inner {
   -webkit-transition: width 1s;
   -moz-transition: width 1s;
@@ -2553,24 +2491,24 @@ img.upgrade {
   transition: width 1s;
 }
 
-/* line 1000, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 969, ../../app/assets/stylesheets/partials/_app.sass */
 #talentrankings .talent_contribution, #upgraderankings .talent_contribution, #dpsbreakdown .talent_contribution {
   margin-bottom: 14px;
   font-weight: bold;
 }
 
-/* line 1003, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 972, ../../app/assets/stylesheets/partials/_app.sass */
 #talentrankings .talent_contribution .name, #upgraderankings .talent_contribution .name, #dpsbreakdown .talent_contribution .name {
   font-size: 0.8em;
 }
 
-/* line 1007, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 976, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact .panel-content {
   padding-top: 18px;
   padding-left: 198px;
 }
 
-/* line 1013, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 982, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactactive {
   font-size: 2em;
   text-align: left;
@@ -2584,12 +2522,12 @@ img.upgrade {
   height: 34px;
 }
 
-/* line 1024, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 993, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactactive .spec-name {
   padding-left: 44px;
 }
 
-/* line 1026, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 995, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactactive .spec-icon {
   position: absolute;
   width: 36px;
@@ -2601,14 +2539,15 @@ img.upgrade {
   box-shadow: 0 0 4px 0 black;
 }
 
+/* line 1004, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactactive .power-spent {
   float: right;
-  padding-right: 5px;
   font-size: 0.75em;
   padding-top: 0.25em;
+  padding-right: 5px;
 }
 
-/* line 1037, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1011, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe {
   border: 1px solid #333333;
   background: #050505;
@@ -2619,7 +2558,7 @@ img.upgrade {
   position: relative;
 }
 
-/* line 1045, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1019, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .trait {
   position: absolute;
   height: 90px;
@@ -2627,7 +2566,7 @@ img.upgrade {
   cursor: pointer;
 }
 
-/* line 1051, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1025, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relic {
   z-index: 0;
   visibility: hidden;
@@ -2636,7 +2575,7 @@ img.upgrade {
   cursor: pointer;
 }
 
-/* line 1058, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1032, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .icon {
   position: absolute;
   z-index: 1;
@@ -2648,12 +2587,12 @@ img.upgrade {
   background: black;
 }
 
-/* line 1067, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1041, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .icon.inactive {
   opacity: 0.6;
 }
 
-/* line 1070, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1044, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .ring {
   position: absolute;
   z-index: 2;
@@ -2661,13 +2600,13 @@ img.upgrade {
   top: 5px;
 }
 
-/* line 1076, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1050, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .ring-thin {
   left: 17px;
   top: 17px;
 }
 
-/* line 1080, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1054, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .line {
   position: absolute;
   background-image: url(/images/artifacts/artifact-line-active.png);
@@ -2676,12 +2615,12 @@ img.upgrade {
   transform-origin: 50% 50%;
 }
 
-/* line 1086, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1060, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .line.inactive {
   background-image: url(/images/artifacts/artifact-line-inactive.png);
 }
 
-/* line 1089, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1063, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .level {
   background-color: black;
   border: 1px solid #666666;
@@ -2697,12 +2636,12 @@ img.upgrade {
   z-index: 3;
 }
 
-/* line 1103, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1077, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .level.inactive {
   display: none;
 }
 
-/* line 1106, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1080, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relicframe {
   height: 80px;
   width: 80px;
@@ -2712,7 +2651,7 @@ img.upgrade {
   z-index: 10;
 }
 
-/* line 1114, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1088, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relicframe .relicicon {
   height: 30px;
   width: 30px;
@@ -2723,32 +2662,32 @@ img.upgrade {
   z-index: 11;
 }
 
-/* line 1123, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1097, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relicframe .relicicon.inactive {
   display: none;
 }
 
-/* line 1126, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1100, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact_button_div {
   padding: 10px;
 }
 
-/* line 1129, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1103, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs {
   border: 0;
 }
 
-/* line 1131, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1105, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings, #tabs #buffs, #tabs #target, #tabs #docs {
   padding: 2em;
 }
 
-/* line 1134, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1108, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel {
   border: 1px solid #333333;
 }
 
-/* line 1136, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1110, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel label {
   white-space: nowrap;
   vertical-align: middle;
@@ -2761,12 +2700,12 @@ img.upgrade {
   color: #777777;
 }
 
-/* line 1145, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1119, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel label:hover {
   color: white;
 }
 
-/* line 1148, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1122, ../../app/assets/stylesheets/partials/_app.sass */
 .slots {
   width: 49%;
   min-width: 340px;
@@ -2774,20 +2713,20 @@ img.upgrade {
   float: left;
 }
 
-/* line 1154, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1128, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gem {
   position: relative;
 }
 
-/* line 1156, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1130, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gem .socket {
   position: absolute;
   top: 9px;
   left: 13px;
 }
 
-/* line 1161, ../../app/assets/stylesheets/partials/_app.sass */
-.slots .gems .gem, .slots .enchant, .slots .reforge, .slots .bonuses, .slots .name {
+/* line 1135, ../../app/assets/stylesheets/partials/_app.sass */
+.slots .gems .gem, .slots .enchant, .slots .bonuses, .slots .name {
   background: #0e0e0e url(/images/texture.png);
   margin-bottom: 2px;
   border-radius: 2px;
@@ -2801,13 +2740,13 @@ img.upgrade {
   transition: background 0.2s;
 }
 
-/* line 1169, ../../app/assets/stylesheets/partials/_app.sass */
-.slots .gems .gem:hover, .slots .gems .gem.active, .slots .enchant:hover, .slots .enchant.active, .slots .reforge:hover, .slots .reforge.active, .slots .bonuses:hover, .slots .bonuses.active, .slots .name:hover, .slots .name.active {
+/* line 1143, ../../app/assets/stylesheets/partials/_app.sass */
+.slots .gems .gem:hover, .slots .gems .gem.active, .slots .enchant:hover, .slots .enchant.active, .slots .bonuses:hover, .slots .bonuses.active, .slots .name:hover, .slots .name.active {
   background-color: rgba(0, 128, 255, 0.15);
 }
 
-/* line 1171, ../../app/assets/stylesheets/partials/_app.sass */
-.slots .gems .gem .img, .slots .enchant .img, .slots .reforge .img, .slots .bonuses .img, .slots .name .img {
+/* line 1145, ../../app/assets/stylesheets/partials/_app.sass */
+.slots .gems .gem .img, .slots .enchant .img, .slots .bonuses .img, .slots .name .img {
   background: url(/images/empty.png);
   width: 13px;
   height: 13px;
@@ -2819,26 +2758,26 @@ img.upgrade {
   display: inline-block;
 }
 
-/* line 1179, ../../app/assets/stylesheets/partials/_app.sass */
-.slots .gems .gem .img img, .slots .enchant .img img, .slots .reforge .img img, .slots .bonuses .img img, .slots .name .img img {
+/* line 1153, ../../app/assets/stylesheets/partials/_app.sass */
+.slots .gems .gem .img img, .slots .enchant .img img, .slots .bonuses .img img, .slots .name .img img {
   width: 17px;
   margin-left: -2px;
   margin-top: -2px;
 }
 
-/* line 1186, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1160, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant .img {
   width: 17px;
   height: 17px;
   margin-right: 5px;
 }
 
-/* line 1190, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1164, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant .img img {
   width: 24px;
 }
 
-/* line 1193, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1167, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .bonus {
   color: lime;
   margin-bottom: 4px;
@@ -2846,31 +2785,31 @@ img.upgrade {
   padding: 4px 4px 4px 35px;
 }
 
-/* line 1199, ../../app/assets/stylesheets/partials/_app.sass */
-.slots .reforge img, .slots .bonuses img {
+/* line 1173, ../../app/assets/stylesheets/partials/_app.sass */
+.slots .bonuses img {
   vertical-align: middle;
   margin-right: 5px;
 }
 
-/* line 1202, ../../app/assets/stylesheets/partials/_app.sass */
-.slots .reforge .oldstat, .slots .bonuses .oldstat {
+/* line 1176, ../../app/assets/stylesheets/partials/_app.sass */
+.slots .bonuses .oldstat {
   color: #ee0000;
   padding-right: 1em;
 }
 
-/* line 1205, ../../app/assets/stylesheets/partials/_app.sass */
-.slots .reforge .newstat, .slots .bonuses .newstat {
+/* line 1179, ../../app/assets/stylesheets/partials/_app.sass */
+.slots .bonuses .newstat {
   color: #00ee00;
   padding-right: 1em;
 }
 
-/* line 1209, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1183, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant {
   color: lime;
   font-size: 0.9em;
 }
 
-/* line 1213, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1187, ../../app/assets/stylesheets/partials/_app.sass */
 .slot {
   position: relative;
   min-height: 60px;
@@ -2886,18 +2825,18 @@ img.upgrade {
   background: #0a0a0a;
 }
 
-/* line 1222, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1196, ../../app/assets/stylesheets/partials/_app.sass */
 .slot:hover {
   background-color: #1f232a;
   cursor: pointer;
 }
 
-/* line 1226, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1200, ../../app/assets/stylesheets/partials/_app.sass */
 .slot.active, .slot .active {
   background-color: #1f232a;
 }
 
-/* line 1231, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1205, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .gems {
   /* .Red
    *   background: rgba( $full, 0, 0, $opac )
@@ -2913,7 +2852,7 @@ img.upgrade {
    *   background: rgba( 0, $full, 0, $opac ) */
 }
 
-/* line 1246, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1220, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image {
   background: url(/images/empty.png);
   position: absolute;
@@ -2927,12 +2866,12 @@ img.upgrade {
   border-radius: 3px;
 }
 
-/* line 1257, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1231, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image img {
   width: 48px;
 }
 
-/* line 1259, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1233, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image .ilvl {
   font-size: 0.7em;
   color: white;
@@ -2945,7 +2884,7 @@ img.upgrade {
   border-radius: 2px;
 }
 
-/* line 1269, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1243, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock {
   opacity: 0.3;
   position: absolute;
@@ -2958,24 +2897,24 @@ img.upgrade {
   transition: hover 0.1s;
 }
 
-/* line 1275, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1249, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock.lock_on {
   opacity: 1;
 }
 
-/* line 1277, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1251, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock:hover {
   opacity: 1;
 }
 
-/* line 1280, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1254, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name {
   font-weight: bold;
   font-size: 1.07em;
   text-shadow: black -1px -1px;
 }
 
-/* line 1284, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1258, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name .aep {
   color: white;
   font-weight: normal;
@@ -2983,7 +2922,7 @@ img.upgrade {
   font-style: normal;
 }
 
-/* line 1290, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1264, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name .heroic {
   color: lime;
   padding: 0 0em;
@@ -2991,7 +2930,7 @@ img.upgrade {
   font-size: 0.7em;
 }
 
-/* line 1296, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1270, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .desc {
   display: block;
   font-size: 0.8em;
@@ -2999,13 +2938,13 @@ img.upgrade {
   padding: 2px 0;
 }
 
-/* line 1302, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1276, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives {
   padding-top: 40px;
   border: 1px solid #222222 !important;
 }
 
-/* line 1305, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1279, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot {
   margin: 5px 15px 5px 50px;
   min-height: 46px;
@@ -3014,38 +2953,33 @@ img.upgrade {
   background: transparent;
 }
 
-/* line 1311, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1285, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot:hover {
   background: rgba(30, 35, 40, 0.9);
 }
 
-/* line 1313, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1287, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active, .alternatives .slot .active {
   background: #053255;
 }
 
-/* line 1315, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1289, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active .pct, .alternatives .slot .active .pct {
   border-color: #0d81dc;
 }
 
-/* line 1317, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1291, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active .pct-inner, .alternatives .slot .active .pct-inner {
   background-color: #0d81dc;
 }
 
-/* line 1320, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1294, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .gem {
   display: inline-block;
   vertical-align: middle;
 }
 
-/* line 1322, ../../app/assets/stylesheets/partials/_app.sass */
-.alternatives .slot .reforge {
-  display: none;
-}
-
-/* line 1324, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1296, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .image {
   width: 36px;
   height: 36px;
@@ -3053,56 +2987,56 @@ img.upgrade {
   top: 2px;
 }
 
-/* line 1329, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1301, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .image img {
   margin-left: -2px;
   margin-top: -2px;
   width: 40px;
 }
 
-/* line 1334, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1306, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-2 {
   color: #00dc00;
 }
 
-/* line 1336, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1308, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-3 {
   color: #007cf6;
 }
 
-/* line 1338, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1310, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-4 {
   color: #A335EE;
 }
 
-/* line 1340, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1312, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-5 {
   color: #FF8000;
 }
 
-/* line 1342, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1314, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-6 {
   color: #E5CC80;
 }
 
-/* line 1344, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1316, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-7 {
   color: #E5CC80;
 }
 
-/* line 1347, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1319, ../../app/assets/stylesheets/partials/_app.sass */
 #impex {
   padding: 1em;
 }
 
-/* line 1349, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1321, ../../app/assets/stylesheets/partials/_app.sass */
 #impex h3 {
   font-size: 1.3em;
   font-weight: bold;
   margin: 0.7em 0;
 }
 
-/* line 1353, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1325, ../../app/assets/stylesheets/partials/_app.sass */
 #impex textarea {
   font-family: "liberation mono", "courier new", monospace;
   font-size: 0.8em;
@@ -3115,88 +3049,88 @@ img.upgrade {
 }
 
 @media screen and (max-width: 1281px) {
-  /* line 1365, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1337, ../../app/assets/stylesheets/partials/_app.sass */
   #container.characters-new, #container.characters-create, #container.characters-refresh {
     background: #050505 url(/images/splash-s.jpg) bottom left no-repeat;
   }
 
-  /* line 1368, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1340, ../../app/assets/stylesheets/partials/_app.sass */
   #create_character {
     bottom: 200px;
     left: 250px;
   }
 
-  /* line 1373, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1345, ../../app/assets/stylesheets/partials/_app.sass */
   #card .img {
     width: 90px;
   }
 
-  /* line 1375, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1347, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info {
     margin-left: 100px;
   }
 
-  /* line 1377, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1349, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info .name {
     font-size: 0.75em;
   }
 
-  /* line 1379, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1351, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info .realm {
     font-size: 0.3em;
   }
 
-  /* line 1382, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1354, ../../app/assets/stylesheets/partials/_app.sass */
   .popup .body {
     max-height: 400px;
   }
 }
-/* line 1385, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1357, ../../app/assets/stylesheets/partials/_app.sass */
 #dialogs {
   display: none;
 }
 
-/* line 1388, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1360, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-widget-overlay {
   background: rgba(0, 0, 0, 0.8);
 }
 
-/* line 1391, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1363, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-dialog {
   background: rgba(10, 15, 20, 0.9);
   border: 2px solid #065175;
   border-radius: 5px;
 }
 
-/* line 1396, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1368, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-widget-content.ui-dialog-buttonpane {
   border-color: #222222;
 }
 
-/* line 1400, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1372, ../../app/assets/stylesheets/partials/_app.sass */
 #saveSnapshot label {
   font-weight: bold;
   margin-bottom: 0.5em;
 }
 
-/* line 1403, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1375, ../../app/assets/stylesheets/partials/_app.sass */
 #saveSnapshot #snapshotName {
   width: 200px;
   margin: auto;
 }
 
-/* line 1408, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1380, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table {
   border-collapse: collapse;
   width: 100%;
 }
 
-/* line 1411, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1383, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table th, #loadSnapshot table td {
   border: 1px solid rgba(40, 51, 61, 0.9);
 }
 
-/* line 1413, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1385, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table th {
   background: rgba(20, 25, 30, 0.9);
   padding: 2px 5px;
@@ -3204,17 +3138,17 @@ img.upgrade {
   font-weight: bold;
 }
 
-/* line 1418, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1390, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td:first-child {
   width: 75%;
 }
 
-/* line 1420, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1392, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td {
   padding: 5px;
 }
 
-/* line 1422, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1394, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td a {
   font-weight: bold;
   text-decoration: underline;
