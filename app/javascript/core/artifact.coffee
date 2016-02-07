@@ -3,6 +3,8 @@ class ShadowcraftArtifact
   $popupbody = null
   $popup = null
 
+  # TODO: I'm really hoping that some of this data is available from the API
+  # in the future so we don't have to store it here in the javascript.
   SPEC_ARTIFACT =
     "a":
       icon: "inv_knife_1h_artifactgarona_d_01"
@@ -42,9 +44,11 @@ class ShadowcraftArtifact
   # Stores whether a trait is currently active
   active_mapping = {}
 
-  # Stores which of the relic icons was clicked on. This is 1-3, but defaults
-  # back to 0 after the click has been processed.
+  # Stores which of the relic icons was clicked on. This is 0-2, but defaults
+  # back to -1 after the click has been processed.
   clicked_relic_slot = 0
+
+  artifact_data = null
 
   # Activates a trait, turns the icon enabled, and sets the level of the icon to
   # some value stored in the Shadowcraft data object.
@@ -53,7 +57,7 @@ class ShadowcraftArtifact
     trait.children(".icon").removeClass("inactive")
     trait.children(".level").removeClass("inactive")
     active_mapping[parseInt(trait.attr("data-tooltip-id"))] = true
-    level = Shadowcraft.Data.artifact.settings[spell_id]
+    level = artifact_data.traits[spell_id]
     max_level = parseInt(trait.attr("max_level"))
     trait.children(".level").text(""+level+"/"+max_level)
     return {current: level, max: max_level}
@@ -67,7 +71,7 @@ class ShadowcraftArtifact
       trait.children(".level").addClass("inactive")
       active_mapping[parseInt(trait.attr("data-tooltip-id"))] = false
 
-    Shadowcraft.Data.artifact.settings[spell_id] = 0
+    artifact_data.traits[spell_id] = 0
     max_level = parseInt(trait.attr("max_level"))
     trait.children(".level").text("0/"+max_level)
     return {current: 0, max: max_level}
@@ -96,12 +100,12 @@ class ShadowcraftArtifact
     # if there's no artifact data in the data object, just return and don't do
     # anything else. this is mostly here for testing right now, but it's best
     # to check instead of throwing an error.
-    if (!Shadowcraft.Data.artifact)
+    if (!artifact_data)
       return
 
     # if the current level for the main proc is zero, disable everything
     done = []
-    if (Shadowcraft.Data.artifact.settings[main_spell_id] == 0)
+    if (artifact_data.traits[main_spell_id] == 0)
 
       # enable the level for the main icon and set the level to 0/1
       active_mapping[main_spell_id] = true
@@ -119,14 +123,14 @@ class ShadowcraftArtifact
 
     # If there are relics attached, add them to the stack so they're
     # guaranteed to get processed.
-    if Shadowcraft.Data.artifact.relic1 != 0
-      relic = Shadowcraft.ServerData.RELIC_LOOKUP[Shadowcraft.Data.artifact.relic1]
+    if artifact_data.relics[0] != 0
+      relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[0]]
       stack.push(relic.tmi)
-    if Shadowcraft.Data.artifact.relic2 != 0
-      relic = Shadowcraft.ServerData.RELIC_LOOKUP[Shadowcraft.Data.artifact.relic2]
+    if artifact_data.relics[1] != 0
+      relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[1]]
       stack.push(relic.tmi)
-    if Shadowcraft.Data.artifact.relic3 != 0
-      relic = Shadowcraft.ServerData.RELIC_LOOKUP[Shadowcraft.Data.artifact.relic3]
+    if artifact_data.relics[2] != 0
+      relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[2]]
       stack.push(relic.tmi)
 
     while (stack.length > 0)
@@ -166,7 +170,7 @@ class ShadowcraftArtifact
     $("#artifactframe .trait").each(->
       check_id = parseInt($(this).attr('data-tooltip-id'))
       if (jQuery.inArray(check_id, done) == -1)
-        Shadowcraft.Data.artifact.settings[check_id] = 0
+        artifact_data.traits[check_id] = 0
     )
     return
 
@@ -182,11 +186,11 @@ class ShadowcraftArtifact
 
     # if we're already at the max for this trait, don't do anything else
     max_level = parseInt(trait.attr("max_level"))
-    if (Shadowcraft.Data.artifact.settings[spell_id] == max_level)
+    if (artifact_data.traits[spell_id] == max_level)
       return
 
-    Shadowcraft.Data.artifact.settings[spell_id] += 1
-    current_level = Shadowcraft.Data.artifact.settings[spell_id]
+    artifact_data.traits[spell_id] += 1
+    current_level = artifact_data.traits[spell_id]
     return updateTraits()
 
   # Called when a user right-clicks on a trait in the UI. This decreases the
@@ -208,11 +212,11 @@ class ShadowcraftArtifact
       min_level = 0
 
     # if we're already at the minimum for this trait, don't do anything else
-    if (Shadowcraft.Data.artifact.settings[spell_id] == min_level)
+    if (artifact_data.traits[spell_id] == min_level)
       return
 
     # Decrease the level on this trait and update the display
-    Shadowcraft.Data.artifact.settings[spell_id] -= 1
+    artifact_data.traits[spell_id] -= 1
     return updateTraits()
 
   get_ep = (relic) ->
@@ -225,7 +229,7 @@ class ShadowcraftArtifact
   # to select a relic to attach.
   clickRelicSlot = (e) ->
     relic_type = e.delegateTarget.attributes['relic-type'].value
-    clicked_relic_slot = parseInt(/relic(\d+)/.exec(e.delegateTarget.id)[1])
+    clicked_relic_slot = parseInt(/relic(\d+)/.exec(e.delegateTarget.id)[1])-1
 
     # Grab the list of relics and filter them based on the type that
     # was clicked.
@@ -273,8 +277,8 @@ class ShadowcraftArtifact
     # Set the HTML into the popup and mark the currently active relic
     # if there is one.
     $popupbody.get(0).innerHTML = buffer
-    if Shadowcraft.Data.artifact['relic'+clicked_relic_slot] != 0
-      $popupbody.find(".slot[id='" + Shadowcraft.Data.artifact['relic'+clicked_relic_slot] + "']").addClass("active")
+    if artifact_data.relics[clicked_relic_slot] != -1
+      $popupbody.find(".slot[id='" + artifact_data.relics[clicked_relic_slot] + "']").addClass("active")
 
     showPopup($popup)
     false
@@ -287,7 +291,7 @@ class ShadowcraftArtifact
     Relics = Shadowcraft.ServerData.RELIC_LOOKUP
     data = Shadowcraft.Data
 
-    button = $("#relic"+clicked_relic_slot+" .relicicon")
+    button = $("#relic"+(clicked_relic_slot+1)+" .relicicon")
 
     # get the relic ID from the item that was clicked. if there wasn't
     # an id attribute, this will return a NaN which we then check for.
@@ -299,14 +303,14 @@ class ShadowcraftArtifact
 
       # If this is the relic the user already selected for this slot,
       # ignore it and continue.
-      current_relic = Shadowcraft.Data.artifact['relic'+clicked_relic_slot]
+      current_relic = artifact_data.relics[clicked_relic_slot]
       if current_relic == relic_id
-        clicked_relic_slot = 0
+        clicked_relic_slot = -1
         return
       else if current_relic != 0 and current_relic != relic_id
         relic = Relics[current_relic]
         trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"']")
-        Shadowcraft.Data.artifact.settings[relic.tmi] -= relic.ti
+        artifact_data.traits[relic.tmi] -= relic.ti
         max_level = parseInt(trait.attr("max_level"))
         max_level -= relic.ti
         trait.attr("max_level", max_level)
@@ -324,7 +328,7 @@ class ShadowcraftArtifact
       # Find the trait that this relic modifies, the trait element on the
       # artifact frame, and update the value stored in the data
       trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"']")
-      Shadowcraft.Data.artifact.settings[relic.tmi] += relic.ti
+      artifact_data.traits[relic.tmi] += relic.ti
       max_level = parseInt(trait.attr("max_level"))
       max_level += relic.ti
       trait.attr("max_level", max_level)
@@ -336,7 +340,7 @@ class ShadowcraftArtifact
 
       # Store this relic id in the global data object and force a refresh
       # of the display
-      Shadowcraft.Data.artifact['relic'+clicked_relic_slot] = relic_id
+      artifact_data.relics[clicked_relic_slot] = relic_id
       updateTraits()
 
     else
@@ -345,11 +349,11 @@ class ShadowcraftArtifact
 
       # Find the trait that this relic modifies, the trait element on the
       # artifact frame, and update the value stored in the data
-      relic = Relics[Shadowcraft.Data.artifact['relic'+clicked_relic_slot]]
-      Shadowcraft.Data.artifact['relic'+clicked_relic_slot] = 0
+      relic = Relics[artifact_data.relics[clicked_relic_slot]]
+      artifact_data.relics[clicked_relic_slot] = 0
 
       trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"']")
-      Shadowcraft.Data.artifact.settings[relic.tmi] -= relic.ti
+      artifact_data.traits[relic.tmi] -= relic.ti
       max_level = parseInt(trait.attr("max_level"))
       max_level -= relic.ti
       trait.attr("max_level", max_level)
@@ -378,12 +382,15 @@ class ShadowcraftArtifact
     if str == "a"
       buffer = ArtifactTemplates.useKingslayers()
       $("#artifactframe").get(0).innerHTML = buffer
+      artifact_data = Shadowcraft.Data.artifact[str]
     else if str == "Z"
       buffer = ArtifactTemplates.useDreadblades()
       $("#artifactframe").get(0).innerHTML = buffer
+      artifact_data = Shadowcraft.Data.artifact[str]
     else if str == "b"
       buffer = ArtifactTemplates.useFangs()
       $("#artifactframe").get(0).innerHTML = buffer
+      artifact_data = Shadowcraft.Data.artifact[str]
 
     $("#relic1").attr("relic-type", SPEC_ARTIFACT[str].relic1)
     $("#relic2").attr("relic-type", SPEC_ARTIFACT[str].relic2)
@@ -418,8 +425,11 @@ class ShadowcraftArtifact
     )
 
   resetTraits: ->
-    for id of Shadowcraft.Data.artifact.settings
-      Shadowcraft.Data.artifact.settings[id] = 0
+    for id of artifact_data.traits
+      artifact_data.traits[id] = 0
+    artifact_data.relics[0] = 0
+    artifact_data.relics[1] = 0
+    artifact_data.relics[3] = 0
     updateTraits()
 
   boot: ->

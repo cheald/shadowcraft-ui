@@ -276,6 +276,14 @@ class ShadowcraftHistory
       options.push ShadowcraftOptions.buffFoodMap.indexOf(buffFood)
 
       ret.push options
+
+      artifactSet = []
+      for spec,artifact of data.artifact
+        artifactSet.push spec
+        artifactSet.push artifact.relics
+        artifactSet.push artifact.traits
+      ret.push artifactSet
+
       return ret
 
   decompress_handlers =
@@ -287,6 +295,7 @@ class ShadowcraftHistory
         activeTalents: data[4]
         options: {}
         talents: []
+        artifact: {}
 
       talentSets = data[5]
       for id, index in talentSets by 3
@@ -362,26 +371,10 @@ class ShadowcraftHistory
       buffFood = options[4]
       d.options.buffs.food_buff = ShadowcraftOptions.buffFoodMap[buffFood]
 
-      d.artifact =
-        settings: {}
-        relic1: 0
-        relic2: 0
-        relic3: 0
-        
-      d.artifact.settings["202665"] = 0
-      d.artifact.settings["202897"] = 0
-      d.artifact.settings["202769"] = 0
-      d.artifact.settings["202820"] = 0
-      d.artifact.settings["202507"] = 0
-      d.artifact.settings["202628"] = 0
-      d.artifact.settings["202463"] = 0
-      d.artifact.settings["202521"] = 0
-      d.artifact.settings["202755"] = 0
-      d.artifact.settings["202524"] = 0
-      d.artifact.settings["202514"] = 0
-      d.artifact.settings["202530"] = 0
-      d.artifact.settings["202907"] = 0
-      d.artifact.settings["202533"] = 0
-      d.artifact.settings["202522"] = 0
-      d.artifact.settings["202753"] = 0
+      artifactSet = data[7]
+      for i in [0,3,6]
+        spec = "#{artifactSet[i]}"
+        d.artifact[spec] = {}
+        d.artifact[spec].relics = artifactSet[i+1]
+        d.artifact[spec].traits = artifactSet[i+2]
       return d
