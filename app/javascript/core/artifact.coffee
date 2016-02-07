@@ -39,16 +39,12 @@ class ShadowcraftArtifact
     "wind": 9
     "holy": 10
 
-  # Stores the routes through which you can get from the root trait to any
-  # other currently active trait.
-  route_mapping = {}
-
-  # Stores whether a trait is currently active (in that it has routes attached)
+  # Stores whether a trait is currently active
   active_mapping = {}
 
-  # Stores which of the relic icons was clicked on. This is 0-2, but defaults
-  # back to -1 after the click has been processed.
-  clicked_relic_type = -1
+  # Stores which of the relic icons was clicked on. This is 1-3, but defaults
+  # back to 0 after the click has been processed.
+  clicked_relic_slot = 0
 
   # Activates a trait, turns the icon enabled, and sets the level of the icon to
   # some value stored in the Shadowcraft data object.
@@ -71,15 +67,20 @@ class ShadowcraftArtifact
       trait.children(".level").addClass("inactive")
       active_mapping[parseInt(trait.attr("data-tooltip-id"))] = false
 
-    # TODO: handle relics here
     Shadowcraft.Data.artifact.settings[spell_id] = 0
     max_level = parseInt(trait.attr("max_level"))
     trait.children(".level").text("0/"+max_level)
     return {current: 0, max: max_level}
 
+  # Redoes the display of all of the traits based on the data stored in the
+  # global Shadowcraft.Data object. This will turn everything off and
+  # completely rebuild the state every time. It's a bit of a brute-force
+  # solution, but it's fast enough that it doesn't matter.
   updateTraits = ->
 
-    main_spell_id = 202665
+    # Get the main spell ID for this artifact based on the active spec
+    active = SPEC_ARTIFACT[Shadowcraft.Data.activeSpec]
+    main_spell_id = SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].main
 
     # Disable everything.
     active_mapping = {}
@@ -98,11 +99,8 @@ class ShadowcraftArtifact
     if (!Shadowcraft.Data.artifact)
       return
 
-    # always set the route for the main proc to an empty array so that the rest
-    # of the routes get setup correctly
-    route_mapping[main_spell_id] = [[]]
-
     # if the current level for the main proc is zero, disable everything
+    done = []
     if (Shadowcraft.Data.artifact.settings[main_spell_id] == 0)
 
       # enable the level for the main icon and set the level to 0/1
@@ -111,64 +109,69 @@ class ShadowcraftArtifact
       main.children(".level").text("0/"+main.attr("max_level"))
       main.children(".level").removeClass("inactive")
       main.children(".icon").removeClass("inactive")
+      done = [main_spell_id]
 
-    else
-      # starting at main, run a search to enable all of the icons that need
-      # to be enabled based on the line endpoints. while enabling/disabling
-      # icons, also set the level display based on the current level stored in
-      # the data.
-      done = []
-      stack = [main_spell_id]
+    # starting at main, run a search to enable all of the icons that need
+    # to be enabled based on the line endpoints. while enabling/disabling
+    # icons, also set the level display based on the current level stored in
+    # the data.
+    stack = [main_spell_id]
 
-      while (stack.length > 0)
-        spell_id = stack.pop()
+    # If there are relics attached, add them to the stack so they're
+    # guaranteed to get processed.
+    if Shadowcraft.Data.artifact.relic1 != 0
+      relic = Shadowcraft.ServerData.RELIC_LOOKUP[Shadowcraft.Data.artifact.relic1]
+      stack.push(relic.tmi)
+    if Shadowcraft.Data.artifact.relic2 != 0
+      relic = Shadowcraft.ServerData.RELIC_LOOKUP[Shadowcraft.Data.artifact.relic2]
+      stack.push(relic.tmi)
+    if Shadowcraft.Data.artifact.relic3 != 0
+      relic = Shadowcraft.ServerData.RELIC_LOOKUP[Shadowcraft.Data.artifact.relic3]
+      stack.push(relic.tmi)
 
-        # if we've already processed this one (covers loops), skip it and go
-        # on to the next one
-        if (jQuery.inArray(spell_id, done) != -1)
-          continue
+    while (stack.length > 0)
+      spell_id = stack.pop()
 
-        levels = activateTrait(spell_id)
+      # if we've already processed this one (covers loops), skip it and go
+      # on to the next one
+      if (jQuery.inArray(spell_id, done) != -1)
+        continue
 
-        # if the level is equal to the max level, then enable the lines
-        # attached to this icon and insert the spell IDs for the icons
-        # at the other ends to the stack so they'll get processed too.
-        if (levels.current == levels.max)
-          route_stack = []
-          $("#artifactframe .line[spell1='"+spell_id+"']").each(->
-            $(this).removeClass("inactive")
-            other_end = $(this).attr("spell2")
-            if (jQuery.inArray(other_end, done) == -1)
-              stack.push(other_end)
-            route_stack.push(other_end)
-          )
-          $("#artifactframe .line[spell2='"+spell_id+"']").each(->
-            $(this).removeClass("inactive")
-            other_end = $(this).attr("spell1")
-            if (jQuery.inArray(other_end, done) == -1)
-              stack.push(other_end)
-            route_stack.push(other_end)
-          )
+      levels = activateTrait(spell_id)
 
-          # Build the routes for each icon as we enable them.  This allows
-          # us to disable icons when connecting icons along their routes
-          # get disabled.
-          for id in route_stack
-            if (!(id in route_mapping))
-              route_mapping[id] = []
-            for route in route_mapping[spell_id]
-              # don't include any routes here that this spell already
-              # exists in. this helps cut down on loops.
-              if spell_id in route
-                continue
-              newroute = route.slice(0)
-              newroute.push(spell_id)
-              route_mapping[id].push(newroute)
+      # if the level is equal to the max level, then enable the lines
+      # attached to this icon and insert the spell IDs for the icons
+      # at the other ends to the stack so they'll get processed too.
+      if (levels.current == levels.max)
+        $("#artifactframe .line[spell1='"+spell_id+"']").each(->
+          $(this).removeClass("inactive")
+          other_end = $(this).attr("spell2")
+          if (jQuery.inArray(other_end, done) == -1)
+            stack.push(parseInt(other_end))
+        )
+        $("#artifactframe .line[spell2='"+spell_id+"']").each(->
+          $(this).removeClass("inactive")
+          other_end = $(this).attr("spell1")
+          if (jQuery.inArray(other_end, done) == -1)
+            stack.push(parseInt(other_end))
+        )
 
-        # insert this spell ID into the list of "done" IDs so it doesn't
-        # get procesed again
-        done.push(spell_id)
+      # insert this spell ID into the list of "done" IDs so it doesn't
+      # get procesed again
+      done.push(parseInt(spell_id))
 
+    # If a spell is not in the done list, set the value of the trait to zero.
+    # This keeps "zombie" values from coming back the next time the icon is
+    # enabled.
+    $("#artifactframe .trait").each(->
+      check_id = parseInt($(this).attr('data-tooltip-id'))
+      if (jQuery.inArray(check_id, done) == -1)
+        Shadowcraft.Data.artifact.settings[check_id] = 0
+    )
+    return
+
+  # Called when a user left-clicks on a trait in the UI. This increases the
+  # value of a trait up to the maximum of the trait.
   increaseTrait = (e) ->
     spell_id = parseInt(e.delegateTarget.attributes["data-tooltip-id"].value)
     trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
@@ -182,111 +185,47 @@ class ShadowcraftArtifact
     if (Shadowcraft.Data.artifact.settings[spell_id] == max_level)
       return
 
-    old_level = Shadowcraft.Data.artifact.settings[spell_id]
     Shadowcraft.Data.artifact.settings[spell_id] += 1
     current_level = Shadowcraft.Data.artifact.settings[spell_id]
-    level = trait.children(".level")
-    level.text("" + current_level + "/" +max_level)
-    stack = []
+    return updateTraits()
 
-    # if the new level of the trait is the maximum for that trait, we need
-    # to enable the attached lines and icons.
-    if (current_level == max_level)
-      $("#artifactframe .line[spell1='"+spell_id+"']").each(->
-        if (active_mapping[parseInt($(this).attr("spell2"))] == false)
-          $(this).removeClass("inactive")
-          stack.push($(this).attr("spell2"))
-      )
-      $("#artifactframe .line[spell2='"+spell_id+"']").each(->
-        if (active_mapping[parseInt($(this).attr("spell1"))] == false)
-          $(this).removeClass("inactive")
-          stack.push($(this).attr("spell1"))
-      )
-
-      for id in stack
-        activateTrait(id)
-        if (!(id in route_mapping))
-          route_mapping[id] = []
-        for route in route_mapping[spell_id]
-          # don't include any routes here that this spell already
-          # exists in. this helps cut down on loops.
-          if spell_id in route
-            continue
-          newroute = route.slice(0)
-          newroute.push(spell_id)
-          route_mapping[id].push(newroute)
-
-    # call to update the DPS chart
-    Shadowcraft.update()
-
+  # Called when a user right-clicks on a trait in the UI. This decreases the
+  # value of a trait, stopping at either zero or the value of a relic if a
+  # related relic is attached.
   decreaseTrait = (e) ->
     spell_id = parseInt(e.delegateTarget.attributes["data-tooltip-id"].value)
-    trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
 
     # if this trait is inactive, ignore this event
+    trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
     if trait.children(".icon").hasClass("inactive")
       return
 
+    # don't allow the user to decrease the value of a trait past the levels
+    # contributed by any attached relics.
+    if trait.attr("relic_power")?
+      min_level = parseInt(trait.attr("relic_power"))
+    else
+      min_level = 0
+
     # if we're already at the minimum for this trait, don't do anything else
-    # TODO: have to handle relics somehow here
-    if (Shadowcraft.Data.artifact.settings[spell_id] == 0)
+    if (Shadowcraft.Data.artifact.settings[spell_id] == min_level)
       return
 
     # Decrease the level on this trait and update the display
-    max_level = parseInt(trait.attr("max_level"))
     Shadowcraft.Data.artifact.settings[spell_id] -= 1
-    current_level = Shadowcraft.Data.artifact.settings[spell_id]
-    level = trait.children(".level")
-    level.text("" + current_level + "/" +max_level)
-
-    # Search through all of the currently stored routes and remove any
-    # routes that involve this icon. If we find any icons that have no
-    # routes after deletion, disable those too.
-    for spell,routes of route_mapping
-      indexes_to_remove = []
-      index = 0
-      for route in routes
-        if (route.indexOf(spell_id) != -1)
-          indexes_to_remove.push(index)
-        index++
-      for remove in indexes_to_remove
-        routes.splice(remove, 1)
-      if routes.length == 0
-        deactivateTrait(spell)
-
-    # Loop back through all of the lines and disable anything that has
-    # an icon disabled at either end of it.
-    # TODO: it might be possible to do this above or to remove the entire
-    # section about deleting lines above.
-    $("#artifactframe .line").each(->
-      # don't bother doing any of this if the line is already inactive
-      if $(this).hasClass("inactive")
-        return
-
-      spell1 = parseInt($(this).attr("spell1"))
-      spell2 = parseInt($(this).attr("spell2"))
-      if (!active_mapping[spell1] || !active_mapping[spell2])
-        $(this).addClass("inactive")
-    )
-
-    # call to update the dps chart
-    Shadowcraft.update()
+    return updateTraits()
 
   get_ep = (relic) ->
     # TODO: not entirely sure how to go about this one. Right now just order
     # them by the ID so we can tell it's doing *something*.
     return relic.id
 
-  clickRelic = (e) ->
+  # Called when the user clicks on a relic slot in the UI. This will create
+  # a popup containing all of the relics for that type and allow the user
+  # to select a relic to attach.
+  clickRelicSlot = (e) ->
     relic_type = e.delegateTarget.attributes['relic-type'].value
-    relic_number = -1
-    if e.delegateTarget.id == "relic1"
-      relic_number = 0
-    else if e.delegateTarget.id == "relic2"
-      relic_number = 1
-    else if e.delegateTarget.id == "relic3"
-      relic_number = 2
-    clicked_relic_type = relic_number
+    clicked_relic_slot = parseInt(/relic(\d+)/.exec(e.delegateTarget.id)[1])
 
     # Grab the list of relics and filter them based on the type that
     # was clicked.
@@ -331,32 +270,52 @@ class ShadowcraftArtifact
       ep: 0
     )
 
+    # Set the HTML into the popup and mark the currently active relic
+    # if there is one.
     $popupbody.get(0).innerHTML = buffer
-    if relic_number == 0 and Shadowcraft.Data.artifact.relic1 != 0
-      $popupbody.find(".slot[id='" + Shadowcraft.Data.artifact.relic1 + "']").addClass("active")
-    else if relic_number == 1 and Shadowcraft.Data.artifact.relic2 != 0
-      $popupbody.find(".slot[id='" + Shadowcraft.Data.artifact.relic2 + "']").addClass("active")
-    else if relic_number == 2 and Shadowcraft.Data.artifact.relic3 != 0
-      $popupbody.find(".slot[id='" + Shadowcraft.Data.artifact.relic3 + "']").addClass("active")
+    if Shadowcraft.Data.artifact['relic'+clicked_relic_slot] != 0
+      $popupbody.find(".slot[id='" + Shadowcraft.Data.artifact['relic'+clicked_relic_slot] + "']").addClass("active")
 
     showPopup($popup)
-
     false
 
+  # Called when the user selects a relic from the popup list opened by
+  # clickRelicSlot. This updates a trait with the selected relic and updates
+  # the display.
   selectRelic = (clicked_relic) ->
     Shadowcraft.Console.purgeOld()
     Relics = Shadowcraft.ServerData.RELIC_LOOKUP
     data = Shadowcraft.Data
 
-    button = $("#relic"+(clicked_relic_type+1)+" .relicicon")
+    button = $("#relic"+clicked_relic_slot+" .relicicon")
 
     # get the relic ID from the item that was clicked. if there wasn't
     # an id attribute, this will return a NaN which we then check for.
     # that NaN indicates that the user clicked on the "None" item and
     # that we need to disable the currently selected relic.
-    relic_id = parseInt(clicked_relic.attr("id"), 0)
+    relic_id = parseInt(clicked_relic.attr("id"))
     relic_id = if not isNaN(relic_id) then relic_id else null
     if relic_id?
+
+      # If this is the relic the user already selected for this slot,
+      # ignore it and continue.
+      current_relic = Shadowcraft.Data.artifact['relic'+clicked_relic_slot]
+      if current_relic == relic_id
+        clicked_relic_slot = 0
+        return
+      else if current_relic != 0 and current_relic != relic_id
+        relic = Relics[current_relic]
+        trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"']")
+        Shadowcraft.Data.artifact.settings[relic.tmi] -= relic.ti
+        max_level = parseInt(trait.attr("max_level"))
+        max_level -= relic.ti
+        trait.attr("max_level", max_level)
+        if trait.attr("relic_power")?
+          relic_power = parseInt(trait.attr("relic_power")) - relic.ti
+        else
+          relic_power = 0
+        trait.attr("relic_power", relic_power)
+
       # Turn on the icon on the relicicon img element and unhide it
       relic = Relics[relic_id]
       button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relic.icon+".jpg")
@@ -365,17 +324,20 @@ class ShadowcraftArtifact
       # Find the trait that this relic modifies, the trait element on the
       # artifact frame, and update the value stored in the data
       trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"']")
-      Shadowcraft.Data.artifact.settings[relic.tmi] += 1
+      Shadowcraft.Data.artifact.settings[relic.tmi] += relic.ti
       max_level = parseInt(trait.attr("max_level"))
-      max_level += 1
+      max_level += relic.ti
       trait.attr("max_level", max_level)
-      activateTrait(relic.tmi)
-      if (clicked_relic_type == 0)
-        Shadowcraft.Data.artifact.relic1 = relic_id
-      else if (clicked_relic_type == 1)
-        Shadowcraft.Data.artifact.relic2 = relic_id
-      else if (clicked_relic_type == 2)
-        Shadowcraft.Data.artifact.relic3 = relic_id
+      if trait.attr("relic_power")?
+        relic_power = parseInt(trait.attr("relic_power")) + relic.ti
+      else
+        relic_power = relic.ti
+      trait.attr("relic_power", relic_power)
+
+      # Store this relic id in the global data object and force a refresh
+      # of the display
+      Shadowcraft.Data.artifact['relic'+clicked_relic_slot] = relic_id
+      updateTraits()
 
     else
       # Hide the icon
@@ -383,33 +345,26 @@ class ShadowcraftArtifact
 
       # Find the trait that this relic modifies, the trait element on the
       # artifact frame, and update the value stored in the data
-      if (clicked_relic_type == 0)
-        relic = Relics[Shadowcraft.Data.artifact.relic1]
-        Shadowcraft.Data.artifact.relic1 = 0
-      else if (clicked_relic_type == 1)
-        relic = Relics[Shadowcraft.Data.artifact.relic2]
-        Shadowcraft.Data.artifact.relic2 = 0
-      else if (clicked_relic_type == 2)
-        relic = Relics[Shadowcraft.Data.artifact.relic3]
-        Shadowcraft.Data.artifact.relic3 = 0
+      relic = Relics[Shadowcraft.Data.artifact['relic'+clicked_relic_slot]]
+      Shadowcraft.Data.artifact['relic'+clicked_relic_slot] = 0
 
       trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"']")
-      Shadowcraft.Data.artifact.settings[relic.tmi] -= 1
+      Shadowcraft.Data.artifact.settings[relic.tmi] -= relic.ti
       max_level = parseInt(trait.attr("max_level"))
-      max_level -= 1
+      max_level -= relic.ti
       trait.attr("max_level", max_level)
-      if Shadowcraft.Data.artifact.settings[relic.tmi] > 0
-        activateTrait(relic.tmi)
+      if trait.attr("relic_power")?
+        relic_power = parseInt(trait.attr("relic_power")) - relic.ti
       else
-        # if there's an existing connection to this icon, the trait should
-        # stay enabled, but the level should be reduced to 0.
-        if relic.tmi of route_mapping and route_mapping[relic.tmi].length > 0
-          deactivateTrait(relic.tmi, false)
-        else        
-          deactivateTrait(relic.tmi, true)
+        relic_power = 0
+      trait.attr("relic_power", relic_power)
 
-    clicked_relic_type = -1
+      # Force a refresh of the display
+      updateTraits()
+
+    clicked_relic_slot = 0
     Shadowcraft.update()
+    # TODO: is this needed?
 #    app.updateDisplay()
     return true
 
@@ -453,7 +408,7 @@ class ShadowcraftArtifact
 
     $("#artifactframe .relicframe").each(->
     ).click((e) ->
-      clickRelic(e)
+      clickRelicSlot(e)
     ).bind("contextmenu", -> false
     ).mouseover($.delegate
       ".tt": ttlib.requestTooltip
