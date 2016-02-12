@@ -160,11 +160,12 @@ class ShadowcraftGear
     if (facets & FACETS.GEMS) == FACETS.GEMS
       matchesAllSockets = item.sockets and item.sockets.length > 0
       for socketIndex, socket of item.sockets
-        gid = gear.gems[socketIndex]
-        if gid and gid > 0
-          gem = Gems[gid]
-          sumItem(out, gem) if(gem)
-        matchesAllSockets = false if !gem or !gem[socket]
+        if gear.gems?
+          gid = gear.gems[socketIndex]
+          if gid and gid > 0
+            gem = Gems[gid]
+            sumItem(out, gem) if(gem)
+          matchesAllSockets = false if !gem or !gem[socket]
 
       if matchesAllSockets
         sumItem(out, item, "socketbonus")
@@ -527,6 +528,10 @@ class ShadowcraftGear
           if apply
             last = item.sockets[item.sockets.length - 1]
             item.sockets.push "Prismatic"
+            if item.gems?
+              item.gems.push(0)
+            else
+              item.gems = []
           else
             item.sockets.pop()
         when 5 # item name suffix
@@ -595,11 +600,12 @@ class ShadowcraftGear
                     break
           allSlotsMatch = item.sockets && item.sockets.length > 0
           for socket,index in item.sockets
-            gem = Gems[gear.gems[index]]
-            gems[gems.length] = {socket: socket, gem: gem}
-            continue if socket == "Prismatic" # prismatic sockets don't contribute to socket bonus
-            if !gem or !gem[socket]
-              allSlotsMatch = false
+            if (gear.gems?)
+              gem = Gems[gear.gems[index]]
+              gems[gems.length] = {socket: socket, gem: gem}
+              continue if socket == "Prismatic" # prismatic sockets don't contribute to socket bonus
+              if !gem or !gem[socket]
+                allSlotsMatch = false
 
           if allSlotsMatch
             bonuses = []
@@ -1262,7 +1268,6 @@ class ShadowcraftGear
     $("#bonuses").click $.delegate
       ".label_check input"  : ->
         $this = $(this)
-        #changeOption($this, "check", not $this.attr("checked")?)
         $this.attr("checked", not $this.attr("checked")?)
         Shadowcraft.setupLabels("#bonuses")
       ".applyBonuses" : this.applyBonuses
