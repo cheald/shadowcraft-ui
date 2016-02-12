@@ -1,3 +1,6 @@
+# Handler class for the artifact tab. This relies heavily on just brute forcing
+# the tree into the state we want it in. updateTraits() handles all of the heavy
+# lifting and gets called basically whenever the user does anything at all.
 class ShadowcraftArtifact
 
   $popupbody = null
@@ -61,20 +64,6 @@ class ShadowcraftArtifact
     max_level = parseInt(trait.attr("max_level"))
     trait.children(".level").text(""+level+"/"+max_level)
     return {current: level, max: max_level}
-
-  # Deactivates a trait, disables the icon, and sets the level in the shadowcraft
-  # data to zero.
-  deactivateTrait = (spell_id, hide_icon = true) ->
-    trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
-    if (hide_icon)
-      trait.children(".icon").addClass("inactive")
-      trait.children(".level").addClass("inactive")
-      active_mapping[parseInt(trait.attr("data-tooltip-id"))] = false
-
-    artifact_data.traits[spell_id] = 0
-    max_level = parseInt(trait.attr("max_level"))
-    trait.children(".level").text("0/"+max_level)
-    return {current: 0, max: max_level}
 
   # Redoes the display of all of the traits based on the data stored in the
   # global Shadowcraft.Data object. This will turn everything off and
@@ -172,6 +161,23 @@ class ShadowcraftArtifact
       if (jQuery.inArray(check_id, done) == -1)
         artifact_data.traits[check_id] = 0
     )
+
+    # Deal with relics that are attached to the weapon. This may enable other
+    # icons that are currently disabled, but doesn't increase their value in
+    # the data map.
+    for i in [0...2]
+      button = $("#relic"+(i+1)+" .relicicon")
+      if artifact_data.relics[i] != 0
+        relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i]]
+        button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relic.icon+".jpg")
+        button.removeClass("inactive")
+
+        trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"'")
+        {current, max} = activateTrait(relic.tmi)
+        trait.children(".level").text(""+(relic.ti+current)+"/"+(relic.ti+max))
+      else
+        button.addClass("inactive")
+
     return
 
   # Called when a user left-clicks on a trait in the UI. This increases the
@@ -287,11 +293,6 @@ class ShadowcraftArtifact
   # clickRelicSlot. This updates a trait with the selected relic and updates
   # the display.
   selectRelic = (clicked_relic) ->
-    Shadowcraft.Console.purgeOld()
-    Relics = Shadowcraft.ServerData.RELIC_LOOKUP
-    data = Shadowcraft.Data
-
-    button = $("#relic"+(clicked_relic_slot+1)+" .relicicon")
 
     # get the relic ID from the item that was clicked. if there wasn't
     # an id attribute, this will return a NaN which we then check for.
@@ -300,71 +301,12 @@ class ShadowcraftArtifact
     relic_id = parseInt(clicked_relic.attr("id"))
     relic_id = if not isNaN(relic_id) then relic_id else null
     if relic_id?
-
-      # If this is the relic the user already selected for this slot,
-      # ignore it and continue.
-      current_relic = artifact_data.relics[clicked_relic_slot]
-      if current_relic == relic_id
-        clicked_relic_slot = -1
-        return
-      else if current_relic != 0 and current_relic != relic_id
-        relic = Relics[current_relic]
-        trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"']")
-        artifact_data.traits[relic.tmi] -= relic.ti
-        max_level = parseInt(trait.attr("max_level"))
-        max_level -= relic.ti
-        trait.attr("max_level", max_level)
-        if trait.attr("relic_power")?
-          relic_power = parseInt(trait.attr("relic_power")) - relic.ti
-        else
-          relic_power = 0
-        trait.attr("relic_power", relic_power)
-
-      # Turn on the icon on the relicicon img element and unhide it
-      relic = Relics[relic_id]
-      button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relic.icon+".jpg")
-      button.removeClass("inactive")
-
-      # Find the trait that this relic modifies, the trait element on the
-      # artifact frame, and update the value stored in the data
-      trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"']")
-      artifact_data.traits[relic.tmi] += relic.ti
-      max_level = parseInt(trait.attr("max_level"))
-      max_level += relic.ti
-      trait.attr("max_level", max_level)
-      if trait.attr("relic_power")?
-        relic_power = parseInt(trait.attr("relic_power")) + relic.ti
-      else
-        relic_power = relic.ti
-      trait.attr("relic_power", relic_power)
-
-      # Store this relic id in the global data object and force a refresh
-      # of the display
       artifact_data.relics[clicked_relic_slot] = relic_id
-      updateTraits()
-
     else
-      # Hide the icon
-      button.addClass("inactive")
-
-      # Find the trait that this relic modifies, the trait element on the
-      # artifact frame, and update the value stored in the data
-      relic = Relics[artifact_data.relics[clicked_relic_slot]]
       artifact_data.relics[clicked_relic_slot] = 0
 
-      trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"']")
-      artifact_data.traits[relic.tmi] -= relic.ti
-      max_level = parseInt(trait.attr("max_level"))
-      max_level -= relic.ti
-      trait.attr("max_level", max_level)
-      if trait.attr("relic_power")?
-        relic_power = parseInt(trait.attr("relic_power")) - relic.ti
-      else
-        relic_power = 0
-      trait.attr("relic_power", relic_power)
-
-      # Force a refresh of the display
-      updateTraits()
+    # Force a refresh of the display
+    updateTraits()
 
     clicked_relic_slot = 0
     Shadowcraft.update()
@@ -427,9 +369,10 @@ class ShadowcraftArtifact
   resetTraits: ->
     for id of artifact_data.traits
       artifact_data.traits[id] = 0
-    artifact_data.relics[0] = 0
-    artifact_data.relics[1] = 0
-    artifact_data.relics[3] = 0
+
+    for i in [0...2]
+      artifact_data.relics[i] = 0
+
     updateTraits()
 
   boot: ->
