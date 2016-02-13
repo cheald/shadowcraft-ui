@@ -149,6 +149,23 @@
       .panel-content
 
     #docs
+      %h3 7.0 Alpha Release 2
+
+      Fixes/Additions:
+      %ul
+        %li - Relic support, plus a lot of fixes for selection behavior on the artifact panel. This required rewrites of a bunch of stuff in the artifact code (especially fixing handling loops in the tree).
+        %li - Added other two artifact panels
+        %li - Fixes for loading artifact data at startup and on page refreshes. You may have to hit 'Clear all saved data' the first time you reload the page.
+        %li - Removed remainder of reforging code and all glyph support.
+        %li - Fixed rounding error in gear loader so DPS number should be closer to live version now.
+
+      <br/>Known Issues:
+      %ul
+        %li - Removed glyphs so DPS number will not match live version due to that data not getting passed to the engine. This will not be fixed.
+        %li - URLs got even longer due to adding the artifact data to them.
+        %li - Any issues listed below not marked fixed.
+
+      <br/>
       %h3 7.0 Alpha Release 1
       
       Fixes:
@@ -161,11 +178,11 @@
       <br/>Known Issues:
       %ul
         %li - No 7.0 engine yet, which means no support for artifact traits actually changing DPS.
-        %li - Stat numbers are slightly different compared to live, which gives slightly different DPS values.
+        %li - Stat numbers are slightly different compared to live, which gives slightly different DPS values. (Fixed in 7.0a2)
         %li - Artifacts other than Dreadblades not supported.
         %li - Artifact frame too wide for smaller displays. Either the frame needs shrinking or a horizontal scrollbar will be added.
-        %li - Artifact will come up blank on initial load due to data not being initailized. Refresh from armory should fix it.
-        %li - Artifact settings not kept from one refresh to the next due to loading dummy values in until armory data from Blizzard is available.
+        %li - Artifact will come up blank on initial load due to data not being initailized. Refresh from armory should fix it. (Fixed in 7.0a2)
+        %li - Artifact settings not kept from one refresh to the next due to loading dummy values in until armory data from Blizzard is available. (Fixed in 7.0a2, but still not loading from Blizzard)
         %li - Still loading large (~2MB) javascript file with all of the item data at page load. This will hopefully be replaced by 7.0 launch.
         %li - All of the 6.x issues from github still exist.
         %li - Various CSS problems

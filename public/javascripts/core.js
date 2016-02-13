@@ -626,9 +626,272 @@
       },
       useFangs: function() {
         var lines, traits;
-        $("#artifactframe").css("background-image", "url('/images/artifacts/44-small.jpg')");
-        traits = [];
-        lines = [];
+        $("#artifactframe").css("background-image", "url('/images/artifacts/fangs-bg.jpg')");
+        traits = [
+          {
+            id: "fangs_akaarissoul",
+            spell_id: 209835,
+            max_level: 1,
+            icon: "ability_warlock_soullink",
+            ring: "dragon",
+            left: 72.222,
+            top: 36.911
+          }, {
+            id: "fangs_catwalk",
+            spell_id: 197241,
+            max_level: 3,
+            icon: "ability_rogue_fleetfooted",
+            ring: "thin",
+            left: 50.694,
+            top: 41.789,
+            is_thin: true
+          }, {
+            id: "fangs_demonskiss",
+            spell_id: 197233,
+            max_level: 3,
+            icon: "ability_priest_voidentropy",
+            ring: "thin",
+            left: 32.917,
+            top: 84.553,
+            is_thin: true
+          }, {
+            id: "fangs_embrace",
+            spell_id: 197604,
+            max_level: 3,
+            icon: "ability_rogue_eviscerate",
+            ring: "thin",
+            left: 66.806,
+            top: 63.902,
+            is_thin: true
+          }, {
+            id: "fangs_energetic",
+            spell_id: 197239,
+            max_level: 3,
+            icon: "inv_knife_1h_pvppandarias3_c_02",
+            ring: "thin",
+            left: 30.694,
+            top: 67.967,
+            is_thin: true
+          }, {
+            id: "fangs_faster",
+            spell_id: 197256,
+            max_level: 3,
+            icon: "ability_rogue_sprint_blue",
+            ring: "thin",
+            left: 49.583,
+            top: 64.715,
+            is_thin: true
+          }, {
+            id: "fangs_finality",
+            spell_id: 197406,
+            max_level: 1,
+            icon: "ability_rogue_eviscerate",
+            ring: "dragon",
+            left: 16.250,
+            top: 77.561
+          }, {
+            id: "fangs_fortunesbite",
+            spell_id: 197369,
+            max_level: 3,
+            icon: "ability_rogue_masterofsubtlety",
+            ring: "thin",
+            left: 77.361,
+            top: 49.593,
+            is_thin: true
+          }, {
+            id: "fangs_ghostarmor",
+            spell_id: 197244,
+            max_level: 3,
+            icon: "achievement_halloween_ghost_01",
+            ring: "thin",
+            left: 40.694,
+            top: 57.073,
+            is_thin: true
+          }, {
+            id: "fangs_goremawsbite",
+            spell_id: 209782,
+            max_level: 1,
+            icon: "inv_knife_1h_artifactfangs_d_01",
+            ring: "thick",
+            left: 85.694,
+            top: 36.098
+          }, {
+            id: "fangs_gutripper",
+            spell_id: 197234,
+            max_level: 3,
+            icon: "ability_rogue_eviscerate",
+            ring: "thin",
+            left: 72.222,
+            top: 22.764,
+            is_thin: true
+          }, {
+            id: "fangs_precision",
+            spell_id: 197235,
+            max_level: 3,
+            icon: "ability_rogue_unfairadvantage",
+            ring: "thin",
+            left: 51.667,
+            top: 79.350,
+            is_thin: true
+          }, {
+            id: "fangs_quietknife",
+            spell_id: 197231,
+            max_level: 3,
+            icon: "ability_backstab",
+            ring: "thin",
+            left: 61.667,
+            top: 51.057,
+            is_thin: true
+          }, {
+            id: "fangs_second",
+            spell_id: 197610,
+            max_level: 3,
+            icon: "inv_throwingknife_07",
+            ring: "thin",
+            left: 40.833,
+            top: 73.171,
+            is_thin: true
+          }, {
+            id: "fangs_shadownova",
+            spell_id: 209781,
+            max_level: 1,
+            icon: "spell_fire_twilightnova",
+            ring: "dragon",
+            left: 59.444,
+            top: 11.057
+          }, {
+            id: "fangs_soulshadows",
+            spell_id: 197386,
+            max_level: 3,
+            icon: "inv_knife_1h_grimbatolraid_d_03",
+            ring: "thin",
+            left: 55.833,
+            top: 25.366,
+            is_thin: true
+          }
+        ];
+        lines = [
+          {
+            width: 102,
+            left: 80.694,
+            top: 49.593,
+            angle: 125.863,
+            spell1: 209782,
+            spell2: 197369
+          }, {
+            width: 127,
+            left: 76.389,
+            top: 36.260,
+            angle: -139.790,
+            spell1: 209782,
+            spell2: 197234
+          }, {
+            width: 194,
+            left: 54.167,
+            top: 39.024,
+            angle: -37.047,
+            spell1: 197241,
+            spell2: 197234
+          }, {
+            width: 108,
+            left: 51.944,
+            top: 40.325,
+            angle: -69.880,
+            spell1: 197241,
+            spell2: 197386
+          }, {
+            width: 118,
+            left: 43.750,
+            top: 56.260,
+            angle: 127.451,
+            spell1: 197241,
+            spell2: 197244
+          }, {
+            width: 92,
+            left: 57.500,
+            top: 25.041,
+            angle: -73.540,
+            spell1: 197386,
+            spell2: 209781
+          }, {
+            width: 98,
+            left: 35.139,
+            top: 69.268,
+            angle: -42.940,
+            spell1: 197239,
+            spell2: 197244
+          }, {
+            width: 80,
+            left: 36.389,
+            top: 77.398,
+            angle: 23.671,
+            spell1: 197239,
+            spell2: 197610
+          }, {
+            width: 120,
+            left: 21.389,
+            top: 79.512,
+            angle: 150.433,
+            spell1: 197239,
+            spell2: 197406
+          }, {
+            width: 127,
+            left: 22.083,
+            top: 87.805,
+            angle: -160.286,
+            spell1: 197233,
+            spell2: 197406
+          }, {
+            width: 139,
+            left: 38.889,
+            top: 88.780,
+            angle: -13.335,
+            spell1: 197233,
+            spell2: 197235
+          }, {
+            width: 87,
+            left: 46.528,
+            top: 83.089,
+            angle: -154.026,
+            spell1: 197235,
+            spell2: 197610
+          }, {
+            width: 121,
+            left: 53.472,
+            top: 64.715,
+            angle: 136.005,
+            spell1: 197231,
+            spell2: 197256
+          }, {
+            width: 116,
+            left: 65.139,
+            top: 50.732,
+            angle: -48.861,
+            spell1: 197231,
+            spell2: 209835
+          }, {
+            width: 79,
+            left: 45.972,
+            top: 67.642,
+            angle: 36.293,
+            spell1: 197244,
+            spell2: 197256
+          }, {
+            width: 145,
+            left: 55.417,
+            top: 78.374,
+            angle: 138.926,
+            spell1: 197604,
+            spell2: 197235
+          }, {
+            width: 116,
+            left: 70.278,
+            top: 63.577,
+            angle: -49.185,
+            spell1: 197604,
+            spell2: 197369
+          }
+        ];
         return Templates.artifact({
           traits: traits,
           lines: lines,
@@ -639,9 +902,314 @@
       },
       useKingslayers: function() {
         var lines, traits;
-        $("#artifactframe").css("background-image", "url('/images/artifacts/44-small.jpg')");
-        traits = [];
-        lines = [];
+        $("#artifactframe").css("background-image", "url('/images/artifacts/kingslayers-bg.jpg')");
+        traits = [
+          {
+            id: "ks_bagoftricks",
+            spell_id: 192657,
+            max_level: 1,
+            icon: "rogue_paralytic_poison",
+            ring: "dragon",
+            left: 44.167,
+            top: 33.659
+          }, {
+            id: "ks_balancedblades",
+            spell_id: 192326,
+            max_level: 3,
+            icon: "ability_rogue_restlessblades",
+            ring: "thin",
+            left: 61.528,
+            top: 66.992,
+            is_thin: true
+          }, {
+            id: "ks_blood",
+            spell_id: 192923,
+            max_level: 1,
+            icon: "ability_deathwing_bloodcorruption_death",
+            ring: "dragon",
+            left: 83.611,
+            top: 64.065
+          }, {
+            id: "ks_embrace",
+            spell_id: 192323,
+            max_level: 3,
+            icon: "spell_shadow_skull",
+            ring: "thin",
+            left: 73.333,
+            top: 75.610,
+            is_thin: true
+          }, {
+            id: "ks_fromtheshadows",
+            spell_id: 192428,
+            max_level: 1,
+            icon: "ability_rogue_deadlybrew",
+            ring: "dragon",
+            left: 60.556,
+            top: 25.366
+          }, {
+            id: "ks_graspofguldan",
+            spell_id: 192759,
+            max_level: 1,
+            icon: "ability_rogue_focusedattacks",
+            ring: "thick",
+            left: -0.556,
+            top: 80.650
+          }, {
+            id: "ks_gushingwound",
+            spell_id: 192329,
+            max_level: 3,
+            icon: "ability_rogue_bloodsplatter",
+            ring: "thin",
+            left: 59.722,
+            top: 81.626,
+            is_thin: true
+          }, {
+            id: "ks_masteralchemist",
+            spell_id: 192318,
+            max_level: 3,
+            icon: "trade_alchemy_potionb5",
+            ring: "thin",
+            left: 9.861,
+            top: 56.423,
+            is_thin: true
+          }, {
+            id: "ks_masterassassin",
+            spell_id: 192349,
+            max_level: 3,
+            icon: "ability_rogue_deadliness",
+            ring: "thin",
+            left: 71.806,
+            top: 39.350,
+            is_thin: true
+          }, {
+            id: "ks_poisonknives",
+            spell_id: 192376,
+            max_level: 3,
+            icon: "ability_rogue_dualweild",
+            ring: "thin",
+            left: 43.333,
+            top: 83.902,
+            is_thin: true
+          }, {
+            id: "ks_serratededge",
+            spell_id: 192315,
+            max_level: 3,
+            icon: "ability_rogue_shadowstrikes",
+            ring: "thin",
+            left: 53.472,
+            top: 56.911,
+            is_thin: true
+          }, {
+            id: "ks_shadowswift",
+            spell_id: 192422,
+            max_level: 3,
+            icon: "rogue_burstofspeed",
+            ring: "thin",
+            left: 55.417,
+            top: 42.439,
+            is_thin: true
+          }, {
+            id: "ks_shadowwalker",
+            spell_id: 192345,
+            max_level: 3,
+            icon: "ability_rogue_shadowstep",
+            ring: "thin",
+            left: 35.278,
+            top: 54.472,
+            is_thin: true
+          }, {
+            id: "ks_surgeoftoxins",
+            spell_id: 192424,
+            max_level: 3,
+            icon: "ability_rogue_deviouspoisons",
+            ring: "thin",
+            left: 27.222,
+            top: 46.341,
+            is_thin: true
+          }, {
+            id: "ks_toxicblades",
+            spell_id: 192310,
+            max_level: 3,
+            icon: "trade_brewpoison",
+            ring: "thin",
+            left: 3.889,
+            top: 66.179,
+            is_thin: true
+          }, {
+            id: "ks_urgetokill",
+            spell_id: 192384,
+            max_level: 3,
+            icon: "ability_rogue_improvedrecuperate",
+            ring: "thin",
+            left: 28.611,
+            top: 70.569,
+            is_thin: true
+          }
+        ];
+        lines = [
+          {
+            width: 95,
+            left: 1.389,
+            top: 80.163,
+            angle: -70.224,
+            spell1: 192759,
+            spell2: 192310
+          }, {
+            width: 317,
+            left: 5.694,
+            top: 89.106,
+            angle: 3.621,
+            spell1: 192759,
+            spell2: 192376
+          }, {
+            width: 119,
+            left: 49.583,
+            top: 89.593,
+            angle: 173.234,
+            spell1: 192329,
+            spell2: 192376
+          }, {
+            width: 105,
+            left: 65.556,
+            top: 85.366,
+            angle: -20.684,
+            spell1: 192329,
+            spell2: 192323
+          }, {
+            width: 234,
+            left: 34.167,
+            top: 82.927,
+            angle: -163.113,
+            spell1: 192329,
+            spell2: 192384
+          }, {
+            width: 74,
+            left: 7.917,
+            top: 68.130,
+            angle: 125.628,
+            spell1: 192318,
+            spell2: 192310
+          }, {
+            width: 161,
+            left: 14.306,
+            top: 70.244,
+            angle: 32.800,
+            spell1: 192318,
+            spell2: 192384
+          }, {
+            width: 140,
+            left: 15.000,
+            top: 58.211,
+            angle: -26.381,
+            spell1: 192318,
+            spell2: 192424
+          }, {
+            width: 145,
+            left: 31.944,
+            top: 46.829,
+            angle: 147.407,
+            spell1: 192657,
+            spell2: 192424
+          }, {
+            width: 143,
+            left: 36.111,
+            top: 50.894,
+            angle: 116.565,
+            spell1: 192657,
+            spell2: 192345
+          }, {
+            width: 163,
+            left: 40.278,
+            top: 55.285,
+            angle: -27.037,
+            spell1: 192345,
+            spell2: 192422
+          }, {
+            width: 90,
+            left: 54.444,
+            top: 56.423,
+            angle: -81.060,
+            spell1: 192315,
+            spell2: 192422
+          }, {
+            width: 132,
+            left: 41.389,
+            top: 62.439,
+            angle: -173.468,
+            spell1: 192315,
+            spell2: 192345
+          }, {
+            width: 198,
+            left: 33.472,
+            top: 70.569,
+            angle: 154.861,
+            spell1: 192315,
+            spell2: 192384
+          }, {
+            width: 111,
+            left: 56.528,
+            top: 40.650,
+            angle: 109.411,
+            spell1: 192428,
+            spell2: 192422
+          }, {
+            width: 118,
+            left: 64.167,
+            top: 39.187,
+            angle: 46.715,
+            spell1: 192428,
+            spell2: 192349
+          }, {
+            width: 234,
+            left: 34.167,
+            top: 82.927,
+            angle: -163.113,
+            spell1: 192329,
+            spell2: 192384
+          }, {
+            width: 119,
+            left: 49.583,
+            top: 89.593,
+            angle: 173.234,
+            spell1: 192329,
+            spell2: 192376
+          }, {
+            width: 105,
+            left: 65.556,
+            top: 85.366,
+            angle: -20.684,
+            spell1: 192329,
+            spell2: 192323
+          }, {
+            width: 174,
+            left: 71.806,
+            top: 58.537,
+            angle: -119.214,
+            spell1: 192923,
+            spell2: 192349
+          }, {
+            width: 103,
+            left: 77.639,
+            top: 76.585,
+            angle: 136.185,
+            spell1: 192923,
+            spell2: 192323
+          }, {
+            width: 238,
+            left: 34.722,
+            top: 75.610,
+            angle: 174.697,
+            spell1: 192326,
+            spell2: 192384
+          }, {
+            width: 185,
+            left: 60.139,
+            top: 60.000,
+            angle: -66.477,
+            spell1: 192326,
+            spell2: 192349
+          }
+        ];
         return Templates.artifact({
           traits: traits,
           lines: lines,
@@ -1119,7 +1687,7 @@
 
     compress_handlers = {
       "2": function(data) {
-        var advancedOptions, bonus, buff, buffFood, buffs, gear, gearSet, general, index, j, k, len, len1, len2, n, o, options, q, ref, ref1, ref2, ref3, ref4, ret, rotationOptions, set, slot, talent, talentSet, v;
+        var advancedOptions, artifact, artifactSet, bonus, buff, buffFood, buffs, gear, gearSet, general, index, j, k, len, len1, len2, n, o, options, q, ref, ref1, ref2, ref3, ref4, ref5, ret, rotationOptions, set, slot, spec, talent, talentSet, v;
         ret = [DATA_VERSION];
         gearSet = [];
         for (slot = j = 0; j <= 17; slot = ++j) {
@@ -1193,20 +1761,30 @@
         buffFood = data.options.buffs.food_buff || 0;
         options.push(ShadowcraftOptions.buffFoodMap.indexOf(buffFood));
         ret.push(options);
+        artifactSet = [];
+        ref5 = data.artifact;
+        for (spec in ref5) {
+          artifact = ref5[spec];
+          artifactSet.push(spec);
+          artifactSet.push(artifact.relics);
+          artifactSet.push(artifact.traits);
+        }
+        ret.push(artifactSet);
         return ret;
       }
     };
 
     decompress_handlers = {
       "2": function(data) {
-        var advanced, buffFood, d, gear, general, i, id, index, j, k, len, len1, len2, len3, n, numbonuses, o, options, q, ref, ref1, ref2, rotation, set, slot, talentSets, u, v, w;
+        var advanced, artifactSet, buffFood, d, gear, general, i, id, index, j, k, len, len1, len2, len3, len4, n, numbonuses, o, options, q, ref, ref1, ref2, ref3, rotation, set, slot, spec, talentSets, u, v, w, z;
         d = {
           gear: {},
           active: data[2],
           activeSpec: data[3],
           activeTalents: data[4],
           options: {},
-          talents: []
+          talents: [],
+          artifact: {}
         };
         talentSets = data[5];
         for (index = j = 0, len = talentSets.length; j < len; index = j += 3) {
@@ -1295,28 +1873,15 @@
         }
         buffFood = options[4];
         d.options.buffs.food_buff = ShadowcraftOptions.buffFoodMap[buffFood];
-        d.artifact = {
-          settings: {},
-          relic1: 0,
-          relic2: 0,
-          relic3: 0
-        };
-        d.artifact.settings["202665"] = 0;
-        d.artifact.settings["202897"] = 0;
-        d.artifact.settings["202769"] = 0;
-        d.artifact.settings["202820"] = 0;
-        d.artifact.settings["202507"] = 0;
-        d.artifact.settings["202628"] = 0;
-        d.artifact.settings["202463"] = 0;
-        d.artifact.settings["202521"] = 0;
-        d.artifact.settings["202755"] = 0;
-        d.artifact.settings["202524"] = 0;
-        d.artifact.settings["202514"] = 0;
-        d.artifact.settings["202530"] = 0;
-        d.artifact.settings["202907"] = 0;
-        d.artifact.settings["202533"] = 0;
-        d.artifact.settings["202522"] = 0;
-        d.artifact.settings["202753"] = 0;
+        artifactSet = data[7];
+        ref3 = [0, 3, 6];
+        for (z = 0, len4 = ref3.length; z < len4; z++) {
+          i = ref3[z];
+          spec = "" + artifactSet[i];
+          d.artifact[spec] = {};
+          d.artifact[spec].relics = artifactSet[i + 1];
+          d.artifact[spec].traits = artifactSet[i + 2];
+        }
         return d;
       }
     };
@@ -2109,7 +2674,7 @@
   })();
 
   ShadowcraftArtifact = (function() {
-    var $popup, $popupbody, RELIC_TYPE_MAP, SPEC_ARTIFACT, activateTrait, active_mapping, clickRelic, clicked_relic_type, deactivateTrait, decreaseTrait, get_ep, increaseTrait, route_mapping, selectRelic, updateTraits;
+    var $popup, $popupbody, RELIC_TYPE_MAP, SPEC_ARTIFACT, activateTrait, active_mapping, artifact_data, clickRelicSlot, clicked_relic_slot, decreaseTrait, get_ep, increaseTrait, selectRelic, updateTraits;
 
     $popupbody = null;
 
@@ -2156,11 +2721,11 @@
       "holy": 10
     };
 
-    route_mapping = {};
-
     active_mapping = {};
 
-    clicked_relic_type = -1;
+    clicked_relic_slot = 0;
+
+    artifact_data = null;
 
     activateTrait = function(spell_id) {
       var level, max_level, trait;
@@ -2168,7 +2733,7 @@
       trait.children(".icon").removeClass("inactive");
       trait.children(".level").removeClass("inactive");
       active_mapping[parseInt(trait.attr("data-tooltip-id"))] = true;
-      level = Shadowcraft.Data.artifact.settings[spell_id];
+      level = artifact_data.traits[spell_id];
       max_level = parseInt(trait.attr("max_level"));
       trait.children(".level").text("" + level + "/" + max_level);
       return {
@@ -2177,29 +2742,10 @@
       };
     };
 
-    deactivateTrait = function(spell_id, hide_icon) {
-      var max_level, trait;
-      if (hide_icon == null) {
-        hide_icon = true;
-      }
-      trait = $("#artifactframe .trait[data-tooltip-id='" + spell_id + "']");
-      if (hide_icon) {
-        trait.children(".icon").addClass("inactive");
-        trait.children(".level").addClass("inactive");
-        active_mapping[parseInt(trait.attr("data-tooltip-id"))] = false;
-      }
-      Shadowcraft.Data.artifact.settings[spell_id] = 0;
-      max_level = parseInt(trait.attr("max_level"));
-      trait.children(".level").text("0/" + max_level);
-      return {
-        current: 0,
-        max: max_level
-      };
-    };
-
     updateTraits = function() {
-      var done, id, j, len, len1, levels, main, main_spell_id, n, newroute, ref, results, route, route_stack, spell_id, stack;
-      main_spell_id = 202665;
+      var active, button, current, done, i, j, levels, main, main_spell_id, max, ref, relic, spell_id, stack, trait;
+      active = SPEC_ARTIFACT[Shadowcraft.Data.activeSpec];
+      main_spell_id = SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].main;
       active_mapping = {};
       $("#artifactframe .trait").each(function() {
         active_mapping[parseInt($(this).attr("data-tooltip-id"))] = false;
@@ -2209,184 +2755,122 @@
       $("#artifactframe .line").each(function() {
         return $(this).addClass("inactive");
       });
-      if (!Shadowcraft.Data.artifact) {
+      if (!artifact_data) {
         return;
       }
-      route_mapping[main_spell_id] = [[]];
-      if (Shadowcraft.Data.artifact.settings[main_spell_id] === 0) {
+      done = [];
+      if (artifact_data.traits[main_spell_id] === 0) {
         active_mapping[main_spell_id] = true;
         main = $("#artifactframe .trait[data-tooltip-id='" + main_spell_id + "']");
         main.children(".level").text("0/" + main.attr("max_level"));
         main.children(".level").removeClass("inactive");
-        return main.children(".icon").removeClass("inactive");
-      } else {
-        done = [];
-        stack = [main_spell_id];
-        results = [];
-        while (stack.length > 0) {
-          spell_id = stack.pop();
-          if (jQuery.inArray(spell_id, done) !== -1) {
-            continue;
-          }
-          levels = activateTrait(spell_id);
-          if (levels.current === levels.max) {
-            route_stack = [];
-            $("#artifactframe .line[spell1='" + spell_id + "']").each(function() {
-              var other_end;
-              $(this).removeClass("inactive");
-              other_end = $(this).attr("spell2");
-              if (jQuery.inArray(other_end, done) === -1) {
-                stack.push(other_end);
-              }
-              return route_stack.push(other_end);
-            });
-            $("#artifactframe .line[spell2='" + spell_id + "']").each(function() {
-              var other_end;
-              $(this).removeClass("inactive");
-              other_end = $(this).attr("spell1");
-              if (jQuery.inArray(other_end, done) === -1) {
-                stack.push(other_end);
-              }
-              return route_stack.push(other_end);
-            });
-            for (j = 0, len = route_stack.length; j < len; j++) {
-              id = route_stack[j];
-              if (!(indexOf.call(route_mapping, id) >= 0)) {
-                route_mapping[id] = [];
-              }
-              ref = route_mapping[spell_id];
-              for (n = 0, len1 = ref.length; n < len1; n++) {
-                route = ref[n];
-                if (indexOf.call(route, spell_id) >= 0) {
-                  continue;
-                }
-                newroute = route.slice(0);
-                newroute.push(spell_id);
-                route_mapping[id].push(newroute);
-              }
-            }
-          }
-          results.push(done.push(spell_id));
+        main.children(".icon").removeClass("inactive");
+        done = [main_spell_id];
+      }
+      stack = [main_spell_id];
+      if (artifact_data.relics[0] !== 0) {
+        relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[0]];
+        stack.push(relic.tmi);
+      }
+      if (artifact_data.relics[1] !== 0) {
+        relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[1]];
+        stack.push(relic.tmi);
+      }
+      if (artifact_data.relics[2] !== 0) {
+        relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[2]];
+        stack.push(relic.tmi);
+      }
+      while (stack.length > 0) {
+        spell_id = stack.pop();
+        if (jQuery.inArray(spell_id, done) !== -1) {
+          continue;
         }
-        return results;
+        levels = activateTrait(spell_id);
+        if (levels.current === levels.max) {
+          $("#artifactframe .line[spell1='" + spell_id + "']").each(function() {
+            var other_end;
+            $(this).removeClass("inactive");
+            other_end = $(this).attr("spell2");
+            if (jQuery.inArray(other_end, done) === -1) {
+              return stack.push(parseInt(other_end));
+            }
+          });
+          $("#artifactframe .line[spell2='" + spell_id + "']").each(function() {
+            var other_end;
+            $(this).removeClass("inactive");
+            other_end = $(this).attr("spell1");
+            if (jQuery.inArray(other_end, done) === -1) {
+              return stack.push(parseInt(other_end));
+            }
+          });
+        }
+        done.push(parseInt(spell_id));
+      }
+      $("#artifactframe .trait").each(function() {
+        var check_id;
+        check_id = parseInt($(this).attr('data-tooltip-id'));
+        if (jQuery.inArray(check_id, done) === -1) {
+          return artifact_data.traits[check_id] = 0;
+        }
+      });
+      for (i = j = 0; j < 2; i = ++j) {
+        button = $("#relic" + (i + 1) + " .relicicon");
+        if (artifact_data.relics[i] !== 0) {
+          relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i]];
+          button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/" + relic.icon + ".jpg");
+          button.removeClass("inactive");
+          trait = $("#artifactframe .trait[data-tooltip-id='" + relic.tmi + "'");
+          ref = activateTrait(relic.tmi), current = ref.current, max = ref.max;
+          trait.children(".level").text("" + (relic.ti + current) + "/" + (relic.ti + max));
+        } else {
+          button.addClass("inactive");
+        }
       }
     };
 
     increaseTrait = function(e) {
-      var current_level, id, j, len, len1, level, max_level, n, newroute, old_level, ref, route, spell_id, stack, trait;
+      var current_level, max_level, spell_id, trait;
       spell_id = parseInt(e.delegateTarget.attributes["data-tooltip-id"].value);
       trait = $("#artifactframe .trait[data-tooltip-id='" + spell_id + "']");
       if (trait.children(".icon").hasClass("inactive")) {
         return;
       }
       max_level = parseInt(trait.attr("max_level"));
-      if (Shadowcraft.Data.artifact.settings[spell_id] === max_level) {
+      if (artifact_data.traits[spell_id] === max_level) {
         return;
       }
-      old_level = Shadowcraft.Data.artifact.settings[spell_id];
-      Shadowcraft.Data.artifact.settings[spell_id] += 1;
-      current_level = Shadowcraft.Data.artifact.settings[spell_id];
-      level = trait.children(".level");
-      level.text("" + current_level + "/" + max_level);
-      stack = [];
-      if (current_level === max_level) {
-        $("#artifactframe .line[spell1='" + spell_id + "']").each(function() {
-          if (active_mapping[parseInt($(this).attr("spell2"))] === false) {
-            $(this).removeClass("inactive");
-            return stack.push($(this).attr("spell2"));
-          }
-        });
-        $("#artifactframe .line[spell2='" + spell_id + "']").each(function() {
-          if (active_mapping[parseInt($(this).attr("spell1"))] === false) {
-            $(this).removeClass("inactive");
-            return stack.push($(this).attr("spell1"));
-          }
-        });
-        for (j = 0, len = stack.length; j < len; j++) {
-          id = stack[j];
-          activateTrait(id);
-          if (!(indexOf.call(route_mapping, id) >= 0)) {
-            route_mapping[id] = [];
-          }
-          ref = route_mapping[spell_id];
-          for (n = 0, len1 = ref.length; n < len1; n++) {
-            route = ref[n];
-            if (indexOf.call(route, spell_id) >= 0) {
-              continue;
-            }
-            newroute = route.slice(0);
-            newroute.push(spell_id);
-            route_mapping[id].push(newroute);
-          }
-        }
-      }
-      return Shadowcraft.update();
+      artifact_data.traits[spell_id] += 1;
+      current_level = artifact_data.traits[spell_id];
+      return updateTraits();
     };
 
     decreaseTrait = function(e) {
-      var current_level, index, indexes_to_remove, j, len, len1, level, max_level, n, remove, route, routes, spell, spell_id, trait;
+      var min_level, spell_id, trait;
       spell_id = parseInt(e.delegateTarget.attributes["data-tooltip-id"].value);
       trait = $("#artifactframe .trait[data-tooltip-id='" + spell_id + "']");
       if (trait.children(".icon").hasClass("inactive")) {
         return;
       }
-      if (Shadowcraft.Data.artifact.settings[spell_id] === 0) {
+      if (trait.attr("relic_power") != null) {
+        min_level = parseInt(trait.attr("relic_power"));
+      } else {
+        min_level = 0;
+      }
+      if (artifact_data.traits[spell_id] === min_level) {
         return;
       }
-      max_level = parseInt(trait.attr("max_level"));
-      Shadowcraft.Data.artifact.settings[spell_id] -= 1;
-      current_level = Shadowcraft.Data.artifact.settings[spell_id];
-      level = trait.children(".level");
-      level.text("" + current_level + "/" + max_level);
-      for (spell in route_mapping) {
-        routes = route_mapping[spell];
-        indexes_to_remove = [];
-        index = 0;
-        for (j = 0, len = routes.length; j < len; j++) {
-          route = routes[j];
-          if (route.indexOf(spell_id) !== -1) {
-            indexes_to_remove.push(index);
-          }
-          index++;
-        }
-        for (n = 0, len1 = indexes_to_remove.length; n < len1; n++) {
-          remove = indexes_to_remove[n];
-          routes.splice(remove, 1);
-        }
-        if (routes.length === 0) {
-          deactivateTrait(spell);
-        }
-      }
-      $("#artifactframe .line").each(function() {
-        var spell1, spell2;
-        if ($(this).hasClass("inactive")) {
-          return;
-        }
-        spell1 = parseInt($(this).attr("spell1"));
-        spell2 = parseInt($(this).attr("spell2"));
-        if (!active_mapping[spell1] || !active_mapping[spell2]) {
-          return $(this).addClass("inactive");
-        }
-      });
-      return Shadowcraft.update();
+      artifact_data.traits[spell_id] -= 1;
+      return updateTraits();
     };
 
     get_ep = function(relic) {
       return relic.id;
     };
 
-    clickRelic = function(e) {
-      var ItemLookup, RelicList, buffer, data, desc, j, len, len1, max, n, relic, relic_number, relic_type;
+    clickRelicSlot = function(e) {
+      var ItemLookup, RelicList, buffer, data, desc, j, len, len1, max, n, relic, relic_type;
       relic_type = e.delegateTarget.attributes['relic-type'].value;
-      relic_number = -1;
-      if (e.delegateTarget.id === "relic1") {
-        relic_number = 0;
-      } else if (e.delegateTarget.id === "relic2") {
-        relic_number = 1;
-      } else if (e.delegateTarget.id === "relic3") {
-        relic_number = 2;
-      }
-      clicked_relic_type = relic_number;
+      clicked_relic_slot = parseInt(/relic(\d+)/.exec(e.delegateTarget.id)[1]) - 1;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2;
       RelicList = Shadowcraft.ServerData.RELICS.filter(function(relic) {
         return relic.type === RELIC_TYPE_MAP[relic_type];
@@ -2433,70 +2917,24 @@
         ep: 0
       });
       $popupbody.get(0).innerHTML = buffer;
-      if (relic_number === 0 && Shadowcraft.Data.artifact.relic1 !== 0) {
-        $popupbody.find(".slot[id='" + Shadowcraft.Data.artifact.relic1 + "']").addClass("active");
-      } else if (relic_number === 1 && Shadowcraft.Data.artifact.relic2 !== 0) {
-        $popupbody.find(".slot[id='" + Shadowcraft.Data.artifact.relic2 + "']").addClass("active");
-      } else if (relic_number === 2 && Shadowcraft.Data.artifact.relic3 !== 0) {
-        $popupbody.find(".slot[id='" + Shadowcraft.Data.artifact.relic3 + "']").addClass("active");
+      if (artifact_data.relics[clicked_relic_slot] !== -1) {
+        $popupbody.find(".slot[id='" + artifact_data.relics[clicked_relic_slot] + "']").addClass("active");
       }
       showPopup($popup);
       return false;
     };
 
     selectRelic = function(clicked_relic) {
-      var Relics, button, data, max_level, relic, relic_id, trait;
-      Shadowcraft.Console.purgeOld();
-      Relics = Shadowcraft.ServerData.RELIC_LOOKUP;
-      data = Shadowcraft.Data;
-      button = $("#relic" + (clicked_relic_type + 1) + " .relicicon");
-      relic_id = parseInt(clicked_relic.attr("id"), 0);
+      var relic_id;
+      relic_id = parseInt(clicked_relic.attr("id"));
       relic_id = !isNaN(relic_id) ? relic_id : null;
       if (relic_id != null) {
-        relic = Relics[relic_id];
-        button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/" + relic.icon + ".jpg");
-        button.removeClass("inactive");
-        trait = $("#artifactframe .trait[data-tooltip-id='" + relic.tmi + "']");
-        Shadowcraft.Data.artifact.settings[relic.tmi] += 1;
-        max_level = parseInt(trait.attr("max_level"));
-        max_level += 1;
-        trait.attr("max_level", max_level);
-        activateTrait(relic.tmi);
-        if (clicked_relic_type === 0) {
-          Shadowcraft.Data.artifact.relic1 = relic_id;
-        } else if (clicked_relic_type === 1) {
-          Shadowcraft.Data.artifact.relic2 = relic_id;
-        } else if (clicked_relic_type === 2) {
-          Shadowcraft.Data.artifact.relic3 = relic_id;
-        }
+        artifact_data.relics[clicked_relic_slot] = relic_id;
       } else {
-        button.addClass("inactive");
-        if (clicked_relic_type === 0) {
-          relic = Relics[Shadowcraft.Data.artifact.relic1];
-          Shadowcraft.Data.artifact.relic1 = 0;
-        } else if (clicked_relic_type === 1) {
-          relic = Relics[Shadowcraft.Data.artifact.relic2];
-          Shadowcraft.Data.artifact.relic2 = 0;
-        } else if (clicked_relic_type === 2) {
-          relic = Relics[Shadowcraft.Data.artifact.relic3];
-          Shadowcraft.Data.artifact.relic3 = 0;
-        }
-        trait = $("#artifactframe .trait[data-tooltip-id='" + relic.tmi + "']");
-        Shadowcraft.Data.artifact.settings[relic.tmi] -= 1;
-        max_level = parseInt(trait.attr("max_level"));
-        max_level -= 1;
-        trait.attr("max_level", max_level);
-        if (Shadowcraft.Data.artifact.settings[relic.tmi] > 0) {
-          activateTrait(relic.tmi);
-        } else {
-          if (relic.tmi in route_mapping && route_mapping[relic.tmi].length > 0) {
-            deactivateTrait(relic.tmi, false);
-          } else {
-            deactivateTrait(relic.tmi, true);
-          }
-        }
+        artifact_data.relics[clicked_relic_slot] = 0;
       }
-      clicked_relic_type = -1;
+      updateTraits();
+      clicked_relic_slot = 0;
       Shadowcraft.update();
       return true;
     };
@@ -2511,12 +2949,15 @@
       if (str === "a") {
         buffer = ArtifactTemplates.useKingslayers();
         $("#artifactframe").get(0).innerHTML = buffer;
+        artifact_data = Shadowcraft.Data.artifact[str];
       } else if (str === "Z") {
         buffer = ArtifactTemplates.useDreadblades();
         $("#artifactframe").get(0).innerHTML = buffer;
+        artifact_data = Shadowcraft.Data.artifact[str];
       } else if (str === "b") {
         buffer = ArtifactTemplates.useFangs();
         $("#artifactframe").get(0).innerHTML = buffer;
+        artifact_data = Shadowcraft.Data.artifact[str];
       }
       $("#relic1").attr("relic-type", SPEC_ARTIFACT[str].relic1);
       $("#relic2").attr("relic-type", SPEC_ARTIFACT[str].relic2);
@@ -2537,7 +2978,7 @@
         ".tt": ttlib.hide
       }));
       return $("#artifactframe .relicframe").each(function() {}).click(function(e) {
-        return clickRelic(e);
+        return clickRelicSlot(e);
       }).bind("contextmenu", function() {
         return false;
       }).mouseover($.delegate({
@@ -2548,9 +2989,12 @@
     };
 
     ShadowcraftArtifact.prototype.resetTraits = function() {
-      var id;
-      for (id in Shadowcraft.Data.artifact.settings) {
-        Shadowcraft.Data.artifact.settings[id] = 0;
+      var i, id, j;
+      for (id in artifact_data.traits) {
+        artifact_data.traits[id] = 0;
+      }
+      for (i = j = 0; j < 2; i = ++j) {
+        artifact_data.relics[i] = 0;
       }
       return updateTraits();
     };
@@ -2590,7 +3034,6 @@
           return selectRelic($(this));
         }
       }));
-      console.log(ArtifactTemplates.useDreadblades());
       return this;
     };
 
@@ -3273,15 +3716,17 @@
         ref = item.sockets;
         for (socketIndex in ref) {
           socket = ref[socketIndex];
-          gid = gear.gems[socketIndex];
-          if (gid && gid > 0) {
-            gem = Gems[gid];
-            if (gem) {
-              sumItem(out, gem);
+          if (gear.gems != null) {
+            gid = gear.gems[socketIndex];
+            if (gid && gid > 0) {
+              gem = Gems[gid];
+              if (gem) {
+                sumItem(out, gem);
+              }
             }
-          }
-          if (!gem || !gem[socket]) {
-            matchesAllSockets = false;
+            if (!gem || !gem[socket]) {
+              matchesAllSockets = false;
+            }
           }
         }
         if (matchesAllSockets) {
@@ -3798,7 +4243,12 @@
           case 6:
             if (apply) {
               last = item.sockets[item.sockets.length - 1];
-              results.push(item.sockets.push("Prismatic"));
+              item.sockets.push("Prismatic");
+              if (item.gems != null) {
+                results.push(item.gems.push(0));
+              } else {
+                results.push(item.gems = []);
+              }
             } else {
               results.push(item.sockets.pop());
             }
@@ -3903,16 +4353,18 @@
             ref4 = item.sockets;
             for (index = z = 0, len5 = ref4.length; z < len5; index = ++z) {
               socket = ref4[index];
-              gem = Gems[gear.gems[index]];
-              gems[gems.length] = {
-                socket: socket,
-                gem: gem
-              };
-              if (socket === "Prismatic") {
-                continue;
-              }
-              if (!gem || !gem[socket]) {
-                allSlotsMatch = false;
+              if ((gear.gems != null)) {
+                gem = Gems[gear.gems[index]];
+                gems[gems.length] = {
+                  socket: socket,
+                  gem: gem
+                };
+                if (socket === "Prismatic") {
+                  continue;
+                }
+                if (!gem || !gem[socket]) {
+                  allSlotsMatch = false;
+                }
               }
             }
             if (allSlotsMatch) {
