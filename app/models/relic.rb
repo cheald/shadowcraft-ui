@@ -37,8 +37,8 @@ class Relic
     # In this order: Iron, Blood, Shadow, Fel, Wind
     item_ids += get_ids_from_wowhead_by_type(-8)
     item_ids += get_ids_from_wowhead_by_type(-9)
-#    item_ids += get_ids_from_wowhead_by_type(-10)
-#    item_ids += get_ids_from_wowhead_by_type(-11)
+    item_ids += get_ids_from_wowhead_by_type(-10)
+    item_ids += get_ids_from_wowhead_by_type(-11)
     item_ids += get_ids_from_wowhead_by_type(-17)
 
     pos = 0

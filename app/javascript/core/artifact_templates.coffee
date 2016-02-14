@@ -48,20 +48,92 @@ ShadowcraftApp.bind "boot", ->
       return Templates.artifact(traits: traits, lines: lines, relic1: 'blood', relic2: 'iron', relic3: 'wind')
 
     useFangs: ->
-      $("#artifactframe").css("background-image", "url('/images/artifacts/44-small.jpg')")
+      $("#artifactframe").css("background-image", "url('/images/artifacts/fangs-bg.jpg')")
       traits = [
+        {id: "fangs_akaarissoul", spell_id: 209835, max_level: 1, icon: "ability_warlock_soullink", ring: "dragon", left: 72.222, top: 36.911},
+        {id: "fangs_catwalk", spell_id: 197241, max_level: 3, icon: "ability_rogue_fleetfooted", ring: "thin", left: 50.694, top: 41.789, is_thin: true},
+        {id: "fangs_demonskiss", spell_id: 197233, max_level: 3, icon: "ability_priest_voidentropy", ring: "thin", left: 32.917, top: 84.553, is_thin: true},
+        {id: "fangs_embrace", spell_id: 197604, max_level: 3, icon: "ability_rogue_eviscerate", ring: "thin", left: 66.806, top: 63.902, is_thin: true},
+        {id: "fangs_energetic", spell_id: 197239, max_level: 3, icon: "inv_knife_1h_pvppandarias3_c_02", ring: "thin", left: 30.694, top: 67.967, is_thin: true},
+        {id: "fangs_faster", spell_id: 197256, max_level: 3, icon: "ability_rogue_sprint_blue", ring: "thin", left: 49.583, top: 64.715, is_thin: true},
+        {id: "fangs_finality", spell_id: 197406, max_level: 1, icon: "ability_rogue_eviscerate", ring: "dragon", left: 16.250, top: 77.561},
+        {id: "fangs_fortunesbite", spell_id: 197369, max_level: 3, icon: "ability_rogue_masterofsubtlety", ring: "thin", left: 77.361, top: 49.593, is_thin: true},
+        {id: "fangs_ghostarmor", spell_id: 197244, max_level: 3, icon: "achievement_halloween_ghost_01", ring: "thin", left: 40.694, top: 57.073, is_thin: true},
+        {id: "fangs_goremawsbite", spell_id: 209782, max_level: 1, icon: "inv_knife_1h_artifactfangs_d_01", ring: "thick", left: 85.694, top: 36.098},
+        {id: "fangs_gutripper", spell_id: 197234, max_level: 3, icon: "ability_rogue_eviscerate", ring: "thin", left: 72.222, top: 22.764, is_thin: true},
+        {id: "fangs_precision", spell_id: 197235, max_level: 3, icon: "ability_rogue_unfairadvantage", ring: "thin", left: 51.667, top: 79.350, is_thin: true},
+        {id: "fangs_quietknife", spell_id: 197231, max_level: 3, icon: "ability_backstab", ring: "thin", left: 61.667, top: 51.057, is_thin: true},
+        {id: "fangs_second", spell_id: 197610, max_level: 3, icon: "inv_throwingknife_07", ring: "thin", left: 40.833, top: 73.171, is_thin: true},
+        {id: "fangs_shadownova", spell_id: 209781, max_level: 1, icon: "spell_fire_twilightnova", ring: "dragon", left: 59.444, top: 11.057},
+        {id: "fangs_soulshadows", spell_id: 197386, max_level: 3, icon: "inv_knife_1h_grimbatolraid_d_03", ring: "thin", left: 55.833, top: 25.366, is_thin: true},
       ]
       lines = [
+        {width: 102, left: 80.694, top: 49.593, angle: 125.863, spell1: 209782, spell2: 197369},
+        {width: 127, left: 76.389, top: 36.260, angle: -139.790, spell1: 209782, spell2: 197234},
+        {width: 194, left: 54.167, top: 39.024, angle: -37.047, spell1: 197241, spell2: 197234},
+        {width: 108, left: 51.944, top: 40.325, angle: -69.880, spell1: 197241, spell2: 197386},
+        {width: 118, left: 43.750, top: 56.260, angle: 127.451, spell1: 197241, spell2: 197244},
+        {width: 92, left: 57.500, top: 25.041, angle: -73.540, spell1: 197386, spell2: 209781},
+        {width: 98, left: 35.139, top: 69.268, angle: -42.940, spell1: 197239, spell2: 197244},
+        {width: 80, left: 36.389, top: 77.398, angle: 23.671, spell1: 197239, spell2: 197610},
+        {width: 120, left: 21.389, top: 79.512, angle: 150.433, spell1: 197239, spell2: 197406},
+        {width: 127, left: 22.083, top: 87.805, angle: -160.286, spell1: 197233, spell2: 197406},
+        {width: 139, left: 38.889, top: 88.780, angle: -13.335, spell1: 197233, spell2: 197235},
+        {width: 87, left: 46.528, top: 83.089, angle: -154.026, spell1: 197235, spell2: 197610},
+        {width: 121, left: 53.472, top: 64.715, angle: 136.005, spell1: 197231, spell2: 197256},
+        {width: 116, left: 65.139, top: 50.732, angle: -48.861, spell1: 197231, spell2: 209835},
+        {width: 79, left: 45.972, top: 67.642, angle: 36.293, spell1: 197244, spell2: 197256},
+        {width: 145, left: 55.417, top: 78.374, angle: 138.926, spell1: 197604, spell2: 197235},
+        {width: 116, left: 70.278, top: 63.577, angle: -49.185, spell1: 197604, spell2: 197369},
       ]
-
+  
       return Templates.artifact(traits: traits, lines: lines, relic1: 'shadow', relic2: 'fel', relic3: 'fel')
       
     useKingslayers: ->
-      $("#artifactframe").css("background-image", "url('/images/artifacts/44-small.jpg')")
+      $("#artifactframe").css("background-image", "url('/images/artifacts/kingslayers-bg.jpg')")
       traits = [
+        {id: "ks_bagoftricks", spell_id: 192657, max_level: 1, icon: "rogue_paralytic_poison", ring: "dragon", left: 44.167, top: 33.659},
+        {id: "ks_balancedblades", spell_id: 192326, max_level: 3, icon: "ability_rogue_restlessblades", ring: "thin", left: 61.528, top: 66.992, is_thin: true},
+        {id: "ks_blood", spell_id: 192923, max_level: 1, icon: "ability_deathwing_bloodcorruption_death", ring: "dragon", left: 83.611, top: 64.065},
+        {id: "ks_embrace", spell_id: 192323, max_level: 3, icon: "spell_shadow_skull", ring: "thin", left: 73.333, top: 75.610, is_thin: true},
+        {id: "ks_fromtheshadows", spell_id: 192428, max_level: 1, icon: "ability_rogue_deadlybrew", ring: "dragon", left: 60.556, top: 25.366},
+        {id: "ks_graspofguldan", spell_id: 192759, max_level: 1, icon: "ability_rogue_focusedattacks", ring: "thick", left: -0.556, top: 80.650},
+        {id: "ks_gushingwound", spell_id: 192329, max_level: 3, icon: "ability_rogue_bloodsplatter", ring: "thin", left: 59.722, top: 81.626, is_thin: true},
+        {id: "ks_masteralchemist", spell_id: 192318, max_level: 3, icon: "trade_alchemy_potionb5", ring: "thin", left: 9.861, top: 56.423, is_thin: true},
+        {id: "ks_masterassassin", spell_id: 192349, max_level: 3, icon: "ability_rogue_deadliness", ring: "thin", left: 71.806, top: 39.350, is_thin: true},
+        {id: "ks_poisonknives", spell_id: 192376, max_level: 3, icon: "ability_rogue_dualweild", ring: "thin", left: 43.333, top: 83.902, is_thin: true},
+        {id: "ks_serratededge", spell_id: 192315, max_level: 3, icon: "ability_rogue_shadowstrikes", ring: "thin", left: 53.472, top: 56.911, is_thin: true},
+        {id: "ks_shadowswift", spell_id: 192422, max_level: 3, icon: "rogue_burstofspeed", ring: "thin", left: 55.417, top: 42.439, is_thin: true},
+        {id: "ks_shadowwalker", spell_id: 192345, max_level: 3, icon: "ability_rogue_shadowstep", ring: "thin", left: 35.278, top: 54.472, is_thin: true},
+        {id: "ks_surgeoftoxins", spell_id: 192424, max_level: 3, icon: "ability_rogue_deviouspoisons", ring: "thin", left: 27.222, top: 46.341, is_thin: true},
+        {id: "ks_toxicblades", spell_id: 192310, max_level: 3, icon: "trade_brewpoison", ring: "thin", left: 3.889, top: 66.179, is_thin: true},
+        {id: "ks_urgetokill", spell_id: 192384, max_level: 3, icon: "ability_rogue_improvedrecuperate", ring: "thin", left: 28.611, top: 70.569, is_thin: true},
       ]
       lines = [
+        {width: 95, left: 1.389, top: 80.163, angle: -70.224, spell1: 192759, spell2: 192310},
+        {width: 317, left: 5.694, top: 89.106, angle: 3.621, spell1: 192759, spell2: 192376},
+        {width: 119, left: 49.583, top: 89.593, angle: 173.234, spell1: 192329, spell2: 192376},
+        {width: 105, left: 65.556, top: 85.366, angle: -20.684, spell1: 192329, spell2: 192323},
+        {width: 234, left: 34.167, top: 82.927, angle: -163.113, spell1: 192329, spell2: 192384},
+        {width: 74, left: 7.917, top: 68.130, angle: 125.628, spell1: 192318, spell2: 192310},
+        {width: 161, left: 14.306, top: 70.244, angle: 32.800, spell1: 192318, spell2: 192384},
+        {width: 140, left: 15.000, top: 58.211, angle: -26.381, spell1: 192318, spell2: 192424},
+        {width: 145, left: 31.944, top: 46.829, angle: 147.407, spell1: 192657, spell2: 192424},
+        {width: 143, left: 36.111, top: 50.894, angle: 116.565, spell1: 192657, spell2: 192345},
+        {width: 163, left: 40.278, top: 55.285, angle: -27.037, spell1: 192345, spell2: 192422},
+        {width: 90, left: 54.444, top: 56.423, angle: -81.060, spell1: 192315, spell2: 192422},
+        {width: 132, left: 41.389, top: 62.439, angle: -173.468, spell1: 192315, spell2: 192345},
+        {width: 198, left: 33.472, top: 70.569, angle: 154.861, spell1: 192315, spell2: 192384},
+        {width: 111, left: 56.528, top: 40.650, angle: 109.411, spell1: 192428, spell2: 192422},
+        {width: 118, left: 64.167, top: 39.187, angle: 46.715, spell1: 192428, spell2: 192349},
+        {width: 234, left: 34.167, top: 82.927, angle: -163.113, spell1: 192329, spell2: 192384},
+        {width: 119, left: 49.583, top: 89.593, angle: 173.234, spell1: 192329, spell2: 192376},
+        {width: 105, left: 65.556, top: 85.366, angle: -20.684, spell1: 192329, spell2: 192323},
+        {width: 174, left: 71.806, top: 58.537, angle: -119.214, spell1: 192923, spell2: 192349},
+        {width: 103, left: 77.639, top: 76.585, angle: 136.185, spell1: 192923, spell2: 192323},
+        {width: 238, left: 34.722, top: 75.610, angle: 174.697, spell1: 192326, spell2: 192384},
+        {width: 185, left: 60.139, top: 60.000, angle: -66.477, spell1: 192326, spell2: 192349},
       ]
-
+  
       return Templates.artifact(traits: traits, lines: lines, relic1: 'shadow', relic2: 'iron', relic3: 'blood')
       
