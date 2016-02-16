@@ -146,6 +146,9 @@ FANGS_LINES = [
   { "icon1": "fangs_embrace", "icon2": "fangs_fortunesbite" },
 ]
 
+def scale(y, old_min, old_max, new_min, new_max):
+  return (((float(new_max)-float(new_min))*(float(y)-float(old_min))) / (float(old_max)-float(old_min))) + float(new_min)
+
 if sys.argv[1] == '--db':
   ICONS = DREADBLADE_ICONS
   LINES = DREADBLADE_LINES
@@ -162,9 +165,21 @@ elif sys.argv[1] == '--fangs':
   ICONS = FANGS_ICONS
   LINES = FANGS_LINES
   BG_IMAGE = '/images/artifacts/fangs-bg-icons.png'
-  IMAGE_HEIGHT=585
+  IMAGE_HEIGHT=615
   IMAGE_WIDTH=720
 
+  # For Fangs, the default positions make the icons at the top of the tree run into
+  # the right most relic icon (namely shadow nova). Scale all of them downwards so
+  # shadow nova is 45px lower and everything scales from there.
+  for key,value in ICONS.iteritems():
+    # demon's kiss is the bottom, shadow nova is the top
+    # at 520 pixels, movement should be 45 * 0%
+    # at 68 pixels, movement should be 45 * 100%
+    newval = int(round(scale(value['ypos'], 68, 520, 68+45, 520)))
+    value['ypos'] = newval
+
+print ICONS
+    
 if sys.argv[2] == '--html':
   print '<html>'
   print '  <head>'
