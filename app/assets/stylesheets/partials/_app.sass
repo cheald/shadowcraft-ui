@@ -1023,15 +1023,16 @@ img.upgrade
       cursor: pointer
 
     .relic
-      z-index: 0
-      visibility: hidden
+      z-index: 2
       height: 90px
       width: 90px
       cursor: pointer
+      &.inactive
+        visibility: hidden
 
     .icon
       position: absolute
-      z-index: 1
+      z-index: 3
       border-radius: 50%
       left: 22px
       top: 22px
@@ -1043,7 +1044,7 @@ img.upgrade
 
     .ring
       position: absolute
-      z-index: 2
+      z-index: 4
       left: 5px
       top: 5px
 
@@ -1052,6 +1053,7 @@ img.upgrade
       top: 17px
 
     .line
+      z-index: 0
       position: absolute
       background-image: url(/images/artifacts/artifact-line-active.png)
       background-repeat: repeat-x
@@ -1072,7 +1074,7 @@ img.upgrade
       left: calc((100% - 2em - 2px) / 2)
       top: 65%
       width: 2em
-      z-index: 3
+      z-index: 5
 
       &.inactive
         display: none
@@ -1084,7 +1086,7 @@ img.upgrade
       top: 7%
       position: absolute
       z-index: 10
-  
+
       .relicicon
         height: 30px
         width: 30px

@@ -2568,17 +2568,21 @@ img.upgrade {
 
 /* line 1025, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relic {
-  z-index: 0;
-  visibility: hidden;
+  z-index: 2;
   height: 90px;
   width: 90px;
   cursor: pointer;
 }
 
-/* line 1032, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1030, ../../app/assets/stylesheets/partials/_app.sass */
+#artifact #artifactframe .relic.inactive {
+  visibility: hidden;
+}
+
+/* line 1033, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .icon {
   position: absolute;
-  z-index: 1;
+  z-index: 3;
   border-radius: 50%;
   left: 22px;
   top: 22px;
@@ -2587,27 +2591,28 @@ img.upgrade {
   background: black;
 }
 
-/* line 1041, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1042, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .icon.inactive {
   opacity: 0.6;
 }
 
-/* line 1044, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1045, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .ring {
   position: absolute;
-  z-index: 2;
+  z-index: 4;
   left: 5px;
   top: 5px;
 }
 
-/* line 1050, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1051, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .ring-thin {
   left: 17px;
   top: 17px;
 }
 
-/* line 1054, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1055, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .line {
+  z-index: 0;
   position: absolute;
   background-image: url(/images/artifacts/artifact-line-active.png);
   background-repeat: repeat-x;
@@ -2615,12 +2620,12 @@ img.upgrade {
   transform-origin: 50% 50%;
 }
 
-/* line 1060, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1062, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .line.inactive {
   background-image: url(/images/artifacts/artifact-line-inactive.png);
 }
 
-/* line 1063, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1065, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .level {
   background-color: black;
   border: 1px solid #666666;
@@ -2633,15 +2638,15 @@ img.upgrade {
   left: calc((100% - 2em - 2px) / 2);
   top: 65%;
   width: 2em;
-  z-index: 3;
+  z-index: 5;
 }
 
-/* line 1077, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1079, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .level.inactive {
   display: none;
 }
 
-/* line 1080, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1082, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relicframe {
   height: 80px;
   width: 80px;
@@ -2651,7 +2656,7 @@ img.upgrade {
   z-index: 10;
 }
 
-/* line 1088, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1090, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relicframe .relicicon {
   height: 30px;
   width: 30px;
@@ -2662,32 +2667,32 @@ img.upgrade {
   z-index: 11;
 }
 
-/* line 1097, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1099, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relicframe .relicicon.inactive {
   display: none;
 }
 
-/* line 1100, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1102, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact_button_div {
   padding: 10px;
 }
 
-/* line 1103, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1105, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs {
   border: 0;
 }
 
-/* line 1105, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1107, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings, #tabs #buffs, #tabs #target, #tabs #docs {
   padding: 2em;
 }
 
-/* line 1108, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1110, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel {
   border: 1px solid #333333;
 }
 
-/* line 1110, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1112, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel label {
   white-space: nowrap;
   vertical-align: middle;
@@ -2700,12 +2705,12 @@ img.upgrade {
   color: #777777;
 }
 
-/* line 1119, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1121, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel label:hover {
   color: white;
 }
 
-/* line 1122, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1124, ../../app/assets/stylesheets/partials/_app.sass */
 .slots {
   width: 49%;
   min-width: 340px;
@@ -2713,19 +2718,19 @@ img.upgrade {
   float: left;
 }
 
-/* line 1128, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1130, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gem {
   position: relative;
 }
 
-/* line 1130, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1132, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gem .socket {
   position: absolute;
   top: 9px;
   left: 13px;
 }
 
-/* line 1135, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1137, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem, .slots .enchant, .slots .bonuses, .slots .name {
   background: #0e0e0e url(/images/texture.png);
   margin-bottom: 2px;
@@ -2740,12 +2745,12 @@ img.upgrade {
   transition: background 0.2s;
 }
 
-/* line 1143, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1145, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem:hover, .slots .gems .gem.active, .slots .enchant:hover, .slots .enchant.active, .slots .bonuses:hover, .slots .bonuses.active, .slots .name:hover, .slots .name.active {
   background-color: rgba(0, 128, 255, 0.15);
 }
 
-/* line 1145, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1147, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem .img, .slots .enchant .img, .slots .bonuses .img, .slots .name .img {
   background: url(/images/empty.png);
   width: 13px;
@@ -2758,26 +2763,26 @@ img.upgrade {
   display: inline-block;
 }
 
-/* line 1153, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1155, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem .img img, .slots .enchant .img img, .slots .bonuses .img img, .slots .name .img img {
   width: 17px;
   margin-left: -2px;
   margin-top: -2px;
 }
 
-/* line 1160, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1162, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant .img {
   width: 17px;
   height: 17px;
   margin-right: 5px;
 }
 
-/* line 1164, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1166, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant .img img {
   width: 24px;
 }
 
-/* line 1167, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1169, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .bonus {
   color: lime;
   margin-bottom: 4px;
@@ -2785,31 +2790,31 @@ img.upgrade {
   padding: 4px 4px 4px 35px;
 }
 
-/* line 1173, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1175, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .bonuses img {
   vertical-align: middle;
   margin-right: 5px;
 }
 
-/* line 1176, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1178, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .bonuses .oldstat {
   color: #ee0000;
   padding-right: 1em;
 }
 
-/* line 1179, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1181, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .bonuses .newstat {
   color: #00ee00;
   padding-right: 1em;
 }
 
-/* line 1183, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1185, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant {
   color: lime;
   font-size: 0.9em;
 }
 
-/* line 1187, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1189, ../../app/assets/stylesheets/partials/_app.sass */
 .slot {
   position: relative;
   min-height: 60px;
@@ -2825,18 +2830,18 @@ img.upgrade {
   background: #0a0a0a;
 }
 
-/* line 1196, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1198, ../../app/assets/stylesheets/partials/_app.sass */
 .slot:hover {
   background-color: #1f232a;
   cursor: pointer;
 }
 
-/* line 1200, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1202, ../../app/assets/stylesheets/partials/_app.sass */
 .slot.active, .slot .active {
   background-color: #1f232a;
 }
 
-/* line 1205, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1207, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .gems {
   /* .Red
    *   background: rgba( $full, 0, 0, $opac )
@@ -2852,7 +2857,7 @@ img.upgrade {
    *   background: rgba( 0, $full, 0, $opac ) */
 }
 
-/* line 1220, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1222, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image {
   background: url(/images/empty.png);
   position: absolute;
@@ -2866,12 +2871,12 @@ img.upgrade {
   border-radius: 3px;
 }
 
-/* line 1231, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1233, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image img {
   width: 48px;
 }
 
-/* line 1233, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1235, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image .ilvl {
   font-size: 0.7em;
   color: white;
@@ -2884,7 +2889,7 @@ img.upgrade {
   border-radius: 2px;
 }
 
-/* line 1243, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1245, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock {
   opacity: 0.3;
   position: absolute;
@@ -2897,24 +2902,24 @@ img.upgrade {
   transition: hover 0.1s;
 }
 
-/* line 1249, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1251, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock.lock_on {
   opacity: 1;
 }
 
-/* line 1251, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1253, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock:hover {
   opacity: 1;
 }
 
-/* line 1254, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1256, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name {
   font-weight: bold;
   font-size: 1.07em;
   text-shadow: black -1px -1px;
 }
 
-/* line 1258, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1260, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name .aep {
   color: white;
   font-weight: normal;
@@ -2922,7 +2927,7 @@ img.upgrade {
   font-style: normal;
 }
 
-/* line 1264, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1266, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name .heroic {
   color: lime;
   padding: 0 0em;
@@ -2930,7 +2935,7 @@ img.upgrade {
   font-size: 0.7em;
 }
 
-/* line 1270, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1272, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .desc {
   display: block;
   font-size: 0.8em;
@@ -2938,13 +2943,13 @@ img.upgrade {
   padding: 2px 0;
 }
 
-/* line 1276, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1278, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives {
   padding-top: 40px;
   border: 1px solid #222222 !important;
 }
 
-/* line 1279, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1281, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot {
   margin: 5px 15px 5px 50px;
   min-height: 46px;
@@ -2953,33 +2958,33 @@ img.upgrade {
   background: transparent;
 }
 
-/* line 1285, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1287, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot:hover {
   background: rgba(30, 35, 40, 0.9);
 }
 
-/* line 1287, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1289, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active, .alternatives .slot .active {
   background: #053255;
 }
 
-/* line 1289, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1291, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active .pct, .alternatives .slot .active .pct {
   border-color: #0d81dc;
 }
 
-/* line 1291, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1293, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active .pct-inner, .alternatives .slot .active .pct-inner {
   background-color: #0d81dc;
 }
 
-/* line 1294, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1296, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .gem {
   display: inline-block;
   vertical-align: middle;
 }
 
-/* line 1296, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1298, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .image {
   width: 36px;
   height: 36px;
@@ -2987,56 +2992,56 @@ img.upgrade {
   top: 2px;
 }
 
-/* line 1301, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1303, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .image img {
   margin-left: -2px;
   margin-top: -2px;
   width: 40px;
 }
 
-/* line 1306, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1308, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-2 {
   color: #00dc00;
 }
 
-/* line 1308, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1310, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-3 {
   color: #007cf6;
 }
 
-/* line 1310, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1312, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-4 {
   color: #A335EE;
 }
 
-/* line 1312, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1314, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-5 {
   color: #FF8000;
 }
 
-/* line 1314, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1316, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-6 {
   color: #E5CC80;
 }
 
-/* line 1316, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1318, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-7 {
   color: #E5CC80;
 }
 
-/* line 1319, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1321, ../../app/assets/stylesheets/partials/_app.sass */
 #impex {
   padding: 1em;
 }
 
-/* line 1321, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1323, ../../app/assets/stylesheets/partials/_app.sass */
 #impex h3 {
   font-size: 1.3em;
   font-weight: bold;
   margin: 0.7em 0;
 }
 
-/* line 1325, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1327, ../../app/assets/stylesheets/partials/_app.sass */
 #impex textarea {
   font-family: "liberation mono", "courier new", monospace;
   font-size: 0.8em;
@@ -3049,88 +3054,88 @@ img.upgrade {
 }
 
 @media screen and (max-width: 1281px) {
-  /* line 1337, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1339, ../../app/assets/stylesheets/partials/_app.sass */
   #container.characters-new, #container.characters-create, #container.characters-refresh {
     background: #050505 url(/images/splash-s.jpg) bottom left no-repeat;
   }
 
-  /* line 1340, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1342, ../../app/assets/stylesheets/partials/_app.sass */
   #create_character {
     bottom: 200px;
     left: 250px;
   }
 
-  /* line 1345, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1347, ../../app/assets/stylesheets/partials/_app.sass */
   #card .img {
     width: 90px;
   }
 
-  /* line 1347, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1349, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info {
     margin-left: 100px;
   }
 
-  /* line 1349, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1351, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info .name {
     font-size: 0.75em;
   }
 
-  /* line 1351, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1353, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info .realm {
     font-size: 0.3em;
   }
 
-  /* line 1354, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1356, ../../app/assets/stylesheets/partials/_app.sass */
   .popup .body {
     max-height: 400px;
   }
 }
-/* line 1357, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1359, ../../app/assets/stylesheets/partials/_app.sass */
 #dialogs {
   display: none;
 }
 
-/* line 1360, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1362, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-widget-overlay {
   background: rgba(0, 0, 0, 0.8);
 }
 
-/* line 1363, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1365, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-dialog {
   background: rgba(10, 15, 20, 0.9);
   border: 2px solid #065175;
   border-radius: 5px;
 }
 
-/* line 1368, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1370, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-widget-content.ui-dialog-buttonpane {
   border-color: #222222;
 }
 
-/* line 1372, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1374, ../../app/assets/stylesheets/partials/_app.sass */
 #saveSnapshot label {
   font-weight: bold;
   margin-bottom: 0.5em;
 }
 
-/* line 1375, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1377, ../../app/assets/stylesheets/partials/_app.sass */
 #saveSnapshot #snapshotName {
   width: 200px;
   margin: auto;
 }
 
-/* line 1380, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1382, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table {
   border-collapse: collapse;
   width: 100%;
 }
 
-/* line 1383, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1385, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table th, #loadSnapshot table td {
   border: 1px solid rgba(40, 51, 61, 0.9);
 }
 
-/* line 1385, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1387, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table th {
   background: rgba(20, 25, 30, 0.9);
   padding: 2px 5px;
@@ -3138,17 +3143,17 @@ img.upgrade {
   font-weight: bold;
 }
 
-/* line 1390, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1392, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td:first-child {
   width: 75%;
 }
 
-/* line 1392, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1394, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td {
   padding: 5px;
 }
 
-/* line 1394, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1396, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td a {
   font-weight: bold;
   text-decoration: underline;

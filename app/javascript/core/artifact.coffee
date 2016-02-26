@@ -81,6 +81,7 @@ class ShadowcraftArtifact
       active_mapping[parseInt($(this).attr("data-tooltip-id"))] = false
       $(this).children(".level").addClass("inactive")
       $(this).children(".icon").addClass("inactive")
+      $(this).children(".relic").addClass("inactive")
     )
     $("#artifactframe .line").each(->
       $(this).addClass("inactive")
@@ -165,7 +166,9 @@ class ShadowcraftArtifact
     # Deal with relics that are attached to the weapon. This may enable other
     # icons that are currently disabled, but doesn't increase their value in
     # the data map.
-    for i in [0...2]
+    # TODO: should this apply multiple relic outlines to a single trait or just
+    # the last one that it encounters?
+    for i in [0...3]
       button = $("#relic"+(i+1)+" .relicicon")
       if artifact_data.relics[i] != 0
         relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i]]
@@ -175,6 +178,13 @@ class ShadowcraftArtifact
         trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"'")
         {current, max} = activateTrait(relic.tmi)
         trait.children(".level").text(""+(relic.ti+current)+"/"+(relic.ti+max))
+        type = ''
+        for key,val of RELIC_TYPE_MAP
+          if (val == relic.type)
+            type = key
+            break
+        trait.children(".relic").attr("src", "/images/artifacts/relic-"+type+".png")
+        trait.children(".relic").removeClass("inactive")
       else
         button.addClass("inactive")
 
