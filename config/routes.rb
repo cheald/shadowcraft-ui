@@ -12,6 +12,9 @@ Roguesim::Application.routes.draw do
   match "/missing", :to => "application#missing"
   match "/persist", :to => "characters#persist"
 
+  match "/history/getsha", :to => "characters#getsha"
+  match "/history/getjson", :to => "characters#getjson"
+
   resources :characters do
     put 'refresh', :on => :member
     get 'refresh', :on => :member

@@ -6,23 +6,6 @@ class CharactersController < ApplicationController
     render :action => "new"
   end
 
-  # Persist a new Character
-  # Is this used anyway?
-  def persist
-    if request.post?
-      sha = Digest::SHA1.hexdigest(params[:data].to_json)
-      Mongoid.master.collection("lookups").update({:sha => sha}, {:doc => params[:data]})
-      render :json => {"h" => sha}
-    elsif request.get?
-      r = if doc = Mongoid.master.collection("lookups").find_one(:sha => sha)
-        doc["doc"]
-      else
-        nil
-      end
-      render :json => {:doc => p}
-    end
-  end
-
   # Creates a new Character with params
   def create
     @character = Character.get!(params[:character])
@@ -85,6 +68,33 @@ class CharactersController < ApplicationController
       redirect_to rebuild_items_path(:c => @character._id)
     else
       return new
+    end
+  end
+
+  # Retrieves a sha of a block of character json and stores it in to the database.
+  # This is used as URLs now instead of generating a huge URL based on the data.
+  def getsha
+    # Create a sha1 hash of the json data of the character
+    sha = Digest::SHA256.hexdigest(params[:data])
+
+    # Store the sha and the matching data in mongo.
+    history = History.find_or_initialize_by({:sha => sha})
+    if history.new_record?
+      history.json = JSON.parse(params[:data])
+      history.save()
+    end
+
+    render :json => {"sha" => sha}
+  end
+
+  # Retrieves a character based on a sha hash created by getsha above.
+  def getjson
+    sha = params[:data]
+    history = History.find_or_initialize_by({:sha => sha})
+    if !history.new_record?
+      render :json => history.json.to_json
+    else
+      raise ActionController::RoutingError.new('Not Found')
     end
   end
 end

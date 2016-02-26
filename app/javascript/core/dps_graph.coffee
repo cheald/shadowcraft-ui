@@ -30,31 +30,35 @@ class ShadowcraftDpsGraph
           return false
     )
 
-  datapoint: (data) ->
-    snapshot = Shadowcraft.History.takeSnapshot()
-
-    delta = data.total_dps - (@lastDPS || 0)
+  datapointCallback: (sha, extras) ->
+    data = extras['data']
+    obj = extras['obj']
+    delta = data.total_dps - (obj.lastDPS || 0)
     deltatext = ""
-    if @lastDPS
+    if obj.lastDPS
       deltatext = if delta >= 0 then " <em class='p'>(+#{delta.toFixed(1)})</em>" else " <em class='n'>(#{delta.toFixed(1)})</em>"
 
     $("#dps .inner").html(data.total_dps.toFixed(1) + " DPS" + deltatext)
 
-    if snapshot
-      @dpsHistory.push [@dpsIndex, Math.round(data.total_dps * 10) / 10]
-      @dpsIndex++
-      @snapshotHistory.push(snapshot)
-      if @dpsHistory.length > MAX_POINTS
-        @dpsHistory.shift()
-        @snapshotHistory.shift()
+    if sha
+      obj.dpsHistory.push [obj.dpsIndex, Math.round(data.total_dps * 10) / 10]
+      obj.dpsIndex++
+      obj.snapshotHistory.push(sha)
+      if obj.dpsHistory.length > MAX_POINTS
+        obj.dpsHistory.shift()
+        obj.snapshotHistory.shift()
 
-      @dpsPlot = $.plot($("#dpsgraph"), [@dpsHistory], {
+      obj.dpsPlot = $.plot($("#dpsgraph"), [obj.dpsHistory], {
         lines: { show: true }
         crosshair: { mode: "y" }
         points: { show: true }
         grid: { hoverable: true, clickable: true, autoHighlight: true }
         series: {
-          threshold: { below: @dpsHistory[0][1], color: "rgb(200, 20, 20)" }
+          threshold: { below: obj.dpsHistory[0][1], color: "rgb(200, 20, 20)" }
         }
       })
-    @lastDPS = data.total_dps
+    obj.lastDPS = data.total_dps
+
+  datapoint: (data) ->
+    extras = {'data': data, 'obj': this}
+    Shadowcraft.History.takeSnapshot(@datapointCallback, extras)

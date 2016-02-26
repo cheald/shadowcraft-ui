@@ -122,7 +122,6 @@ class ShadowcraftBackend
       return
 
     @app.lastCalculation = data
-    #this.trigger("recompute2", data)
     this.trigger("recompute", data)
 
   recompute: (payload = null, forcePost = false) ->
@@ -174,5 +173,3 @@ class ShadowcraftBackend
         app.handleRecompute(data)
       error: (xhr, textStatus, error) ->
         app.recomputeFailed()
-
-loadingSnapshot = false
