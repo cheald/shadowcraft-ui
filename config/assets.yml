@@ -12,12 +12,10 @@ javascripts:
     - public/javascripts/backbone-min.js
     - public/javascripts/handlebars.js
     - public/javascripts/jstorage.js
-    - public/javascripts/jquery.json-2.2.js
+    - public/javascripts/jquery.json.js
     - public/javascripts/flot/jquery.flot.js
     - public/javascripts/flot/jquery.flot.crosshair.js
     - public/javascripts/jquery.websocket-0.0.1.js
-    - public/javascripts/base64.js
-    - public/javascripts/convertBase.js
     - public/javascripts/deflate.js
     - public/javascripts/inflate.js
     - public/javascripts/core.js
