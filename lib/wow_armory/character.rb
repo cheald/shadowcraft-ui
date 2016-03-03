@@ -70,10 +70,14 @@ module WowArmory
           'original_id' => v['id'],
           'item_level' => v['itemLevel'],
           'name' => v['name'],
-          'enchant' => tooltip['enchant'],
-          'gems' => [tooltip['gem0'],tooltip['gem1'],tooltip['gem2']],
+          'enchant' => tooltip['enchant'].nil? ? 0 : tooltip['enchant'],
+          'gems' => [],
           'slot' => SLOT_MAP[k],
         }
+        info['gems'].push(tooltip['gem0'].nil? ? 0 : tooltip['gem0'])
+        info['gems'].push(tooltip['gem1'].nil? ? 0 : tooltip['gem1'])
+        info['gems'].push(tooltip['gem2'].nil? ? 0 : tooltip['gem2'])
+
         info['suffix'] = tooltip['suffix'].to_i unless tooltip['suffix'].blank?
         unless tooltip['upgrade'].nil?
           upgrade = tooltip['upgrade']

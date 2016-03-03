@@ -22,7 +22,7 @@ class ShadowcraftDpsGraph
       if item
         app.dpsPlot.unhighlight()
         app.dpsPlot.highlight(item.series, item.datapoint)
-        snapshot = app.snapshotHistory[item.dataIndex]
+        snapshot = $.parseJSON(app.snapshotHistory[item.dataIndex])
         Shadowcraft.History.loadSnapshot(snapshot)
     ).mousedown((e) ->
       switch e.button
@@ -30,35 +30,31 @@ class ShadowcraftDpsGraph
           return false
     )
 
-  datapointCallback: (sha, extras) ->
-    data = extras['data']
-    obj = extras['obj']
-    delta = data.total_dps - (obj.lastDPS || 0)
+  # Called after the DPS has been recomputed as part of the "recompute" bind
+  # point. This updates the display in the right frame and stores a snapshot
+  # of the data so the user can click on points in the graph.
+  datapoint: (data) ->
+    delta = data.total_dps - (@lastDPS || 0)
     deltatext = ""
-    if obj.lastDPS
+    if @lastDPS
       deltatext = if delta >= 0 then " <em class='p'>(+#{delta.toFixed(1)})</em>" else " <em class='n'>(#{delta.toFixed(1)})</em>"
 
     $("#dps .inner").html(data.total_dps.toFixed(1) + " DPS" + deltatext)
 
-    if sha
-      obj.dpsHistory.push [obj.dpsIndex, Math.round(data.total_dps * 10) / 10]
-      obj.dpsIndex++
-      obj.snapshotHistory.push(sha)
-      if obj.dpsHistory.length > MAX_POINTS
-        obj.dpsHistory.shift()
-        obj.snapshotHistory.shift()
+    @dpsHistory.push [@dpsIndex, Math.round(data.total_dps * 10) / 10]
+    @dpsIndex++
+    @snapshotHistory.push($.toJSON(Shadowcraft.Data))
+    if @dpsHistory.length > MAX_POINTS
+      @dpsHistory.shift()
+      @snapshotHistory.shift()
 
-      obj.dpsPlot = $.plot($("#dpsgraph"), [obj.dpsHistory], {
-        lines: { show: true }
-        crosshair: { mode: "y" }
-        points: { show: true }
-        grid: { hoverable: true, clickable: true, autoHighlight: true }
-        series: {
-          threshold: { below: obj.dpsHistory[0][1], color: "rgb(200, 20, 20)" }
-        }
-      })
-    obj.lastDPS = data.total_dps
-
-  datapoint: (data) ->
-    extras = {'data': data, 'obj': this}
-    Shadowcraft.History.takeSnapshot(@datapointCallback, extras)
+    @dpsPlot = $.plot($("#dpsgraph"), [@dpsHistory], {
+      lines: { show: true }
+      crosshair: { mode: "y" }
+      points: { show: true }
+      grid: { hoverable: true, clickable: true, autoHighlight: true }
+      series: {
+        threshold: { below: @dpsHistory[0][1], color: "rgb(200, 20, 20)" }
+      }
+    })
+    @lastDPS = data.total_dps

@@ -1,0 +1,387 @@
+{
+  "definitions": {
+    "gear_slot": {
+      "type": "object",
+      "properties": {
+        "item_id": {
+          "type": "integer"
+        },
+        "original_id": {
+          "type": "integer"
+        },
+        "item_level": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "enchant": {
+          "type": "integer"
+        },
+        "gems": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "slot": {
+          "type": "integer"
+        },
+        "upgrade_level": {
+          "type": "integer"
+        },
+        "bonuses": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 0
+        },
+        "context": {
+          "type": "string",
+          "maxLength": 50
+        }
+      },
+      "required": ["item_id", "original_id", "item_level", "name", "enchant", "gems", "slot", "bonuses", "context"]
+    },
+    "gear": {
+      "type": "object",
+      "properties": {
+        "0": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "1": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "2": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "4": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "5": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "6": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "7": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "8": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "9": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "10": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "11": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "12": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "13": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "14": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "15": {
+          "$ref": "#/definitions/gear_slot"
+        },
+        "16": {
+          "$ref": "#/definitions/gear_slot"
+        }
+      },
+      "required": ["0", "1", "2", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"]
+    },
+    "talents": {
+      "type": "object",
+      "properties": {
+        "spec": {
+          "type": "string",
+          "maxLength": 1
+        },
+        "talents": {
+          "type": "string",
+          "maxLength": 7
+        }
+      },
+      "required": ["spec", "talents"]
+    },
+    "options_general": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "integer"
+        },
+        "race": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "patch": {
+          "type": "integer"
+        },
+        "night_elf_racial": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "response_time": {
+          "type": "number"
+        },
+        "time_in_execute_range": {
+          "type": "number"
+        },
+        "lethal_poison": {
+          "type": "string",
+          "maxLength": 2
+        },
+        "utility_poison": {
+          "type": "string",
+          "maxLength": 2
+        },
+        "num_boss_adds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "demon_enemy": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "max_ilvl": {
+          "type": "integer"
+        },
+        "min_ilvl": {
+          "type": "integer"
+        },
+        "show_random_items": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "show_upgrades": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "epic_gems": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "prepot": {
+          "type": "boolean"
+        },
+        "potion": {
+          "type": "boolean"
+        },
+        "pvp": {
+          "type": "boolean"
+        }
+      },
+      "required": ["level", "race", "patch", "night_elf_racial", "duration", "response_time", "time_in_execute_range", "lethal_poison", "utility_poison", "num_boss_adds", "demon_enemy", "max_ilvl", "min_ilvl", "show_random_items", "show_upgrades", "epic_gems", "prepot", "potion", "pvp"]
+    },
+    "options_buffs": {
+      "type": "object",
+      "properties": {
+        "food_buff": {
+          "type": "string",
+          "maxLength": 30
+        },
+        "flask_wod_agi": {
+          "type": "boolean"
+        },
+        "short_term_haste_buff": {
+          "type": "boolean"
+        },
+        "stat_multiplier_buff": {
+          "type": "boolean"
+        },
+        "crit_chance_buff": {
+          "type": "boolean"
+        },
+        "haste_buff": {
+          "type": "boolean"
+        },
+        "multistrike_buff": {
+          "type": "boolean"
+        },
+        "attack_power_buff": {
+          "type": "boolean"
+        },
+        "mastery_buff": {
+          "type": "boolean"
+        },
+        "versatility_buff": {
+          "type": "boolean"
+        }
+      },
+      "required": ["food_buff", "flask_wod_agi", "short_term_haste_buff", "stat_multiplier_buff", "crit_chance_buff", "haste_buff", "multistrike_buff", "attack_power_buff", "mastery_buff", "versatility_buff"]
+    },
+    "options_rotation": {
+      "type": "object",
+      "properties": {
+        "min_envenom_size_non_execute": {
+          "type": "integer",
+          "maximum": 5
+        },
+        "min_envenom_size_execute": {
+          "type": "integer",
+          "maximum": 5
+        },
+        "opener_name_assassination": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "opener_use_assassination": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "ksp_immediately": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "revealing_strike_pooling": {
+          "type": "boolean"
+        },
+        "blade_flurry": {
+          "type": "boolean"
+        },
+        "opener_name_combat": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "opener_use_combat": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "use_hemorrhage": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "opener_name_subtlety": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "opener_use_subtlety": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "opener_name": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "opener_use": {
+          "type": "string",
+          "maxLength": 10
+        }
+      },
+      "required": ["min_envenom_size_non_execute", "min_envenom_size_execute", "opener_name_assassination", "opener_use_assassination", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "opener_name_combat", "opener_use_combat", "use_hemorrhage", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"]
+    },
+    "options_advanced": {
+      "type": "object",
+      "properties": {
+        "latency": {
+          "type": "number"
+        },
+        "adv_params": {
+          "type": "string",
+          "maxLength": 50
+        }
+      },
+      "required": ["latency", "adv_params"]
+    },
+    "all_options": {
+      "type": "object",
+      "general": {
+        "$ref": "#/definitions/options_general"
+      },
+      "buffs": {
+        "$ref": "#/definitions/options_buffs"
+      },
+      "rotation": {
+        "$ref": "#/definitions/options_rotation"
+      },
+      "advanced": {
+        "$ref": "#/definitions/options_advanced"
+      },
+      "required": ["general", "buffs", "rotation", "advanced"]
+    },
+
+    "artifact_trait": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "level": {
+          "type": "integer"
+        }
+      },
+      "required": ["id", "level"]
+    },
+    "artifact": {
+      "type": "object",
+      "properties": {
+        "spec": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
+        },
+        "relic": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        }
+      },
+      "required": ["spec", "relic"]
+    }
+  },
+
+  "title": "Gear schema",
+  "type": "object",
+  "properties": {
+    "gear": {
+      "$ref": "#/definitions/gear"
+    },
+    "talents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/talents"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "active": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "options": {
+      "$ref": "#/definitions/all_options"
+    },
+    "activeSpec": {
+      "type": "string",
+      "maxLength": 1
+    },
+    "activeTalents": {
+      "type": "string",
+      "maxLength": 7
+    }
+  },
+  "required": ["gear", "talents", "active", "options", "activeSpec", "activeTalents"]
+}

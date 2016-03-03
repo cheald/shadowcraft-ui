@@ -1,5 +1,11 @@
 class CharactersController < ApplicationController
 
+  # Read the schema data from the file system and convert it into a schema
+  # object. Make sure to expand all of the references used to make the
+  # stupid thing modular.
+  JSON_SCHEMA = JsonSchema.parse!(JSON.parse(File.read(File.join(Rails.root, 'app', 'xml', 'character_data_json.schema'))))
+  JSON_SCHEMA.expand_references!
+
   # Generate a new Character
   def new
     @character ||= Character.new :region => "US"
@@ -75,16 +81,41 @@ class CharactersController < ApplicationController
   # This is used as URLs now instead of generating a huge URL based on the data.
   def getsha
     # Create a sha1 hash of the json data of the character
-    sha = Digest::SHA256.hexdigest(params[:data])
+    json = params[:data].to_s
 
-    # Store the sha and the matching data in mongo.
-    history = History.find_or_initialize_by({:sha => sha})
-    if history.new_record?
-      history.json = JSON.parse(params[:data])
-      history.save()
+    # Validate the JSON passed in before trying to store it to avoid
+    # injection attacks
+    validated = false
+    begin
+
+      # convert the json text into a json object since that's what JsonSchema
+      # acts upon
+      json_obj = JSON.parse(json)
+
+      # Pass it to the validator to check if the user sent us something bad
+      JSON_SCHEMA.validate!(json_obj)
+      validated = true
+    rescue
+      Rails.logger.debug $!.message
+      Rails.logger.debug "Failed JSON validation"
+      validated = false
     end
 
-    render :json => {"sha" => sha}
+    if validated
+
+      sha = Digest::SHA256.hexdigest(params[:data]).to_s
+
+      # Store the sha and the matching data in mongo.
+      history = History.find_or_initialize_by({:sha => sha})
+      if history.new_record?
+        history.json = JSON.parse(params[:data])
+        history.save()
+      end
+
+      render :json => {"sha" => sha}
+    else
+      raise ActionController::RoutingError.new("JSON validation failure")
+    end
   end
 
   # Retrieves a character based on a sha hash created by getsha above.
