@@ -93,7 +93,6 @@ class ShadowcraftHistory
       flash "#{name} has been deleted"
 
   load: (defaults) ->
-    $.jStorage.flush()
     data = $.jStorage.get(@app.uuid, defaults)
     if data instanceof Array and data.length != 0
       # TODO: i'm not sure we'll ever enter this if statement. 
