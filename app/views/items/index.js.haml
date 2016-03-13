@@ -2,6 +2,7 @@
 - enchant_json = @enchants.as_json
 - gem_json = @gems.as_json
 - relic_json = @relics.as_json
+- talent_json = @talents.as_json
 - cache_to File.join(Rails.root, "public", @filename) do
   :plain
     window.ShadowcraftData = {};
@@ -38,7 +39,7 @@
       R.ITEMS = #{raw item_json.to_json};
       R.ENCHANTS = #{raw enchant_json.to_json};
       R.RELICS = #{raw relic_json.to_json};
-      R.TALENTS_WOD = #{raw @talents_wod.to_json};
+      R.TALENTS = #{raw @talents.to_json};
       R.SOCKET_BONUS_IDS = #{raw @socket_bonus_ids.to_json};
       R.ITEM_BONUSES = #{raw @item_bonuses.to_json};
       R.RAND_PROP_POINTS = #{raw @rand_prop_points.to_json};
@@ -153,11 +154,10 @@
         R.SLOT_CHOICES[item.equip_location][R.SLOT_CHOICES[item.equip_location].length] = item.identifier;
         R.ITEM_LOOKUP2[item.identifier] = item;
       }
-      R.TALENT_LOOKUP_WOD = {};
-        for(var talent = 0; talent < R.TALENTS_WOD.talent.length; talent++) {
-          var t = R.TALENTS_WOD.talent[talent];
-          t.maxRank = t.rank.length || 1;
-          R.TALENT_LOOKUP_WOD[t.tier + ":" + t.column] = t;
+      R.TALENT_LOOKUP = {};
+        for(var talent = 0; talent < R.TALENTS.length; talent++) {
+          var t = R.TALENTS[talent];
+          R.TALENT_LOOKUP[t.spec + ":" + t.tier + ":" + t.column] = t;
       }
       delete R.ITEMS;
     })(window.ShadowcraftData);

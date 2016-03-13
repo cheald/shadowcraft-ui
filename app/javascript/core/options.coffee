@@ -226,7 +226,7 @@ class ShadowcraftOptions
       Shadowcraft.setupLabels("#settings,#advanced")
       $("#settings,#advanced select").change()
 
-    Shadowcraft.Talents.bind "changed", ->
+    Shadowcraft.Talents.bind "changedSpec", (spec) ->
       $("#settings section.mutilate, #settings section.combat, #settings section.subtlety").hide()
       if Shadowcraft.Data.activeSpec == "a"
         $("#settings section.mutilate").show()

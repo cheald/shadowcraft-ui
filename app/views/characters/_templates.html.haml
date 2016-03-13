@@ -13,7 +13,7 @@
 - mustache "tree" do
   .tree
     {{#talents}}
-    .talent.tt{:class => "row-{{tier}} col-{{column}}", :"data-tooltip-type" => "spell", :"data-tooltip-id" => "{{spell}}", :style => "background-image: url(http://wow.zamimg.com/images/wow/icons/large/{{icon}}.jpg);"}
+    .talent.tt{:class => "row-{{tier}} col-{{column}}", :"data-tooltip-type" => "spell", :"data-tooltip-id" => "{{id}}", :style => "background-image: url(http://wow.zamimg.com/images/wow/icons/large/{{i}}.jpg);"}
       .grey
     {{/talents}}
 
@@ -238,6 +238,7 @@
     %img.relicicon.inactive
   {{#traits}}
   .trait.tt{:style => "left:{{left}}%;top:{{top}}%;", :id => "{{id}}", "data-tooltip-type" => "spell", "data-tooltip-id" => "{{spell_id}}", "data-tooltip-rank" => "0", "max_level" => "{{max_level}}"}
+    =image_tag "/images/artifacts/relic-blood.png", :class => "relic inactive"
     =image_tag "http://wow.zamimg.com/images/wow/icons/large/{{icon}}.jpg", :class => "icon"
     =image_tag "/images/artifacts/ring-{{ring}}.png", :class => "ring{{#is_thin}} ring-thin{{/is_thin}}"
     .level 0/{{max_level}}

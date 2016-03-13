@@ -71,8 +71,13 @@ checkForWarnings = (section) ->
     if data.activeTalents
       talents = data.activeTalents.split ""
       for row, i in talents
-        if i in [0,5] and row == "."
-          Shadowcraft.Console.warn({}, "Level " +  (i+1)*15 + " Talent not set", null, 'warn', 'talents')
+        if i in [0..6] and row == "."
+          level = 0
+          if (i < 6)
+            level = (i+1)*15
+          else if (i == 6)
+            level = 100
+          Shadowcraft.Console.warn({}, "Level #{level} Talent not set", null, 'warn', 'talents')
         if i == 5 and row == "0"
           Shadowcraft.Console.warn({}, "Talent Shuriken Toss is not fully supported by Shadowcraft.", "It is recommended to not use this talent.", 'warn', 'talents')
 

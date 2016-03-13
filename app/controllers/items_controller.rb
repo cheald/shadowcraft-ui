@@ -65,14 +65,12 @@ class ItemsController < ApplicationController
     # reject blue items with an upgrade level >= 2
     @alt_items.reject! {|item| item.properties['quality'] == 3 and [2,3,4,5,6].include? item.properties['upgrade_level'] }
 
-    # Get all gems, enchants, and talents
+    # Get all gems, enchants, talents, and artifact relics
     @gems = Item.where(:is_gem => true, :item_level.gt => 87).all
     @gems.reject! {|g| !(g.properties['stats'].keys & bad_keys).empty? }
     @enchants = Enchant.all
-    h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_wod.xml")).read
-    @talents_wod = h["page"]["talents"]
-
-    # Get relics for the artifact weapons
+    @talents = Talent.all
+    Rails.logger.debug(@talents.first.as_json)
     @relics = Relic.all
 
     item_bonuses = {}
