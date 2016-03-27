@@ -104,6 +104,7 @@ var ttlib = {
     var rand = $this.data("tooltip-rand");
     var upgd = $this.data("tooltip-upgd");
     var bonus = $this.data("tooltip-bonus");
+    var rank = $this.data("tooltip-rank");
     if(!id) { return; }
     var t = $this.data("tooltip-type") || "item";
     var url = "http://www.wowhead.com/" + t + "=" + id + "&power";
@@ -115,6 +116,9 @@ var ttlib = {
     }
     if(bonus) {
       url += "&bonus=" + bonus;
+    }
+    if(rank) {
+      url += "&rank=" + rank;
     }
     url += "&lvl=100";
 

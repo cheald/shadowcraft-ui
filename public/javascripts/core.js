@@ -1,5 +1,5 @@
 (function() {
-  var $, $doc, ArtifactTemplates, NOOP, ShadowcraftApp, ShadowcraftArtifact, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftDpsGraph, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, Templates, checkForWarnings, flash, hideFlash, json_encode, loadingSnapshot, modal, showPopup, tip, titleize, tooltip, wait,
+  var $, $doc, ArtifactTemplates, NOOP, ShadowcraftApp, ShadowcraftArtifact, ShadowcraftBackend, ShadowcraftConsole, ShadowcraftDpsGraph, ShadowcraftGear, ShadowcraftHistory, ShadowcraftOptions, ShadowcraftTalents, Templates, checkForWarnings, flash, hideFlash, json_encode, modal, showPopup, tip, titleize, tooltip, wait,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   $ = window.jQuery;
@@ -336,7 +336,7 @@
           }, {
             id: "db_blademaster",
             spell_id: 202628,
-            max_level: 3,
+            max_level: 1,
             icon: "ability_warrior_challange",
             ring: "thin",
             left: 7.073,
@@ -387,7 +387,7 @@
           }, {
             id: "db_deception",
             spell_id: 202755,
-            max_level: 3,
+            max_level: 1,
             icon: "ability_rogue_disguise",
             ring: "thin",
             left: 57.195,
@@ -458,7 +458,7 @@
           }, {
             id: "db_hiddenblade",
             spell_id: 202753,
-            max_level: 3,
+            max_level: 1,
             icon: "ability_ironmaidens_bladerush",
             ring: "thin",
             left: 89.634,
@@ -635,7 +635,7 @@
             icon: "ability_warlock_soullink",
             ring: "dragon",
             left: 72.222,
-            top: 36.911
+            top: 41.626
           }, {
             id: "fangs_catwalk",
             spell_id: 197241,
@@ -643,7 +643,7 @@
             icon: "ability_rogue_fleetfooted",
             ring: "thin",
             left: 50.694,
-            top: 41.789,
+            top: 46.016,
             is_thin: true
           }, {
             id: "fangs_demonskiss",
@@ -657,11 +657,11 @@
           }, {
             id: "fangs_embrace",
             spell_id: 197604,
-            max_level: 3,
+            max_level: 1,
             icon: "ability_rogue_eviscerate",
             ring: "thin",
             left: 66.806,
-            top: 63.902,
+            top: 66.016,
             is_thin: true
           }, {
             id: "fangs_energetic",
@@ -670,16 +670,16 @@
             icon: "inv_knife_1h_pvppandarias3_c_02",
             ring: "thin",
             left: 30.694,
-            top: 67.967,
+            top: 69.593,
             is_thin: true
           }, {
             id: "fangs_faster",
             spell_id: 197256,
-            max_level: 3,
+            max_level: 1,
             icon: "ability_rogue_sprint_blue",
             ring: "thin",
             left: 49.583,
-            top: 64.715,
+            top: 66.667,
             is_thin: true
           }, {
             id: "fangs_finality",
@@ -688,7 +688,7 @@
             icon: "ability_rogue_eviscerate",
             ring: "dragon",
             left: 16.250,
-            top: 77.561
+            top: 78.211
           }, {
             id: "fangs_fortunesbite",
             spell_id: 197369,
@@ -696,7 +696,7 @@
             icon: "ability_rogue_masterofsubtlety",
             ring: "thin",
             left: 77.361,
-            top: 49.593,
+            top: 53.008,
             is_thin: true
           }, {
             id: "fangs_ghostarmor",
@@ -705,7 +705,7 @@
             icon: "achievement_halloween_ghost_01",
             ring: "thin",
             left: 40.694,
-            top: 57.073,
+            top: 59.837,
             is_thin: true
           }, {
             id: "fangs_goremawsbite",
@@ -714,7 +714,7 @@
             icon: "inv_knife_1h_artifactfangs_d_01",
             ring: "thick",
             left: 85.694,
-            top: 36.098
+            top: 40.976
           }, {
             id: "fangs_gutripper",
             spell_id: 197234,
@@ -722,7 +722,7 @@
             icon: "ability_rogue_eviscerate",
             ring: "thin",
             left: 72.222,
-            top: 22.764,
+            top: 28.943,
             is_thin: true
           }, {
             id: "fangs_precision",
@@ -731,7 +731,7 @@
             icon: "ability_rogue_unfairadvantage",
             ring: "thin",
             left: 51.667,
-            top: 79.350,
+            top: 79.837,
             is_thin: true
           }, {
             id: "fangs_quietknife",
@@ -740,16 +740,16 @@
             icon: "ability_backstab",
             ring: "thin",
             left: 61.667,
-            top: 51.057,
+            top: 54.472,
             is_thin: true
           }, {
             id: "fangs_second",
             spell_id: 197610,
-            max_level: 3,
+            max_level: 1,
             icon: "inv_throwingknife_07",
             ring: "thin",
             left: 40.833,
-            top: 73.171,
+            top: 74.309,
             is_thin: true
           }, {
             id: "fangs_shadownova",
@@ -758,7 +758,7 @@
             icon: "spell_fire_twilightnova",
             ring: "dragon",
             left: 59.444,
-            top: 11.057
+            top: 18.374
           }, {
             id: "fangs_soulshadows",
             spell_id: 197386,
@@ -766,128 +766,128 @@
             icon: "inv_knife_1h_grimbatolraid_d_03",
             ring: "thin",
             left: 55.833,
-            top: 25.366,
+            top: 31.220,
             is_thin: true
           }
         ];
         lines = [
           {
-            width: 102,
-            left: 80.694,
-            top: 49.593,
-            angle: 125.863,
+            width: 95,
+            left: 81.250,
+            top: 53.821,
+            angle: 129.036,
             spell1: 209782,
             spell2: 197369
           }, {
-            width: 127,
-            left: 76.389,
-            top: 36.260,
-            angle: -139.790,
+            width: 122,
+            left: 76.667,
+            top: 41.789,
+            angle: -142.660,
             spell1: 209782,
             spell2: 197234
           }, {
-            width: 194,
-            left: 54.167,
-            top: 39.024,
-            angle: -37.047,
+            width: 187,
+            left: 54.722,
+            top: 44.228,
+            angle: -34.114,
             spell1: 197241,
             spell2: 197234
           }, {
-            width: 108,
-            left: 51.944,
-            top: 40.325,
-            angle: -69.880,
+            width: 98,
+            left: 52.639,
+            top: 45.366,
+            angle: -67.874,
             spell1: 197241,
             spell2: 197386
           }, {
-            width: 118,
-            left: 43.750,
-            top: 56.260,
-            angle: 127.451,
+            width: 111,
+            left: 44.306,
+            top: 59.675,
+            angle: 130.267,
             spell1: 197241,
             spell2: 197244
           }, {
-            width: 92,
-            left: 57.500,
-            top: 25.041,
-            angle: -73.540,
+            width: 83,
+            left: 58.194,
+            top: 31.545,
+            angle: -71.783,
             spell1: 197386,
             spell2: 209781
           }, {
-            width: 98,
-            left: 35.139,
-            top: 69.268,
-            angle: -42.940,
+            width: 94,
+            left: 35.417,
+            top: 71.545,
+            angle: -39.806,
             spell1: 197239,
             spell2: 197244
           }, {
-            width: 80,
-            left: 36.389,
-            top: 77.398,
-            angle: 23.671,
+            width: 79,
+            left: 36.528,
+            top: 78.699,
+            angle: 21.666,
             spell1: 197239,
             spell2: 197610
           }, {
-            width: 120,
-            left: 21.389,
-            top: 79.512,
-            angle: 150.433,
+            width: 117,
+            left: 21.667,
+            top: 80.650,
+            angle: 152.996,
             spell1: 197239,
             spell2: 197406
           }, {
-            width: 127,
+            width: 126,
             left: 22.083,
-            top: 87.805,
-            angle: -160.286,
+            top: 88.130,
+            angle: -161.996,
             spell1: 197233,
             spell2: 197406
           }, {
-            width: 139,
+            width: 138,
             left: 38.889,
-            top: 88.780,
-            angle: -13.335,
+            top: 88.943,
+            angle: -12.124,
             spell1: 197233,
             spell2: 197235
           }, {
-            width: 87,
-            left: 46.528,
-            top: 83.089,
-            angle: -154.026,
+            width: 85,
+            left: 46.667,
+            top: 83.902,
+            angle: -156.448,
             spell1: 197235,
             spell2: 197610
           }, {
-            width: 121,
-            left: 53.472,
-            top: 64.715,
-            angle: 136.005,
+            width: 115,
+            left: 53.889,
+            top: 67.317,
+            angle: 139.236,
             spell1: 197231,
             spell2: 197256
           }, {
-            width: 116,
-            left: 65.139,
-            top: 50.732,
-            angle: -48.861,
+            width: 110,
+            left: 65.556,
+            top: 54.797,
+            angle: -46.109,
             spell1: 197231,
             spell2: 209835
           }, {
-            width: 79,
-            left: 45.972,
-            top: 67.642,
-            angle: 36.293,
+            width: 77,
+            left: 46.111,
+            top: 70.081,
+            angle: 33.275,
             spell1: 197244,
             spell2: 197256
           }, {
-            width: 145,
-            left: 55.417,
-            top: 78.374,
-            angle: 138.926,
+            width: 138,
+            left: 55.833,
+            top: 79.675,
+            angle: 142.052,
             spell1: 197604,
             spell2: 197235
           }, {
-            width: 116,
-            left: 70.278,
-            top: 63.577,
-            angle: -49.185,
+            width: 110,
+            left: 70.694,
+            top: 66.341,
+            angle: -46.469,
             spell1: 197604,
             spell2: 197369
           }
@@ -1002,7 +1002,7 @@
           }, {
             id: "ks_shadowswift",
             spell_id: 192422,
-            max_level: 3,
+            max_level: 1,
             icon: "rogue_burstofspeed",
             ring: "thin",
             left: 55.417,
@@ -1020,7 +1020,7 @@
           }, {
             id: "ks_surgeoftoxins",
             spell_id: 192424,
-            max_level: 3,
+            max_level: 1,
             icon: "ability_rogue_deviouspoisons",
             ring: "thin",
             left: 27.222,
@@ -1038,7 +1038,7 @@
           }, {
             id: "ks_urgetokill",
             spell_id: 192384,
-            max_level: 3,
+            max_level: 1,
             icon: "ability_rogue_improvedrecuperate",
             ring: "thin",
             left: 28.611,
@@ -1433,13 +1433,7 @@
 
   })();
 
-  loadingSnapshot = false;
-
   ShadowcraftHistory = (function() {
-    var DATA_VERSION, base10, base36Decode, base36Encode, base77, compress, compress_handlers, decompress, decompress_handlers, map, poisonMap, raceMap, rotationOptionsMap, rotationValueMap, unmap, utilPoisonMap;
-
-    DATA_VERSION = 2;
-
     function ShadowcraftHistory(app1) {
       this.app = app1;
       this.app.History = this;
@@ -1447,18 +1441,11 @@
     }
 
     ShadowcraftHistory.prototype.boot = function() {
-      var app, buttons, menu;
+      var app, buttons;
       app = this;
       Shadowcraft.bind("update", function() {
         return app.save();
       });
-      $("#doImport").click(function() {
-        var json;
-        json = $.parseJSON($("textarea#import").val());
-        return app.loadSnapshot(json);
-      });
-      menu = $("#settingsDropdownMenu");
-      menu.append("<li><a href='#' id='menuSaveSnapshot'>Save snapshot</li>");
       buttons = {
         Ok: function() {
           app.saveSnapshot($("#snapshotName").val());
@@ -1482,6 +1469,9 @@
           }
         });
       });
+      $("#menuLoadSnapshot").click(function() {
+        return app.selectSnapshot();
+      });
       $("#loadSnapshot").click($.delegate({
         ".selectSnapshot": function() {
           app.restoreSnapshot($(this).data("snapshot"));
@@ -1493,19 +1483,15 @@
           return $("#menuLoadSnapshot").click();
         }
       }));
-      menu.append("<li><a href='#' id='menuLoadSnapshot'>Load snapshot</li>");
-      $("#menuLoadSnapshot").click(function() {
-        return app.selectSnapshot();
+      $("#menuGetDebugURL").click(function() {
+        return app.takeSnapshot(app.debugURLCallback, null);
       });
       return this;
     };
 
     ShadowcraftHistory.prototype.save = function() {
-      var data;
       if (this.app.Data != null) {
-        data = compress(this.app.Data);
-        this.persist(data);
-        return $.jStorage.set(this.app.uuid, data);
+        $.jStorage.set(Shadowcraft.uuid, this.app.Data);
       }
     };
 
@@ -1513,9 +1499,8 @@
       var key, snapshots;
       key = this.app.uuid + "snapshots";
       snapshots = $.jStorage.get(key, {});
-      snapshots[name] = this.takeSnapshot();
-      $.jStorage.set(key, snapshots);
-      return flash(name + " has been saved");
+      snapshots[name] = $.toJSON(this.app.Data);
+      return $.jStorage.set(key, snapshots);
     };
 
     ShadowcraftHistory.prototype.selectSnapshot = function() {
@@ -1536,7 +1521,7 @@
       var key, snapshots;
       key = this.app.uuid + "snapshots";
       snapshots = $.jStorage.get(key, {});
-      this.loadSnapshot(snapshots[name]);
+      this.loadSnapshot($.parseJSON(snapshots[name]));
       return flash(name + " has been loaded");
     };
 
@@ -1555,7 +1540,13 @@
       var data;
       data = $.jStorage.get(this.app.uuid, defaults);
       if (data instanceof Array && data.length !== 0) {
-        data = decompress(data);
+        $.post("/history/getjson", {
+          data: data
+        }).done(function(reqdata) {
+          return data = $.parseJSON(reqdata);
+        }).fail(function() {
+          throw "Failed to load data for snapshot " + snapshot + "!";
+        });
       } else {
         data = defaults;
       }
@@ -1563,36 +1554,21 @@
     };
 
     ShadowcraftHistory.prototype.loadFromFragment = function() {
-      var TypeError, error1, frag, hash, inflated, snapshot;
+      var hash, sha;
       hash = window.location.hash;
       if (hash && hash.match(/^#!/)) {
-        frag = hash.substring(3);
-        inflated = RawDeflate.inflate($.base64Decode(frag));
-        snapshot = null;
-        try {
-          snapshot = $.parseJSON(inflated);
-        } catch (error1) {
-          TypeError = error1;
-          snapshot = null;
-        }
-        if (snapshot != null) {
-          this.loadSnapshot(snapshot);
-          return true;
-        }
+        sha = hash.substring(3);
+        $.post("/history/getjson", {
+          data: sha
+        }).done(function(data) {
+          Shadowcraft.Data = data;
+          return Shadowcraft.loadData();
+        }).fail(function() {
+          throw "Failed to load data for sha " + sha + "!";
+        });
+        return true;
       }
       return false;
-    };
-
-    ShadowcraftHistory.prototype.persist = function(data) {
-      var frag, jd;
-      this.lookups || (this.lookups = {});
-      jd = json_encode(data);
-      frag = $.base64Encode(RawDeflate.deflate(jd));
-      if (window.history.replaceState) {
-        return window.history.replaceState("loadout", "Latest settings", window.location.pathname.replace(/\/+$/, "") + "/#!/" + frag);
-      } else {
-        return window.location.hash = "!/" + frag;
-      }
     };
 
     ShadowcraftHistory.prototype.reset = function() {
@@ -1602,288 +1578,30 @@
       }
     };
 
-    ShadowcraftHistory.prototype.takeSnapshot = function() {
-      return compress(this.app.Data);
+    ShadowcraftHistory.prototype.takeSnapshot = function(callback, extras) {
+      return $.post("/history/getsha", {
+        data: $.toJSON(this.app.Data)
+      }).done(function(data) {
+        return callback(data['sha'], extras);
+      }).fail(function(xhr, textStatus, errorThrown) {
+        throw "takeSnapshot failed to retrieve sha value";
+      });
     };
 
-    ShadowcraftHistory.prototype.loadSnapshot = function(snapshot) {
-      this.app.Data = decompress(snapshot);
+    ShadowcraftHistory.prototype.debugURLCallback = function(sha, extras) {
+      var url;
+      url = window.location.href.slice(0, -1) + "/#!/" + sha;
+      $("#generalDialog").html("<textarea style='width: 450px; height: 200px;'>" + url + "</textarea>");
+      return $("#generalDialog").dialog({
+        modal: true,
+        width: 500,
+        title: "Debugging URL"
+      });
+    };
+
+    ShadowcraftHistory.prototype.loadSnapshot = function(data) {
+      Shadowcraft.Data = data;
       return Shadowcraft.loadData();
-    };
-
-    ShadowcraftHistory.prototype.buildExport = function() {
-      var data, shavalue;
-      data = json_encode(compress(this.app.Data));
-      shavalue = sha1(data);
-      console.log(shavalue);
-      return $("#export").text(data);
-    };
-
-    base10 = "0123456789";
-
-    base77 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    base36Encode = function(a) {
-      var i, j, len, r, v;
-      r = [];
-      for (i = j = 0, len = a.length; j < len; i = ++j) {
-        v = a[i];
-        if (v === void 0 || v === null) {
-          continue;
-        } else if (v === 0) {
-          r.push("");
-        } else {
-          r.push(convertBase(v.toString(), base10, base77));
-        }
-      }
-      return r.join(";");
-    };
-
-    base36Decode = function(s) {
-      var j, len, r, ref, v;
-      r = [];
-      ref = s.split(";");
-      for (j = 0, len = ref.length; j < len; j++) {
-        v = ref[j];
-        if (v === "") {
-          r.push(0);
-        } else {
-          r.push(parseInt(convertBase(v, base77, base10), 10));
-        }
-      }
-      return r;
-    };
-
-    compress = function(data) {
-      return compress_handlers[DATA_VERSION](data);
-    };
-
-    decompress = function(data) {
-      var version;
-      version = data[0].toString();
-      if (decompress_handlers[version] == null) {
-        throw new Error("Data version mismatch");
-      }
-      return decompress_handlers[version](data);
-    };
-
-    poisonMap = ["dp", "wp"];
-
-    utilPoisonMap = ["lp", "n"];
-
-    raceMap = ["Human", "Night Elf", "Worgen", "Dwarf", "Gnome", "Tauren", "Undead", "Orc", "Troll", "Blood Elf", "Goblin", "Draenei", "Pandaren"];
-
-    rotationOptionsMap = ["min_envenom_size_non_execute", "min_envenom_size_execute", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "use_hemorrhage", "opener_name_assassination", "opener_use_assassination", "opener_name_combat", "opener_use_combat", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"];
-
-    rotationValueMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "24", true, false, 'true', 'false', 'never', 'always', 'garrote', 'ambush', 'mutilate', 'sinister_strike', 'revealing_strike', 'opener', 'uptime'];
-
-    map = function(value, m) {
-      return m.indexOf(value);
-    };
-
-    unmap = function(value, m) {
-      return m[value];
-    };
-
-    compress_handlers = {
-      "2": function(data) {
-        var advancedOptions, artifact, artifactSet, bonus, buff, buffFood, buffs, gear, gearSet, general, index, j, k, len, len1, len2, n, o, options, q, ref, ref1, ref2, ref3, ref4, ref5, ret, rotationOptions, set, slot, spec, talent, talentSet, v;
-        ret = [DATA_VERSION];
-        gearSet = [];
-        for (slot = j = 0; j <= 17; slot = ++j) {
-          gear = data.gear[slot] || {};
-          gearSet.push(gear.item_id || 0);
-          gearSet.push(gear.enchant || 0);
-          gearSet.push(gear.upgrade_level || 0);
-          gearSet.push(gear.original_id || 0);
-          gearSet.push(gear.item_level || 0);
-          gearSet.push(Math.abs(gear.suffix) || 0);
-          if (gear.gems) {
-            gearSet.push(gear.gems[0] || 0);
-            gearSet.push(gear.gems[1] || 0);
-            gearSet.push(gear.gems[2] || 0);
-          } else {
-            gearSet.push(0);
-            gearSet.push(0);
-            gearSet.push(0);
-          }
-          if (gear.bonuses) {
-            gearSet.push(Math.abs(gear.bonuses.length) || 0);
-            ref = gear.bonuses;
-            for (n = 0, len = ref.length; n < len; n++) {
-              bonus = ref[n];
-              gearSet.push(bonus);
-            }
-          } else {
-            gearSet.push(0);
-          }
-        }
-        ret.push(base36Encode(gearSet));
-        ret.push(data.active);
-        ret.push(data.activeSpec);
-        ret.push(data.activeTalents);
-        talentSet = [];
-        ref1 = [0, 1];
-        for (o = 0, len1 = ref1.length; o < len1; o++) {
-          set = ref1[o];
-          talent = data.talents[set];
-          talentSet.push(talent.spec);
-          talentSet.push(talent.talents);
-        }
-        ret.push(talentSet);
-        options = [];
-        general = [data.options.general.level, map(data.options.general.race, raceMap), data.options.general.duration, map(data.options.general.lethal_poison, poisonMap), map(data.options.general.utility_poison, utilPoisonMap), data.options.general.potion ? 1 : 0, data.options.general.max_ilvl, data.options.general.prepot ? 1 : 0, data.options.general.patch, data.options.general.min_ilvl, data.options.general.epic_gems ? 1 : 0, data.options.general.pvp ? 1 : 0, data.options.general.show_upgrades ? 1 : 0, data.options.general.show_random_items || 600, data.options.general.num_boss_adds * 100 || 0, data.options.general.response_time * 100 || 50, data.options.general.time_in_execute_range * 100 || 35, data.options.general.night_elf_racial || 0, data.options.general.demon_enemy || 0];
-        options.push(base36Encode(general));
-        buffs = [];
-        ref2 = ShadowcraftOptions.buffMap;
-        for (index = q = 0, len2 = ref2.length; q < len2; index = ++q) {
-          buff = ref2[index];
-          v = data.options.buffs[buff];
-          buffs.push(v ? 1 : 0);
-        }
-        options.push(buffs);
-        rotationOptions = [];
-        ref3 = data.options["rotation"];
-        for (k in ref3) {
-          v = ref3[k];
-          rotationOptions.push(map(k, rotationOptionsMap));
-          rotationOptions.push(map(v, rotationValueMap));
-        }
-        options.push(base36Encode(rotationOptions));
-        advancedOptions = [];
-        ref4 = data.options["advanced"];
-        for (k in ref4) {
-          v = ref4[k];
-          advancedOptions.push(k);
-          advancedOptions.push(v);
-        }
-        options.push(advancedOptions);
-        buffFood = data.options.buffs.food_buff || 0;
-        options.push(ShadowcraftOptions.buffFoodMap.indexOf(buffFood));
-        ret.push(options);
-        artifactSet = [];
-        ref5 = data.artifact;
-        for (spec in ref5) {
-          artifact = ref5[spec];
-          artifactSet.push(spec);
-          artifactSet.push(artifact.relics);
-          artifactSet.push(artifact.traits);
-        }
-        ret.push(artifactSet);
-        return ret;
-      }
-    };
-
-    decompress_handlers = {
-      "2": function(data) {
-        var advanced, artifactSet, buffFood, d, gear, general, i, id, index, j, k, len, len1, len2, len3, len4, n, numbonuses, o, options, q, ref, ref1, ref2, ref3, rotation, set, slot, spec, talentSets, u, v, w, z;
-        d = {
-          gear: {},
-          active: data[2],
-          activeSpec: data[3],
-          activeTalents: data[4],
-          options: {},
-          talents: [],
-          artifact: {}
-        };
-        talentSets = data[5];
-        for (index = j = 0, len = talentSets.length; j < len; index = j += 3) {
-          id = talentSets[index];
-          set = (index / 3).toString();
-          d.talents[set] = {
-            spec: talentSets[index],
-            talents: talentSets[index + 1]
-          };
-        }
-        gear = base36Decode(data[1]);
-        index = 0;
-        for (slot = n = 0; n <= 17; slot = ++n) {
-          d.gear[slot] = {
-            item_id: gear[index++],
-            enchant: gear[index++],
-            upgrade_level: gear[index++],
-            original_id: gear[index++],
-            item_level: gear[index++],
-            suffix: gear[index++] * -1
-          };
-          d.gear[slot].gems = [];
-          d.gear[slot].gems.push(gear[index++]);
-          d.gear[slot].gems.push(gear[index++]);
-          d.gear[slot].gems.push(gear[index++]);
-          numbonuses = gear[index++];
-          if (numbonuses !== 0) {
-            d.gear[slot].bonuses = [];
-          }
-          for (o = 0, ref = numbonuses; 0 <= ref ? o < ref : o > ref; 0 <= ref ? o++ : o--) {
-            d.gear[slot].bonuses.push(gear[index++]);
-          }
-          if (d.gear[slot].gems[0] === 0 && d.gear[slot].gems[1] === 0 && d.gear[slot].gems[2] === 0) {
-            delete d.gear[slot].gems;
-          }
-          ref1 = d.gear[slot];
-          for (k in ref1) {
-            v = ref1[k];
-            if (v === 0) {
-              delete d.gear[slot][k];
-            }
-          }
-        }
-        options = data[6];
-        general = base36Decode(options[0]);
-        d.options.general = {
-          level: general[0],
-          race: unmap(general[1], raceMap),
-          duration: general[2],
-          lethal_poison: unmap(general[3], poisonMap),
-          utility_poison: unmap(general[4], utilPoisonMap),
-          potion: general[5] !== 0,
-          max_ilvl: general[6] || 1000,
-          prepot: general[7] !== 0,
-          patch: general[8] || 60,
-          min_ilvl: general[9] || 540,
-          epic_gems: general[10] || 0,
-          pvp: general[11] || 0,
-          show_upgrades: general[12] || 0,
-          show_random_items: general[13] || 0,
-          num_boss_adds: general[14] / 100 || 0,
-          response_time: general[15] / 100 || 0.5,
-          time_in_execute_range: general[16] / 100 || 0.35,
-          night_elf_racial: general[17] || 0,
-          demon_enemy: general[18] || 0
-        };
-        d.options.buffs = {};
-        ref2 = options[1];
-        for (i = q = 0, len1 = ref2.length; q < len1; i = ++q) {
-          v = ref2[i];
-          d.options.buffs[ShadowcraftOptions.buffMap[i]] = v === 1;
-        }
-        rotation = base36Decode(options[2]);
-        d.options.rotation = {};
-        for (i = u = 0, len2 = rotation.length; u < len2; i = u += 2) {
-          v = rotation[i];
-          d.options.rotation[unmap(v, rotationOptionsMap)] = unmap(rotation[i + 1], rotationValueMap);
-        }
-        if (options[3]) {
-          advanced = options[3];
-          d.options.advanced = {};
-          for (i = w = 0, len3 = advanced.length; w < len3; i = w += 2) {
-            v = advanced[i];
-            d.options.advanced[v] = advanced[i + 1];
-          }
-        }
-        buffFood = options[4];
-        d.options.buffs.food_buff = ShadowcraftOptions.buffFoodMap[buffFood];
-        artifactSet = data[7];
-        ref3 = [0, 3, 6];
-        for (z = 0, len4 = ref3.length; z < len4; z++) {
-          i = ref3[z];
-          spec = "" + artifactSet[i];
-          d.artifact[spec] = {};
-          d.artifact[spec].relics = artifactSet[i + 1];
-          d.artifact[spec].traits = artifactSet[i + 2];
-        }
-        return d;
-      }
     };
 
     return ShadowcraftHistory;
@@ -1964,7 +1682,7 @@
   };
 
   checkForWarnings = function(section) {
-    var EnchantLookup, EnchantSlots, data, enchant, enchantable, gear, i, item, j, len, ref, results, row, slotIndex, talents;
+    var EnchantLookup, EnchantSlots, data, enchant, enchantable, gear, i, item, j, len, level, ref, results, row, slotIndex, talents;
     Shadowcraft.Console.hide();
     data = Shadowcraft.Data;
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
@@ -1981,8 +1699,14 @@
         talents = data.activeTalents.split("");
         for (i = j = 0, len = talents.length; j < len; i = ++j) {
           row = talents[i];
-          if ((i === 0 || i === 5) && row === ".") {
-            Shadowcraft.Console.warn({}, "Level " + (i + 1) * 15 + " Talent not set", null, 'warn', 'talents');
+          if (indexOf.call([0, 1, 2, 3, 4, 5, 6], i) >= 0 && row === ".") {
+            level = 0;
+            if (i < 6) {
+              level = (i + 1) * 15;
+            } else if (i === 6) {
+              level = 100;
+            }
+            Shadowcraft.Console.warn({}, "Level " + level + " Talent not set", null, 'warn', 'talents');
           }
           if (i === 5 && row === "0") {
             Shadowcraft.Console.warn({}, "Talent Shuriken Toss is not fully supported by Shadowcraft.", "It is recommended to not use this talent.", 'warn', 'talents');
@@ -2743,14 +2467,15 @@
     };
 
     updateTraits = function() {
-      var active, button, current, done, i, j, levels, main, main_spell_id, max, ref, relic, spell_id, stack, trait;
+      var active, button, current, done, i, j, key, levels, main, main_spell_id, max, ref, relic, spell_id, stack, trait, type, val;
       active = SPEC_ARTIFACT[Shadowcraft.Data.activeSpec];
       main_spell_id = SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].main;
       active_mapping = {};
       $("#artifactframe .trait").each(function() {
         active_mapping[parseInt($(this).attr("data-tooltip-id"))] = false;
         $(this).children(".level").addClass("inactive");
-        return $(this).children(".icon").addClass("inactive");
+        $(this).children(".icon").addClass("inactive");
+        return $(this).children(".relic").addClass("inactive");
       });
       $("#artifactframe .line").each(function() {
         return $(this).addClass("inactive");
@@ -2813,7 +2538,7 @@
           return artifact_data.traits[check_id] = 0;
         }
       });
-      for (i = j = 0; j < 2; i = ++j) {
+      for (i = j = 0; j < 3; i = ++j) {
         button = $("#relic" + (i + 1) + " .relicicon");
         if (artifact_data.relics[i] !== 0) {
           relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i]];
@@ -2822,6 +2547,16 @@
           trait = $("#artifactframe .trait[data-tooltip-id='" + relic.tmi + "'");
           ref = activateTrait(relic.tmi), current = ref.current, max = ref.max;
           trait.children(".level").text("" + (relic.ti + current) + "/" + (relic.ti + max));
+          type = '';
+          for (key in RELIC_TYPE_MAP) {
+            val = RELIC_TYPE_MAP[key];
+            if (val === relic.type) {
+              type = key;
+              break;
+            }
+          }
+          trait.children(".relic").attr("src", "/images/artifacts/relic-" + type + ".png");
+          trait.children(".relic").removeClass("inactive");
         } else {
           button.addClass("inactive");
         }
@@ -2868,7 +2603,7 @@
     };
 
     clickRelicSlot = function(e) {
-      var ItemLookup, RelicList, buffer, data, desc, j, len, len1, max, n, relic, relic_type;
+      var ItemLookup, RelicList, buffer, data, desc, j, len, len1, m, max, relic, relic_type;
       relic_type = e.delegateTarget.attributes['relic-type'].value;
       clicked_relic_slot = parseInt(/relic(\d+)/.exec(e.delegateTarget.id)[1]) - 1;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2;
@@ -2885,8 +2620,8 @@
       });
       buffer = "";
       max = null;
-      for (n = 0, len1 = RelicList.length; n < len1; n++) {
-        relic = RelicList[n];
+      for (m = 0, len1 = RelicList.length; m < len1; m++) {
+        relic = RelicList[m];
         max || (max = relic.__ep);
         desc = "";
         if (relic.ii !== -1) {
@@ -3048,15 +2783,7 @@
   })();
 
   ShadowcraftTalents = (function() {
-    var CHARACTER_SPEC, DEFAULT_SPECS, MAX_TALENT_POINTS, SPEC_ICONS, TREE_SIZE, applyTalentToButton, getSpec, getSpecName, getTalents, resetTalents, setSpec, setTalents, talentsSpent, updateTalentAvailability, updateTalentContribution;
-
-    talentsSpent = 0;
-
-    MAX_TALENT_POINTS = 7;
-
-    TREE_SIZE = 7;
-
-    CHARACTER_SPEC = "";
+    var DEFAULT_SPECS, SPEC_ICONS, getSpecName;
 
     SPEC_ICONS = {
       "a": "ability_rogue_eviscerate",
@@ -3070,7 +2797,7 @@
         talents: "2211021",
         spec: "a"
       },
-      "Stock Combat": {
+      "Stock Outlaw": {
         talents: "2211011",
         spec: "Z"
       },
@@ -3082,7 +2809,7 @@
 
     ShadowcraftTalents.GetActiveSpecName = function() {
       var activeSpec;
-      activeSpec = getSpec();
+      activeSpec = Shadowcraft.Data.activeSpec;
       if (activeSpec) {
         return getSpecName(activeSpec);
       }
@@ -3093,7 +2820,7 @@
       if (s === "a") {
         return "Assassination";
       } else if (s === "Z") {
-        return "Combat";
+        return "Outlaw";
       } else if (s === "b") {
         return "Subtlety";
       } else {
@@ -3101,148 +2828,100 @@
       }
     };
 
-    updateTalentAvailability = function(selector) {
-      var talents;
-      talents = selector ? selector.find(".talent") : $("#talentframe .tree .talent");
-      talents.each(function() {
-        var $this, icons, points, pos, tree;
-        $this = $(this);
-        pos = $.data(this, "position");
-        points = $.data(this, "points");
-        tree = $.data(pos.tree, "info");
-        icons = $.data(this, "icons");
-        if (tree.rowPoints[pos.row] >= 1 && points.cur !== 1) {
-          return $this.css({
-            backgroundImage: icons.grey
-          }).removeClass("active");
+    ShadowcraftTalents.prototype.applyTalent = function(talent, enable) {
+      var position, talents;
+      position = $.data(talent, "position");
+      if (!enable) {
+        $("#talentframe .talent.row-" + position['row']).each(function() {
+          return $(this).addClass("active");
+        });
+        talents = Shadowcraft.Data.activeTalents.split("");
+        talents[position['row']] = '.';
+        Shadowcraft.Data.activeTalents = talents.join("");
+        return true;
+      } else {
+        talents = Shadowcraft.Data.activeTalents.split("");
+        if (talents[position['row']] === position['col']) {
+          return false;
         } else {
-          return $this.css({
-            backgroundImage: icons.normal
-          }).addClass("active");
+          $("#talentframe .talent.row-" + position['row']).each(function() {
+            return $(this).removeClass("active");
+          });
+          $("#talentframe .talent.row-" + position['row'] + ".col-" + position['col']).addClass("active");
+          talents[position['row']] = position["col"];
+          Shadowcraft.Data.activeTalents = talents.join("");
+          return true;
         }
+      }
+    };
+
+    ShadowcraftTalents.prototype.resetTalents = function() {
+      Shadowcraft.Data.activeTalents = ".......";
+      $("#talentframe .talent").each(function() {
+        return $(this).addClass("active");
       });
-      Shadowcraft.Talents.trigger("changed");
       Shadowcraft.update();
       return checkForWarnings("talents");
     };
 
-    resetTalents = function() {
-      var data;
+    ShadowcraftTalents.prototype.initSidebar = function() {
+      var app, buffer, data, j, len, ref, talent, talentName, talentSet;
+      app = this;
       data = Shadowcraft.Data;
-      $("#talentframe .talent").each(function() {
-        var points;
-        points = $.data(this, "points");
-        return applyTalentToButton(this, -points.cur, true, true);
-      });
-      data.activeTalents = getTalents();
-      return updateTalentAvailability();
-    };
-
-    setTalents = function(str) {
-      var data;
-      data = Shadowcraft.Data;
-      if (!str) {
-        updateTalentAvailability(null);
-        return;
+      buffer = "";
+      ref = data.talents;
+      for (j = 0, len = ref.length; j < len; j++) {
+        talent = ref[j];
+        buffer += Templates.talentSet({
+          talent_string: talent.talents,
+          name: "Imported " + getSpecName(talent.spec),
+          spec: talent.spec
+        });
       }
-      talentsSpent = 0;
-      $("#talentframe .talent").each(function() {
-        var p, points, position;
-        position = $.data(this, "position");
-        points = $.data(this, "points");
-        p = 0;
-        if (str[position.row] !== "." && position.col === parseInt(str[position.row], 10)) {
-          p = 1;
+      for (talentName in DEFAULT_SPECS) {
+        talentSet = DEFAULT_SPECS[talentName];
+        buffer += Templates.talentSet({
+          talent_string: talentSet.talents,
+          name: talentName,
+          spec: talentSet.spec
+        });
+      }
+      $("#talentsets").get(0).innerHTML = buffer;
+      return $("#talentsets").click($.delegate({
+        ".talent_set": function() {
+          app.setSpec($(this).data("spec"));
+          app.setActiveTalents($(this).data("talents") + "");
         }
-        return applyTalentToButton(this, p - points.cur, true, true);
-      });
-      data.activeTalents = getTalents();
-      return updateTalentAvailability(null);
+      }));
     };
 
-    getTalents = function() {
-      var talent_rows;
-      talent_rows = ['.', '.', '.', '.', '.', '.', '.'];
-      $("#talentframe .talent").each(function() {
-        var points, position;
-        position = $.data(this, "position");
-        points = $.data(this, "points");
-        if (points.cur === 1) {
-          return talent_rows[position.row] = position.col;
+    ShadowcraftTalents.prototype.setActiveTalents = function(talents) {
+      var column, j, len, row, rowTalents;
+      Shadowcraft.Data.activeTalents = talents;
+      rowTalents = talents.split("");
+      for (row = j = 0, len = rowTalents.length; j < len; row = ++j) {
+        column = rowTalents[row];
+        if (column === '.') {
+          $("#talentframe .talent.row-" + row).addClass("active");
+        } else {
+          $("#talentframe .talent.row-" + row).removeClass("active");
+          $("#talentframe .talent.row-" + row + ".col-" + column).addClass("active");
         }
-      });
-      return talent_rows.join('');
+      }
+      Shadowcraft.update();
+      return checkForWarnings("talents");
     };
 
-    setSpec = function(str) {
-      var buffer, data;
-      data = Shadowcraft.Data;
+    ShadowcraftTalents.prototype.setSpec = function(spec) {
+      var TalentLookup, Talents, app, buffer, talentTiers, talentTrees, talentframe, tframe, tree;
+      app = this;
       buffer = Templates.specActive({
-        name: getSpecName(str),
-        icon: SPEC_ICONS[str]
+        name: getSpecName(spec),
+        icon: SPEC_ICONS[spec]
       });
       $("#specactive").get(0).innerHTML = buffer;
-      Shadowcraft.Talents.trigger("changedSpec", str);
-      return data.activeSpec = str;
-    };
-
-    getSpec = function() {
-      var data;
-      data = Shadowcraft.Data;
-      return data.activeSpec;
-    };
-
-    applyTalentToButton = function(button, dir, force, skipUpdate) {
-      var data, points, position, success, tree;
-      data = Shadowcraft.Data;
-      points = $.data(button, "points");
-      position = $.data(button, "position");
-      tree = $.data(position.tree, "info");
-      success = false;
-      if (force) {
-        success = true;
-      } else if (dir === 1 && points.cur < points.max) {
-        success = true;
-        $("#talentframe .talent").each(function() {
-          var points2, position2;
-          position2 = $.data(this, "position");
-          points2 = $.data(this, "points");
-          if (points2.cur === 1 && position2.row === position.row) {
-            return applyTalentToButton(this, -points2.cur);
-          }
-        });
-      } else if (dir === -1) {
-        success = true;
-      }
-      if (success) {
-        points.cur += dir;
-        tree.points += dir;
-        talentsSpent += dir;
-        tree.rowPoints[position.row] += dir;
-        if (!skipUpdate) {
-          data.activeTalents = getTalents();
-          updateTalentAvailability($(button).parent());
-        }
-      }
-      return success;
-    };
-
-    ShadowcraftTalents.prototype.updateActiveTalents = function() {
-      var data;
-      data = Shadowcraft.Data;
-      if (!data.activeSpec) {
-        data.activeTalents = data.talents[data.active].talents;
-        data.activeSpec = data.talents[data.active].spec;
-      }
-      setSpec(data.activeSpec);
-      return setTalents(data.activeTalents);
-    };
-
-    ShadowcraftTalents.prototype.initTalentTree = function() {
-      var TalentLookup, Talents, buffer, talentTiers, talentTrees, talentframe, tframe, tree, treeIndex;
-      Talents = Shadowcraft.ServerData.TALENTS_WOD;
-      TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP_WOD;
-      buffer = "";
+      Talents = Shadowcraft.ServerData.TALENTS;
+      TalentLookup = Shadowcraft.ServerData.TALENT_LOOKUP;
       talentTiers = [
         {
           tier: "0",
@@ -3267,73 +2946,48 @@
           level: "100"
         }
       ];
-      talentTiers = _.filter(talentTiers, function(tier) {
-        return tier.level <= (Shadowcraft.Data.options.general.level || 100);
-      });
-      buffer += Templates.talentTier({
-        background: 1,
+      buffer = Templates.talentTier({
         levels: talentTiers
       });
-      for (treeIndex in Talents) {
-        tree = Talents[treeIndex];
-        tree = _.filter(tree, function(talent) {
-          return parseInt(talent.tier, 10) <= (talentTiers.length - 1);
-        });
-        buffer += Templates.talentTree({
-          background: 1,
-          talents: tree
-        });
-      }
+      tree = Talents.filter(function(talent) {
+        return (parseInt(talent.tier, 10) <= (talentTiers.length - 1)) && (talent.spec === spec);
+      });
+      buffer += Templates.talentTree({
+        background: 1,
+        talents: tree
+      });
       talentframe = $("#talentframe");
       tframe = talentframe.get(0);
       tframe.innerHTML = buffer;
       $(".tree, .tree .talent, .tree .talent").disableTextSelection();
       talentTrees = $("#talentframe .tree");
       $("#talentframe .talent").each(function() {
-        var $this, col, myTree, row, talent, trees;
+        var $this, col, row, talent;
         row = parseInt(this.className.match(/row-(\d)/)[1], 10);
         col = parseInt(this.className.match(/col-(\d)/)[1], 10);
         $this = $(this);
-        trees = $this.closest(".tree");
-        myTree = trees.get(0);
-        tree = talentTrees.index(myTree);
-        talent = TalentLookup[row + ":" + col];
+        talent = TalentLookup[spec + ":" + row + ":" + col];
         $.data(this, "position", {
-          tree: myTree,
-          treeIndex: tree,
           row: row,
           col: col
         });
-        $.data(myTree, "info", {
-          points: 0,
-          rowPoints: [0, 0, 0, 0, 0, 0, 0]
-        });
-        $.data(this, "talent", talent);
-        $.data(this, "points", {
-          cur: 0,
-          max: talent.maxRank
-        });
-        return $.data(this, "icons", {
-          grey: $this.css("backgroundImage"),
-          normal: $this.css("backgroundImage").replace(/\/grey\//, "/")
-        });
+        return $.data(this, "talent", talent);
       }).mousedown(function(e) {
-        if (Modernizr.touch) {
-          return;
-        }
         switch (e.button) {
           case 0:
-            if (applyTalentToButton(this, 1)) {
+            if (app.applyTalent(this, true)) {
               Shadowcraft.update();
             }
+            checkForWarnings("talents");
             break;
           case 2:
             if (!$(this).hasClass("active")) {
               return;
             }
-            if (applyTalentToButton(this, -1)) {
+            if (app.applyTalent(this, false)) {
               Shadowcraft.update();
             }
+            checkForWarnings("talents");
         }
         return $(this).trigger("mouseenter");
       }).bind("contextmenu", function() {
@@ -3342,135 +2996,21 @@
         ".tt": ttlib.requestTooltip
       })).mouseleave($.delegate({
         ".tt": ttlib.hide
-      })).bind("touchstart", function(e) {
-        $.data(this, "removed", false);
-        $.data(this, "listening", true);
-        return $.data(tframe, "listening", this);
-      }).bind("touchend", function(e) {
-        $.data(this, "listening", false);
-        if (!($.data(this, "removed") || !$(this).hasClass("active"))) {
-          if (applyTalentToButton(this, 1)) {
-            return Shadowcraft.update();
-          }
-        }
-      });
-      return talentframe.bind("touchstart", function(e) {
-        var listening;
-        listening = $.data(tframe, "listening");
-        if (e.originalEvent.touches.length > 1 && listening && $.data(listening, "listening")) {
-          if (applyTalentToButton.call(listening, listening, -1)) {
-            Shadowcraft.update();
-          }
-          return $.data(listening, "removed", true);
-        }
-      });
-    };
-
-    ShadowcraftTalents.prototype.initTalentsPane = function() {
-      var buffer, data, j, len, ref, talent, talentName, talentSet;
-      this.initTalentTree();
-      data = Shadowcraft.Data;
-      buffer = "";
-      ref = data.talents;
-      for (j = 0, len = ref.length; j < len; j++) {
-        talent = ref[j];
-        buffer += Templates.talentSet({
-          talent_string: talent.talents,
-          name: "Imported " + getSpecName(talent.spec),
-          spec: talent.spec
-        });
-      }
-      for (talentName in DEFAULT_SPECS) {
-        talentSet = DEFAULT_SPECS[talentName];
-        buffer += Templates.talentSet({
-          talent_string: talentSet.talents,
-          name: talentName,
-          spec: talentSet.spec
-        });
-      }
-      $("#talentsets").get(0).innerHTML = buffer;
-      return this.updateActiveTalents();
-    };
-
-    updateTalentContribution = function(LC) {
-      var buffer, exist, k, max, name, pct, rankings, s, setKey, setVal, sets, target, val;
-      if (!LC.talent_ranking) {
-        return;
-      }
-      sets = {
-        "Primary": LC.talent_ranking
-      };
-      rankings = _.extend({}, LC.talent_ranking);
-      max = _.max(rankings);
-      $("#talentrankings .talent_contribution").hide();
-      for (setKey in sets) {
-        setVal = sets[setKey];
-        buffer = "";
-        target = $("#talentrankings ." + setKey);
-        for (k in setVal) {
-          s = setVal[k];
-          exist = $("#talentrankings #talent-weight-" + k);
-          val = parseInt(s, 10);
-          name = k.replace(/_/g, " ").capitalize;
-          if (isNaN(val)) {
-            name += " (NYI)";
-            val = 0;
-          }
-          pct = val / max * 100 + 0.01;
-          if (exist.length === 0) {
-            buffer = Templates.talentContribution({
-              name: name,
-              raw_name: k,
-              val: val.toFixed(1),
-              width: pct
-            });
-            target.append(buffer);
-          }
-          exist = $("#talentrankings #talent-weight-" + k);
-          $.data(exist.get(0), "val", val);
-          exist.show().find(".pct-inner").css({
-            width: pct + "%"
-          });
-          exist.find(".name").text(name);
-          exist.find(".label").text(val.toFixed(1));
-        }
-      }
-      return $("#talentrankings .talent_contribution").sortElements(function(a, b) {
-        var ad, bd;
-        ad = $.data(a, "val");
-        bd = $.data(b, "val");
-        if (ad > bd) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
+      }));
+      Shadowcraft.Data.activeSpec = spec;
+      Shadowcraft.Talents.trigger("changedSpec", spec);
     };
 
     ShadowcraftTalents.prototype.boot = function() {
       var app;
-      this.initTalentsPane();
       app = this;
-      Shadowcraft.Backend.bind("recompute", updateTalentContribution);
-      $("#talentsets").click($.delegate({
-        ".talent_set": function() {
-          var spec, talents;
-          spec = $(this).data("spec");
-          talents = $(this).data("talents") + "";
-          setSpec(spec);
-          return setTalents(talents);
-        }
-      }));
-      $("#reset_talents").click(resetTalents);
+      this.initSidebar();
+      this.setSpec("a");
+      this.setActiveTalents("1111111");
+      $("#reset_talents").click(app.resetTalents);
       Shadowcraft.bind("loadData", function() {
-        return app.updateActiveTalents();
-      });
-      Shadowcraft.Options.bind("update", function(opt, val) {
-        if (opt === 'general.patch' || opt === 'general.level') {
-          app.initTalentTree();
-          app.updateActiveTalents();
-          return checkForWarnings('options');
-        }
+        app.setSpec(this.Data.activeSpec);
+        return app.setActiveTalents(this.Data.activeTalents);
       });
       $("#talents #talentframe").mousemove(function(e) {
         $.data(document, "mouse-x", e.pageX);
@@ -3482,9 +3022,6 @@
     function ShadowcraftTalents(app1) {
       this.app = app1;
       this.app.Talents = this;
-      this.resetTalents = resetTalents;
-      this.setTalents = setTalents;
-      this.getTalents = getTalents;
       _.extend(this, Backbone.Events);
     }
 
@@ -3866,7 +3403,7 @@
     };
 
     getGemmingRecommendation = function(gem_list, item, returnFull, ignoreSlotIndex, offset) {
-      var bonus, broke, epValue, gem, gemType, gems, j, len, len1, n, ref, sGems, straightGemEP;
+      var bonus, broke, epValue, gem, gemType, gems, j, len, len1, m, ref, sGems, straightGemEP;
       if (!item.sockets || item.sockets.length === 0) {
         if (returnFull) {
           return {
@@ -3885,8 +3422,8 @@
       for (j = 0, len = ref.length; j < len; j++) {
         gemType = ref[j];
         broke = false;
-        for (n = 0, len1 = gem_list.length; n < len1; n++) {
-          gem = gem_list[n];
+        for (m = 0, len1 = gem_list.length; m < len1; m++) {
+          gem = gem_list[m];
           if (!canUseGem(gem, gemType, sGems, ignoreSlotIndex)) {
             continue;
           }
@@ -3946,7 +3483,7 @@
     };
 
     ShadowcraftGear.prototype.optimizeGems = function(depth) {
-      var Gems, data, from_gem, gear, gem, gemIndex, gem_list, gem_offset, item, j, len, len1, madeChanges, n, rec, ref, slotIndex, to_gem;
+      var Gems, data, from_gem, gear, gem, gemIndex, gem_list, gem_offset, item, j, len, len1, m, madeChanges, rec, ref, slotIndex, to_gem;
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       data = Shadowcraft.Data;
       depth || (depth = 0);
@@ -3972,7 +3509,7 @@
         if (item) {
           rec = getGemmingRecommendation(gem_list, item, true, slotIndex, gem_offset);
           ref = rec.gems;
-          for (gemIndex = n = 0, len1 = ref.length; n < len1; gemIndex = ++n) {
+          for (gemIndex = m = 0, len1 = ref.length; m < len1; gemIndex = ++m) {
             gem = ref[gemIndex];
             from_gem = Gems[gear.gems[gemIndex]];
             to_gem = Gems[gem];
@@ -4010,12 +3547,6 @@
       var enchant, j, len, ref, ref1;
       for (j = 0, len = enchant_list.length; j < len; j++) {
         enchant = enchant_list[j];
-        if (enchant.id === 5125) {
-          continue;
-        }
-        if (enchant.id === 4914) {
-          continue;
-        }
         if ((((ref = enchant.requires) != null ? ref.max_item_level : void 0) != null) && ((ref1 = enchant.requires) != null ? ref1.max_item_level : void 0) < getBaseItemLevel(item)) {
           continue;
         }
@@ -4148,7 +3679,7 @@
     };
 
     ShadowcraftGear.prototype.setGems = function(_gems) {
-      var g, gear, gem, gems, i, id, j, len, len1, model, n, ref, s, slot;
+      var g, gear, gem, gems, i, id, j, len, len1, m, model, ref, s, slot;
       Shadowcraft.Console.purgeOld();
       model = Shadowcraft.Data;
       for (id in _gems) {
@@ -4165,7 +3696,7 @@
           }
         }
         if (gear) {
-          for (i = n = 0, len1 = gems.length; n < len1; i = ++n) {
+          for (i = m = 0, len1 = gems.length; m < len1; i = ++m) {
             gem = gems[i];
             if (gem === 0) {
               continue;
@@ -4282,7 +3813,7 @@
      */
 
     ShadowcraftGear.prototype.updateDisplay = function(skipUpdate) {
-      var EnchantLookup, EnchantSlots, Gems, allSlotsMatch, amt, base, bonus, bonusId, bonus_entry, bonus_keys, bonusable, bonuses, bonuses_equipped, buffer, curr_level, data, enchant, enchantable, gear, gem, gems, i, index, item, j, last, len, len1, len2, len3, len4, len5, max_level, n, o, opt, q, ref, ref1, ref2, ref3, ref4, ref5, slotIndex, slotSet, socket, socketIndex, ssi, stat, u, upgradable, upgrade, w, z;
+      var EnchantLookup, EnchantSlots, Gems, allSlotsMatch, amt, base, bonus, bonusId, bonus_entry, bonus_keys, bonusable, bonuses, bonuses_equipped, buffer, curr_level, data, enchant, enchantable, gear, gem, gems, i, index, item, j, last, len, len1, len2, len3, len4, len5, m, max_level, n, o, opt, q, ref, ref1, ref2, ref3, ref4, ref5, slotIndex, slotSet, socket, socketIndex, ssi, stat, u, upgradable, upgrade, v;
       EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
       EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
@@ -4291,7 +3822,7 @@
       for (ssi = j = 0, len = SLOT_DISPLAY_ORDER.length; j < len; ssi = ++j) {
         slotSet = SLOT_DISPLAY_ORDER[ssi];
         buffer = "";
-        for (slotIndex = n = 0, len1 = slotSet.length; n < len1; slotIndex = ++n) {
+        for (slotIndex = m = 0, len1 = slotSet.length; m < len1; slotIndex = ++m) {
           i = slotSet[slotIndex];
           (base = data.gear)[i] || (base[i] = {});
           gear = data.gear[i];
@@ -4308,7 +3839,7 @@
             bonus_keys = _.keys(Shadowcraft.ServerData.ITEM_BONUSES);
             bonuses_equipped = [];
             if (item.sockets && item.sockets.length > 0) {
-              for (socketIndex = o = ref = item.sockets.length - 1; ref <= 0 ? o <= 0 : o >= 0; socketIndex = ref <= 0 ? ++o : --o) {
+              for (socketIndex = n = ref = item.sockets.length - 1; ref <= 0 ? n <= 0 : n >= 0; socketIndex = ref <= 0 ? ++n : --n) {
                 last = item.sockets[socketIndex];
                 if (last === "Prismatic") {
                   item.sockets.pop();
@@ -4317,8 +3848,8 @@
             }
             if (gear.bonuses != null) {
               ref1 = gear.bonuses;
-              for (q = 0, len2 = ref1.length; q < len2; q++) {
-                bonus = ref1[q];
+              for (o = 0, len2 = ref1.length; o < len2; o++) {
+                bonus = ref1[o];
                 bonuses_equipped.push(bonus);
                 if (_.contains(bonus_keys, bonus + "")) {
                   applyBonusToItem(item, bonus, i);
@@ -4327,8 +3858,8 @@
             }
             if (item.chance_bonus_lists != null) {
               ref2 = item.chance_bonus_lists;
-              for (u = 0, len3 = ref2.length; u < len3; u++) {
-                bonusId = ref2[u];
+              for (q = 0, len3 = ref2.length; q < len3; q++) {
+                bonusId = ref2[q];
                 if (bonusId == null) {
                   continue;
                 }
@@ -4336,8 +3867,8 @@
                   break;
                 }
                 ref3 = Shadowcraft.ServerData.ITEM_BONUSES[bonusId];
-                for (w = 0, len4 = ref3.length; w < len4; w++) {
-                  bonus_entry = ref3[w];
+                for (u = 0, len4 = ref3.length; u < len4; u++) {
+                  bonus_entry = ref3[u];
                   switch (bonus_entry.type) {
                     case 6:
                       bonusable = true;
@@ -4351,7 +3882,7 @@
             }
             allSlotsMatch = item.sockets && item.sockets.length > 0;
             ref4 = item.sockets;
-            for (index = z = 0, len5 = ref4.length; z < len5; index = ++z) {
+            for (index = v = 0, len5 = ref4.length; v < len5; index = ++v) {
               socket = ref4[index];
               if ((gear.gems != null)) {
                 gem = Gems[gear.gems[index]];
@@ -4728,7 +4259,7 @@
     };
 
     clickSlotName = function() {
-      var $slot, GemList, bonus_trees, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, j, l, len, len1, len2, len3, lid, loc, loc_all, maxIEP, max_level, minIEP, n, o, q, ref, requireDagger, selected_identifier, set, setBonEP, setCount, set_name, slot, subtletyNeedsDagger, ttbonus, ttid, ttrand, ttupgd, upgrade;
+      var $slot, GemList, bonus_trees, buf, buffer, combatSpec, curr_level, equip_location, gear, gear_offset, gem_offset, iEP, j, l, len, len1, len2, len3, lid, loc, loc_all, m, maxIEP, max_level, minIEP, n, o, ref, requireDagger, selected_identifier, set, setBonEP, setCount, set_name, slot, subtletyNeedsDagger, ttbonus, ttid, ttrand, ttupgd, upgrade;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -4784,8 +4315,8 @@
         setBonEP[set_name] || (setBonEP[set_name] = 0);
         setBonEP[set_name] += setBonusEP(set, setCount);
       }
-      for (n = 0, len1 = loc.length; n < len1; n++) {
-        l = loc[n];
+      for (m = 0, len1 = loc.length; m < len1; m++) {
+        l = loc[m];
         l.sockets || (l.sockets = []);
         l.__gemRec = getGemmingRecommendation(GemList, l, true, slot, gem_offset);
         l.__setBonusEP = 0;
@@ -4808,8 +4339,8 @@
       maxIEP = 1;
       minIEP = 0;
       buffer = "";
-      for (o = 0, len2 = loc.length; o < len2; o++) {
-        l = loc[o];
+      for (n = 0, len2 = loc.length; n < len2; n++) {
+        l = loc[n];
         if (l.__ep < 1) {
           continue;
         }
@@ -4821,8 +4352,8 @@
         }
       }
       maxIEP -= minIEP;
-      for (q = 0, len3 = loc.length; q < len3; q++) {
-        l = loc[q];
+      for (o = 0, len3 = loc.length; o < len3; o++) {
+        l = loc[o];
         if (l.__ep < 1) {
           continue;
         }
@@ -4879,7 +4410,7 @@
     };
 
     clickSlotEnchant = function() {
-      var EnchantSlots, buf, buffer, data, eEP, enchant, enchants, equip_location, gear, item, j, len, len1, max, n, offset, ref, ref1, selected_id, slot;
+      var EnchantSlots, buf, buffer, data, eEP, enchant, enchants, equip_location, gear, item, j, len, len1, m, max, offset, ref, ref1, selected_id, slot;
       data = Shadowcraft.Data;
       EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS;
       buf = clickSlot(this, "enchant");
@@ -4901,8 +4432,8 @@
       enchants.sort(__epSort);
       selected_id = data.gear[slot].enchant;
       buffer = "";
-      for (n = 0, len1 = enchants.length; n < len1; n++) {
-        enchant = enchants[n];
+      for (m = 0, len1 = enchants.length; m < len1; m++) {
+        enchant = enchants[m];
         if ((((ref = enchant.requires) != null ? ref.max_item_level : void 0) != null) && ((ref1 = enchant.requires) != null ? ref1.max_item_level : void 0) < getBaseItemLevel(item)) {
           continue;
         }
@@ -4921,7 +4452,8 @@
           percent: eEP / max * 100,
           ep: eEP.toFixed(1),
           search: escape(enchant.name + " " + enchant.desc),
-          desc: enchant.desc
+          desc: enchant.desc,
+          ttid: enchant.tooltip_spell
         });
       }
       buffer += Templates.itemSlot({
@@ -4946,7 +4478,7 @@
     };
 
     clickSlotGem = function() {
-      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemSlot, gemType, i, item, j, len, len1, max, n, o, otherGearGems, ref, selected_id, slot, usedNames;
+      var $slot, GemList, ItemLookup, buf, buffer, data, desc, gEP, gem, gemSlot, gemType, i, item, j, len, len1, m, max, n, otherGearGems, ref, selected_id, slot, usedNames;
       ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2;
       GemList = Shadowcraft.ServerData.GEMS;
       data = Shadowcraft.Data;
@@ -4967,16 +4499,16 @@
           otherGearGems.push(data.gear[slot].gems[i]);
         }
       }
-      for (n = 0, len = GemList.length; n < len; n++) {
-        gem = GemList[n];
+      for (m = 0, len = GemList.length; m < len; m++) {
+        gem = GemList[m];
         gem.__ep = get_ep(gem);
       }
       GemList.sort(__epSort);
       buffer = "";
       usedNames = {};
       max = null;
-      for (o = 0, len1 = GemList.length; o < len1; o++) {
-        gem = GemList[o];
+      for (n = 0, len1 = GemList.length; n < len1; n++) {
+        gem = GemList[n];
         if (usedNames[gem.name]) {
           if (gem.id === selected_id) {
             selected_id = usedNames[gem.name];
@@ -5027,7 +4559,7 @@
     };
 
     clickSlotBonuses = function() {
-      var $slot, bonusId, bonus_entry, currentBonuses, data, entry, gear, gem, group, groups, identifier, item, j, key, len, len1, n, ref, ref1, slot, subgroup;
+      var $slot, bonusId, bonus_entry, currentBonuses, data, entry, gear, gem, group, groups, identifier, item, j, key, len, len1, m, ref, ref1, slot, subgroup;
       clickSlot(this, "bonuses");
       $(".slot").removeClass("active");
       $(this).addClass("active");
@@ -5056,8 +4588,8 @@
         group.ep = 0;
         subgroup = null;
         ref1 = Shadowcraft.ServerData.ITEM_BONUSES[bonusId];
-        for (n = 0, len1 = ref1.length; n < len1; n++) {
-          bonus_entry = ref1[n];
+        for (m = 0, len1 = ref1.length; m < len1; m++) {
+          bonus_entry = ref1[m];
           entry = {
             'type': bonus_entry.type,
             'val1': bonus_entry.val1,
@@ -5301,7 +4833,7 @@
       });
       $popupbody.click($.delegate({
         ".slot": function(e) {
-          var $this, EnchantLookup, Gems, ItemLookup, data, enchant_id, gem, gem_id, i, identifier, item, item_id, j, n, o, slot, socketlength, update, val;
+          var $this, EnchantLookup, Gems, ItemLookup, data, enchant_id, gem, gem_id, i, identifier, item, item_id, j, m, n, slot, socketlength, update, val;
           Shadowcraft.Console.purgeOld();
           ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2;
           EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
@@ -5350,10 +4882,10 @@
               } else {
                 data.gear[slot].original_id = null;
                 data.gear[slot].item_level = null;
-                for (i = n = 0; n <= 2; i = ++n) {
+                for (i = m = 0; m <= 2; i = ++m) {
                   data.gear[slot].gems[i] = null;
                 }
-                for (i = o = 0; o <= 9; i = ++o) {
+                for (i = n = 0; n <= 9; i = ++n) {
                   data.gear[slot].bonuses[i] = null;
                 }
                 data.gear[slot].suffix = null;
@@ -5385,7 +4917,7 @@
       }));
       this.updateDisplay();
       $("input.search").keydown(function(e) {
-        var $this, body, height, i, j, len, len1, n, next, ot, slot, slots;
+        var $this, body, height, i, j, len, len1, m, next, ot, slot, slots;
         $this = $(this);
         $popup = $this.closest(".popup");
         switch (e.keyCode) {
@@ -5411,7 +4943,7 @@
             break;
           case 40:
             slots = $popup.find(".slot:visible");
-            for (i = n = 0, len1 = slots.length; n < len1; i = ++n) {
+            for (i = m = 0, len1 = slots.length; m < len1; i = ++m) {
               slot = slots[i];
               if (slot.className.indexOf("active") !== -1) {
                 if (slots[i + 1] != null) {
@@ -5519,7 +5051,7 @@
         if (item) {
           app.dpsPlot.unhighlight();
           app.dpsPlot.highlight(item.series, item.datapoint);
-          snapshot = app.snapshotHistory[item.dataIndex];
+          snapshot = $.parseJSON(app.snapshotHistory[item.dataIndex]);
           return Shadowcraft.History.loadSnapshot(snapshot);
         }
       }).mousedown(function(e) {
@@ -5531,45 +5063,42 @@
     }
 
     ShadowcraftDpsGraph.prototype.datapoint = function(data) {
-      var delta, deltatext, snapshot;
-      snapshot = Shadowcraft.History.takeSnapshot();
+      var delta, deltatext;
       delta = data.total_dps - (this.lastDPS || 0);
       deltatext = "";
       if (this.lastDPS) {
         deltatext = delta >= 0 ? " <em class='p'>(+" + (delta.toFixed(1)) + ")</em>" : " <em class='n'>(" + (delta.toFixed(1)) + ")</em>";
       }
       $("#dps .inner").html(data.total_dps.toFixed(1) + " DPS" + deltatext);
-      if (snapshot) {
-        this.dpsHistory.push([this.dpsIndex, Math.round(data.total_dps * 10) / 10]);
-        this.dpsIndex++;
-        this.snapshotHistory.push(snapshot);
-        if (this.dpsHistory.length > MAX_POINTS) {
-          this.dpsHistory.shift();
-          this.snapshotHistory.shift();
-        }
-        this.dpsPlot = $.plot($("#dpsgraph"), [this.dpsHistory], {
-          lines: {
-            show: true
-          },
-          crosshair: {
-            mode: "y"
-          },
-          points: {
-            show: true
-          },
-          grid: {
-            hoverable: true,
-            clickable: true,
-            autoHighlight: true
-          },
-          series: {
-            threshold: {
-              below: this.dpsHistory[0][1],
-              color: "rgb(200, 20, 20)"
-            }
-          }
-        });
+      this.dpsHistory.push([this.dpsIndex, Math.round(data.total_dps * 10) / 10]);
+      this.dpsIndex++;
+      this.snapshotHistory.push($.toJSON(Shadowcraft.Data));
+      if (this.dpsHistory.length > MAX_POINTS) {
+        this.dpsHistory.shift();
+        this.snapshotHistory.shift();
       }
+      this.dpsPlot = $.plot($("#dpsgraph"), [this.dpsHistory], {
+        lines: {
+          show: true
+        },
+        crosshair: {
+          mode: "y"
+        },
+        points: {
+          show: true
+        },
+        grid: {
+          hoverable: true,
+          clickable: true,
+          autoHighlight: true
+        },
+        series: {
+          threshold: {
+            below: this.dpsHistory[0][1],
+            color: "rgb(200, 20, 20)"
+          }
+        }
+      });
       return this.lastDPS = data.total_dps;
     };
 

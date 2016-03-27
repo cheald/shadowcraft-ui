@@ -353,9 +353,6 @@ class ShadowcraftGear
   getEnchantRecommendation = (enchant_list, item) ->
 
     for enchant in enchant_list
-      # do not recommend bloody dancing steel
-      continue if enchant.id == 5125
-      continue if enchant.id == 4914 # do not recommend inscription shoulder enchant
       # do not consider enchant if item level is higher than allowed maximum
       continue if enchant.requires?.max_item_level? and enchant.requires?.max_item_level < getBaseItemLevel(item)
       return enchant.id
@@ -1023,6 +1020,7 @@ class ShadowcraftGear
         ep: eEP.toFixed(1)
         search: escape(enchant.name + " " + enchant.desc)
         desc: enchant.desc
+        ttid: enchant.tooltip_spell
       )
 
     buffer += Templates.itemSlot(
