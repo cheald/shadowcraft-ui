@@ -893,9 +893,9 @@ class ShadowcraftGear
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && subtletyNeedsDagger && l.subclass != 15
       continue if l.upgrade_level != 0 and Shadowcraft.Data.options.general.show_upgrades == 0 and lid != selected_identifier
+      continue if l.tag? and /Warforged$/.test(l.tag) and Shadowcraft.Data.options.general.show_warforged == 0 and lid != selected_identifier
       continue if l.upgrade_level != 0 and l.upgrade_level > getMaxUpgradeLevel(l)
       continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and lid != selected_identifier
-      continue if l.tag? and /Tournament$/.test(l.tag) and not Shadowcraft.Data.options.general.pvp
       loc.push l
 
     gear_offset = statOffset(gear[slot], FACETS.ITEM)

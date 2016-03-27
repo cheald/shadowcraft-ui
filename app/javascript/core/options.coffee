@@ -131,6 +131,7 @@ class ShadowcraftOptions
       show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this item level in gear lists", datatype: 'integer', type: 'input', min: 540, max: 1000, 'default': 540}
       show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
       epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
+      show_warforged: {name: "Show Warforged Items", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
     })
 
     @setup("#settings #playerBuffs", "buffs", {
