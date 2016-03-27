@@ -17,6 +17,8 @@ class ShadowcraftGear
     5337: "mark_of_warsong"
     5384: "mark_of_the_bleeding_hollow"
 
+  LEGENDARY_RINGS=[118302, 118307, 124636]
+
   Sets =
     T17:
       ids: [115570, 115571, 115572, 115573, 115574]
@@ -883,11 +885,19 @@ class ShadowcraftGear
 
     loc_all = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
     loc = []
+
+    # Filter the list of items down to a specific subset. There are some extra
+    # criteria for hiding items as well, beyond just simple slot numbers.
     for lid in loc_all
       l = ShadowcraftData.ITEM_LOOKUP2[lid]
       if lid == selected_identifier # always show equipped item
         loc.push l
         continue
+
+      continue if l.original_id == 124636
+
+      # Filter out items that are outside the min and max ilvls set on the options
+      # panel
       continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
@@ -896,6 +906,23 @@ class ShadowcraftGear
       continue if l.tag? and /Warforged$/.test(l.tag) and Shadowcraft.Data.options.general.show_warforged == 0 and lid != selected_identifier
       continue if l.upgrade_level != 0 and l.upgrade_level > getMaxUpgradeLevel(l)
       continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and lid != selected_identifier
+      continue if l.tag? and /Tournament$/.test(l.tag) and not Shadowcraft.Data.options.general.pvp
+      # prevent unique-equippable items from showing up when it's already equipped
+      # in another slot. this is mostly trinkets (slots 12 and 13) or legendary
+      # and pvp rings (slots 10 and 11)
+      continue if slot == 12 && l.original_id == gear[13].item_id
+      continue if slot == 13 && l.original_id == gear[12].item_id
+      continue if slot == 10 && gear[11].item_id in LEGENDARY_RINGS && l.original_id in LEGENDARY_RINGS
+      continue if slot == 11 && gear[10].item_id in LEGENDARY_RINGS && l.original_id in LEGENDARY_RINGS
+
+      # For pvp rings, it's if a ring has a tag and the tag either ends with
+      # Tournament or "Season #", and the tag matches the currently equipped one
+      # in the other slot, and the item ID matches the one in the other slot.
+      # Skip those items.
+      # TODO: this may be broken and requires some testing from someone who
+      # actually gives two shits about PVP to tell me that.
+      continue if slot == 10 && l.tag? && (/Tournament$/.test(l.tag) || /Season [0-9]$/.test(l.tag)) && l.tag == gear[11].tag && l.name == gear[11].name
+      continue if slot == 11 && l.tag? && (/Tournament$/.test(l.tag) || /Season [0-9]$/.test(l.tag)) && l.tag == gear[10].tag && l.name == gear[10].name
       loc.push l
 
     gear_offset = statOffset(gear[slot], FACETS.ITEM)
@@ -1364,6 +1391,15 @@ class ShadowcraftGear
             if item
               data.gear[slot].original_id = item.original_id
               data.gear[slot].item_level = item.ilvl
+              data.gear[slot].name = item.name
+              if item.context
+                data.gear[slot].context = item.context
+              else
+                data.gear[slot].context = null
+              if item.tag
+                data.gear[slot].tag = item.tag
+              else
+                data.gear[slot].tag = null
               if item.suffix
                 data.gear[slot].suffix = item.suffix
               else
