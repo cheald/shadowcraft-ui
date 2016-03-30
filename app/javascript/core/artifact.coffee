@@ -63,6 +63,7 @@ class ShadowcraftArtifact
     level = artifact_data.traits[spell_id]
     max_level = parseInt(trait.attr("max_level"))
     trait.children(".level").text(""+level+"/"+max_level)
+    trait.data("tooltip-rank", level-1)
     return {current: level, max: max_level}
 
   # Redoes the display of all of the traits based on the data stored in the
@@ -82,6 +83,7 @@ class ShadowcraftArtifact
       $(this).children(".level").addClass("inactive")
       $(this).children(".icon").addClass("inactive")
       $(this).children(".relic").addClass("inactive")
+      $(this).data("tooltip-rank", -1)
     )
     $("#artifactframe .line").each(->
       $(this).addClass("inactive")
@@ -103,6 +105,7 @@ class ShadowcraftArtifact
       main.children(".level").text("0/"+main.attr("max_level"))
       main.children(".level").removeClass("inactive")
       main.children(".icon").removeClass("inactive")
+      main.data("tooltip-rank", -1)
       done = [main_spell_id]
 
     # starting at main, run a search to enable all of the icons that need
@@ -170,14 +173,17 @@ class ShadowcraftArtifact
     # the last one that it encounters?
     for i in [0...3]
       button = $("#relic"+(i+1)+" .relicicon")
+      relicdiv = $("#relic"+(i+1))
       if artifact_data.relics[i] != 0
         relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i]]
         button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relic.icon+".jpg")
         button.removeClass("inactive")
+        relicdiv.data("tooltip-id", relic.id)
 
         trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"'")
         {current, max} = activateTrait(relic.tmi)
         trait.children(".level").text(""+(relic.ti+current)+"/"+(relic.ti+max))
+        trait.data("tooltip-rank", relic.ti+current-1)
         type = ''
         for key,val of RELIC_TYPE_MAP
           if (val == relic.type)
@@ -187,6 +193,7 @@ class ShadowcraftArtifact
         trait.children(".relic").removeClass("inactive")
       else
         button.addClass("inactive")
+        relicdiv.removeData("tooltip-id")
 
     return
 
