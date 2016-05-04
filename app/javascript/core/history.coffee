@@ -92,18 +92,10 @@ class ShadowcraftHistory
       $.jStorage.set(key, snapshots)
       flash "#{name} has been deleted"
 
+  # Attempt to load the data from jstorage for this user's uuid. If there's no
+  # data there, return the defaults passed in.
   load: (defaults) ->
     data = $.jStorage.get(@app.uuid, defaults)
-    if data instanceof Array and data.length != 0
-      # TODO: i'm not sure we'll ever enter this if statement. 
-      $.post("/history/getjson", {data: data})
-        .done((reqdata) ->
-          data = $.parseJSON(reqdata)
-        ).fail(() ->
-          throw "Failed to load data for snapshot " + snapshot + "!"
-        )
-    else
-      data = defaults
     return data
 
   # This method will attempt to load data from a URL with a hash in it. We only
