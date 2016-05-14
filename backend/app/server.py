@@ -357,10 +357,7 @@ class ShadowcraftComputation:
             0,
             s[6], # Multistrike
             s[7], # Versatility
-            _level,
-            s[9], # PvP Power
-            s[8], # Resilience Rating
-            pvp_target_armor = _opt.get("pvp_target_armor", 1500))
+            _level)
         # ##################################################################################
 
         # Talents
@@ -403,7 +400,6 @@ class ShadowcraftComputation:
             utl_poison = _opt.get("utl_poison", None),
             opener_name = rotation_keys["opener_name"],
             use_opener = rotation_keys["opener_use"],
-            is_pvp = _opt.get("pvp", False),
             latency = _opt.get("latency", 0.03),
             adv_params = _opt.get("adv_params", ''),
             default_ep_stat = 'ap',
@@ -426,9 +422,6 @@ class ShadowcraftComputation:
             # Get EP Values
             default_ep_stats = ['agi', 'haste', 'crit', 'mastery', 'multistrike', 'versatility', 'ap']
             _opt = input.get("settings", {})
-            is_pvp = _opt.get("pvp", False)
-            if is_pvp:
-                default_ep_stats.append("pvp_power")
             out["ep"] = calculator.get_ep(ep_stats=default_ep_stats)
 
             # Glyph ranking is slow

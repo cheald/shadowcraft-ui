@@ -63,7 +63,6 @@ class ShadowcraftBackend
         duration: data.options.general.duration
         response_time: data.options.general.response_time
         time_in_execute_range: data.options.general.time_in_execute_range
-        pvp: data.options.general.pvp
         num_boss_adds: data.options.general.num_boss_adds
         latency: data.options.advanced.latency
         adv_params: data.options.advanced.adv_params
@@ -80,9 +79,7 @@ class ShadowcraftBackend
         statSummary.haste || 0,
         statSummary.mastery || 0,
         statSummary.multistrike || 0,
-        statSummary.versatility || 0,
-        statSummary.resilience || 0,
-        statSummary.pvp_power || 0
+        statSummary.versatility || 0
       ],
 
     if mh?

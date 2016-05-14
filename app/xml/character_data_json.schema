@@ -186,11 +186,8 @@
         "potion": {
           "type": "boolean"
         },
-        "pvp": {
-          "type": "boolean"
-        }
       },
-      "required": ["level", "race", "patch", "night_elf_racial", "duration", "response_time", "time_in_execute_range", "lethal_poison", "utility_poison", "num_boss_adds", "demon_enemy", "max_ilvl", "min_ilvl", "show_random_items", "show_upgrades", "epic_gems", "prepot", "potion", "pvp"]
+      "required": ["level", "race", "patch", "night_elf_racial", "duration", "response_time", "time_in_execute_range", "lethal_poison", "utility_poison", "num_boss_adds", "demon_enemy", "max_ilvl", "min_ilvl", "show_random_items", "show_upgrades", "epic_gems", "prepot", "potion"]
     },
     "options_buffs": {
       "type": "object",

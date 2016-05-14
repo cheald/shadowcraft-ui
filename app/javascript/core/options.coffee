@@ -152,11 +152,6 @@ class ShadowcraftOptions
       potion: {type: "check", name: "Combat potion", 'default': true, datatype: 'bool'},
     })
 
-    @setup("#settings #pvp", "general", {
-      pvp: {type: "check", name: "PvP Mode", desc: "Activate the PvP Mode", 'default': false, datatype: 'bool'},
-      #pvp_target_armor: {type: "input", name: "bla", desc: "blllaaa", 'default': 10000, datatype: 'integer', min: 3000, max: 99000},
-    })
-
     @setup("#settings section.mutilate .settings", "rotation", {
       min_envenom_size_non_execute: {type: "select", name: "Min CP/Envenom > 35%", options: [5,4,3,2,1], 'default': 4, desc: "CP for Envenom when using Mutilate, no effect with Anticipation", datatype: 'integer', min: 1, max: 5}
       min_envenom_size_execute: {type: "select", name: "Min CP/Envenom < 35%", options: [5,4,3,2,1], 'default': 5, desc: "CP for Envenom when using Dispatch, no effect with Anticipation", datatype: 'integer', min: 1, max: 5}

@@ -42,7 +42,6 @@ class ShadowcraftGear
     multistrike: 1.12
     versatility: 1.2
     strength: 1.05
-    pvp_power: 0
 
   SLOT_INVTYPES =
       0: 1 # head
@@ -674,7 +673,6 @@ class ShadowcraftGear
         valengine = data.options.general.patch / 10
     else
       valengine = "6.x"
-    valengine += " " + if data.options.general.pvp then "(PvP)" else "(PvE)"
     a_stats.push {
       name: "Engine"
       val: valengine
@@ -737,7 +735,6 @@ class ShadowcraftGear
     Weights.haste = source.ep.haste
     Weights.multistrike = source.ep.multistrike
     Weights.versatility = source.ep.versatility
-    Weights.pvp_power = source.ep.pvp_power || 0
 
     other =
       mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps
@@ -906,7 +903,7 @@ class ShadowcraftGear
       continue if l.tag? and /Warforged$/.test(l.tag) and Shadowcraft.Data.options.general.show_warforged == 0 and lid != selected_identifier
       continue if l.upgrade_level != 0 and l.upgrade_level > getMaxUpgradeLevel(l)
       continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and lid != selected_identifier
-      continue if l.tag? and /Tournament$/.test(l.tag) and not Shadowcraft.Data.options.general.pvp
+
       # prevent unique-equippable items from showing up when it's already equipped
       # in another slot. this is mostly trinkets (slots 12 and 13) or legendary
       # and pvp rings (slots 10 and 11)
@@ -948,7 +945,6 @@ class ShadowcraftGear
       l.__gearEP = 0 if isNaN l.__gearEP
       l.__setBonusEP = 0 if isNaN l.__setBonusEP
       l.__ep = l.__gearEP + l.__gemRec.ep + l.__setBonusEP
-
 
     loc.sort(__epSort)
     maxIEP = 1
@@ -1513,7 +1509,7 @@ class ShadowcraftGear
       e.stopPropagation()
 
     Shadowcraft.Options.bind "update", (opt, val) ->
-      if opt in ['rotation.use_hemorrhage','general.pvp']
+      if opt in ['rotation.use_hemorrhage']
         app.updateDisplay()
       if opt in ['rotation.blade_flurry','general.num_boss_adds','general.lethal_poison']
         app.updateSummaryWindow()
