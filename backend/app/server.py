@@ -467,29 +467,21 @@ class ShadowcraftSite(resource.Resource):
     def render_OPTIONS(self, request):
         request.setHeader("Access-Control-Allow-Origin", "*")
         request.setHeader("Access-Control-Max-Age", "3600")
-        request.setHeader("Access-Control-Allow-Headers", "x-requested-with")
+        request.setHeader("Access-Control-Allow-Headers", "x-requested-with, content-type")
         return ""
-
-    def _render_post(self, input):
-        start = clock()
-        log.msg("Request: %s" % input)
-        #prof = hotshot.Profile("profile/stones-%s.prof" % uuid.uuid4())
-        #response = prof.runcall(engine.get_all, input)
-        #prof.close()
-        response = engine.get_all(input)
-        log.msg("Request time: %s sec" % (clock() - start))
-        return json.dumps(response)
 
     def render_POST(self, request):
         request.setHeader("Access-Control-Allow-Origin", "*")
-
-        inbound = request.args.get("data", None)
-        if not inbound:
+        try:
+            input = json.loads(request.content.getvalue())
+        except ValueError:
             return '{"error": "Invalid input"}'
-
-        input = json.loads(inbound[0])
-
-        return self._render_post(input)
+        else:
+            start = clock()
+            log.msg("Request: %s" % input)
+            response = engine.get_all(input)
+            log.msg("Request time: %s sec" % (clock() - start))
+            return json.dumps(response)
 
     # Because IE is terrible.
     def render_GET(self, request):

@@ -164,7 +164,8 @@ class ShadowcraftBackend
     $.ajax
       type: "POST"
       url: get_engine()
-      data: { data: $.toJSON(payload) }
+      contentType: 'application/json'
+      data: $.toJSON(payload)
       dataType: 'json'
       success: (data) ->
         app.handleRecompute(data)
