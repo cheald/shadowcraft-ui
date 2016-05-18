@@ -33,6 +33,8 @@ class ShadowcraftGear
       ids: [128130, 128121, 128125, 128054, 128131, 128137]
       bonuses: {4: "rogue_t18_4pc_lfr"}
 
+  # Default weights for the DPS calculations. These get reset by calculation
+  # passes through the engine.
   Weights =
     attack_power: 1
     agility: 1.1
@@ -87,25 +89,31 @@ class ShadowcraftGear
       Shadowcraft.Gear.sumSlot(gear, offsets, facet)
     return offsets
 
+  # Generates a map of all of the stats for an item, summing each of the sources
+  # together.
   sumItem = (s, i, key) ->
-    key ||= "stats"
+    key ||= 'stats'
     for stat of i[key]
       s[stat] ||= 0
       s[stat] += i[key][stat]
     null
 
-  get_ep = (item, key, slot, ignore) ->
+  # Gets the EP value for an item out of the last run of calculation data
+  getEP = (item, slot=-1, ignore=[]) ->
 
     stats = {}
-    sumItem(stats, item, key)
+    sumItem(stats, item)
 
+    # Add all of the EP for all of the stats
     total = 0
     for stat, value of stats
       weight = getStatWeight(stat, value, ignore) || 0
       total += weight
 
+    # If there was already a calculation done, there's some extra EP to add based on
+    # weapon damage, enchants, and trinkets.
     c = Shadowcraft.lastCalculation
-    if c and key != "socketbonus"
+    if c
       if item.dps
         if slot == 15
           total += (item.dps * c.mh_ep.mh_dps) + c.mh_speed_ep["mh_" + item.speed]
@@ -135,6 +143,7 @@ class ShadowcraftGear
         else if pre and enchant
           total += c[pre + "ep"][pre + enchant]
 
+      # If this is a trinket, include the value of the proc in the EP value
       item_level = item.ilvl
       if c.trinket_map[item.original_id]
         proc_name = c.trinket_map[item.original_id]
@@ -145,12 +154,12 @@ class ShadowcraftGear
 
     total
 
+  # Generates a stat block for a slot. This method can be used to limit the stats to
+  # a specific type of data by passing a facet to the method, or to return all of the
+  # stats for the item including normal stats, gems, and enchants.
   sumSlot: (gear, out, facets) ->
     return unless gear?.item_id?
     facets ||= FACETS.ALL
-
-    Gems = Shadowcraft.ServerData.GEM_LOOKUP
-    EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
 
     item = getItem(gear.original_id, gear.item_level, gear.suffix)
     return unless item?
@@ -164,7 +173,7 @@ class ShadowcraftGear
         if gear.gems?
           gid = gear.gems[socketIndex]
           if gid and gid > 0
-            gem = Gems[gid]
+            gem = Shadowcraft.ServerData.GEM_LOOKUP[gid]
             sumItem(out, gem) if(gem)
           matchesAllSockets = false if !gem or !gem[socket]
 
@@ -174,9 +183,11 @@ class ShadowcraftGear
     if (facets & FACETS.ENCHANT) == FACETS.ENCHANT
       enchant_id = gear.enchant
       if enchant_id and enchant_id > 0
-        enchant = EnchantLookup[enchant_id]
+        enchant = Shadowcraft.ServerData.ENCHANT_LOOKUP[enchant_id]
         sumItem(out, enchant) if enchant
 
+  # Returns the complete stats for all of the items added together for a character.
+  # Facets can be used to limit the data to the item, gems, or enchants.
   sumStats: (facets) ->
     stats = {}
     data = Shadowcraft.Data
@@ -187,11 +198,13 @@ class ShadowcraftGear
     @statSum = stats
     return stats
 
+  # Returns a single stat from all of the stats for a character.
   getStat: (stat) ->
     this.sumStats() if !@statSum
     (@statSum[stat] || 0)
 
-  # Stat to get the real weight for, the amount of the stat, and a hash of {stat: amount} to ignore (like if swapping out a enchant or whatnot; nil the existing enchant for calcs)
+  # Stat to get the real weight for, the amount of the stat, and a hash of {stat: amount} to
+  # ignore (like if swapping out a enchant or whatnot; nil the existing enchant for calcs)
   getStatWeight = (stat, num, ignore, ignoreAll) ->
     exist = 0
     unless ignoreAll
@@ -199,24 +212,24 @@ class ShadowcraftGear
       if ignore and ignore[stat]
         exist -= ignore[stat]
 
-
     neg = if num < 0 then -1 else 1
     num = Math.abs(num)
 
     return (Weights[stat] || 0) * num * neg
 
-  __epSort = (a, b) ->
+  # Sort comparator that sorts items in reverse order (highest first)
+  sortComparator = (a, b) ->
     b.__ep - a.__ep
 
-  epSort = (list, skipSort, slot) ->
+  # Sorts a list of item IDs based on their EP value. This requires repeatedly calling
+  # getEP for every item, then sorting the resulting list.
+  epSort = (list) ->
     for item in list
-      item.__ep = get_ep(item, false, slot) if item
+      item.__ep = getEP(item) if item
       item.__ep = 0 if isNaN(item.__ep)
-    list.sort(__epSort) unless skipSort
+    list.sort(sortComparator)
 
-  needsDagger = ->
-    Shadowcraft.Data.activeSpec == "a"
-
+  # Calculate the EP bonus for a set bonus based on the set type and the number of pieces.
   setBonusEP = (set, count) ->
     return 0 unless c = Shadowcraft.lastCalculation
 
@@ -227,6 +240,8 @@ class ShadowcraftGear
 
     return total
 
+  # Returns the number of pieces for each gear set that are equipped. This is used to call
+  # setBonusEP to determine the EP bonus for the equipped set pieces.
   getEquippedSetCount = (setIds, ignoreSlotIndex) ->
     count = 0
     for slot in SLOT_ORDER
@@ -237,59 +252,50 @@ class ShadowcraftGear
         count++
     return count
 
+  # TODO: there's no reason to have two methods here
   isProfessionalGem = (gem, profession) ->
     return false unless gem?
     gem.requires?.profession? and gem.requires.profession == profession
 
-  canUseGem = (gem, gemType, pendingChanges, ignoreSlotIndex) ->
+  canUseGem = (gem, gemType) ->
     if gem.requires?.profession?
       return false if isProfessionalGem(gem, 'jewelcrafting')
 
     return false if not gem[gemType]
     true
 
-  # Check if the gems have equal stats to pretend that optimize gems
-  # not change gems to stat equal gems
+  # Check if the gems have equal stats to pretend that optimize gems not change gems to
+  # stat equal gems
   equalGemStats = (from_gem,to_gem) ->
     for stat of from_gem["stats"]
       if !to_gem["stats"][stat]? or from_gem["stats"][stat] != to_gem["stats"][stat]
         return false
     return true
 
-  # Assumes gem_list is already sorted preferred order.
-  getGemmingRecommendation = (gem_list, item, returnFull, ignoreSlotIndex, offset) ->
+  # Determines the best set of gems for an item.
+  getGemmingRecommendation = (gem_list, item, offset) ->
     if !item.sockets or item.sockets.length == 0
-      if returnFull
-        return {ep: 0, gems: []}
-      else
-        return 0
+      return {ep: 0, gems: []}
 
     straightGemEP = 0
-    if returnFull
-      sGems = []
+    sGems = []
     for gemType in item.sockets
       broke = false
       for gem in gem_list
-        continue unless canUseGem gem, gemType, sGems, ignoreSlotIndex
-        continue if gem.name.indexOf('Taladite') >= 0 and item? and item.quality == 7 and item.ilvl <= 620 # do not recommend wod gems to heirlooms
-        continue if gem.name.indexOf('Taladite') >= 0 and item? and item.id == 102248 and item.ilvl <= 616 # do not recommend wod gems for legendary cloak
-        straightGemEP += get_ep(gem, false, null, offset)
-        sGems.push gem.id if returnFull
+        continue unless canUseGem(gem, gemType)
+        continue if gem.name.indexOf('Taladite') >= 0 and item.quality == 7 and item.ilvl <= 620
+        continue if gem.name.indexOf('Taladite') >= 0 and item.id == 102248 and item.ilvl <= 616
+        straightGemEP += getEP(gem, null, offset)
+        sGems.push gem.id
         broke = true
         break
-      sGems.push null if !broke and returnFull
+      sGems.push null if !broke
 
     epValue = straightGemEP
     gems = sGems
-    # if all sockets are filled with gems the bonus always applies
-    # and returnFull is true
-    bonus = returnFull
+    return {ep: epValue, takeBonus: true, gems: gems}
 
-    if returnFull
-      return {ep: epValue, takeBonus: bonus, gems: gems}
-    else
-      return epValue
-
+  # Called when a user clicks the Lock All button
   lockAll: () ->
     Shadowcraft.Console.log("Locking all items")
     for slot in SLOT_ORDER
@@ -298,6 +304,7 @@ class ShadowcraftGear
       gear.locked = true
     Shadowcraft.Gear.updateDisplay()
 
+  # Called when a user clicks the Unlock All button
   unlockAll: () ->
     Shadowcraft.Console.log("Unlocking all items")
     for slot in SLOT_ORDER
@@ -306,6 +313,9 @@ class ShadowcraftGear
       gear.locked = false
     Shadowcraft.Gear.updateDisplay()
 
+  # Called when a user clicks the Optimize Gems button. This recursively looks for
+  # the best gem configuration across all of the items down, checking up to 10
+  # times.
   optimizeGems: (depth) ->
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
     data = Shadowcraft.Data
@@ -327,7 +337,7 @@ class ShadowcraftGear
       gem_offset = statOffset(gear, FACETS.GEMS)
 
       if item
-        rec = getGemmingRecommendation(gem_list, item, true, slotIndex, gem_offset)
+        rec = getGemmingRecommendation(gem_list, item, gem_offset)
         for gem, gemIndex in rec.gems
           from_gem = Gems[gear.gems[gemIndex]]
           to_gem = Gems[gem]
@@ -343,14 +353,19 @@ class ShadowcraftGear
             gear.gems[gemIndex] = gem
             madeChanges = true
 
+    # If we didn't make changes on this pass, or we've went down 10 levels already
+    # then stop, update the DPS calculation, update the display, and log the changes.
+    # Otherwise, make another call to try again.
     if !madeChanges or depth >= 10
       @app.update()
       this.updateDisplay()
       Shadowcraft.Console.log "Finished automatic regemming: &Delta; #{Math.floor(@getEPTotal() - EP_PRE_REGEM)} EP", "gold"
     else
-      this.optimizeGems depth + 1
+      this.optimizeGems(depth + 1)
 
-  # Assumes enchant_list is already sorted preferred order.
+  # Gets the first enchant from a list of enchants that can be applied to an item
+  # based on ilvl. enchant_list is assumed to be a list of enchants sorted by
+  # EP.
   getEnchantRecommendation = (enchant_list, item) ->
 
     for enchant in enchant_list
@@ -359,6 +374,7 @@ class ShadowcraftGear
       return enchant.id
     return false
 
+  # Gets a list of enchants that apply to an item slot, sorted by EP.
   getApplicableEnchants = (slotIndex, item, enchant_offset) ->
     enchant_list = Shadowcraft.ServerData.ENCHANT_SLOTS[SLOT_INVTYPES[slotIndex]]
     unless enchant_list?
@@ -368,15 +384,18 @@ class ShadowcraftGear
     for enchant in enchant_list
       # do not show enchant if item level is higher than allowed maximum
       continue if enchant.requires?.max_item_level? and enchant.requires?.max_item_level < getBaseItemLevel(item)
-      enchant.__ep = get_ep(enchant, null, slotIndex, enchant_offset)
-      enchant.__ep = 0 if isNaN enchant.__ep
+      enchant.__ep = getEP(enchant, slotIndex, enchant_offset)
+      enchant.__ep = 0 if isNaN(enchant.__ep)
       enchants.push(enchant)
-    enchants.sort(__epSort)
+    enchants.sort(sortComparator)
     return enchants
 
   getApplicableEnchants: (slotIndex, item, enchant_offset) ->
     return getApplicableEnchants(slotIndex, item, enchant_offset)
 
+  # Called when a user clicks the Optimize Enchants button. This recursively looks
+  # for the best gem configuration across all of the items down, checking up to 10
+  # times.
   optimizeEnchants: (depth) ->
     Enchants = Shadowcraft.ServerData.ENCHANT_LOOKUP
     data = Shadowcraft.Data
@@ -420,13 +439,15 @@ class ShadowcraftGear
     else
       this.optimizeEnchants depth + 1
 
+  # TODO: what does this do?
   getBestNormalGem = ->
     Gems = Shadowcraft.ServerData.GEMS
+    # TODO: why copy this?
     copy = $.extend(true, [], Gems)
     list = []
     for gem in copy
       continue if gem.requires? or gem.requires?.profession?
-      gem.__color_ep = gem.__color_ep || get_ep(gem)
+      gem.__color_ep = gem.__color_ep || getEP(gem)
       if (gem["Red"] or gem["Yellow"] or gem["Blue"]) and gem.__color_ep and gem.__color_ep > 1
         list.push gem
 
@@ -445,7 +466,7 @@ class ShadowcraftGear
     use_epic_gems = Shadowcraft.Data.options.general.epic_gems == 1
     for gem in copy
       continue if gem.quality == 4 and gem.requires == undefined and not use_epic_gems
-      gem.normal_ep = get_ep(gem, false, null)
+      gem.normal_ep = getEP(gem)
       if gem.normal_ep and gem.normal_ep > 1
         list.push gem
 
@@ -453,29 +474,12 @@ class ShadowcraftGear
       b.normal_ep - a.normal_ep
     list
 
-  setGems: (_gems) ->
-    Shadowcraft.Console.purgeOld()
-    model = Shadowcraft.Data
-    for id, gems of _gems
-      gear = null
-      [id, s] = id.split "-"
-      id = parseInt(id, 10)
-      for slot in SLOT_ORDER
-        g = model.gear[slot]
-        if g.item_id == id and slot == s
-          gear = g
-          break
-      if gear
-        for gem, i in gems
-          continue if gem == 0
-          gear.gems[i] = gem
-    Shadowcraft.update()
-    Shadowcraft.Gear.updateDisplay()
-
   clearBonuses = ->
     console.log 'clear'
     return
 
+  # Called when a user clicks the apply button on the bonuses popup
+  # window. This adds a bonus to an item in the user's gear.
   applyBonuses: ->
     Shadowcraft.Console.purgeOld()
     data = Shadowcraft.Data
@@ -519,6 +523,7 @@ class ShadowcraftGear
     Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
 
+  # Adds a bonus to an item.
   applyBonusToItem = (item, bonusId, slot, apply = true) ->
     for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
       switch bonus_entry.type
@@ -544,6 +549,17 @@ class ShadowcraftGear
             item.stats[bonus_entry.val1] = value
           else
             item.stats[bonus_entry.val1] -= value
+
+  hasSocket = (gear) ->
+    # This is all of the bonus IDs that mean +socket. Ridiculous.
+    socketBonuses = [523, 572, 608]
+    socketBonuses = socketBonuses.concat([563..565])
+    socketBonuses = socketBonuses.concat([715..719])
+    socketBonuses = socketBonuses.concat([721..752])
+    for bonus in gear.bonuses
+      if bonus in socketBonuses
+        return true
+    return false
 
   ###
   # View helpers
@@ -576,8 +592,7 @@ class ShadowcraftGear
           bonuses_equipped = []
           if item.sockets and item.sockets.length > 0
             for socketIndex in [item.sockets.length-1..0]
-              last = item.sockets[socketIndex]
-              if last == "Prismatic"
+              if item.sockets[socketIndex] == "Prismatic"
                 item.sockets.pop()
           if gear.bonuses?
             for bonus in gear.bonuses
@@ -630,7 +645,7 @@ class ShadowcraftGear
         opt.ttrand = if item then item.suffix else null
         opt.ttupgd = if item then item.upgrade_level else null
         opt.ttbonus = if bonuses_equipped then bonuses_equipped.join(":") else null
-        opt.ep = if item then get_ep(item, null, i).toFixed(1) else 0
+        opt.ep = if item then getEP(item, i).toFixed(1) else 0
         opt.slot = i + ''
         opt.gems = gems
         opt.socketbonus = bonuses
@@ -653,6 +668,7 @@ class ShadowcraftGear
     this.updateSummaryWindow()
     checkForWarnings('gear')
 
+  # Returns the current total EP summed from all of the gear, gems, and enchants.
   getEPTotal: ->
     this.sumStats()
     keys = _.keys(@statSum).sort()
@@ -662,6 +678,7 @@ class ShadowcraftGear
       total += weight
     return total
 
+  # Updates the display of the Summary section of the Gear tab.
   updateSummaryWindow: ->
     data = Shadowcraft.Data
     $summary = $("#summary .inner")
@@ -709,6 +726,7 @@ class ShadowcraftGear
       }
     $summary.get(0).innerHTML = Templates.stats {stats: a_stats}
 
+  # Updates the display of the Gear Stats section of the Gear tab.
   updateStatsWindow: ->
     this.sumStats()
     $stats = $("#stats .inner")
@@ -727,6 +745,8 @@ class ShadowcraftGear
     EP_TOTAL = total
     $stats.get(0).innerHTML = Templates.stats {stats: a_stats}
 
+  # Updates the display of the Stat Weights section on the gear tab with
+  # information from the last calculation pass.
   updateStatWeights = (source) ->
     Weights.agility = source.ep.agi
     Weights.crit = source.ep.crit
@@ -775,14 +795,8 @@ class ShadowcraftGear
         if $.data(a, "weight") > $.data(b, "weight") then -1 else 1
     epSort(Shadowcraft.ServerData.GEMS)
 
-  statsToDesc = (obj) ->
-    return obj.__statsToDesc if obj.__statsToDesc
-    buff = []
-    for stat of obj.stats
-      buff[buff.length] = "+" + obj.stats[stat] + " " + titleize(stat)
-    obj.__statsToDesc = buff.join("/")
-    return obj.__statsToDesc
-
+  # Updates the engine info section of the Advanced tab with information
+  # from the last calculation pass.
   updateEngineInfoWindow = ->
     return unless Shadowcraft.lastCalculation.engine_info?
     engine_info = Shadowcraft.lastCalculation.engine_info
@@ -795,6 +809,8 @@ class ShadowcraftGear
       }
     $summary.get(0).innerHTML = Templates.stats {stats: data}
 
+  # Updates the dps breakdown section of the Advanced tab with information
+  # from the last calculation pass.
   updateDpsBreakdown = ->
     dps_breakdown = Shadowcraft.lastCalculation.breakdown
     total_dps = Shadowcraft.lastCalculation.total_dps
@@ -833,8 +849,16 @@ class ShadowcraftGear
       bd = $.data(b, "val")
       if ad > bd then -1 else 1
 
+  # Creates a description of an item based on the stats (+x stat)
+  statsToDesc = (obj) ->
+    return obj.__statsToDesc if obj.__statsToDesc
+    buff = []
+    for stat of obj.stats
+      buff[buff.length] = "+" + obj.stats[stat] + " " + titleize(stat)
+    obj.__statsToDesc = buff.join("/")
+    return obj.__statsToDesc
 
-  # Standard setup for the popup
+  # Performs some standard setup for any popup windows that are opened
   clickSlot = (slot, prop) ->
     $slot = $(slot).closest(".slot")
     $slots.find(".slot").removeClass("active")
@@ -844,6 +868,7 @@ class ShadowcraftGear
     $.data(document.body, "selecting-prop", prop)
     return [$slot, slotIndex]
 
+  # Gets an item from the item lookup table based on item ID and ilvl.
   getItem = (itemId, itemLevel, suffix) ->
     arm = [itemId, itemLevel, suffix || 0]
     itemString = arm.join(':')
@@ -855,16 +880,17 @@ class ShadowcraftGear
   getItem: (itemId, itemLevel, suffix) ->
     return getItem(itemId, itemLevel, suffix)
 
-  getItems = (filter = {}) ->
-    _.where(Shadowcraft.ServerData.ITEM_LOOKUP2, filter)
-
   getMaxUpgradeLevel = (item) ->
     return 2
 
   getUpgradeLevelSteps = (item) ->
     return 5
 
-  # Click a name in a slot, for binding to event delegation
+  needsDagger = ->
+    Shadowcraft.Data.activeSpec == "a"
+
+  # Called when a user clicks on the name in a slot. This opens a popup with
+  # a list of items.
   clickSlotName = ->
     buf = clickSlot(this, "item_id")
     $slot = buf[0]
@@ -935,18 +961,18 @@ class ShadowcraftGear
     for l in loc
       # TODO variable might not be necessary anymore
       l.sockets ||= []
-      l.__gemRec = getGemmingRecommendation(GemList, l, true, slot, gem_offset)
+      l.__gemRec = getGemmingRecommendation(GemList, l, gem_offset)
       l.__setBonusEP = 0
       for set_name, set of Sets
         if set.ids.indexOf(l.original_id) >= 0
           l.__setBonusEP += setBonEP[set_name]
 
-      l.__gearEP = get_ep(l, null, slot, gear_offset)
+      l.__gearEP = getEP(l, slot, gear_offset)
       l.__gearEP = 0 if isNaN l.__gearEP
       l.__setBonusEP = 0 if isNaN l.__setBonusEP
       l.__ep = l.__gearEP + l.__gemRec.ep + l.__setBonusEP
 
-    loc.sort(__epSort)
+    loc.sort(sortComparator)
     maxIEP = 1
     minIEP = 0
     buffer = ""
@@ -1007,7 +1033,8 @@ class ShadowcraftGear
     showPopup($popup)
     false
 
-  # Change out an enchant, for binding to event delegation
+  # Called when a user clicks on an enchant section in an item. This opens a
+  # popup with a list of applicable enchants for the item.
   clickSlotEnchant = ->
     data = Shadowcraft.Data
     EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS
@@ -1023,10 +1050,10 @@ class ShadowcraftGear
     offset = statOffset(gear, FACETS.ENCHANT)
     item = getItem(gear.original_id, gear.item_level, gear.suffix)
     for enchant in enchants
-      enchant.__ep = get_ep(enchant, null, slot, offset)
+      enchant.__ep = getEP(enchant, slot, offset)
       enchant.__ep = 0 if isNaN enchant.__ep
       max = if enchant.__ep > max then enchant.__ep else max
-    enchants.sort(__epSort)
+    enchants.sort(sortComparator)
     selected_id = data.gear[slot].enchant
     buffer = ""
 
@@ -1058,12 +1085,14 @@ class ShadowcraftGear
     showPopup($popup)
     false
 
+  # Gets the base item level of an item before all upgrades
   getBaseItemLevel = (item) ->
     unless item.upgrade_level
       return item.ilvl
     return item.ilvl - getUpgradeLevelSteps(item) * item.upgrade_level
 
-  # Change out a gem
+  # Called when a user clicks on a gem section in an item. This opens a
+  # popup with a list of applicable gems for the item.
   clickSlotGem = ->
     ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2
     GemList = Shadowcraft.ServerData.GEMS
@@ -1085,8 +1114,8 @@ class ShadowcraftGear
         otherGearGems.push data.gear[slot].gems[i]
 
     for gem in GemList
-      gem.__ep = get_ep(gem)
-    GemList.sort(__epSort)
+      gem.__ep = getEP(gem)
+    GemList.sort(sortComparator)
 
     buffer = ""
     usedNames = {}
@@ -1099,7 +1128,7 @@ class ShadowcraftGear
 
       usedNames[gem.name] = gem.id
       continue if gem.name.indexOf("Perfect") == 0 and selected_id != gem.id
-      continue unless canUseGem gem, gemType, otherGearGems, slot
+      continue unless canUseGem(gem, gemType)
       continue if gem.name.indexOf('Taladite') >= 0 and item? and item.quality == 7 and item.ilvl <= 620 # do not recommend wod gems to heirlooms
       continue if gem.name.indexOf('Taladite') >= 0 and item? and item.id in [98148,102248] and item.ilvl <= 616 # do not recommend wod gems for legendary cloak
       max ||= gem.__ep
@@ -1129,6 +1158,9 @@ class ShadowcraftGear
     showPopup($popup)
     false
 
+  # Called when a user clicks on the bonuses section in an item. This opens a
+  # popup with a set of checkboxes to allow a user to add bonuses (tertiary
+  # stats, sockets).
   clickSlotBonuses = ->
     clickSlot(this, "bonuses")
     $(".slot").removeClass("active")
@@ -1167,7 +1199,7 @@ class ShadowcraftGear
           when 6 # cool extra sockets
             group['entries'].push entry
             gem = getBestNormalGem
-            group.ep += get_ep(gem)
+            group.ep += getEP(gem)
             subgroup = "sockets"
           when 5 # item name suffix
             group['entries'].push entry
@@ -1193,10 +1225,13 @@ class ShadowcraftGear
     showPopup $("#bonuses.popup")
     false
 
+  # Called when a user clicks on the wowhead icon in an item. This cancels the
+  # event to allow the URL clicked to open.
   clickWowhead = (e) ->
     e.stopPropagation()
     true
 
+  # Called when a user clicks on the upgrade arrow in an item.
   clickItemUpgrade = (e) ->
     e.stopPropagation()
     buf = clickSlot(this, "item_id")
@@ -1231,6 +1266,7 @@ class ShadowcraftGear
     Shadowcraft.Gear.updateDisplay()
     true
 
+  # Called when a user clicks on the lock icon for an item.
   clickItemLock = (e) ->
     e.stopPropagation()
     buf = clickSlot(this, "item_id")
@@ -1247,9 +1283,11 @@ class ShadowcraftGear
         Shadowcraft.Console.log("Locking " + item.name + " for Optimize Gems")
       else
         Shadowcraft.Console.log("Unlocking " + item.name + " for Optimize Gems")
-    #Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
     true
+
+  # Called when a user clicks an item in a popup window
+  clickPopupItem = (e) ->
 
   boot: ->
     app = this
@@ -1257,6 +1295,8 @@ class ShadowcraftGear
     $popup = $("#gearpopup")
     $popupbody = $("#gearpopup .body")
 
+    # Register for the recompute event sent by the backend. This updates some
+    # of the display with the latest information from the last calculation pass.
     Shadowcraft.Backend.bind("recompute", updateStatWeights)
     Shadowcraft.Backend.bind("recompute", -> Shadowcraft.Gear )
     Shadowcraft.Backend.bind("recompute", updateDpsBreakdown)
@@ -1294,7 +1334,8 @@ class ShadowcraftGear
       ".applyBonuses" : this.applyBonuses
       ".clearBonuses" : clearBonuses
 
-    #  Change out an item
+    # Register the callback handlers for all of the various parts of each item
+    # on the UI.
     $slots.click $.delegate
       ".upgrade" : clickItemUpgrade
       ".lock"    : clickItemLock
@@ -1319,52 +1360,10 @@ class ShadowcraftGear
       $.data document, "mouse-x", e.pageX
       $.data document, "mouse-y", e.pageY
 
-    defaultScale =
-      Intellect:            -1000000
-      Spirit:               -1000000
-      Is2HMace:             -1000000
-      IsPolearm:            -1000000
-      Is2HSword:            -1000000
-      IsShield:             -1000000
-      SpellPower:           -1000000
-      IsStaff:              -1000000
-      IsFrill:              -1000000
-      IsCloth:              -1000000
-      IsMail:               -1000000
-      IsPlate:              -1000000
-      IsRelic:              -1000000
-      Ap:                   1
-      IsWand:               -1000000
-      SpellPenetration:     -1000000
-      GemQualityLevel:      85
-      MetaGemQualityLevel:  86
-      SpeedBaseline:        2
-
-    $("#getPawnString").click ->
-      scale = _.extend({}, defaultScale)
-      scale.MasteryRating = Weights.mastery
-      scale.CritRating = Weights.crit
-      scale.HasteRating = Weights.haste
-      scale.Agility = Weights.agility
-      scale.Strength = Weights.strength
-      scale.MainHandDps = Shadowcraft.lastCalculation.mh_ep.mh_dps
-      scale.MainHandSpeed = (Shadowcraft.lastCalculation.mh_speed_ep["mh_2.7"] - Shadowcraft.lastCalculation.mh_speed_ep["mh_2.6"]) * 10
-      scale.OffHandDps = Shadowcraft.lastCalculation.oh_ep.oh_dps
-      scale.OffHandSpeed = (Shadowcraft.lastCalculation.oh_speed_ep["oh_1.4"] - Shadowcraft.lastCalculation.oh_speed_ep["oh_1.3"]) * 10
-      scale.MetaSocketEffect = 0
-
-      stats = []
-      for weight, val of scale
-        stats.push "#{weight}=#{val}"
-      name = "Rogue: " + ShadowcraftTalents.GetActiveSpecName()
-      pawnstr = "(Pawn:v1:\"#{name}\":#{stats.join(",")})"
-      $("#generalDialog").html("<textarea style='width: 450px; height: 300px;'>#{pawnstr}</textarea>")
-      $("#generalDialog").dialog({ modal: true, width: 500, title: "Pawn Import String" })
-      return false
-
-    # Select an item from a popup
+    # Register a callback for when a user clicks on an item in one of the
+    # popup windows.
     $popupbody.click $.delegate
-      ".slot": (e) ->
+      ".slot" : (e) ->
         Shadowcraft.Console.purgeOld()
         ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2
         EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
@@ -1374,53 +1373,43 @@ class ShadowcraftGear
         slot = $.data(document.body, "selecting-slot")
         update = $.data(document.body, "selecting-prop")
         $this = $(this)
+        slotGear = data.gear[slot]
+
         if update == "item_id" || update == "enchant"
           val = parseInt($this.attr("id"), 10)
           identifier = $this.data("identifier")
-          data.gear[slot][update] = if val != 0 then val else null
+          slotGear[update] = if val != 0 then val else null
           if update == "item_id"
             item = ItemLookup[identifier]
-            if data.gear[slot].item_id and item.upgrade_level
-              data.gear[slot].upgrade_level = item.upgrade_level
-            else
-              data.gear[slot].upgrade_level = null
             if item
-              data.gear[slot].original_id = item.original_id
-              data.gear[slot].item_level = item.ilvl
-              data.gear[slot].name = item.name
-              if item.context
-                data.gear[slot].context = item.context
-              else
-                data.gear[slot].context = null
-              if item.tag
-                data.gear[slot].tag = item.tag
-              else
-                data.gear[slot].tag = null
-              if item.suffix
-                data.gear[slot].suffix = item.suffix
-              else
-                data.gear[slot].suffix = null
+              slotGear.original_id = item.original_id
+              slotGear.item_level = item.ilvl
+              slotGear.name = item.name
+              slotGear.context = item.context ? null
+              slotGear.tag = item.tag ? null
+              slotGear.suffix = item.suffix ? null
+              slotGear.upgrade_level = item.upgrade_level ? null
               if item.sockets
                 socketlength = item.sockets.length
                 for i in [0..2]
                   if i >= socketlength
-                    data.gear[slot].gems[i] = null
-                  else if data.gear[slot].gems[i]?
-                    gem = Gems[data.gear[slot].gems[i]]
+                    slotGear.gems[i] = null
+                  else if slotGear.gems[i]?
+                    gem = Gems[slotGear.gems[i]]
                     if gem
-                      if not canUseGem Gems[data.gear[slot].gems[i]], item.sockets[i], [], slot
-                        data.gear[slot].gems[i] = null
+                      if not canUseGem Gems[slotGear.gems[i]], item.sockets[i], [], slot
+                        slotGear.gems[i] = null
               if item.bonus_tree
-                data.gear[slot].bonuses = item.bonus_tree
+                slotGear.bonuses = item.bonus_tree
             else
-              data.gear[slot].original_id = null
-              data.gear[slot].item_level = null
-              data.gear[slot].gems[i] = null for i in [0..2]
-              data.gear[slot].bonuses[i] = null for i in [0..9]
-              data.gear[slot].suffix = null
+              slotGear.original_id = null
+              slotGear.item_level = null
+              slotGear.gems[i] = null for i in [0..2]
+              slotGear.bonuses[i] = null for i in [0..9]
+              slotGear.suffix = null
           else
             enchant_id = if not isNaN(val) then val else null
-            item = getItem(data.gear[slot].original_id, data.gear[slot].item_level, data.gear[slot].suffix)
+            item = getItem(slotGear.original_id, slotGear.item_level, slotGear.suffix)
             if enchant_id?
               Shadowcraft.Console.log("Changing " + item.name + " enchant to " + EnchantLookup[enchant_id].name)
             else
@@ -1429,17 +1418,18 @@ class ShadowcraftGear
           item_id = parseInt($this.attr("id"), 10)
           item_id = if not isNaN(item_id) then item_id else null
           gem_id = $.data(document.body, "gem-slot")
-          item = getItem(data.gear[slot].original_id, data.gear[slot].item_level, data.gear[slot].suffix)
+          item = getItem(slotGear.original_id, slotGear.item_level, slotGear.suffix)
           if item_id?
             Shadowcraft.Console.log("Regemming " + item.name + " socket " + (gem_id + 1) + " to " + Gems[item_id].name)
           else
             Shadowcraft.Console.log("Removing Gem from " + item.name + " socket " + (gem_id + 1))
-          data.gear[slot].gems[gem_id] = item_id
+          slotGear.gems[gem_id] = item_id
         Shadowcraft.update()
         app.updateDisplay()
 
-    this.updateDisplay()
-
+    # Register a bunch of key bindings for the popup windows so that a user
+    # can move up and down in the list with the keyboard, plus select items
+    # with the enter key.
     $("input.search").keydown((e) ->
       $this = $(this)
       $popup = $this.closest(".popup")
@@ -1508,11 +1498,15 @@ class ShadowcraftGear
       e.cancelBubble = true
       e.stopPropagation()
 
+    # Bind to the update event from the Options tab for changes that affect the
+    # Gear tab.
     Shadowcraft.Options.bind "update", (opt, val) ->
       if opt in ['rotation.use_hemorrhage']
         app.updateDisplay()
       if opt in ['rotation.blade_flurry','general.num_boss_adds','general.lethal_poison']
         app.updateSummaryWindow()
+
+    this.updateDisplay()
 
     checkForWarnings('options')
 
