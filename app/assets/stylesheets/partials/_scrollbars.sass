@@ -16,6 +16,7 @@
 
 ::-webkit-scrollbar:vertical
   -webkit-border-image: url(/images/scrollbar/vertical-button.png) 2 0 2 0
+  border-style: solid
   border-color: transparent
   border-width: 2px 0
   background-image: url(/images/scrollbar/vertical-button-background.png)
@@ -24,6 +25,7 @@
     border-bottom-width: 0
 ::-webkit-scrollbar-thumb:vertical
   -webkit-border-image: url(/images/scrollbar/vertical-thumb.png) 15 0 15 0
+  border-style: solid
   border-color: transparent
   border-width: 15px 0
   min-height: 20px
@@ -34,10 +36,12 @@
     margin-bottom: 0px
   &:decrement
     -webkit-border-image: url(/images/scrollbar/vertical-track.png) 15 0 15 0
+    border-style: solid
     border-color: transparent
     border-width: 15px 0 0 0
   &:increment
     -webkit-border-image: url(/images/scrollbar/vertical-track.png) 15 0 15 0
+    border-style: solid
     border-color: transparent
     border-width: 0 0 15px 0
 ::-webkit-scrollbar-button:vertical
@@ -45,4 +49,5 @@
 ::-webkit-scrollbar:disabled
   background: red
   -webkit-border-image: none
+  border-style: solid
   display: none

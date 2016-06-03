@@ -1565,8 +1565,8 @@ h1#head span {
 /* line 415, ../../app/assets/stylesheets/partials/_app.sass */
 #card .img img {
   position: absolute;
-  left: -180px;
-  bottom: -35px;
+  left: 3px;
+  bottom: -12px;
 }
 
 /* line 419, ../../app/assets/stylesheets/partials/_app.sass */
@@ -3172,58 +3172,63 @@ img.upgrade {
 /* line 17, ../../app/assets/stylesheets/partials/_scrollbars.sass */
 ::-webkit-scrollbar:vertical {
   -webkit-border-image: url(/images/scrollbar/vertical-button.png) 2 0 2 0;
+  border-style: solid;
   border-color: transparent;
   border-width: 2px 0;
   background-image: url(/images/scrollbar/vertical-button-background.png);
   background-repeat: repeat-y;
 }
 
-/* line 23, ../../app/assets/stylesheets/partials/_scrollbars.sass */
+/* line 24, ../../app/assets/stylesheets/partials/_scrollbars.sass */
 ::-webkit-scrollbar:vertical:corner-present {
   border-bottom-width: 0;
 }
 
-/* line 25, ../../app/assets/stylesheets/partials/_scrollbars.sass */
+/* line 26, ../../app/assets/stylesheets/partials/_scrollbars.sass */
 ::-webkit-scrollbar-thumb:vertical {
   -webkit-border-image: url(/images/scrollbar/vertical-thumb.png) 15 0 15 0;
+  border-style: solid;
   border-color: transparent;
   border-width: 15px 0;
   min-height: 20px;
 }
 
-/* line 31, ../../app/assets/stylesheets/partials/_scrollbars.sass */
+/* line 33, ../../app/assets/stylesheets/partials/_scrollbars.sass */
 ::-webkit-scrollbar-track-piece:vertical:start {
   margin-top: 0px;
 }
 
-/* line 33, ../../app/assets/stylesheets/partials/_scrollbars.sass */
+/* line 35, ../../app/assets/stylesheets/partials/_scrollbars.sass */
 ::-webkit-scrollbar-track-piece:vertical:end {
   margin-bottom: 0px;
 }
 
-/* line 35, ../../app/assets/stylesheets/partials/_scrollbars.sass */
+/* line 37, ../../app/assets/stylesheets/partials/_scrollbars.sass */
 ::-webkit-scrollbar-track-piece:vertical:decrement {
   -webkit-border-image: url(/images/scrollbar/vertical-track.png) 15 0 15 0;
+  border-style: solid;
   border-color: transparent;
   border-width: 15px 0 0 0;
 }
 
-/* line 39, ../../app/assets/stylesheets/partials/_scrollbars.sass */
+/* line 42, ../../app/assets/stylesheets/partials/_scrollbars.sass */
 ::-webkit-scrollbar-track-piece:vertical:increment {
   -webkit-border-image: url(/images/scrollbar/vertical-track.png) 15 0 15 0;
+  border-style: solid;
   border-color: transparent;
   border-width: 0 0 15px 0;
 }
 
-/* line 43, ../../app/assets/stylesheets/partials/_scrollbars.sass */
+/* line 47, ../../app/assets/stylesheets/partials/_scrollbars.sass */
 ::-webkit-scrollbar-button:vertical {
   display: none;
 }
 
-/* line 45, ../../app/assets/stylesheets/partials/_scrollbars.sass */
+/* line 49, ../../app/assets/stylesheets/partials/_scrollbars.sass */
 ::-webkit-scrollbar:disabled {
   background: red;
   -webkit-border-image: none;
+  border-style: solid;
   display: none;
 }
 

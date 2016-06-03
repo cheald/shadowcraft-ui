@@ -50,7 +50,7 @@ module WowArmory
       self.race = RACE_MAP[@json['race'].to_i]
       self.talents = @json['talents']
 
-      self.portrait = 'http://%s.battle.net/static-render/%s/%s' % [ @region.downcase, @region.downcase, @json['thumbnail'].gsub(/-avatar/, '-card') ]
+      self.portrait = 'http://%s.battle.net/static-render/%s/%s' % [ @region.downcase, @region.downcase, @json['thumbnail'] ]
 
       populate_gear
     end

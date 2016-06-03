@@ -24,6 +24,7 @@
 
 ::-webkit-scrollbar:horizontal {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/horizontal-button.png) 0 2 0 2;
+  border-style: solid;
   border-color: transparent;
   border-width: 0 2px;
   background-image: url(http://help.apple.com/mobileme/images/horizontal-button-background.png);
@@ -36,6 +37,7 @@
 
 ::-webkit-scrollbar-thumb:horizontal {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/horizontal-thumb.png) 0 15 0 15;
+  border-style: solid;
   border-color: transparent;
   border-width: 0 15px;
   min-width: 20px;
@@ -51,12 +53,14 @@
 
 ::-webkit-scrollbar-track-piece:horizontal:decrement {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/horizontal-track.png) 0 15 0 15;
+  border-style: solid;
   border-color: transparent;
   border-width: 0 0 0 15px;
 }
 
 ::-webkit-scrollbar-track-piece:horizontal:increment {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/horizontal-track.png) 0 15 0 15;
+  border-style: solid;
   border-color: transparent;
   border-width: 0 15px 0 0;
 }
@@ -64,6 +68,7 @@
 ::-webkit-scrollbar-button:horizontal {
   width: 21px;
   -webkit-border-image: url(http://help.apple.com/mobileme/images/horizontal-button.png) 0 2 0 2;
+  border-style: solid;
   border-color: transparent;
   border-width: 0 2px;
 }
@@ -76,6 +81,7 @@
 
 ::-webkit-scrollbar-button:horizontal:decrement:active {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/horizontal-button-active.png) 0 2 0 2;
+  border-style: solid;
   background-image: url(http://help.apple.com/mobileme/images/horizontal-decrement-arrow.png), url(http://help.apple.com/mobileme/images/horizontal-button-background-active.png);
 }
 
@@ -89,6 +95,7 @@
 
 ::-webkit-scrollbar-button:horizontal:increment:active {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/horizontal-button-active.png) 0 2 0 2;
+  border-style: solid;
   background-image: url(http://help.apple.com/mobileme/images/horizontal-increment-arrow.png), url(http://help.apple.com/mobileme/images/horizontal-button-background-active.png);
 }
 
@@ -99,6 +106,7 @@
 
 ::-webkit-scrollbar:vertical {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/vertical-button.png) 2 0 2 0;
+  border-style: solid;
   border-color: transparent;
   border-width: 2px 0;
   background-image: url(http://help.apple.com/mobileme/images/vertical-button-background.png);
@@ -111,6 +119,7 @@
 
 ::-webkit-scrollbar-thumb:vertical {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/vertical-thumb.png) 15 0 15 0;
+  border-style: solid;
   border-color: transparent;
   border-width: 15px 0;
   min-height: 20px;
@@ -126,12 +135,14 @@
 
 ::-webkit-scrollbar-track-piece:vertical:decrement {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/vertical-track.png) 15 0 15 0;
+  border-style: solid;
   border-color: transparent;
   border-width: 15px 0 0 0;
 }
 
 ::-webkit-scrollbar-track-piece:vertical:increment {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/vertical-track.png) 15 0 15 0;
+  border-style: solid;
   border-color: transparent;
   border-width: 0 0 15px 0;
 }
@@ -139,6 +150,7 @@
 ::-webkit-scrollbar-button:vertical {
   height: 21px;
   -webkit-border-image: url(http://help.apple.com/mobileme/images/vertical-button.png) 2 0 2 0;
+  border-style: solid;
   border-color: transparent;
   border-width: 2px 0;
 }
@@ -151,6 +163,7 @@
 
 ::-webkit-scrollbar-button:vertical:decrement:active {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/vertical-button-active.png) 2 0 2 0;
+  border-style: solid;
   background-image: url(http://help.apple.com/mobileme/images/vertical-decrement-arrow.png), url(http://help.apple.com/mobileme/images/vertical-button-background-active.png);
 }
 
@@ -164,6 +177,7 @@
 
 ::-webkit-scrollbar-button:vertical:increment:active {
   -webkit-border-image: url(http://help.apple.com/mobileme/images/vertical-button-active.png) 2 0 2 0;
+  border-style: solid;
   background-image: url(http://help.apple.com/mobileme/images/vertical-increment-arrow.png), url(http://help.apple.com/mobileme/images/vertical-button-background-active.png);
 }
 
@@ -175,5 +189,6 @@
 ::-webkit-scrollbar:disabled {
   background: red;
   -webkit-border-image: none;
+  border-style: solid;
   display: none;
 }
