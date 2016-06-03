@@ -63,8 +63,7 @@ module WowArmory
         next if SLOT_MAP[k].nil?
         tooltip = v['tooltipParams'] || {}
         info = {
-          'item_id' => v['id'],
-          'original_id' => v['id'],
+          'id' => v['id'],
           'item_level' => v['itemLevel'],
           'name' => v['name'],
           'enchant' => tooltip['enchant'].nil? ? 0 : tooltip['enchant'],

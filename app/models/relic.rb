@@ -17,7 +17,6 @@ class Relic
 
   def as_json(options={})
     json = { 
-      :oid => remote_id,
       :id => remote_id,
       :n => name,
       :type => type,
@@ -59,6 +58,8 @@ class Relic
           db_item.icon = relic.icon
           if db_item.new_record? and db_item.trait_modified_id != -1
             db_item.save()
+          elsif db_item.trait_modified_id == -1
+            puts "Failed to load relic #{id}"
           end
         end
       rescue Exception => e

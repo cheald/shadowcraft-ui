@@ -51,8 +51,7 @@
         item.quality = item.q;
         item.name = item.n;
         item.icon = item.i;
-        item.item_id = item.id;
-        item.original_id = item.oid;
+        item.id = item.id;
         item.sockets = item.so;
         item.socketbonus = item.sb;
         item.equip_location = item.e;
@@ -61,7 +60,6 @@
         delete item.q;
         delete item.n;
         delete item.i;
-        delete item.oid;
         delete item.so;
         delete item.e;
         delete item.sb;
@@ -110,14 +108,14 @@
           case "Meta":
             g.Meta = true; break;
         }
-        R.GEM_LOOKUP[g.item_id] = g;
+        R.GEM_LOOKUP[g.id] = g;
       }
 
       R.RELIC_LOOKUP = {}
       for(var i = 0; i < R.RELICS.length; i++) {
         var g = R.RELICS[i];
         expandItem(g, null);
-        R.RELIC_LOOKUP[g.item_id] = g;
+        R.RELIC_LOOKUP[g.id] = g;
       }
 
       R.SLOT_CHOICES = {mainhand: [], offhand: [], ranged: []};
@@ -136,8 +134,7 @@
         var item = R.ITEMS[i];
         expandItem(item, iStatMap);
 
-        item.item_id = item.id;
-        item.identifier = item.original_id + ":" + item.ilvl + ":" + (item.suffix || 0);
+        item.identifier = item.id + ":" + item.ilvl + ":" + (item.suffix || 0);
         if(item.equip_location == 6) {    // Add sockets to belts
           if(600 >= getBaseItemLevel(item)) {
             if(item.sockets === undefined) { item.sockets = []; }

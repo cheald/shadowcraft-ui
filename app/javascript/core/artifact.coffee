@@ -256,7 +256,6 @@ class ShadowcraftArtifact
 
     # Grab the list of relics and filter them based on the type that
     # was clicked.
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2
     RelicList = Shadowcraft.ServerData.RELICS.filter((relic) ->
       return relic.type == RELIC_TYPE_MAP[relic_type]
     )

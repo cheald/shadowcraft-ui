@@ -14,7 +14,6 @@ class Talent
 
   def as_json(options={})
     json = { 
-      :oid => remote_id,
       :id => remote_id,
       :n => name,
       :i => icon,

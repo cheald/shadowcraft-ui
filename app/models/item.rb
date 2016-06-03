@@ -16,19 +16,6 @@ class Item
   validates_presence_of :remote_id
   validates_presence_of :properties
 
-  # Unique Item identifier
-  # TODO: probably should change this to take contexts and WF and such
-  # into account. right now, it duplicates IDs a lot. of course, does
-  # it really matter?
-  def uid
-    # a bit silly
-    uid = remote_id
-    if not properties["upgrade_level"].nil?
-      uid = uid * 1000000 + properties["upgrade_level"].to_i
-    end
-    uid
-  end
-
   def icon
     return '' if self.properties.nil?
     self.properties['icon'].split('/').last
@@ -36,23 +23,17 @@ class Item
 
   def as_json(options={})
     json = {
-        :oid => remote_id,
-        :n => properties['name'],
-        :i => if icon.nil?
-                ''
-              else
-                icon.gsub(/\.(tga|jpg|png)$/i, '')
-              end,
-        :q => properties['quality'],
-        :stats => properties['stats'],
+      :id => remote_id,
+      :n => properties['name'],
+      :i => if icon.nil?
+              ''
+            else
+              icon.gsub(/\.(tga|jpg|png)$/i, '')
+            end,
+      :q => properties['quality'],
+      :stats => properties['stats'],
     }
-
-    if (is_gem)
-      json[:id] = remote_id
-    else
-      json[:id] = uid.to_i
-    end
-
+    
     if properties['sockets'] and !properties['sockets'].empty?
       json[:so] = properties['sockets']
     end

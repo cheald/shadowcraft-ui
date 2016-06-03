@@ -5,7 +5,6 @@ class Enchant
   field :spell_id, :type => Integer
   field :stats, :type => Hash
   field :icon
-  field :item_id, :type => Integer
   field :item_name
   field :equip_location, :type => Integer
   field :requires, :type => Hash

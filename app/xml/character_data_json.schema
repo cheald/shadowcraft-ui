@@ -3,10 +3,7 @@
     "gear_slot": {
       "type": "object",
       "properties": {
-        "item_id": {
-          "type": "integer"
-        },
-        "original_id": {
+        "id": {
           "type": "integer"
         },
         "item_level": {
@@ -45,7 +42,7 @@
           "maxLength": 50
         }
       },
-      "required": ["item_id", "original_id", "item_level", "name", "enchant", "gems", "slot", "bonuses", "context"]
+      "required": ["id", "item_level", "name", "enchant", "gems", "slot", "bonuses", "context"]
     },
     "gear": {
       "type": "object",
@@ -185,7 +182,7 @@
         },
         "potion": {
           "type": "boolean"
-        },
+        }
       },
       "required": ["level", "race", "patch", "night_elf_racial", "duration", "response_time", "time_in_execute_range", "lethal_poison", "utility_poison", "num_boss_adds", "demon_enemy", "max_ilvl", "min_ilvl", "show_random_items", "show_upgrades", "epic_gems", "prepot", "potion"]
     },
