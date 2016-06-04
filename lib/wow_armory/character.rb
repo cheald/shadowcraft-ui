@@ -65,7 +65,6 @@ module WowArmory
         info = {
           'id' => v['id'],
           'item_level' => v['itemLevel'],
-          'name' => v['name'],
           'enchant' => tooltip['enchant'].nil? ? 0 : tooltip['enchant'],
           'gems' => [],
           'slot' => SLOT_MAP[k],

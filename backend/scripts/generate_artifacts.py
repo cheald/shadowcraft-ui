@@ -454,3 +454,9 @@ elif sys.argv[2] == '--js':
     sys.stdout.write('width: {}, left: {:.3f}, top: {:.3f}, angle: {:.3f}, spell1: {}, spell2: {}'.format(length, left, top, angle, icon1['spell_id'], icon2['spell_id']))
     sys.stdout.write('},\n')
   print '      ]'
+
+elif sys.argv[2] == '--rails':
+  sys.stdout.write(':traits => {')
+  for key,value in iter(sorted(ICONS.iteritems())):
+    sys.stdout.write('\'{}\':0,'.format(value['spell_id']))
+  sys.stdout.write('}')

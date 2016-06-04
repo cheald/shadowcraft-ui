@@ -60,8 +60,10 @@ class ShadowcraftArtifact
     trait.children(".icon").removeClass("inactive")
     trait.children(".level").removeClass("inactive")
     active_mapping[parseInt(trait.attr("data-tooltip-id"))] = true
-    level = artifact_data.traits[spell_id]
-    max_level = parseInt(trait.attr("max_level"))
+
+    relic_power = trait.data("relic-power")
+    level = artifact_data.traits[spell_id]+relic_power
+    max_level = parseInt(trait.attr("max_level"))+relic_power
     trait.children(".level").text(""+level+"/"+max_level)
     trait.data("tooltip-rank", level-1)
     return {current: level, max: max_level}
@@ -84,6 +86,7 @@ class ShadowcraftArtifact
       $(this).children(".icon").addClass("inactive")
       $(this).children(".relic").addClass("inactive")
       $(this).data("tooltip-rank", -1)
+      $(this).data("relic-power", 0)
     )
     $("#artifactframe .line").each(->
       $(this).addClass("inactive")
@@ -115,16 +118,17 @@ class ShadowcraftArtifact
     stack = [main_spell_id]
 
     # If there are relics attached, add them to the stack so they're
-    # guaranteed to get processed.
-    if artifact_data.relics[0] != 0
-      relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[0]]
-      stack.push(relic.tmi)
-    if artifact_data.relics[1] != 0
-      relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[1]]
-      stack.push(relic.tmi)
-    if artifact_data.relics[2] != 0
-      relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[2]]
-      stack.push(relic.tmi)
+    # guaranteed to get processed. Also update the trait's relic power so
+    # it gets added to the trait's level when the display is updated.
+    for i in [0...3]
+      if artifact_data.relics[i] != 0
+        relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i]]
+        spell = relic.ts[Shadowcraft.Data.activeSpec].spell
+        trait = $("#artifactframe .trait[data-tooltip-id='#{spell}'")
+        current = trait.data('relic-power')
+        current += relic.ts[Shadowcraft.Data.activeSpec].rank
+        trait.data('relic-power', current)
+        stack.push(relic.ts[Shadowcraft.Data.activeSpec].spell)
 
     while (stack.length > 0)
       spell_id = stack.pop()
@@ -176,15 +180,10 @@ class ShadowcraftArtifact
       relicdiv = $("#relic"+(i+1))
       if artifact_data.relics[i] != 0
         relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i]]
+        relicTrait = relic.ts[Shadowcraft.Data.activeSpec]
         button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relic.icon+".jpg")
         button.removeClass("inactive")
         relicdiv.data("tooltip-id", relic.id)
-
-        trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"'")
-        {current, max} = activateTrait(relic.tmi)
-        trait.children(".level").text(""+(relic.ti+current)+"/"+(relic.ti+max))
-        trait.data("tooltip-rank", relic.ti+current-1)
-        type = ''
         for key,val of RELIC_TYPE_MAP
           if (val == relic.type)
             type = key
@@ -253,6 +252,7 @@ class ShadowcraftArtifact
   clickRelicSlot = (e) ->
     relic_type = e.delegateTarget.attributes['relic-type'].value
     clicked_relic_slot = parseInt(/relic(\d+)/.exec(e.delegateTarget.id)[1])-1
+    activeSpec = Shadowcraft.Data.activeSpec
 
     # Grab the list of relics and filter them based on the type that
     # was clicked.
@@ -275,10 +275,10 @@ class ShadowcraftArtifact
       desc = ""
       if (relic.ii != -1)
         desc += "+"+relic.ii+" Item Levels"
-      if (relic.ii != -1 && relic.ti != -1)
+      if (relic.ii != -1 && relic.ts[activeSpec].rank != -1)
         desc += " / "
-      if (relic.ti != -1)
-        desc += "+"+relic.ti+" Rank: "+relic.tmn
+      if (relic.ts[activeSpec].rank != -1)
+        desc += "+"+relic.ts[activeSpec].rank+" Rank: "+relic.ts[activeSpec].name
 
       buffer += Templates.itemSlot
         item: relic

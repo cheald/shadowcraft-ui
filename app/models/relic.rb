@@ -8,9 +8,7 @@ class Relic
   field :type, :type => Integer
   field :quality, :type => Integer
   field :icon, :type => String
-  field :trait_modified_id, :type => Integer
-  field :trait_modified_name, :type => String
-  field :trait_increase, :type => Integer
+  field :traits, :type => Hash
   field :ilvl_increase, :type => Integer
 
   index({remote_id: 1, type: 1}, {unique: true})
@@ -20,9 +18,7 @@ class Relic
       :id => remote_id,
       :n => name,
       :type => type,
-      :tmi => trait_modified_id,
-      :tmn => trait_modified_name,
-      :ti => trait_increase,
+      :ts => traits,
       :ii => ilvl_increase,
       :q => quality,
       :i => icon
@@ -50,15 +46,13 @@ class Relic
           relic = WowArmory::Relic.new(id)
           db_item.type = relic.type
           db_item.name = relic.name
-          db_item.trait_modified_id = relic.trait_modified_id
-          db_item.trait_modified_name = relic.trait_modified_name
-          db_item.trait_increase = relic.rank_increase
+          db_item.traits = relic.traits
           db_item.ilvl_increase = relic.ilvl_increase
           db_item.quality = relic.quality
           db_item.icon = relic.icon
-          if db_item.new_record? and db_item.trait_modified_id != -1
+          if db_item.new_record? and !db_item.traits.empty?
             db_item.save()
-          elsif db_item.trait_modified_id == -1
+          elsif db_item.traits.empty?
             puts "Failed to load relic #{id}"
           end
         end
