@@ -72,6 +72,7 @@ class ItemsController < ApplicationController
     @talents = Talent.all
     Rails.logger.debug(@talents.first.as_json)
     @relics = Relic.all
+    @artifacts = Artifact.all
 
     item_bonuses = {}
     CSV.foreach(File.join(Rails.root, 'lib', 'wow_armory', 'data', 'ItemBonus.dbc.csv')) do |row|

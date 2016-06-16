@@ -81,6 +81,7 @@ class ShadowcraftBackend
         statSummary.multistrike || 0,
         statSummary.versatility || 0
       ],
+      art: data.artifact[data.activeSpec].traits,
 
     if mh?
       payload.mh = [

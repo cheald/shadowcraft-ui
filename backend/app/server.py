@@ -41,35 +41,6 @@ class ShadowcraftComputation:
 
     trinkets = {
 
-        # 6.0
-        113931: 'beating_heart_of_the_mountain',
-        118114: 'meaty_dragonspine_trophy',
-        113985: 'humming_blackiron_trigger',
-        113612: 'scales_of_doom',
-        112318: 'skull_of_war',
-        114610: 'formidable_jar_of_doom',
-        116314: 'blackheart_enforcers_medallion',
-        118876: 'lucky_doublesided_coin',
-
-        115149: 'primal_combatants_boc',
-        111222: 'primal_combatants_boc',
-        117930: 'primal_combatants_boc',
-        115749: 'primal_combatants_boc',
-
-        119927: 'primal_combatants_ioc',
-        115150: 'primal_combatants_ioc',
-        111223: 'primal_combatants_ioc',
-        115750: 'primal_combatants_ioc',
-
-        109998: 'gorashans_lodestone_spike',
-        109997: 'kihras_adrenaline_injector',
-        114488: 'turbulent_vial_of_toxin',
-        114427: 'munificent_emblem_of_terror',
-        109999: 'witherbarks_branch',
-        109262: 'draenic_philosophers_stone',
-        114891: 'void-touched_totem',
-        116799: 'smoldering_heart_of_hyperious',
-
         # 6.1
         122601: 'alchemy_stone', # 'stone_of_wind'
         122602: 'alchemy_stone', # 'stone_of_the_earth',
@@ -94,6 +65,67 @@ class ShadowcraftComputation:
         118307: 'archmages_greater_incandescence',
         124636: 'maalus',
     }
+    
+    artifactTraits = {
+        # Outlaw/Dreadblades traits
+        216230: 'black_powder',
+        202507: 'blade_dancer',
+        202628: 'blademaster',
+        202897: 'blunderbuss',
+        202769: 'blurred_time',
+        202665: 'curse_of_the_dreadblades',
+        202463: 'cursed_edges',
+        202521: 'cursed_leather',
+        202755: 'deception',
+        202524: 'fatebringer',
+        202514: 'fates_thirst',
+        202907: 'fortunes_boon',
+        202530: 'fortune_strikes',
+        202533: 'ghostly_shell',
+        202820: 'greed',
+        202522: 'gunslinger',
+        202753: 'hidden_blade',
+
+        # Subtlety/Fangs traits
+        209835: 'akarris_soul',
+        197241: 'catlike_reflexes',
+        197233: 'demons_kiss',
+        197604: 'embrace_of_darkness',
+        197239: 'energetic_stabbing',
+        197256: 'flickering_shadows',
+        197406: 'finality',
+        197369: 'fortunes_bite',
+        197244: 'ghost_armor',
+        209782: 'goremaws_bite',
+        197234: 'gutripper',
+        197235: 'precision_strike',
+        197231: 'the_quiet_knife',
+        197610: 'second_shuriken',
+        221856: 'shadow_fangs',
+        209781: 'shadow_nova',
+        197386: 'soul_shadows',
+
+        # Assassination/Kingslayers
+        214368: 'assassins_blades',
+        192657: 'bag_of_tricks',
+        192326: 'balanced_blades',
+        192923: 'blood_of_the_assassinated',
+        192323: 'fade_into_shadows',
+        192428: 'from_the_shadows',
+        192759: 'kingsbane',
+        192329: 'gushing_wounds',
+        192318: 'master_alchemist',
+        192349: 'master_assassin',
+        192376: 'poison_knives',
+        192315: 'serrated_edge',
+        192422: 'shadow_swiftness',
+        192345: 'shadow_walker',
+        192424: 'surge_of_toxins',
+        192310: 'toxic_blades',
+        192384: 'urge_to_kill',
+    }
+
+    artifactTraitsReverse = {v: k for k, v in artifactTraits.iteritems()}
 
     gearProcs = trinkets.copy()
     gearProcs.update(otherProcs)
@@ -122,26 +154,6 @@ class ShadowcraftComputation:
         'malicious_censer': createGroup(createGroup([700,715,730], 1, 6), 2, 5),
         'soul_capacitor': createGroup(createGroup([695,710,725], 1, 6), 2, 5),
         'mirror_of_the_blademaster': createGroup(createGroup([690,705,720], 1, 6), 2, 5),
-        # 6.0 trinkets
-        'beating_heart_of_the_mountain': createGroup([670,685,700], 1, 6),
-        'meaty_dragonspine_trophy': createGroup([670,685,700], 1, 6),
-        'humming_blackiron_trigger': createGroup([670,685,700], 1, 6),
-        'scales_of_doom': createGroup([655,670,685], 1, 6),
-        'skull_of_war': createGroup([640,655,670,685,700,715], 2, 5),
-        'formidable_jar_of_doom': [655,661],
-        'lucky_doublesided_coin': [665],
-        'blackheart_enforcers_medallion': [655,661],
-        'primal_combatants_boc': [620,626,660],
-        'primal_combatants_ioc': [620,626,660],
-        'gorashans_lodestone_spike': createGroup([530,550,570,600,615,630,636,685,705], 2, 5),
-        'kihras_adrenaline_injector': createGroup([530,550,570,600,615,630,636,685,705], 2, 5),
-        'turbulent_vial_of_toxin': [630,636],
-        'munificent_emblem_of_terror': [615,621],
-        'witherbarks_branch': createGroup([530,550,570,600,615,630,636,685,705], 2, 5),
-        'draenic_philosophers_stone': [620],
-        'void-touched_totem': [604,614,624,634],
-        'smoldering_heart_of_hyperious': [597,607],
-        'infallible_tracking_charm': [715],
     }
 
     gearBoosts = {
@@ -405,6 +417,11 @@ class ShadowcraftComputation:
             default_ep_stat = 'ap',
             **settings_options
         )
+
+        artifact = {}
+        for k,v in input['art'].iteritems():
+            artifact[self.artifactTraits[int(k)]] = v
+
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)
         return calculator
 
@@ -423,9 +440,6 @@ class ShadowcraftComputation:
             default_ep_stats = ['agi', 'haste', 'crit', 'mastery', 'multistrike', 'versatility', 'ap']
             _opt = input.get("settings", {})
             out["ep"] = calculator.get_ep(ep_stats=default_ep_stats)
-
-            # Glyph ranking is slow
-            out["glyph_ranking"] = [] # calculator.get_glyphs_ranking(input.get("gly", []))
 
             out["other_ep"] = calculator.get_other_ep(['rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr','rogue_t17_2pc','rogue_t17_4pc','rogue_t17_4pc_lfr'])
 
@@ -446,6 +460,32 @@ class ShadowcraftComputation:
             out["talent_ranking"] = [] # calculator.get_talents_ranking()
 
             out["engine_info"] = calculator.get_engine_info()
+
+            # Get the artifact ranking and change the IDs from the engine back to
+            # the item IDs using the artifactMap data.
+#            artifactRanks = calculator.get_artifact_ranking()
+            artifactRanks = {
+                'akarris_soul': 0.0,
+                'catlike_reflexes': 3.2,
+                'demons_kiss': 0.0,
+                'embrace_of_darkness': 0.0,
+                'energetic_stabbing': 5.1,
+                'flickering_shadows': 0.0,
+                'finality': 0.0,
+                'fortunes_bite': 0.0,
+                'ghost_armor': 0.0,
+                'goremaws_bite': 7.3,
+                'gutripper': 0.0,
+                'precision_strike': 0.0,
+                'the_quiet_knife': 0.0,
+                'second_shuriken': 0.0,
+                'shadow_fangs': 4.9,
+                'shadow_nova': 0.0,
+                'soul_shadows': 0.0
+            }
+            out["artifact_ranking"] = {}
+            for k,v in artifactRanks.iteritems():
+                out["artifact_ranking"][self.artifactTraitsReverse[k]] = v
 
             return out
         except (InputNotModeledException, exceptions.InvalidInputException) as e:
@@ -481,6 +521,7 @@ class ShadowcraftSite(resource.Resource):
             log.msg("Request: %s" % input)
             response = engine.get_all(input)
             log.msg("Request time: %s sec" % (clock() - start))
+            log.msg("Response: %s" % response)
             return json.dumps(response)
 
     # Because IE is terrible.

@@ -51,6 +51,11 @@ class ShadowcraftArtifact
   # back to -1 after the click has been processed.
   clicked_relic_slot = 0
 
+  # Stores a mapping of ilvl increase to the EP increase for that ilvl. These
+  # get reset whenever a calculation happens (because the EP for each stat
+  # changes). Some may get recalculated if the user goes to select a relic.
+  artifact_ilvl_stats = {}
+
   artifact_data = null
 
   # Activates a trait, turns the icon enabled, and sets the level of the icon to
@@ -241,10 +246,47 @@ class ShadowcraftArtifact
     artifact_data.traits[spell_id] -= 1
     return updateTraits()
 
-  get_ep = (relic) ->
-    # TODO: not entirely sure how to go about this one. Right now just order
-    # them by the ID so we can tell it's doing *something*.
-    return relic.id
+  # Returns the stats for an artifact based on a requested ilvl. These are kept in a
+  # map so that it can just do a lookup if needed.
+  getStatsForIlvl = (ilvl) ->
+
+    if !(ilvl of artifact_ilvl_stats)
+      # get the stats for the base artifact item
+      # TODO: get the actual item here
+      stats = $.extend({}, Shadowcraft.ServerData.ITEM_LOOKUP2["124367:700:0"].stats)
+
+      # recalcuate and store
+      multiplier =  1.0 / Math.pow(1.15, ((ilvl-700) / 15.0 * -1))
+      for stat,value of stats
+        stats[stat] = Math.round(value * multiplier)
+      artifact_ilvl_stats[ilvl] = stats
+
+    return artifact_ilvl_stats[ilvl]
+
+  # Calculates the EP for a relic.
+  getRelicEP = (relic, baseIlvl, baseStats) ->
+    activeSpec = Shadowcraft.Data.activeSpec
+    trait = relic.ts[activeSpec]
+    ep = trait.rank * Shadowcraft.lastCalculation.artifact_ranking[trait.spell]
+
+    # Calculate the difference for each stat and the EP gain/loss for those differences
+    # TODO: really should make all of these consistent everywhere
+    # TODO: also, multistrike doesn't exist in legion
+    newStats = getStatsForIlvl(baseIlvl+relic.ii)
+    for stat of baseStats
+      diff = newStats[stat] - baseStats[stat]
+      if (stat == "agility")
+        ep += diff * Shadowcraft.lastCalculation.ep["agi"]
+      else if (stat == "mastery")
+        ep += diff * Shadowcraft.lastCalculation.ep["mastery"]
+      else if (stat == "crit")
+        ep += diff * Shadowcraft.lastCalculation.ep["crit"]
+      else if (stat == "multistrike")
+        ep += diff * Shadowcraft.lastCalculation.ep["multistrike"]
+      else if (stat == "haste")
+        ep += diff * Shadowcraft.lastCalculation.ep["haste"]
+
+    return Math.round(ep * 100.0) / 100.0;
 
   # Called when the user clicks on a relic slot in the UI. This will create
   # a popup containing all of the relics for that type and allow the user
@@ -261,10 +303,20 @@ class ShadowcraftArtifact
     )
     data = Shadowcraft.Data
 
+    # Get the stat information for the artifact weapon, potentially  without the
+    # currently applied relic, if there is one.
+    currentRelicId = Shadowcraft.Data.artifact[activeSpec].relics[clicked_relic_slot]
+    if currentRelicId != 0
+      currentRelic = (i for i in RelicList when i.id == currentRelicId)[0]
+      baseIlvl = Shadowcraft.Data.gear[15].item_level-currentRelic.ii
+    else
+      baseIlvl = Shadowcraft.Data.gear[15].item_level
+    baseArtifactStats = getStatsForIlvl(baseIlvl)
+
     # Generate EP values for all of the relics selected and then sort
     # them based on the EP values, highest EP first.
     for relic in RelicList
-      relic.__ep = get_ep(relic)
+      relic.__ep = getRelicEP(relic, baseIlvl, baseArtifactStats)
     RelicList.sort((relic1, relic2) -> return (relic2.__ep - relic1.__ep))
 
     # Loop through and build up the HTML for the popup window
@@ -326,8 +378,6 @@ class ShadowcraftArtifact
 
     clicked_relic_slot = 0
     Shadowcraft.update()
-    # TODO: is this needed?
-#    app.updateDisplay()
     return true
 
   setSpec: (str) ->
@@ -391,6 +441,44 @@ class ShadowcraftArtifact
 
     updateTraits()
 
+  updateTraitRanking = ->
+    buffer = ""
+    target = $("#traitrankings")
+    ranking = Shadowcraft.lastCalculation.artifact_ranking
+    max = _.max(ranking)
+    for trait,ep of ranking
+      console.log trait
+      val = parseFloat(ep)
+      trait_name = ShadowcraftData.ARTIFACT_LOOKUP[parseInt(trait)].n
+      pct = val / max * 100 + 0.01
+
+      # Only add the trait to the list the first time through this loop.
+      # On subsequent passes the element just gets resized below.
+      exist = $("#traitrankings #talent-weight-"+trait)
+      if exist.length == 0
+        buffer = Templates.talentContribution({
+          name: "#{trait_name}"
+          raw_name: "#{trait}"
+          val: val
+          width: pct
+        })
+        target.append(buffer)
+
+      # Resize this element in the list to not be bigger than the actual
+      # space.
+      exist = $("#traitrankings #talent-weight-"+trait)
+      $.data(exist.get(0), "val", val)
+      exist.show().find(".pct-inner").css({width:pct+"%"})
+      exist.find(".label").text("#{val}")
+
+    # sort all of the elements so the biggest ones are at the top
+    $("#traitrankings .talent_contribution").sortElements (a,b) ->
+      ad = $.data(a, "val")
+      bd = $.data(b, "val")
+      if ad > bd then -1 else 1
+
+    return
+
   boot: ->
     app = this
 
@@ -406,6 +494,10 @@ class ShadowcraftArtifact
     # Set the correct display when the spec changes on the talent tab
     Shadowcraft.Talents.bind "changedSpec", (spec) ->
       app.setSpec(spec)
+
+    # Register for the recompute event sent by the backend. This updates some
+    # of the display with the latest information from the last calculation pass.
+    Shadowcraft.Backend.bind("recompute", updateTraitRanking)
 
     $("#reset_artifact").click((e) ->
       app.resetTraits()

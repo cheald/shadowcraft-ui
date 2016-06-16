@@ -170,10 +170,10 @@ elif sys.argv[1] == '--ks':
   IMAGE_WIDTH=720
 
   spell_id_map = {
-    "192759": "ks_graspofguldan",
+    "192759": "ks_kingsbane",
     "192657": "ks_bagoftricks",
     "192428": "ks_fromtheshadows",
-    "192923": "ks_blood",
+    "192923": "ks_fadeintoshadows",
     "192310": "ks_toxicblades",
     "192318": "ks_masteralchemist",
     "192424": "ks_surgeoftoxins",
@@ -209,11 +209,11 @@ elif sys.argv[1] == '--fangs':
     "197406": "fangs_finality",
     "197239": "fangs_energetic",
     "197244": "fangs_ghostarmor",
-    "197241": "fangs_catwalk",
+    "197241": "fangs_catlike",
     "197386": "fangs_soulshadows",
     "197234": "fangs_gutripper",
     "197231": "fangs_quietknife",
-    "197256": "fangs_faster",
+    "197256": "fangs_flickering",
     "197610": "fangs_second",
     "197233": "fangs_demonskiss",
     "197235": "fangs_precision",
