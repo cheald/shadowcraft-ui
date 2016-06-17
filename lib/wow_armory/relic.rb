@@ -99,7 +99,6 @@ module WowArmory
         traitdata = spec.scan(/\+(\d+) Rank.*\/spell=(\d+).*?>(.*?)</)
         traits[:b] = {:rank => traitdata[0][0].to_i, :spell => traitdata[0][1].to_i, :name => traitdata[0][2]}
       end
-      puts traits
     end
   end
 end

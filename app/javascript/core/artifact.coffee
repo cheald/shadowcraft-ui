@@ -315,15 +315,16 @@ class ShadowcraftArtifact
 
     # Generate EP values for all of the relics selected and then sort
     # them based on the EP values, highest EP first.
+    max = 1
     for relic in RelicList
       relic.__ep = getRelicEP(relic, baseIlvl, baseArtifactStats)
+      if relic.__ep > max
+        max = relic.__ep
     RelicList.sort((relic1, relic2) -> return (relic2.__ep - relic1.__ep))
 
     # Loop through and build up the HTML for the popup window
     buffer = ""
-    max = null
     for relic in RelicList
-      max ||= relic.__ep
       desc = ""
       if (relic.ii != -1)
         desc += "+"+relic.ii+" Item Levels"
@@ -332,14 +333,15 @@ class ShadowcraftArtifact
       if (relic.ts[activeSpec].rank != -1)
         desc += "+"+relic.ts[activeSpec].rank+" Rank: "+relic.ts[activeSpec].name
 
-      buffer += Templates.itemSlot
+      buffer += Templates.itemSlot(
         item: relic
-        ep: relic.__ep
         gear: {}
         ttid: relic.id
         search: escape(relic.n)
-        percent: relic.__ep / max * 10
         desc: desc
+        percent: relic.__ep / max * 100
+        ep: relic.__ep
+      )
 
     buffer += Templates.itemSlot(
       item: {name: "[No relic]"}
