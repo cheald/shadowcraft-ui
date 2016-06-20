@@ -38,6 +38,7 @@ class ShadowcraftApp
     try
       @_boot @uuid, data, @ServerData
     catch error
+      console.log error
       $("#curtain").html("<div id='loaderror'>A fatal error occurred while loading this page.</div>").show()
       wait()
       if confirm("An unrecoverable error has occurred. Reset data and reload?")

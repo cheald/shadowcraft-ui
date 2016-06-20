@@ -69,6 +69,8 @@ class ShadowcraftGear
   $popupbody = null
   $popup = null
 
+  @initialized = false
+
   getRandPropRow = (slotIndex) ->
     slotIndex = parseInt(slotIndex, 10)
     switch slotIndex
@@ -636,6 +638,7 @@ class ShadowcraftGear
               max_level: max_level
         if enchant and enchant.desc == ""
           enchant.desc = enchant.name
+        ttgems = gear.gems.join(":")
 
         opt = {}
         opt.item = item
@@ -644,6 +647,7 @@ class ShadowcraftGear
         opt.ttrand = if item then item.suffix else null
         opt.ttupgd = if item then item.upgrade_level else null
         opt.ttbonus = if bonuses_equipped then bonuses_equipped.join(":") else null
+        opt.ttgems = if ttgems != "0:0:0" then ttgems else null
         opt.ep = if item then getEP(item, i).toFixed(1) else 0
         opt.slot = i + ''
         opt.gems = gems
@@ -869,9 +873,12 @@ class ShadowcraftGear
 
   # Gets an item from the item lookup table based on item ID and ilvl.
   getItem = (itemId, itemLevel, suffix) ->
-    arm = [itemId, itemLevel, suffix || 0]
-    itemString = arm.join(':')
-    item = Shadowcraft.ServerData.ITEM_LOOKUP2[itemString]
+    if (itemId in ShadowcraftArtifact.ARTIFACT_ITEM_IDS)
+      item = Shadowcraft.Data.artifact_items[itemId]
+    else
+      arm = [itemId, itemLevel, suffix || 0]
+      itemString = arm.join(':')
+      item = Shadowcraft.ServerData.ITEM_LOOKUP2[itemString]
     if not item? and itemId
       console.warn "item not found", itemString
     return item
@@ -1494,6 +1501,7 @@ class ShadowcraftGear
     this.updateDisplay()
 
     checkForWarnings('options')
+    @initialized = true
 
     this
 

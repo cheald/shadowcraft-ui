@@ -31,6 +31,8 @@ class ShadowcraftArtifact
       relic2: "fel"
       relic3: "fel"
 
+  @ARTIFACT_ITEM_IDS = [128476, 128479, 128872, 134552, 128869, 128870]
+
   RELIC_TYPE_MAP =
     "iron": 0
     "blood": 1
@@ -72,6 +74,22 @@ class ShadowcraftArtifact
     trait.children(".level").text(""+level+"/"+max_level)
     trait.data("tooltip-rank", level-1)
     return {current: level, max: max_level}
+
+  updateArtifactItem = (id, oldIlvl, newIlvl) ->
+    ident = id+":750:0"
+    baseItem = Shadowcraft.ServerData.ITEM_LOOKUP2[ident]
+
+    updatedItem = $.extend({}, baseItem)
+    updatedItem.ilvl = newIlvl
+    updatedItem.id = id
+    updatedItem.identifier = ""+id+":"+newIlvl+":0"
+
+    newStats = getStatsForIlvl(newIlvl)
+    updatedItem.stats = $.extend({}, newStats["stats"])
+    updatedItem.dps = newStats["dps"]
+    if (Shadowcraft.Data.artifact_items == undefined)
+      Shadowcraft.Data.artifact_items = {}
+    Shadowcraft.Data.artifact_items[id] = updatedItem
 
   # Redoes the display of all of the traits based on the data stored in the
   # global Shadowcraft.Data object. This will turn everything off and
@@ -178,13 +196,15 @@ class ShadowcraftArtifact
     # Deal with relics that are attached to the weapon. This may enable other
     # icons that are currently disabled, but doesn't increase their value in
     # the data map.
-    # TODO: should this apply multiple relic outlines to a single trait or just
-    # the last one that it encounters?
+    # TODO: make this item level a constant somewhere
+    oldIlvl = Shadowcraft.Data.gear[15].item_level
+    ilvl = 750
     for i in [0...3]
       button = $("#relic"+(i+1)+" .relicicon")
       relicdiv = $("#relic"+(i+1))
       if artifact_data.relics[i] != 0
         relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i]]
+        ilvl += relic.ii
         relicTrait = relic.ts[Shadowcraft.Data.activeSpec]
         button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relic.icon+".jpg")
         button.removeClass("inactive")
@@ -193,11 +213,31 @@ class ShadowcraftArtifact
           if (val == relic.type)
             type = key
             break
+        # TODO: should this apply multiple relic outlines to a single trait
+        # or just the last one that it encounters?
         trait.children(".relic").attr("src", "/images/artifacts/relic-"+type+".png")
         trait.children(".relic").removeClass("inactive")
+
+        # Setting the gems in the items causes wowhead tooltips to automatically
+        # update the weapon item levels.
+        Shadowcraft.Data.gear[15].gems[i] = relic.id
+        Shadowcraft.Data.gear[16].gems[i] = relic.id
       else
         button.addClass("inactive")
         relicdiv.removeData("tooltip-id")
+
+    # Update the stored item level of the artifact weapons so that a
+    # recalculation takes the relics into account.
+    updateArtifactItem(Shadowcraft.Data.gear[15].id, oldIlvl, ilvl)
+    updateArtifactItem(Shadowcraft.Data.gear[16].id, oldIlvl, ilvl)
+
+    # Update the DPS based on the latest information
+    Shadowcraft.update()
+
+    # Update the gear display so that the two weapons will display the
+    # correct tooltips.
+    if (Shadowcraft.Gear.initialized)
+      Shadowcraft.Gear.updateDisplay()
 
     return
 
@@ -252,16 +292,24 @@ class ShadowcraftArtifact
 
     if !(ilvl of artifact_ilvl_stats)
       # get the stats for the base artifact item
-      # TODO: get the actual item here
-      stats = $.extend({}, Shadowcraft.ServerData.ITEM_LOOKUP2["124367:700:0"].stats)
+      itemid = Shadowcraft.Data.gear[15].id
+      stats = $.extend({}, Shadowcraft.ServerData.ITEM_LOOKUP2[""+itemid+":750:0"].stats)
+      dps = Shadowcraft.ServerData.ITEM_LOOKUP2[""+itemid+":750:0"].dps
 
       # recalcuate and store
-      multiplier =  1.0 / Math.pow(1.15, ((ilvl-700) / 15.0 * -1))
+      multiplier =  1.0 / Math.pow(1.15, ((ilvl-750) / 15.0 * -1))
       for stat,value of stats
         stats[stat] = Math.round(value * multiplier)
-      artifact_ilvl_stats[ilvl] = stats
+
+      artifact_ilvl_stats[ilvl] = {}
+      artifact_ilvl_stats[ilvl]["stats"] = stats
+      artifact_ilvl_stats[ilvl]["dps"] = dps * multiplier
 
     return artifact_ilvl_stats[ilvl]
+
+  # Externally-available version of the above
+  getStatsForIlvl: (ilvl) ->
+    return getStatsForIlvl(ilvl)
 
   # Calculates the EP for a relic.
   getRelicEP = (relic, baseIlvl, baseStats) ->
@@ -272,9 +320,10 @@ class ShadowcraftArtifact
     # Calculate the difference for each stat and the EP gain/loss for those differences
     # TODO: really should make all of these consistent everywhere
     # TODO: also, multistrike doesn't exist in legion
+    # TODO: this needs to take both weapons into account, not just one of them
     newStats = getStatsForIlvl(baseIlvl+relic.ii)
-    for stat of baseStats
-      diff = newStats[stat] - baseStats[stat]
+    for stat of baseStats["stats"]
+      diff = newStats["stats"][stat] - baseStats["stats"][stat]
       if (stat == "agility")
         ep += diff * Shadowcraft.lastCalculation.ep["agi"]
       else if (stat == "mastery")
@@ -285,6 +334,8 @@ class ShadowcraftArtifact
         ep += diff * Shadowcraft.lastCalculation.ep["multistrike"]
       else if (stat == "haste")
         ep += diff * Shadowcraft.lastCalculation.ep["haste"]
+
+    ep += (newStats["dps"]-baseStats["dps"]) * Shadowcraft.lastCalculation.mh_ep.mh_dps
 
     return Math.round(ep * 100.0) / 100.0;
 
@@ -315,7 +366,7 @@ class ShadowcraftArtifact
 
     # Generate EP values for all of the relics selected and then sort
     # them based on the EP values, highest EP first.
-    max = 1
+    max = 0
     for relic in RelicList
       relic.__ep = getRelicEP(relic, baseIlvl, baseArtifactStats)
       if relic.__ep > max
@@ -379,7 +430,6 @@ class ShadowcraftArtifact
     updateTraits()
 
     clicked_relic_slot = 0
-    Shadowcraft.update()
     return true
 
   setSpec: (str) ->
@@ -449,7 +499,6 @@ class ShadowcraftArtifact
     ranking = Shadowcraft.lastCalculation.artifact_ranking
     max = _.max(ranking)
     for trait,ep of ranking
-      console.log trait
       val = parseFloat(ep)
       trait_name = ShadowcraftData.ARTIFACT_LOOKUP[parseInt(trait)].n
       pct = val / max * 100 + 0.01
