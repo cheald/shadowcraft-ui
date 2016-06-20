@@ -2453,18 +2453,18 @@ img.upgrade {
 }
 
 /* line 951, ../../app/assets/stylesheets/partials/_app.sass */
-#talentrankings .pct, #upgraderankings .pct, #dpsbreakdown .pct {
+#talentrankings .pct, #upgraderankings .pct, #dpsbreakdown .pct, #traitrankings .pct {
   width: 120px;
   height: 7px;
 }
 
 /* line 954, ../../app/assets/stylesheets/partials/_app.sass */
-#talentrankings .pct .label, #upgraderankings .pct .label, #dpsbreakdown .pct .label {
+#talentrankings .pct .label, #upgraderankings .pct .label, #dpsbreakdown .pct .label, #traitrankings .pct .label {
   margin-top: -3px;
 }
 
 /* line 956, ../../app/assets/stylesheets/partials/_app.sass */
-#talentrankings .pct-inner, #upgraderankings .pct-inner, #dpsbreakdown .pct-inner {
+#talentrankings .pct-inner, #upgraderankings .pct-inner, #dpsbreakdown .pct-inner, #traitrankings .pct-inner {
   -webkit-transition: width 1s;
   -moz-transition: width 1s;
   -ms-transition: width 1s;
@@ -2473,13 +2473,13 @@ img.upgrade {
 }
 
 /* line 958, ../../app/assets/stylesheets/partials/_app.sass */
-#talentrankings .talent_contribution, #upgraderankings .talent_contribution, #dpsbreakdown .talent_contribution {
+#talentrankings .talent_contribution, #upgraderankings .talent_contribution, #dpsbreakdown .talent_contribution, #traitrankings .talent_contribution {
   margin-bottom: 14px;
   font-weight: bold;
 }
 
 /* line 961, ../../app/assets/stylesheets/partials/_app.sass */
-#talentrankings .talent_contribution .name, #upgraderankings .talent_contribution .name, #dpsbreakdown .talent_contribution .name {
+#talentrankings .talent_contribution .name, #upgraderankings .talent_contribution .name, #dpsbreakdown .talent_contribution .name, #traitrankings .talent_contribution .name {
   font-size: 0.8em;
 }
 
