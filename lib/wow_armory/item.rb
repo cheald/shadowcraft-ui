@@ -125,7 +125,7 @@ module WowArmory
           end
 
           stat = entry['amount'].to_f*multiplier
-          self.stats[STAT_LOOKUP[entry['stat']]] = stat.to_i
+          self.stats[STAT_LOOKUP[entry['stat']]] = stat.round.to_i
         end
       end
 

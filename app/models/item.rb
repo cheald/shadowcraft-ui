@@ -9,7 +9,7 @@ class Item
   field :is_gem, :type => Boolean
   field :is_glyph, :type => Boolean
 
-  index({remote_id: 1, is_gem: 1, is_glyph: 1}, {unique: true}) 
+  index({remote_id: 1, is_gem: 1, is_glyph: 1}, {unique: true})
 
   attr_accessor :item_name_override
 
@@ -46,7 +46,7 @@ class Item
         :q => properties['quality'],
         :stats => properties['stats'],
     }
-    
+
     if (is_gem)
       json[:id] = remote_id
     else
@@ -97,7 +97,7 @@ class Item
 
     json
   end
-  
+
   def self.populate(prefix = 'www', source = 'wowapi')
     populate_gear_wod(prefix, source)
     populate_gems_wod(prefix, source)
