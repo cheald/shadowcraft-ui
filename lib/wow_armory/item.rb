@@ -6,7 +6,7 @@ module WowArmory
 
     include Constants
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :upgrade_level, :chance_bonus_lists
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :upgrade_level, :chance_bonus_lists, :tag
     attr_accessor *ACCESSORS
 
     def initialize(json, json_source='wowapi', upgradable=false, upgrade_level=0)
@@ -55,6 +55,12 @@ module WowArmory
         unless json['socketInfo']['socketBonus'].nil?
           self.socket_bonus = scan_str(json['socketInfo']['socketBonus'])
         end
+      end
+
+      # Tag is the header text on an item that has a description, such as
+      # 'warforged' or 'heroic'. This field is used in the display of items.
+      unless json['nameDescription'].nil?
+        self.tag = json['nameDescription']
       end
 
       if json['itemClass'] == 3 # gem

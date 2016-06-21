@@ -41,7 +41,7 @@ class Item
                 icon.gsub(/\.(tga|jpg|png)$/i, '')
               end,
         :q => properties['quality'],
-        :stats => stats
+        :stats => properties['stats'],
     }
     if properties['sockets'] and !properties['sockets'].empty?
       json[:so] = properties['sockets']
@@ -54,10 +54,6 @@ class Item
 
     if properties['socket_bonus']
       json[:sb] = properties['socket_bonus']
-    end
-
-    if properties['requirement']
-      json[:rq] = {:profession => properties['requirement'].downcase}
     end
 
     if properties['gem_slot']
@@ -81,9 +77,6 @@ class Item
     end
     if properties['upgradable']
       json[:upgradable] = properties['upgradable']
-    end
-    if properties['bonus_trees']
-      json[:bonus_trees] = properties['bonus_trees']
     end
     if properties['chance_bonus_lists']
       json[:chance_bonus_lists] = properties['chance_bonus_lists']

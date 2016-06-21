@@ -17,19 +17,6 @@ class ItemsController < ApplicationController
     end
   end
 
-  # Create a new item
-  # Is it used anywhere?
-  def create
-    item = Item.find_or_create_by(:remote_id => params[:item][:remote_id])
-
-    respond_with(item) do |format|
-      format.html {
-        flash[:notice] = "#{item.properties["name"]} added to the database"
-        redirect_to :back
-      }
-    end
-  end
-
   # Rebuild the item database based on the given character hash
   def rebuild
     char = Character.criteria.id(params[:c]).first
@@ -58,23 +45,34 @@ class ItemsController < ApplicationController
   def index_rogue
     @alt_items = []
     VALID_SLOTS.each do |i|
-      @alt_items += Item.where(:equip_location => i, :item_level.gte => 530).desc(:item_level).all
+      @alt_items += Item.where(:"properties.equip_location" => i, :item_level.gte => 530).desc(:item_level).all
     end
+    Rails.logger.debug "num items #{@alt_items.length}"
 
     # This is really haxy, but it's flexible.
     bad_keys = %w"intellect spell_power spirit parry dodge bonus_armor"
     bad_classes = %w"Plate Mail"
-    @alt_items.reject! {|item| !(item.stats.keys & bad_keys).empty? }
-    @alt_items.reject! {|item| item.stats.empty? and (item.equip_location != 12 and item.remote_id != 88149) } # Don't reject trinkets with empty stats
+    @alt_items.reject! {|item| !(item.properties['stats'].keys & bad_keys).empty? }
+    # don't reject trinkets with empty stats
+    @alt_items.reject! {|item| item.properties['stats'].empty? and item.properties['equip_location'] != 12}
+    # TODO: don't reject gloaming blade?
+    @alt_items.reject! {|item| item.properties['stats'].empty? and item.remote_id != 88149 }
+    # Reject plate and mail items altogether
     @alt_items.reject! {|item| bad_classes.include? item.properties['armor_class'] }
     # only allow cloth items in back slots (16 is the slot in API data for backs)
-    @alt_items.reject! {|item| item.properties['armor_class'] == "Cloth" && item.equip_location != 16 }
+    @alt_items.reject! {|item| item.properties['armor_class'] == "Cloth" && item.properties['equip_location'] != 16 }
+    # reject items which are upgraded versions but are not allowed
+    # TODO: is this possible with the new item loader?
     @alt_items.reject! {|item| !item.properties['upgradable'] and [1,2,3,4,5,6].include? item.properties['upgrade_level'] } # reject items which are upgrades but are not allowed
+    # reject blue items with an upgrade level >= 2
+    # TODO: is this possible with the new item loader? is this even valid?
     @alt_items.reject! {|item| item.properties['quality'] == 3 and [2,3,4,5,6].include? item.properties['upgrade_level'] } # reject blue items with upgrade_level >= 2
+    Rails.logger.debug "num items #{@alt_items.length}"
 
+    # Get all gems, enchants, talents, and glyphs
     gems = Item.where(:has_stats => true, :is_gem => true, :item_level.gt => 87).all
     @gems = gems.select {|g| !g.properties["name"].match(/Stormjewel/) }
-    @gems.reject! {|g| !(g.stats.keys & bad_keys).empty? }
+    @gems.reject! {|g| !(g.properties['stats'].keys & bad_keys).empty? }
     @enchants = Enchant.all
     h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_wod.xml")).read
     @talents_wod = h["page"]["talents"]
