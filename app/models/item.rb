@@ -100,12 +100,14 @@ class Item
     # TODO: is it possible to avoid displaying items that aren't available in
     # the game anymore?
     # blue items
-    item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=600;maxle=665;ub=4;cr=21;crs=1;crv=0"
+    item_ids = get_ids_from_wowhead_by_ilvl(prefix, 3, 600, 665)
 
     # epic items
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=630;maxle=665;ub=4;cr=21;crs=1;crv=0"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=666;maxle=700;ub=4;cr=21;crs=1;crv=0"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=4;minle=701;maxle=750;ub=4;cr=21;crs=1;crv=0"
+    # TODO: no idea why we break this up into three parts. It's probably something
+    # to avoid loading too many items from wowhead at once.
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 630, 665)
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 666, 700)
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 701, 750)
 
     # trinkets
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4.-4?filter=minle=530;ro=1"
@@ -139,7 +141,7 @@ class Item
     true
   end
 
-  def self.populate_gems_wod(prefix = 'www', source = 'wowhead')
+  def self.populate_gems_wod(prefix = 'www', source = 'wowapi')
     gem_ids = [
       115803, # crit taladite
       115804, # haste taladite
@@ -174,7 +176,6 @@ class Item
         if db_item.properties.nil?
           item = WowArmory::Item.new(id, source)
           db_item.properties = item.as_json.with_indifferent_access
-          db_item.equip_location = db_item.properties['equip_location']
           db_item.is_gem = !db_item.properties['gem_slot'].blank?
           if db_item.new_record?
             db_item.save
@@ -226,10 +227,17 @@ class Item
   # This item will check for an item ID and ilevel combination existing in the
   # database. If that combination doesn't exist, reload the whole item. Loading
   # single items doesn't take very long, so we're safe to just load the whole
-  # thing (and all of the versions).
-  def self.check_for_import(id, item_level, source='wowapi')
+  # thing (and all of the versions). This also works for gems.
+  def self.check_for_import(id, item_level, is_gem=false, source='wowapi')
     # TODO: should we lock the database in some way here to avoid race condtions?
-    count = Item.where(:remote_id => id, :item_level => item_level).count()
+    if is_gem
+      # For a gem, don't bother checking the item_level. Gems do have an item
+      # level associated with them (for some reason), but there's only one
+      # version of each gem stored in the DB.
+      count = Item.where(:remote_id => id)
+    else
+      count = Item.where(:remote_id => id, :item_level => item_level).count()
+    end
     if (count == 0)
       case source
         when 'wowapi'
@@ -283,22 +291,8 @@ class Item
 
     # Next, look at the chance bonus lists that accompany the item. This bonus list is
     # the things that can be applied to an item, such as extra titles (warforged, crafting
-    # stages), tertiary stats, sockets, etc. We only really care about things like the
-    # titles, since we load an additional item for each one of those. The bonus IDs that 
-    # we care about are white-listed above this method. Keep a list of the ones from each
-    # item that we care about.
-    itemChanceBonuses = json_data[0]['bonusSummary']['chanceBonusLists'].clone
-    itemChanceBonuses.delete_if { |bonus| BONUS_ID_WHITELIST }
-
-    # for the legendary ring, also add the bonsues for each of the ring upgrade steps
-    if (id == 124636)
-      itemChanceBonuses = itemChanceBonuses + LEGENDARY_RING_BONUS_IDS
-    end
-
-    # for trade-skill items, also add the bonuses for each of the "stage" titles
-    if (json_data[0]['context'] == 'trade-skill')
-      itemChanceBonuses = TRADESKILL_BONUS_IDS
-    end
+    # stages), tertiary stats, sockets, etc.
+    itemChanceBonuses = get_valid_bonus_IDs(json_data[0]['bonusSummary']['chanceBonusLists'].clone, id, json_data[0]['context'])
 
     # Loop through now-trimmed list of bonus IDs and load an additional item for each
     # one of those IDs from the armory, and store it in the list to be processed
@@ -325,6 +319,9 @@ class Item
         puts "Loading document for extra context #{context}"
         json = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id,context], {}
         json_data.push(json)
+
+        # Same thing here with the bonus IDs. Gotta load all of those here too.
+        itemChanceBonuses = get_valid_bonus_IDs(json['bonusSummary']['chanceBonusLists'], id, json['context'])
 
         # Same thing here with the bonus IDs. Gotta load all of those here too.
         itemChanceBonuses.each do |bonus|
@@ -382,6 +379,32 @@ class Item
     end
   end
 
+  # Trims a list of bonus IDs down to the set of IDs that we actually care about, like
+  # titles, since we load an additional item for each one of those. The bonus IDs that
+  # we want are white-listed earlier in this class.
+  def self.get_valid_bonus_IDs(possible_IDs, item_id, context)
+    itemChanceBonuses = possible_IDs.clone()
+    itemChanceBonuses.delete_if { |bonus| !BONUS_ID_WHITELIST.include? bonus }
+
+    # for the legendary ring, also add the bonsues for each of the ring upgrade steps
+    if (item_id == 124636)
+      itemChanceBonuses = itemChanceBonuses + LEGENDARY_RING_BONUS_IDS
+    end
+
+    # for trade-skill items, also add the bonuses for each of the "stage" titles
+    if (context == 'trade-skill')
+      itemChanceBonuses = TRADESKILL_BONUS_IDS
+    end
+    return itemChanceBonuses
+  end
+
+  # Retrieves a set of item IDs from wowhead using a filter on ilvl and quality
+  def self.get_ids_from_wowhead_by_ilvl(prefix, quality, min_ilvl, max_ilvl)
+    url = "http://#{prefix}.wowhead.com/items?filter=qu=#{quality};minle=#{min_ilvl};maxle=#{max_ilvl};ub=4;cr=21;crs=1;crv=0"
+    get_ids_from_wowhead(url)
+  end
+
+  # Retrieves a set of item IDs from wowhead based on an explicit URL
   def self.get_ids_from_wowhead(url)
     doc = open(url, 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
     ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i

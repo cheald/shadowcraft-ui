@@ -55,14 +55,11 @@ class Character
       end
 
       self.properties = char.as_json
-      #Rails.logger.debug self.properties.inspect
-      #Rails.logger.debug self.properties
 
       # if properties are still nil stop proceeding
       if self.properties.nil?
         return
       end
-      # convert symbols to strings :string => "string"
       self.properties.stringify_keys!
 
       # do not load items or set portrait if character class is not supported or is low-level
@@ -71,28 +68,12 @@ class Character
 
       self.portrait = char.portrait
 
-      # iterate over the players gear and if an item or gem is missing import it from external sources
+      # iterate over the player's gear and import any items or gem that are missing
       properties['gear'].each do |slot, item|
-        # import item and all their upgrade_levels. This will also automatically import
-        # items that are missing from the database
-        Item.check_for_import(item['item_id'].to_i, item['itemLevel'].to_i)
-
-        # import every gem from the equipped item
-        [item['g0'], item['g1'], item['g2']].each do |gemid|
-          # only proceed if there is a gem
+        Item.check_for_import(item['item_id'].to_i, item['item_level'].to_i)
+        item['gems'].each do |gemid|
           unless gemid.nil?
-            # find or create the gem
-            db_item = Item.find_or_initialize_by(:remote_id => gemid.to_i)
-            # if new item collect the properties of the item
-            if db_item.properties.nil?
-              item = WowArmory::Item.new(gemid.to_i, 'wowhead')
-              db_item.properties = item.as_json.with_indifferent_access
-              db_item.equip_location = db_item.properties['equip_location']
-              db_item.is_gem = !db_item.properties['gem_slot'].blank?
-              if db_item.new_record?
-                db_item.save
-              end
-            end
+            db_item = Item.check_for_import(gemid.to_i, 0, true)
           end
         end
       end
@@ -103,23 +84,23 @@ class Character
   def as_json(options = {})
     #Rails.logger.debug Character.encode_random_items(properties["gear"]).inspect
     {
-        :gear => properties['gear'],
-        :talents => properties['talents'],
-        :active => if not properties['active'].nil?
-                     properties['active']
-                   elsif not properties['active_talents'].nil?
-                     properties['active_talents']
-                   else
-                     0
-                   end,
-        :options => {
-            :general => {
-                :level => properties['level'],
-                :race => properties['race']
-            },
+      :gear => properties['gear'],
+      :talents => properties['talents'],
+      :active => if not properties['active'].nil?
+                   properties['active']
+                 elsif not properties['active_talents'].nil?
+                   properties['active_talents']
+                 else
+                   0
+                 end,
+      :options => {
+        :general => {
+          :level => properties['level'],
+          :race => properties['race']
         },
-        :achievements => properties['achievements'],
-        :quests => properties['quests']
+      },
+      :achievements => properties['achievements'],
+      :quests => properties['quests']
     }
   end
 
