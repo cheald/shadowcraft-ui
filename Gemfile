@@ -7,7 +7,7 @@ gem 'dynamic_form'
 gem "haml"
 gem "bson_ext"
 gem "mongo"
-gem "mongoid", "2.0.0.rc.7"
+gem "mongoid"
 gem 'jquery-rails'
 gem "exception_notification", :git => "http://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem "will_paginate"

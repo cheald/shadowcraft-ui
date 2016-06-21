@@ -9,7 +9,9 @@ class Character
   field :region
   field :properties, :type => Hash
   field :portrait
-  field :uid, :index => true
+  field :uid
+
+  index({uid: 1}, {unique: true})
 
   REGIONS = ['US', 'EU', 'KR', 'TW', 'CN', 'SEA']
   CLASSES = ['rogue']

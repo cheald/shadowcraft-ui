@@ -1,4 +1,7 @@
 module WowArmory
+
+  require 'csv'
+
   class Itemstats
     unloadable
   

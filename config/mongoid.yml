@@ -1,21 +1,32 @@
 defaults: &defaults
-  host: localhost
-  # slaves:
-  #   - host: slave1.local
-  #     port: 27018
-  #   - host: slave2.local
-  #     port: 27019
+  sessions:
+    default:
+      database: roguesim_development
+      hosts:
+        - localhost:27017
 
 development:
   <<: *defaults
-  database: roguesim_development
   autocreate_indexes: true
+  sessions:
+    default:
+      database: roguesim_development
+      hosts:
+        - localhost:27017
 
 test:
   <<: *defaults
-  database: roguesim_test
+  sessions:
+    default:
+      database: roguesim_test
+      hosts:
+        - localhost:27017
 
 # set these environment variables on your prod server
 production:
   <<: *defaults
-  database: roguesim_production
+  sessions:
+    default:
+      database: roguesim_production
+      hosts:
+        - localhost:27017

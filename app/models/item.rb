@@ -3,11 +3,13 @@ class Item
   include Mongoid::Timestamps
   include WowArmory::Constants
 
-  field :remote_id, :type => Integer, :index => true
-  field :item_level, :type => Integer, :index => true
+  field :remote_id, :type => Integer
+  field :item_level, :type => Integer
   field :properties, :type => Hash
-  field :is_gem, :type => Boolean, :index => true
-  field :is_glyph, :type => Boolean, :index => true
+  field :is_gem, :type => Boolean
+  field :is_glyph, :type => Boolean
+
+  index({remote_id: 1, is_gem: 1, is_glyph: 1}, {unique: true}) 
 
   attr_accessor :item_name_override
 
@@ -286,14 +288,17 @@ class Item
     # the things that can be applied to an item, such as extra titles (warforged, crafting
     # stages), tertiary stats, sockets, etc.
     itemChanceBonuses = get_valid_bonus_IDs(json_data[0]['bonusSummary']['chanceBonusLists'].clone, id, json_data[0]['context'])
+    defaultBonuses = json_data[0]['bonusLists']
 
     # Loop through now-trimmed list of bonus IDs and load an additional item for each
     # one of those IDs from the armory, and store it in the list to be processed
     itemChanceBonuses.each do |bonus|
       begin
         puts "Loading extra item for bonus ID #{bonus}"
+        bonuses = defaultBonuses.clone()
+        bonuses.push(bonus)
         params = {
-          :bl => bonus
+          :bl => bonuses.join(',')
         }
         json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, params
         json_data.push(json)
@@ -315,15 +320,18 @@ class Item
 
         # Same thing here with the bonus IDs. Gotta load all of those here too.
         itemChanceBonuses = get_valid_bonus_IDs(json['bonusSummary']['chanceBonusLists'], id, json['context'])
+        defaultBonuses = json['bonusLists']
 
         # Same thing here with the bonus IDs. Gotta load all of those here too.
         itemChanceBonuses.each do |bonus|
           begin
             puts "Loading extra item for bonus ID #{bonus}"
+            bonuses = defaultBonuses.clone()
+            bonuses.push(bonus)
             params = {
-              :bl => bonus
+              :bl => bonuses.join(',')
             }
-            json = WowArmory::Document.fetch 'us', '/wow/item/%d' % [id,context], params
+            json = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id,context], params
             json_data.push(json)
           rescue WowArmory::MissingDocument => e
             puts "import_blizzard failed fetch of #{id}/#{context}: #{e.message}"

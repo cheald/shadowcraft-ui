@@ -1,3 +1,5 @@
+require 'csv'
+
 class ItemsController < ApplicationController
   include WowArmory::Constants
 
@@ -19,7 +21,7 @@ class ItemsController < ApplicationController
 
   # Rebuild the item database based on the given character hash
   def rebuild
-    char = Character.criteria.id(params[:c]).first
+    char = Character.where(:id => params[:c]).first
     player_class = "unknown"
     unless char.nil? or char.properties['player_class'].nil?
       player_class = char.properties['player_class']
@@ -55,18 +57,14 @@ class ItemsController < ApplicationController
     @alt_items.reject! {|item| !(item.properties['stats'].keys & bad_keys).empty? }
     # don't reject trinkets with empty stats
     @alt_items.reject! {|item| item.properties['stats'].empty? and item.properties['equip_location'] != 12}
-    # TODO: don't reject gloaming blade?
-    @alt_items.reject! {|item| item.properties['stats'].empty? and item.remote_id != 88149 }
     # Reject plate and mail items altogether
     @alt_items.reject! {|item| bad_classes.include? item.properties['armor_class'] }
     # only allow cloth items in back slots (16 is the slot in API data for backs)
     @alt_items.reject! {|item| item.properties['armor_class'] == "Cloth" && item.properties['equip_location'] != 16 }
     # reject items which are upgraded versions but are not allowed
-    # TODO: is this possible with the new item loader?
-    @alt_items.reject! {|item| !item.properties['upgradable'] and [1,2,3,4,5,6].include? item.properties['upgrade_level'] } # reject items which are upgrades but are not allowed
+    @alt_items.reject! {|item| !item.properties['upgradable'] and [1,2,3,4,5,6].include? item.properties['upgrade_level'] }
     # reject blue items with an upgrade level >= 2
-    # TODO: is this possible with the new item loader? is this even valid?
-    @alt_items.reject! {|item| item.properties['quality'] == 3 and [2,3,4,5,6].include? item.properties['upgrade_level'] } # reject blue items with upgrade_level >= 2
+    @alt_items.reject! {|item| item.properties['quality'] == 3 and [2,3,4,5,6].include? item.properties['upgrade_level'] }
     Rails.logger.debug "num items #{@alt_items.length}"
 
     # Get all gems, enchants, talents, and glyphs

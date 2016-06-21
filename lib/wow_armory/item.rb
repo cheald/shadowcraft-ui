@@ -1,4 +1,7 @@
 module WowArmory
+
+  require 'csv'
+
   class Item
     unloadable
 
@@ -70,8 +73,6 @@ module WowArmory
         else
           self.gem_slot = json['gemInfo']['type']['type'].capitalize
           self.stats = scan_str(json['gemInfo']['bonus']['name'])
-          puts 'stats from api'
-          puts self.stats.inspect
         end
       elsif json['itemClass'] == 4 # armor
         # Armor class is the type of item (cloth/leather/mail/plate). It's
