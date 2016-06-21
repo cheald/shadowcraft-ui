@@ -163,7 +163,7 @@ class ShadowcraftGear
     if (facets & FACETS.GEMS) == FACETS.GEMS
       matchesAllSockets = item.sockets and item.sockets.length > 0
       for socketIndex, socket of item.sockets
-        gid = gear["g" + socketIndex]
+        gid = gear.gems[socketIndex]
         if gid and gid > 0
           gem = Gems[gid]
           sumItem(out, gem) if(gem)
@@ -261,11 +261,12 @@ class ShadowcraftGear
     for slot in SLOT_ORDER
       continue if parseInt(slot, 10) == ignoreSlotIndex
       gear = Shadowcraft.Data.gear[slot]
-      for i in [0..2]
-        gem = gear["g" + i]? and Gems[gear["g" + i]]
-        continue unless gem
-        if gem.slot == gemType
-          count++
+      if gear.gems?
+        for i in [0..2]
+          gem = gear.gems[i]? and Gems[gear.gems[i]]
+          continue unless gem
+          if gem.slot == gemType
+            count++
 
     if pendingChanges?
       for g in pendingChanges
@@ -368,10 +369,10 @@ class ShadowcraftGear
       if item
         rec = getGemmingRecommendation(gem_list, item, true, slotIndex, gem_offset)
         for gem, gemIndex in rec.gems
-          from_gem = Gems[gear["g#{gemIndex}"]]
+          from_gem = Gems[gear.gems[gemIndex]]
           to_gem = Gems[gem]
           continue unless to_gem?
-          if gear["g#{gemIndex}"] != gem
+          if gear.gems[gemIndex] != gem
             if from_gem && to_gem
               continue if from_gem.name == to_gem.name
               continue if equalGemStats(from_gem, to_gem)
@@ -379,7 +380,7 @@ class ShadowcraftGear
             else
               Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} to #{to_gem.name}"
 
-            gear["g" + gemIndex] = gem
+            gear.gems[gemIndex] = gem
             madeChanges = true
 
     if !madeChanges or depth >= 10
@@ -510,7 +511,7 @@ class ShadowcraftGear
       if gear
         for gem, i in gems
           continue if gem == 0
-          gear["g" + i] = gem
+          gear.gems[i] = gem
     Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
 
@@ -527,8 +528,8 @@ class ShadowcraftGear
     item = getItem(gear.item_id, gear.item_level, gear.suffix)
 
     currentBonuses = []
-    for bonusIndex in [0..9]
-      currentBonuses.push gear["b" + bonusIndex] if gear["b" + bonusIndex]?
+    if gear.bonuses?
+      currentBonuses = gear.bonuses
 
     checkedBonuses = []
     uncheckedBonuses = []
@@ -555,8 +556,7 @@ class ShadowcraftGear
         applyBonusToItem(item, bonus, slot, false)
 
     # apply new bonuses
-    for bonusIndex in [0..9]
-      gear["b" + bonusIndex] = newBonuses[bonusIndex]
+    gear.bonuses = newBonuses
 
     $("#bonuses").removeClass("visible")
     Shadowcraft.update()
@@ -620,11 +620,11 @@ class ShadowcraftGear
               last = item.sockets[socketIndex]
               if last == "Prismatic"
                 item.sockets.pop()
-          for bonusIndex in [0..9]
-            continue unless gear["b" + bonusIndex]?
-            bonuses_equipped.push gear["b" + bonusIndex]
-            if _.contains(bonus_keys, gear["b" + bonusIndex]+"")
-              applyBonusToItem(item, gear["b" + bonusIndex], i) # here happens all the magic
+          if gear.bonuses?
+            for bonus in gear.bonuses
+              bonuses_equipped.push bonus
+              if _.contains(bonus_keys, bonus+"")
+                applyBonusToItem(item, bonus, i) # here happens all the magic
           if item.chance_bonus_lists?
             for bonusId in item.chance_bonus_lists
               continue if not bonusId?
@@ -638,8 +638,8 @@ class ShadowcraftGear
                     bonusable = true
                     break
           allSlotsMatch = item.sockets && item.sockets.length > 0
-          for socket in item.sockets
-            gem = Gems[gear["g" + gems.length]]
+          for socket,index in item.sockets
+            gem = Gems[gear.gems[index]]
             gems[gems.length] = {socket: socket, gem: gem}
             continue if socket == "Prismatic" # prismatic sockets don't contribute to socket bonus
             if !gem or !gem[socket]
@@ -1021,9 +1021,7 @@ class ShadowcraftGear
       ttupgd = if l.upgrade_level? then l.upgrade_level else ""
       ttbonus = if l.bonus_trees? then l.bonus_trees.join(":") else ""
       if l.identifier == selected_identifier
-        bonus_trees = []
-        for bonusIndex in [0..9]
-          bonus_trees.push gear[slot]["b" + bonusIndex] if gear[slot]["b" + bonusIndex]?
+        bonus_trees = gear.bonuses
         ttbonus = bonus_trees.join(":")
       upgrade = []
       if l.upgradable
@@ -1130,13 +1128,13 @@ class ShadowcraftGear
     gemSlot = $slot.find(".gem").index(this)
     $.data(document.body, "gem-slot", gemSlot)
     gemType = item.sockets[gemSlot]
-    selected_id = data.gear[slot]["g" + gemSlot]
+    selected_id = data.gear[slot].gems[gemSlot]
 
     otherGearGems = []
     for i in [0..2]
       continue if i == gemSlot
-      if data.gear[slot]["g" + i]
-        otherGearGems.push data.gear[slot]["g" + i]
+      if data.gear[slot].gems[i]
+        otherGearGems.push data.gear[slot].gems[i]
 
     for gem in GemList
       gem.__ep = get_ep(gem)
@@ -1197,9 +1195,7 @@ class ShadowcraftGear
     item = Shadowcraft.ServerData.ITEM_LOOKUP2[identifier]
 
     gear = data.gear[slot]
-    currentBonuses = []
-    for bonusIndex in [0..9]
-      currentBonuses.push gear["b" + bonusIndex] if gear["b" + bonusIndex]?
+    currentBonuses = gear.bonuses
     # TODO build all possible bonuses with status selected or not, etc.
     groups = {
       suffixes: []
@@ -1454,22 +1450,19 @@ class ShadowcraftGear
                 socketlength = item.sockets.length
                 for i in [0..2]
                   if i >= socketlength
-                    data.gear[slot]["g" + i] = null
-                  else if data.gear[slot]["g" + i]?
-                    gem = Gems[data.gear[slot]["g" + i]]
+                    data.gear[slot].gems[i] = null
+                  else if data.gear[slot].gems[i]?
+                    gem = Gems[data.gear[slot].gems[i]]
                     if gem
-                      if not canUseGem Gems[data.gear[slot]["g" + i]], item.sockets[i], [], slot
-                        data.gear[slot]["g" + i] = null
+                      if not canUseGem Gems[data.gear[slot].gems[i]], item.sockets[i], [], slot
+                        data.gear[slot].gems[i] = null
               if item.bonus_trees
-                for bonusIndex in [0..9]
-                  data.gear[slot]["b" + bonusIndex] = null
-                for bonusIndex, bonus_id of item.bonus_trees
-                  data.gear[slot]["b" + bonusIndex] = bonus_id
+                data.gear[slot].bonuses = item.bonus_trees
             else
               data.gear[slot].original_id = null
               data.gear[slot].item_level = null
-              data.gear[slot]["g" + i] = null for i in [0..2]
-              data.gear[slot]["b" + i] = null for i in [0..9]
+              data.gear[slot].gems[i] = null for i in [0..2]
+              data.gear[slot].bonuses[i] = null for i in [0..9]
               data.gear[slot].suffix = null
           else
             enchant_id = if not isNaN(val) then val else null
@@ -1487,7 +1480,7 @@ class ShadowcraftGear
             Shadowcraft.Console.log("Regemming " + item.name + " socket " + (gem_id + 1) + " to " + Gems[item_id].name)
           else
             Shadowcraft.Console.log("Removing Gem from " + item.name + " socket " + (gem_id + 1))
-          data.gear[slot]["g" + gem_id] = item_id
+          data.gear[slot].gems[gem_id] = item_id
         Shadowcraft.update()
         app.updateDisplay()
 

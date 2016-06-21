@@ -17,7 +17,9 @@ class Item
   validates_presence_of :properties
 
   # Unique Item identifier
-  # TODO subject to change
+  # TODO: probably should change this to take contexts and WF and such
+  # into account. right now, it duplicates IDs a lot. of course, does
+  # it really matter?
   def uid
     # a bit silly
     uid = remote_id
@@ -34,7 +36,6 @@ class Item
 
   def as_json(options={})
     json = {
-        :id => uid.to_i,
         :oid => remote_id,
         :n => properties['name'],
         :i => if icon.nil?
@@ -45,6 +46,13 @@ class Item
         :q => properties['quality'],
         :stats => properties['stats'],
     }
+    
+    if (is_gem)
+      json[:id] = remote_id
+    else
+      json[:id] = uid.to_i
+    end
+
     if properties['sockets'] and !properties['sockets'].empty?
       json[:so] = properties['sockets']
     end
@@ -167,18 +175,39 @@ class Item
       begin
         pos = pos + 1
         puts "gem #{pos} of #{gem_ids.length}" if pos % 10 == 0
-        db_item = Item.find_or_initialize_by(:remote_id => id)
+        puts id
+
+        # TODO: theoretically we could just call Item.import here instead of duplicating
+        # this code yet again.
+        begin
+          json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {}
+        rescue WowArmory::MissingDocument => e
+          puts "import_blizzard failed fetch of #{id}: #{e.message}"
+          next
+        end
+
+        # check to see if this item is in the database yet. we check by ID and item level
+        # since those are the two fields that generally differentiate different items.
+        db_item = Item.find_or_initialize_by(:remote_id => json['id'])
+
+        # if the item doesn't have properties yet, create a new item from the wow
+        # armory library and then merge that into this record and save it.
         if db_item.properties.nil?
-          item = WowArmory::Item.new(id, source)
+          # create an item from the json data that we've retrieved and store it in the
+          # database. the initializer routine will deal with the upgrade level for us.
+          item = WowArmory::Item.new(json, 'wowapi')
+
+          # Merge the data from the armory item into the local db_item. This can't be
+          # done through a function since Ruby doesn't do pass-by-value, so we have to
+          # repeat this hunk of code.
           db_item.properties = item.as_json.with_indifferent_access
           db_item.is_gem = !db_item.properties['gem_slot'].blank?
+          db_item.item_level = item.ilevel
           if db_item.new_record?
-            db_item.save
+            db_item.save()
           end
         end
-      rescue WowArmory::MissingDocument => e
-        puts id
-        puts e.message
+
       rescue Exception => e
         puts id
         puts e.message

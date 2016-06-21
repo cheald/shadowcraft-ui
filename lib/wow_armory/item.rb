@@ -67,7 +67,6 @@ module WowArmory
       end
 
       if json['itemClass'] == 3 # gem
-        puts 'Gem = True'
         if json['gemInfo'].nil?
           self.stats = {}
         else
@@ -83,7 +82,7 @@ module WowArmory
       # json['bonusStats'] contains a list of the stats on the item itself. if
       # the item is upgradable, this is where we will modify the stats on the
       # item to match the proper values for the upgrade level.
-      unless json['bonusStats'].nil?
+      unless json['itemClass'] == 3 || json['bonusStats'].nil?
         self.stats = {}
         json['bonusStats'].each do |entry|
           unless STAT_LOOKUP.has_key?(entry['stat'])

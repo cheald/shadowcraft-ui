@@ -1,5 +1,5 @@
 class ShadowcraftHistory
-  DATA_VERSION = 1
+  DATA_VERSION = 2
   constructor: (@app) ->
     @app.History = this
     Shadowcraft.Reset = @reset
@@ -131,8 +131,9 @@ class ShadowcraftHistory
 
   buildExport: ->
     data = json_encode compress(@app.Data)
-    encoded_data = $.base64Encode(lzw_encode(data))
-    $("#export").text data # encoded_data
+    shavalue = sha1(data)
+    console.log(shavalue)
+    $("#export").text data
 
   base10 = "0123456789"
   base77 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -185,7 +186,7 @@ class ShadowcraftHistory
     m[value]
 
   compress_handlers =
-    "1": (data) ->
+    "2": (data) ->
       ret = [DATA_VERSION]
 
       gearSet = []
@@ -194,23 +195,24 @@ class ShadowcraftHistory
         gearSet.push gear.item_id || 0
         gearSet.push gear.enchant || 0
         gearSet.push gear.reforge || 0
-        gearSet.push gear.g0 || 0
-        gearSet.push gear.g1 || 0
-        gearSet.push gear.g2 || 0
         gearSet.push gear.upgrade_level || 0
         gearSet.push gear.original_id || 0
         gearSet.push gear.item_level || 0
         gearSet.push Math.abs(gear.suffix) || 0
-        gearSet.push Math.abs(gear.b0) || 0
-        gearSet.push Math.abs(gear.b1) || 0
-        gearSet.push Math.abs(gear.b2) || 0
-        gearSet.push Math.abs(gear.b3) || 0
-        gearSet.push Math.abs(gear.b4) || 0
-        gearSet.push Math.abs(gear.b5) || 0
-        gearSet.push Math.abs(gear.b6) || 0
-        gearSet.push Math.abs(gear.b7) || 0
-        gearSet.push Math.abs(gear.b8) || 0
-        gearSet.push Math.abs(gear.b9) || 0
+        if (gear.gems)
+          gearSet.push gear.gems[0] || 0
+          gearSet.push gear.gems[1] || 0
+          gearSet.push gear.gems[2] || 0
+        else
+          gearSet.push 0
+          gearSet.push 0
+          gearSet.push 0
+        if (gear.bonuses)
+          gearSet.push Math.abs(gear.bonuses.length) || 0
+          for bonus in gear.bonuses
+            gearSet.push bonus
+        else
+          gearSet.push 0
       ret.push base36Encode(gearSet)
       ret.push data.active
       ret.push data.activeSpec
@@ -279,15 +281,10 @@ class ShadowcraftHistory
       ret.push options
       ret.push base36Encode(data.achievements || [])
       ret.push base36Encode(data.quests || [])
-      #lock = []
-      #for slot in [0..17]
-      #  gear = data.gear[slot] || {}
-      #  lock[slot] = if gear.locked then 1 else 0
-      #ret.push base36Encode(lock || [])
       return ret
 
   decompress_handlers =
-    "1": (data) ->
+    "2": (data) ->
       d =
         gear: {}
         active: data[2]
@@ -308,29 +305,30 @@ class ShadowcraftHistory
           glyphs: base36Decode(talentSets[index + 2])
 
       gear = base36Decode data[1]
-      for id, index in gear by 20
-        slot = (index / 20).toString()
+      index = 0
+      for slot in [0..17]
         d.gear[slot] =
-          item_id: gear[index]
-          enchant: gear[index + 1]
-          reforge: gear[index + 2]
-          g0: gear[index + 3]
-          g1: gear[index + 4]
-          g2: gear[index + 5]
-          upgrade_level: gear[index + 6]
-          original_id: gear[index + 7]
-          item_level: gear[index + 8]
-          suffix: gear[index + 9] * -1
-          b0: gear[index + 10]
-          b1: gear[index + 11]
-          b2: gear[index + 12]
-          b3: gear[index + 13]
-          b4: gear[index + 14]
-          b5: gear[index + 15]
-          b6: gear[index + 16]
-          b7: gear[index + 17]
-          b8: gear[index + 18]
-          b9: gear[index + 19]
+          item_id: gear[index++]
+          enchant: gear[index++]
+          reforge: gear[index++]
+          upgrade_level: gear[index++]
+          original_id: gear[index++]
+          item_level: gear[index++]
+          suffix: gear[index++] * -1
+        d.gear[slot].gems = []
+        d.gear[slot].gems.push gear[index++]
+        d.gear[slot].gems.push gear[index++]
+        d.gear[slot].gems.push gear[index++]
+        numbonuses = gear[index++]
+        if numbonuses != 0
+          d.gear[slot].bonuses = []
+        for [0...numbonuses]
+          d.gear[slot].bonuses.push gear[index++]
+
+        # Remove all of the gem entries if there aren't any
+        if (d.gear[slot].gems[0] == 0 && d.gear[slot].gems[1] == 0 && d.gear[slot].gems[2] == 0)
+          delete d.gear[slot].gems
+
         for k, v of d.gear[slot]
           delete d.gear[slot][k] if v == 0
 

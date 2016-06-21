@@ -49,7 +49,6 @@ class ItemsController < ApplicationController
     VALID_SLOTS.each do |i|
       @alt_items += Item.where(:"properties.equip_location" => i, :item_level.gte => 530).desc(:item_level).all
     end
-    Rails.logger.debug "num items #{@alt_items.length}"
 
     # This is really haxy, but it's flexible.
     bad_keys = %w"intellect spell_power spirit parry dodge bonus_armor"
@@ -65,11 +64,9 @@ class ItemsController < ApplicationController
     @alt_items.reject! {|item| !item.properties['upgradable'] and [1,2,3,4,5,6].include? item.properties['upgrade_level'] }
     # reject blue items with an upgrade level >= 2
     @alt_items.reject! {|item| item.properties['quality'] == 3 and [2,3,4,5,6].include? item.properties['upgrade_level'] }
-    Rails.logger.debug "num items #{@alt_items.length}"
 
     # Get all gems, enchants, talents, and glyphs
-    gems = Item.where(:has_stats => true, :is_gem => true, :item_level.gt => 87).all
-    @gems = gems.select {|g| !g.properties["name"].match(/Stormjewel/) }
+    @gems = Item.where(:is_gem => true, :item_level.gt => 87).all
     @gems.reject! {|g| !(g.properties['stats'].keys & bad_keys).empty? }
     @enchants = Enchant.all
     h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_wod.xml")).read
