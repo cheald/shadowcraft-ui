@@ -26,7 +26,7 @@ module WowArmory
         when 'wowapi'
           populate_base_data_blizzard(json, upgrade_level)
         when 'wowhead', 'wowhead_ptr'
-          populate_base_data_wowhead(json)
+          populate_base_data_wowhead()
         else
           puts 'ERROR: source not valid'
           return

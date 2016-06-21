@@ -175,5 +175,18 @@ module WowArmory
       'critical strike' => 'crit',
     }
 
+    RELIC_TYPE_MAP = {
+      'Iron' => 0,
+      'Blood' => 1,
+      'Shadow' => 2,
+      'Fel' => 3,
+      'Arcane' => 4,
+      'Frost' => 5,
+      'Fire' => 6,
+      'Water' => 7,
+      'Life' => 8,
+      'Wind' => 9,
+      'Holy' => 10,
+    }
   end
 end

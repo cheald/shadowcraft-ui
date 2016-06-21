@@ -24,7 +24,7 @@
         %li
           %a{:href => "#talents"} Talents
         %li
-          %a{:href => "#artifact"} Artifact Weapon
+          %a{:href => "#artifact"} Artifact
         %li
           %a{:href => "#settings"} Settings
         %li
@@ -63,7 +63,7 @@
           Reforge this item
         #bonuses.popup.ui-dialog
           Add item bonus
-        .alternatives.popup.ui-dialog<
+        #gearpopup.alternatives.popup.ui-dialog<
           #filter
             %input{:type => "search", :class => "search", :placeholder => "Filter..."}
           .body
@@ -80,7 +80,6 @@
             .Secondary
       .panel-content
         #specactive
-        .inner
         #talentframe
         %div
           %button#reset_talents .inner Reset Talents
@@ -96,7 +95,10 @@
         #artifactactive
         .inner
         #artifactframe
-        #relics
+        #artifactpopup.alternatives.popup.ui-dialog<
+          #filter
+            %input{:type => "search", :class => "search", :placeholder => "Filter..."}
+          .body
 
     #settings
       %section.cluster.combat

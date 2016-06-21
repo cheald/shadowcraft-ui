@@ -232,6 +232,12 @@
 
 - mustache("artifactDreadblades") do
   #artifactframe{:style => "background-image:url('/images/artifacts/44-small.jpg');"}
+    #relic1.relicframe.tt{:style => "left:calc(50% - 130px);background-image: url(/images/artifacts/relic-blood.png)"}
+      %img.relicicon.inactive
+    #relic2.relicframe.tt{:style => "left:calc(50% - 40px);background-image: url(/images/artifacts/relic-iron.png)"}
+      %img.relicicon.inactive
+    #relic3.relicframe.tt{:style => "left:calc(50% + 50px);background-image: url(/images/artifacts/relic-wind.png)"}
+      %img.relicicon.inactive
     .trait.tt{:style => "left:69.512%;top:4.286%;", :id => "db_greed", "data-tooltip-type" => "spell", "data-tooltip-id" => "202820", "data-tooltip-rank" => "0", "max_level" => "1"}
       =image_tag "http://wow.zamimg.com/images/wow/icons/large/warrior_skullbanner.jpg", :class => "icon"
       =image_tag "/images/artifacts/ring-dragon.png", :class => "ring"

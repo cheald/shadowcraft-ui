@@ -1,22 +1,57 @@
 class ShadowcraftArtifact
 
+  $popupbody = null
+  $popup = null
+
   SPEC_ARTIFACT =
     "a":
       icon: "inv_knife_1h_artifactgarona_d_01"
       text: "The Kingslayers"
-      main: 0
+      main: 192759
+      relic1: "shadow"
+      relic2: "iron"
+      relic3: "blood"
     "Z":
       icon: "inv_sword_1h_artifactskywall_d_01"
       text: "The Dreadblades"
       main: 202665
+      relic1: "blood"
+      relic2: "iron"
+      relic3: "wind"
     "b":
       icon: "inv_knife_1h_artifactfangs_d_01"
       text: "Fangs of the Devourer"
-      main: 0
+      main: 209782
+      relic1: "shadow"
+      relic2: "fel"
+      relic3: "fel"
 
+  RELIC_TYPE_MAP =
+    "iron": 0
+    "blood": 1
+    "shadow": 2
+    "fel": 3
+    "arcane": 4
+    "frost": 5
+    "fire": 6
+    "water": 7
+    "life": 8
+    "wind": 9
+    "holy": 10
+
+  # Stores the routes through which you can get from the root trait to any
+  # other currently active trait.
   route_mapping = {}
+
+  # Stores whether a trait is currently active (in that it has routes attached)
   active_mapping = {}
 
+  # Stores which of the relic icons was clicked on. This is 0-2, but defaults
+  # back to -1 after the click has been processed.
+  clicked_relic_type = -1
+
+  # Activates a trait, turns the icon enabled, and sets the level of the icon to
+  # some value stored in the Shadowcraft data object.
   activateTrait = (spell_id) ->
     trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
     trait.children(".icon").removeClass("inactive")
@@ -27,11 +62,15 @@ class ShadowcraftArtifact
     trait.children(".level").text(""+level+"/"+max_level)
     return {current: level, max: max_level}
 
-  deactivateTrait = (spell_id) ->
+  # Deactivates a trait, disables the icon, and sets the level in the shadowcraft
+  # data to zero.
+  deactivateTrait = (spell_id, hide_icon = true) ->
     trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
-    trait.children(".icon").addClass("inactive")
-    trait.children(".level").addClass("inactive")
-    active_mapping[parseInt(trait.attr("data-tooltip-id"))] = false
+    if (hide_icon)
+      trait.children(".icon").addClass("inactive")
+      trait.children(".level").addClass("inactive")
+      active_mapping[parseInt(trait.attr("data-tooltip-id"))] = false
+
     # TODO: handle relics here
     Shadowcraft.Data.artifact.settings[spell_id] = 0
     max_level = parseInt(trait.attr("max_level"))
@@ -129,18 +168,6 @@ class ShadowcraftArtifact
         # insert this spell ID into the list of "done" IDs so it doesn't
         # get procesed again
         done.push(spell_id)
-
-  displayKingslayers = ->
-    buffer = Templates.artifactKingslayers()
-    $("#artifactframe").get(0).innerHTML = buffer
-
-  displayDreadblades = ->
-    buffer = Templates.artifactDreadblades()
-    $("#artifactframe").get(0).innerHTML = buffer
-
-  displayFangs = ->
-    buffer = Templates.artifactFangs()
-    $("#artifactframe").get(0).innerHTML = buffer
 
   increaseTrait = (e) ->
     spell_id = parseInt(e.delegateTarget.attributes["data-tooltip-id"].value)
@@ -245,6 +272,147 @@ class ShadowcraftArtifact
     # call to update the dps chart
     Shadowcraft.update()
 
+  get_ep = (relic) ->
+    # TODO: not entirely sure how to go about this one. Right now just order
+    # them by the ID so we can tell it's doing *something*.
+    return relic.id
+
+  clickRelic = (e) ->
+    relic_type = e.delegateTarget.attributes['relic-type'].value
+    relic_number = -1
+    if e.delegateTarget.id == "relic1"
+      relic_number = 0
+    else if e.delegateTarget.id == "relic2"
+      relic_number = 1
+    else if e.delegateTarget.id == "relic3"
+      relic_number = 2
+    clicked_relic_type = relic_number
+
+    # Grab the list of relics and filter them based on the type that
+    # was clicked.
+    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2
+    RelicList = Shadowcraft.ServerData.RELICS.filter((relic) ->
+      return relic.type == RELIC_TYPE_MAP[relic_type]
+    )
+    data = Shadowcraft.Data
+
+    # Generate EP values for all of the relics selected and then sort
+    # them based on the EP values, highest EP first.
+    for relic in RelicList
+      relic.__ep = get_ep(relic)
+    RelicList.sort((relic1, relic2) -> return (relic2.__ep - relic1.__ep))
+
+    # Loop through and build up the HTML for the popup window
+    buffer = ""
+    max = null
+    for relic in RelicList
+      max ||= relic.__ep
+      desc = ""
+      if (relic.ii != -1)
+        desc += "+"+relic.ii+" Item Levels"
+      if (relic.ii != -1 && relic.ti != -1)
+        desc += " / "
+      if (relic.ti != -1)
+        desc += "+"+relic.ti+" Rank: "+relic.tmn
+
+      buffer += Templates.itemSlot
+        item: relic
+        ep: relic.__ep
+        gear: {}
+        ttid: relic.id
+        search: escape(relic.n)
+        percent: relic.__ep / max * 10
+        desc: desc
+
+    buffer += Templates.itemSlot(
+      item: {name: "[No relic]"}
+      desc: "Clear this relic"
+      percent: 0
+      ep: 0
+    )
+
+    $popupbody.get(0).innerHTML = buffer
+    if relic_number == 0 and Shadowcraft.Data.artifact.relic1 != 0
+      $popupbody.find(".slot[id='" + Shadowcraft.Data.artifact.relic1 + "']").addClass("active")
+    else if relic_number == 1 and Shadowcraft.Data.artifact.relic2 != 0
+      $popupbody.find(".slot[id='" + Shadowcraft.Data.artifact.relic2 + "']").addClass("active")
+    else if relic_number == 2 and Shadowcraft.Data.artifact.relic3 != 0
+      $popupbody.find(".slot[id='" + Shadowcraft.Data.artifact.relic3 + "']").addClass("active")
+
+    showPopup($popup)
+
+    false
+
+  selectRelic = (clicked_relic) ->
+    Shadowcraft.Console.purgeOld()
+    Relics = Shadowcraft.ServerData.RELIC_LOOKUP
+    data = Shadowcraft.Data
+
+    button = $("#relic"+(clicked_relic_type+1)+" .relicicon")
+
+    # get the relic ID from the item that was clicked. if there wasn't
+    # an id attribute, this will return a NaN which we then check for.
+    # that NaN indicates that the user clicked on the "None" item and
+    # that we need to disable the currently selected relic.
+    relic_id = parseInt(clicked_relic.attr("id"), 0)
+    relic_id = if not isNaN(relic_id) then relic_id else null
+    if relic_id?
+      # Turn on the icon on the relicicon img element and unhide it
+      relic = Relics[relic_id]
+      button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relic.icon+".jpg")
+      button.removeClass("inactive")
+
+      # Find the trait that this relic modifies, the trait element on the
+      # artifact frame, and update the value stored in the data
+      trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"']")
+      Shadowcraft.Data.artifact.settings[relic.tmi] += 1
+      max_level = parseInt(trait.attr("max_level"))
+      max_level += 1
+      trait.attr("max_level", max_level)
+      activateTrait(relic.tmi)
+      if (clicked_relic_type == 0)
+        Shadowcraft.Data.artifact.relic1 = relic_id
+      else if (clicked_relic_type == 1)
+        Shadowcraft.Data.artifact.relic2 = relic_id
+      else if (clicked_relic_type == 2)
+        Shadowcraft.Data.artifact.relic3 = relic_id
+
+    else
+      # Hide the icon
+      button.addClass("inactive")
+
+      # Find the trait that this relic modifies, the trait element on the
+      # artifact frame, and update the value stored in the data
+      if (clicked_relic_type == 0)
+        relic = Relics[Shadowcraft.Data.artifact.relic1]
+        Shadowcraft.Data.artifact.relic1 = 0
+      else if (clicked_relic_type == 1)
+        relic = Relics[Shadowcraft.Data.artifact.relic2]
+        Shadowcraft.Data.artifact.relic2 = 0
+      else if (clicked_relic_type == 2)
+        relic = Relics[Shadowcraft.Data.artifact.relic3]
+        Shadowcraft.Data.artifact.relic3 = 0
+
+      trait = $("#artifactframe .trait[data-tooltip-id='"+relic.tmi+"']")
+      Shadowcraft.Data.artifact.settings[relic.tmi] -= 1
+      max_level = parseInt(trait.attr("max_level"))
+      max_level -= 1
+      trait.attr("max_level", max_level)
+      if Shadowcraft.Data.artifact.settings[relic.tmi] > 0
+        activateTrait(relic.tmi)
+      else
+        # if there's an existing connection to this icon, the trait should
+        # stay enabled, but the level should be reduced to 0.
+        if relic.tmi of route_mapping and route_mapping[relic.tmi].length > 0
+          deactivateTrait(relic.tmi, false)
+        else        
+          deactivateTrait(relic.tmi, true)
+
+    clicked_relic_type = -1
+    Shadowcraft.update()
+#    app.updateDisplay()
+    return true
+
   setSpec: (str) ->
     buffer = Templates.artifactActive({
       name: SPEC_ARTIFACT[str].text
@@ -253,11 +421,18 @@ class ShadowcraftArtifact
     $("#artifactactive").get(0).innerHTML = buffer
 
     if str == "a"
-      displayKingslayers()
+      buffer = Templates.artifactKingslayers()
+      $("#artifactframe").get(0).innerHTML = buffer
     else if str == "Z"
-      displayDreadblades()
+      buffer = Templates.artifactDreadblades()
+      $("#artifactframe").get(0).innerHTML = buffer
     else if str == "b"
-      displayFangs()
+      buffer = Templates.artifactFangs()
+      $("#artifactframe").get(0).innerHTML = buffer
+
+    $("#relic1").attr("relic-type", SPEC_ARTIFACT[str].relic1)
+    $("#relic2").attr("relic-type", SPEC_ARTIFACT[str].relic2)
+    $("#relic3").attr("relic-type", SPEC_ARTIFACT[str].relic3)
 
     updateTraits()
 
@@ -276,6 +451,17 @@ class ShadowcraftArtifact
       ".tt": ttlib.hide
     )
 
+    $("#artifactframe .relicframe").each(->
+    ).click((e) ->
+      clickRelic(e)
+    ).bind("contextmenu", -> false
+    ).mouseover($.delegate
+      ".tt": ttlib.requestTooltip
+    )
+    .mouseout($.delegate
+      ".tt": ttlib.hide
+    )
+
   resetTraits: ->
     for id of Shadowcraft.Data.artifact.settings
       Shadowcraft.Data.artifact.settings[id] = 0
@@ -283,6 +469,9 @@ class ShadowcraftArtifact
 
   boot: ->
     app = this
+
+    $popup = $("#artifactpopup")
+    $popupbody = $("#artifactpopup .body")
 
     # Set a default when the page loads
     Shadowcraft.bind "loadData", ->
@@ -295,16 +484,27 @@ class ShadowcraftArtifact
       app.setSpec(spec)
 
     $("#reset_artifact").click((e) ->
-      switch(e.button)
-        when 0
-          app.resetTraits()
+      app.resetTraits()
     ).bind("contextmenu", -> false
     )
+
+    $(".popup").mouseover($.delegate
+      ".tt": ttlib.requestTooltip
+    ).mouseout($.delegate
+      ".tt": ttlib.hide
+    )
+
+    $(".popup .body").bind "mousewheel", (event) ->
+      if (event.wheelDelta < 0 and this.scrollTop + this.clientHeight >= this.scrollHeight) or event.wheelDelta > 0 and this.scrollTop == 0
+        event.preventDefault()
+        return false
+
+    $popupbody.click $.delegate
+      ".slot": (e) ->
+        selectRelic($(this))
+
     this
 
   constructor: (@app) ->
     @app.Artifact = this
-    @displayKingslayers = displayKingslayers
-    @displayDreadblades = displayDreadblades
-    @displayFangs = displayFangs
     _.extend(this, Backbone.Events)

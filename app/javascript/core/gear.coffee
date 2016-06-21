@@ -42,9 +42,6 @@ class ShadowcraftGear
     strength: 1.05
     pvp_power: 0
 
-  getWeights: ->
-    Weights
-
   SLOT_INVTYPES =
       0: 1 # head
       1: 2 # neck
@@ -66,7 +63,7 @@ class ShadowcraftGear
   EP_PRE_REGEM = null
   EP_TOTAL = null
   $slots = null
-  $altslots = null
+  $popupbody = null
   $popup = null
 
   getRandPropRow = (slotIndex) ->
@@ -979,8 +976,8 @@ class ShadowcraftGear
       ep: 0
     )
 
-    $altslots.get(0).innerHTML = buffer
-    $altslots.find(".slot[data-identifier='#{selected_identifier}']").addClass("active")
+    $popupbody.get(0).innerHTML = buffer
+    $popupbody.find(".slot[data-identifier='#{selected_identifier}']").addClass("active")
     showPopup($popup)
     false
 
@@ -1029,8 +1026,8 @@ class ShadowcraftGear
       ep: 0
     )
 
-    $altslots.get(0).innerHTML = buffer
-    $altslots.find(".slot[id='#{selected_id}']").addClass("active")
+    $popupbody.get(0).innerHTML = buffer
+    $popupbody.find(".slot[id='#{selected_id}']").addClass("active")
     showPopup($popup)
     false
 
@@ -1100,8 +1097,8 @@ class ShadowcraftGear
       ep: 0
     )
 
-    $altslots.get(0).innerHTML = buffer
-    $altslots.find(".slot[id='" + selected_id + "']").addClass("active")
+    $popupbody.get(0).innerHTML = buffer
+    $popupbody.find(".slot[id='" + selected_id + "']").addClass("active")
     showPopup($popup)
     false
 
@@ -1230,8 +1227,8 @@ class ShadowcraftGear
   boot: ->
     app = this
     $slots = $(".slots")
-    $popup = $(".alternatives")
-    $altslots = $(".alternatives .body")
+    $popup = $("#gearpopup")
+    $popupbody = $("#gearpopup .body")
 
     Shadowcraft.Backend.bind("recompute", updateStatWeights)
     Shadowcraft.Backend.bind("recompute", -> Shadowcraft.Gear )
@@ -1339,9 +1336,8 @@ class ShadowcraftGear
       $("#generalDialog").dialog({ modal: true, width: 500, title: "Pawn Import String" })
       return false
 
-
     # Select an item from a popup
-    $altslots.click $.delegate
+    $popupbody.click $.delegate
       ".slot": (e) ->
         Shadowcraft.Console.purgeOld()
         ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2

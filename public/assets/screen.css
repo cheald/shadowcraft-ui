@@ -2580,7 +2580,7 @@ img.upgrade {
   padding: 5px;
   font-weight: bold;
   position: relative;
-  width: 700px;
+  width: 720px;
   height: 34px;
 }
 
@@ -2696,26 +2696,52 @@ img.upgrade {
 }
 
 /* line 1106, ../../app/assets/stylesheets/partials/_app.sass */
+#artifact #artifactframe .relicframe {
+  height: 80px;
+  width: 80px;
+  background-size: contain;
+  top: 7%;
+  position: absolute;
+  z-index: 10;
+}
+
+/* line 1114, ../../app/assets/stylesheets/partials/_app.sass */
+#artifact #artifactframe .relicframe .relicicon {
+  height: 30px;
+  width: 30px;
+  top: 25px;
+  left: 25px;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 11;
+}
+
+/* line 1123, ../../app/assets/stylesheets/partials/_app.sass */
+#artifact #artifactframe .relicframe .relicicon.inactive {
+  display: none;
+}
+
+/* line 1126, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact_button_div {
   padding: 10px;
 }
 
-/* line 1109, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1129, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs {
   border: 0;
 }
 
-/* line 1111, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1131, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings, #tabs #buffs, #tabs #target, #tabs #docs {
   padding: 2em;
 }
 
-/* line 1114, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1134, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel {
   border: 1px solid #333333;
 }
 
-/* line 1116, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1136, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel label {
   white-space: nowrap;
   vertical-align: middle;
@@ -2728,12 +2754,12 @@ img.upgrade {
   color: #777777;
 }
 
-/* line 1125, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1145, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel label:hover {
   color: white;
 }
 
-/* line 1128, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1148, ../../app/assets/stylesheets/partials/_app.sass */
 .slots {
   width: 49%;
   min-width: 340px;
@@ -2741,19 +2767,19 @@ img.upgrade {
   float: left;
 }
 
-/* line 1134, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1154, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gem {
   position: relative;
 }
 
-/* line 1136, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1156, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gem .socket {
   position: absolute;
   top: 9px;
   left: 13px;
 }
 
-/* line 1141, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1161, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem, .slots .enchant, .slots .reforge, .slots .bonuses, .slots .name {
   background: #0e0e0e url(/images/texture.png);
   margin-bottom: 2px;
@@ -2768,12 +2794,12 @@ img.upgrade {
   transition: background 0.2s;
 }
 
-/* line 1149, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1169, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem:hover, .slots .gems .gem.active, .slots .enchant:hover, .slots .enchant.active, .slots .reforge:hover, .slots .reforge.active, .slots .bonuses:hover, .slots .bonuses.active, .slots .name:hover, .slots .name.active {
   background-color: rgba(0, 128, 255, 0.15);
 }
 
-/* line 1151, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1171, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem .img, .slots .enchant .img, .slots .reforge .img, .slots .bonuses .img, .slots .name .img {
   background: url(/images/empty.png);
   width: 13px;
@@ -2786,26 +2812,26 @@ img.upgrade {
   display: inline-block;
 }
 
-/* line 1159, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1179, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem .img img, .slots .enchant .img img, .slots .reforge .img img, .slots .bonuses .img img, .slots .name .img img {
   width: 17px;
   margin-left: -2px;
   margin-top: -2px;
 }
 
-/* line 1166, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1186, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant .img {
   width: 17px;
   height: 17px;
   margin-right: 5px;
 }
 
-/* line 1170, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1190, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant .img img {
   width: 24px;
 }
 
-/* line 1173, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1193, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .bonus {
   color: lime;
   margin-bottom: 4px;
@@ -2813,31 +2839,31 @@ img.upgrade {
   padding: 4px 4px 4px 35px;
 }
 
-/* line 1179, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1199, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .reforge img, .slots .bonuses img {
   vertical-align: middle;
   margin-right: 5px;
 }
 
-/* line 1182, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1202, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .reforge .oldstat, .slots .bonuses .oldstat {
   color: #ee0000;
   padding-right: 1em;
 }
 
-/* line 1185, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1205, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .reforge .newstat, .slots .bonuses .newstat {
   color: #00ee00;
   padding-right: 1em;
 }
 
-/* line 1189, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1209, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant {
   color: lime;
   font-size: 0.9em;
 }
 
-/* line 1193, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1213, ../../app/assets/stylesheets/partials/_app.sass */
 .slot {
   position: relative;
   min-height: 60px;
@@ -2853,18 +2879,18 @@ img.upgrade {
   background: #0a0a0a;
 }
 
-/* line 1202, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1222, ../../app/assets/stylesheets/partials/_app.sass */
 .slot:hover {
   background-color: #1f232a;
   cursor: pointer;
 }
 
-/* line 1206, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1226, ../../app/assets/stylesheets/partials/_app.sass */
 .slot.active, .slot .active {
   background-color: #1f232a;
 }
 
-/* line 1211, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1231, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .gems {
   /* .Red
    *   background: rgba( $full, 0, 0, $opac )
@@ -2880,7 +2906,7 @@ img.upgrade {
    *   background: rgba( 0, $full, 0, $opac ) */
 }
 
-/* line 1226, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1246, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image {
   background: url(/images/empty.png);
   position: absolute;
@@ -2894,12 +2920,12 @@ img.upgrade {
   border-radius: 3px;
 }
 
-/* line 1237, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1257, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image img {
   width: 48px;
 }
 
-/* line 1239, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1259, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image .ilvl {
   font-size: 0.7em;
   color: white;
@@ -2912,7 +2938,7 @@ img.upgrade {
   border-radius: 2px;
 }
 
-/* line 1249, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1269, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock {
   opacity: 0.3;
   position: absolute;
@@ -2925,24 +2951,24 @@ img.upgrade {
   transition: hover 0.1s;
 }
 
-/* line 1255, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1275, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock.lock_on {
   opacity: 1;
 }
 
-/* line 1257, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1277, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock:hover {
   opacity: 1;
 }
 
-/* line 1260, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1280, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name {
   font-weight: bold;
   font-size: 1.07em;
   text-shadow: black -1px -1px;
 }
 
-/* line 1264, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1284, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name .aep {
   color: white;
   font-weight: normal;
@@ -2950,7 +2976,7 @@ img.upgrade {
   font-style: normal;
 }
 
-/* line 1270, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1290, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name .heroic {
   color: lime;
   padding: 0 0em;
@@ -2958,7 +2984,7 @@ img.upgrade {
   font-size: 0.7em;
 }
 
-/* line 1276, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1296, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .desc {
   display: block;
   font-size: 0.8em;
@@ -2966,13 +2992,13 @@ img.upgrade {
   padding: 2px 0;
 }
 
-/* line 1282, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1302, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives {
   padding-top: 40px;
   border: 1px solid #222222 !important;
 }
 
-/* line 1285, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1305, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot {
   margin: 5px 15px 5px 50px;
   min-height: 46px;
@@ -2981,38 +3007,38 @@ img.upgrade {
   background: transparent;
 }
 
-/* line 1291, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1311, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot:hover {
   background: rgba(30, 35, 40, 0.9);
 }
 
-/* line 1293, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1313, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active, .alternatives .slot .active {
   background: #053255;
 }
 
-/* line 1295, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1315, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active .pct, .alternatives .slot .active .pct {
   border-color: #0d81dc;
 }
 
-/* line 1297, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1317, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active .pct-inner, .alternatives .slot .active .pct-inner {
   background-color: #0d81dc;
 }
 
-/* line 1300, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1320, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .gem {
   display: inline-block;
   vertical-align: middle;
 }
 
-/* line 1302, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1322, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .reforge {
   display: none;
 }
 
-/* line 1304, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1324, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .image {
   width: 36px;
   height: 36px;
@@ -3020,56 +3046,56 @@ img.upgrade {
   top: 2px;
 }
 
-/* line 1309, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1329, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .image img {
   margin-left: -2px;
   margin-top: -2px;
   width: 40px;
 }
 
-/* line 1314, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1334, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-2 {
   color: #00dc00;
 }
 
-/* line 1316, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1336, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-3 {
   color: #007cf6;
 }
 
-/* line 1318, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1338, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-4 {
   color: #A335EE;
 }
 
-/* line 1320, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1340, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-5 {
   color: #FF8000;
 }
 
-/* line 1322, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1342, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-6 {
   color: #E5CC80;
 }
 
-/* line 1324, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1344, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-7 {
   color: #E5CC80;
 }
 
-/* line 1327, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1347, ../../app/assets/stylesheets/partials/_app.sass */
 #impex {
   padding: 1em;
 }
 
-/* line 1329, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1349, ../../app/assets/stylesheets/partials/_app.sass */
 #impex h3 {
   font-size: 1.3em;
   font-weight: bold;
   margin: 0.7em 0;
 }
 
-/* line 1333, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1353, ../../app/assets/stylesheets/partials/_app.sass */
 #impex textarea {
   font-family: "liberation mono", "courier new", monospace;
   font-size: 0.8em;
@@ -3082,88 +3108,88 @@ img.upgrade {
 }
 
 @media screen and (max-width: 1281px) {
-  /* line 1345, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1365, ../../app/assets/stylesheets/partials/_app.sass */
   #container.characters-new, #container.characters-create, #container.characters-refresh {
     background: #050505 url(/images/splash-s.jpg) bottom left no-repeat;
   }
 
-  /* line 1348, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1368, ../../app/assets/stylesheets/partials/_app.sass */
   #create_character {
     bottom: 200px;
     left: 250px;
   }
 
-  /* line 1353, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1373, ../../app/assets/stylesheets/partials/_app.sass */
   #card .img {
     width: 90px;
   }
 
-  /* line 1355, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1375, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info {
     margin-left: 100px;
   }
 
-  /* line 1357, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1377, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info .name {
     font-size: 0.75em;
   }
 
-  /* line 1359, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1379, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info .realm {
     font-size: 0.3em;
   }
 
-  /* line 1362, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1382, ../../app/assets/stylesheets/partials/_app.sass */
   .popup .body {
     max-height: 400px;
   }
 }
-/* line 1365, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1385, ../../app/assets/stylesheets/partials/_app.sass */
 #dialogs {
   display: none;
 }
 
-/* line 1368, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1388, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-widget-overlay {
   background: rgba(0, 0, 0, 0.8);
 }
 
-/* line 1371, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1391, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-dialog {
   background: rgba(10, 15, 20, 0.9);
   border: 2px solid #065175;
   border-radius: 5px;
 }
 
-/* line 1376, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1396, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-widget-content.ui-dialog-buttonpane {
   border-color: #222222;
 }
 
-/* line 1380, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1400, ../../app/assets/stylesheets/partials/_app.sass */
 #saveSnapshot label {
   font-weight: bold;
   margin-bottom: 0.5em;
 }
 
-/* line 1383, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1403, ../../app/assets/stylesheets/partials/_app.sass */
 #saveSnapshot #snapshotName {
   width: 200px;
   margin: auto;
 }
 
-/* line 1388, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1408, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table {
   border-collapse: collapse;
   width: 100%;
 }
 
-/* line 1391, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1411, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table th, #loadSnapshot table td {
   border: 1px solid rgba(40, 51, 61, 0.9);
 }
 
-/* line 1393, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1413, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table th {
   background: rgba(20, 25, 30, 0.9);
   padding: 2px 5px;
@@ -3171,17 +3197,17 @@ img.upgrade {
   font-weight: bold;
 }
 
-/* line 1398, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1418, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td:first-child {
   width: 75%;
 }
 
-/* line 1400, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1420, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td {
   padding: 5px;
 }
 
-/* line 1402, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1422, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td a {
   font-weight: bold;
   text-decoration: underline;

@@ -1,6 +1,7 @@
 - item_json = @alt_items.as_json
 - enchant_json = @enchants.as_json
 - gem_json = @gems.as_json
+- relic_json = @relics.as_json
 - cache_to File.join(Rails.root, "public", @filename) do
   :plain
     window.ShadowcraftData = {};
@@ -36,13 +37,16 @@
       R.GEMS = #{raw gem_json.to_json};
       R.ITEMS = #{raw item_json.to_json};
       R.ENCHANTS = #{raw enchant_json.to_json};
+      R.RELICS = #{raw relic_json.to_json};
       R.TALENTS_WOD = #{raw @talents_wod.to_json};
       R.SOCKET_BONUS_IDS = #{raw @socket_bonus_ids.to_json};
       R.ITEM_BONUSES = #{raw @item_bonuses.to_json};
       R.RAND_PROP_POINTS = #{raw @rand_prop_points.to_json};
 
       function expandItem(item, map) {
-        expandStats(item, map);
+        if (map != null) {
+          expandStats(item, map);
+        }
         item.quality = item.q;
         item.name = item.n;
         item.icon = item.i;
@@ -106,6 +110,13 @@
             g.Meta = true; break;
         }
         R.GEM_LOOKUP[g.item_id] = g;
+      }
+
+      R.RELIC_LOOKUP = {}
+      for(var i = 0; i < R.RELICS.length; i++) {
+        var g = R.RELICS[i];
+        expandItem(g, null);
+        R.RELIC_LOOKUP[g.item_id] = g;
       }
 
       R.SLOT_CHOICES = {mainhand: [], offhand: [], ranged: []};

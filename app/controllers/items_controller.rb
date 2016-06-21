@@ -72,6 +72,9 @@ class ItemsController < ApplicationController
     h = Hash.from_xml open(File.join(Rails.root, "app", "xml", "talents_wod.xml")).read
     @talents_wod = h["page"]["talents"]
 
+    # Get relics for the artifact weapons
+    @relics = Relic.all
+
     item_bonuses = {}
     CSV.foreach(File.join(Rails.root, 'lib', 'wow_armory', 'data', 'ItemBonus.dbc.csv')) do |row|
       unless item_bonuses.has_key? row[1].to_i
