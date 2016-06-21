@@ -40,7 +40,7 @@ module WowArmory
     # on wowhead not changing the formatting of their pages.
     def populate_data_wowhead(id)
       puts "populating #{id}"
-      doc = open('http://legion.wowhead.com/item=%d' % @id, 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
+      doc = open('http://legion.wowhead.com/item=%d' % @id, 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36').read
 
       name_enus = doc.scan(/_\[#{id}\]={"name_enus":"(.*?)","quality":(.*?),"icon":"(.*?)"/)[0]
       if !name_enus.nil?

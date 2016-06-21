@@ -167,7 +167,7 @@ module WowArmory
 
     # Populates the object data based on json data from a Wowhead query
     def populate_base_data_wowhead(prefix = 'www')
-      doc = Nokogiri::XML open("http://#{prefix}.wowhead.com/item=%d&xml" % @id, 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
+      doc = Nokogiri::XML open("http://#{prefix}.wowhead.com/item=%d&xml" % @id, 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36').read
       eqstats = JSON::load('{%s}' % doc.css('jsonEquip').text)
       stats = JSON::load('{%s}' % doc.css('json').text)
       unless doc.css('error').blank?

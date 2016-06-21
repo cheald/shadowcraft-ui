@@ -446,7 +446,7 @@ class Item
 
   # Retrieves a set of item IDs from wowhead based on an explicit URL
   def self.get_ids_from_wowhead(url)
-    doc = open(url, 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
+    doc = open(url, 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36').read
     ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i
     ids
   end
