@@ -942,8 +942,8 @@ class ShadowcraftGear
 
       ttid = l.original_id
       ttrand = if l.suffix? then l.suffix else ""
-      ttupgd = if l.upgrade_level? then l.upgrade_level else ""
-      ttbonus = if l.bonus_trees? then l.bonus_trees.join(":") else ""
+      ttupgd = if l.upgradable then l.upgrade_level else ""
+      ttbonus = if l.bonus_tree? then l.bonus_tree.join(":") else ""
       if l.identifier == selected_identifier
         bonus_trees = gear[slot].bonuses
         ttbonus = bonus_trees.join(":")
@@ -1379,8 +1379,8 @@ class ShadowcraftGear
                     if gem
                       if not canUseGem Gems[data.gear[slot].gems[i]], item.sockets[i], [], slot
                         data.gear[slot].gems[i] = null
-              if item.bonus_trees
-                data.gear[slot].bonuses = item.bonus_trees
+              if item.bonus_tree
+                data.gear[slot].bonuses = item.bonus_tree
             else
               data.gear[slot].original_id = null
               data.gear[slot].item_level = null

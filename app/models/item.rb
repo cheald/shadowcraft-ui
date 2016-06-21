@@ -91,8 +91,16 @@ class Item
     if properties['chance_bonus_lists']
       json[:chance_bonus_lists] = properties['chance_bonus_lists']
     end
+    if properties['bonus_tree']
+      json[:bonus_tree] = properties['bonus_tree']
+    end
 
     json
+  end
+  
+  def self.populate(prefix = 'www', source = 'wowapi')
+    populate_gear_wod(prefix, source)
+    populate_gems_wod(prefix, source)
   end
 
   KAZZAK_ITEMS = [124545, 124546, 127971, 127975, 127976, 127980, 127982]
@@ -100,10 +108,12 @@ class Item
   def self.populate_gear_wod(prefix = 'www', source = 'wowapi')
     @source = source
 
+    item_ids = []
+
     # TODO: is it possible to avoid displaying items that aren't available in
     # the game anymore?
     # blue items
-    item_ids = get_ids_from_wowhead_by_ilvl(prefix, 3, 600, 665)
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 600, 665)
 
     # epic items
     # TODO: no idea why we break this up into three parts. It's probably something
@@ -290,7 +300,7 @@ class Item
     # json to be processed further
     json_data = Array.new
     begin
-      json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {}
+      json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {:bl=>0}
       json_data.push(json)
     rescue WowArmory::MissingDocument => e
       puts "import_blizzard failed fetch of #{id}: #{e.message}"
@@ -301,7 +311,6 @@ class Item
     # context is the one the first document's data is valid for. For example, loading
     # a document for an item with contexts ['raid-normal','raid-heroic'] will default
     # to returning data for raid-normal.
-    # TODO: what other contexts should be checked for here?
     contexts = json_data[0]['availableContexts'].clone
     contexts.delete_at(0)
 

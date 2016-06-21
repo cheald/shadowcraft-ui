@@ -9,7 +9,8 @@ module WowArmory
 
     include Constants
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :upgrade_level, :chance_bonus_lists, :tag
+    # TODO: document these with some description of what each one is used for
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :upgrade_level, :chance_bonus_lists, :bonus_tree, :tag
     attr_accessor *ACCESSORS
 
     def initialize(json, json_source='wowapi', upgradable=false, upgrade_level=0)
@@ -111,6 +112,15 @@ module WowArmory
         self.chance_bonus_lists = []
       else
         self.chance_bonus_lists = json['bonusSummary']['chanceBonusLists']
+      end
+
+      # Also store the bonusLists for the item, since this will be used for
+      # displaying the right tooltips.
+      # for tooltips.
+      if json['bonusLists'].nil?
+        self.bonus_tree = []
+      else
+        self.bonus_tree = json['bonusLists']
       end
 
       # TODO: what is this for? These 5 bonus IDs are for the 100% secondary

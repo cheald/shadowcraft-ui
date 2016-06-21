@@ -3774,8 +3774,8 @@
         iEP = l.__ep;
         ttid = l.original_id;
         ttrand = l.suffix != null ? l.suffix : "";
-        ttupgd = l.upgrade_level != null ? l.upgrade_level : "";
-        ttbonus = l.bonus_trees != null ? l.bonus_trees.join(":") : "";
+        ttupgd = l.upgradable ? l.upgrade_level : "";
+        ttbonus = l.bonus_tree != null ? l.bonus_tree.join(":") : "";
         if (l.identifier === selected_identifier) {
           bonus_trees = gear[slot].bonuses;
           ttbonus = bonus_trees.join(":");
@@ -4289,8 +4289,8 @@
                     }
                   }
                 }
-                if (item.bonus_trees) {
-                  data.gear[slot].bonuses = item.bonus_trees;
+                if (item.bonus_tree) {
+                  data.gear[slot].bonuses = item.bonus_tree;
                 }
               } else {
                 data.gear[slot].original_id = null;
