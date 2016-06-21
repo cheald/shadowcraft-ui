@@ -144,6 +144,7 @@ module WowArmory
     }
 
     ARMOR_CLASS = {
+      0 => 'None',
       1 => 'Cloth',
       2 => 'Leather',
       3 => 'Mail',
@@ -158,7 +159,7 @@ module WowArmory
       4 => 'Green',
       5 => 'Orange',
       6 => 'Meta',
-      #7 => "Simple",
+      7 => "Simple",
       8 => 'Prismatic',
       9 => 'Hydraulic',
       10 => 'Cogwheel'
@@ -168,17 +169,11 @@ module WowArmory
                        'stamina', 'attack power', 'critical strike',
                        'versatility', 'multistrike', 'haste', 'mastery',
                        'pvp resilience', 'pvp power', 'all stats',
-                       'dodge', 'block', 'parry'
-                      ]
+                       'dodge', 'block', 'parry']
     
-    SCAN_OVERRIDE = { 'critical strike' => 'crit',
-                      #"hit" => "hit rating",
-                      #"expertise" => "expertise rating",
-                      #"haste" => "haste rating",
-                      #"mastery" => "mastery rating",
-                      #"pvp resilience" => "resilience",
-                      #"pvp power" => "pvp power rating"
-                    }
+    SCAN_OVERRIDE = {
+      'critical strike' => 'crit',
+    }
 
   end
 end

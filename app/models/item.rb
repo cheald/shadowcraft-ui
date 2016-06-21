@@ -4,15 +4,8 @@ class Item
   include WowArmory::Constants
 
   field :remote_id, :type => Integer, :index => true
-  field :bonus_tree, :type => Integer
-  field :upgrade_level, :type => Integer
-  field :equip_location, :type => Integer, :index => true
-  field :item_level, :type => Integer
+  field :item_level, :type => Integer, :index => true
   field :properties, :type => Hash
-  field :info, :type => Hash
-  field :stats, :type => HashWithIndifferentAccess
-  field :has_stats, :type => Boolean
-  field :requires, :type => Hash
   field :is_gem, :type => Boolean, :index => true
   field :is_glyph, :type => Boolean, :index => true
 
@@ -20,28 +13,6 @@ class Item
 
   validates_presence_of :remote_id
   validates_presence_of :properties
-
-  before_validation :update_from_armory_if_necessary
-  before_save :write_stats
-  EXCLUDE_KEYS = [:stamina, :resilience, :strength, :spirit, :intellect, :dodge, :parry, :health_regen, :bonus_armor]
-
-  def update_from_armory_if_necessary
-    return if remote_id == 0
-    if self.properties.nil?
-      puts "Loading item #{remote_id} during validation"
-      Rails.logger.debug "Loading item #{remote_id} during validation"
-      
-      item = WowArmory::Item.new(remote_id, 'wowapi', item_name_override)
-      puts item
-      # return false if item.stats.empty?
-      self.properties = item.as_json.with_indifferent_access
-      item_stats = WowArmory::Itemstats.new(self.properties, upgrade_level)
-      self.properties = self.properties.merge(item_stats.as_json.with_indifferent_access)
-      self.equip_location = self.properties['equip_location']
-      self.is_gem = !self.properties['gem_slot'].blank?
-    end
-    true
-  end
 
   # Unique Item identifier
   # TODO subject to change
@@ -57,19 +28,6 @@ class Item
   def icon
     return '' if self.properties.nil?
     self.properties['icon'].split('/').last
-  end
-
-  def write_stats
-    return if properties.nil?
-    self.stats = properties['stats']
-    if all = self.stats.delete(:'all_stats')
-      [:agility, :stamina, :strength].each do |stat|
-        self.stats[stat] = (self.stats[stat] || 0) + all
-      end
-    end
-    self.item_level = properties['ilevel']
-    self.has_stats = !(self.stats.keys - EXCLUDE_KEYS).empty?
-    true # Returning false from a before_save filter causes it to fail.
   end
 
   def as_json(options={})
@@ -118,9 +76,6 @@ class Item
       json[:subclass] = properties['subclass']
     end
 
-    if properties['random_suffix']
-      json[:suffix] = properties['random_suffix']
-    end
     if properties['upgrade_level']
       json[:upgrade_level] = properties['upgrade_level']
     end
@@ -142,6 +97,8 @@ class Item
   def self.populate_gear_wod(prefix = 'www', source = 'wowapi')
     @source = source
 
+    # TODO: is it possible to avoid displaying items that aren't available in
+    # the game anymore?
     # blue items
     item_ids = get_ids_from_wowhead "http://#{prefix}.wowhead.com/items?filter=qu=3;minle=600;maxle=665;ub=4;cr=21;crs=1;crv=0"
 
@@ -169,11 +126,6 @@ class Item
     item_ids -= [104974, 104725, 102292, 105223, 104476, 105472] # assurance_of_consequence
     item_ids -= [105114, 104865, 102311, 105363, 104616, 105612] # ticking_ebon_detonator
 
-    # remove the Kazzak items so they can be imported separately.  Right now, Blizzard includes
-    # all of the various versions of the items, even though Normal-mode items are the only ones
-    # actually available in-game.
-    item_ids -= KAZZAK_ITEMS
-
     # remove duplicates
     item_ids = item_ids.uniq
 
@@ -181,12 +133,7 @@ class Item
     item_ids.each do |id|
       pos = pos + 1
       puts "item #{pos} of #{item_ids.length}" if pos % 10 == 0
-      wod_import id
-    end
-
-    # only import the Normal version of all of the Kazzak items.  No heroic and no mythic.
-    KAZZAK_ITEMS.each do |id|
-      wod_import id, 'raid-normal'
+      import id
     end
 
     true
@@ -249,7 +196,7 @@ class Item
   # how we prevent duplicates of items from showing up on the UI.  There are so many bonus
   # IDs that it's easier to whitelist the ones we want, instead of blacklisting the ones
   # we don't.
-  # 
+  #
   # This whitelist skips any of the randomly generated bonus IDs such as any "of the"
   # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.
   BONUS_ID_WHITELIST = [1, 15, 17, 18, 44, 171, 448, 449, 450, 451, 499, 526, 527, 545, 546, 547,
@@ -267,44 +214,39 @@ class Item
   # details.
   TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 619, 620]
 
-  def self.wod_import(id, context = '', bonuses = nil)
-    source = 'wowapi'
-    puts id
-    existing_item = Item.find :all, :conditions => {:remote_id => id}
-    unless existing_item.empty?
-      existing_item.each do |item|
-        copy = item.properties['bonus_trees'].clone
-        if copy.include? ''
-          copy.delete('')
-        end
-        if copy.include? 0
-          copy.delete(0)
-        end
-        return if copy == bonuses
+  # This method will directly import an item without checking for an existing
+  # version before doing so.
+  def self.import(id, source = 'wowapi')
+    case source
+      when 'wowapi'
+        import_blizzard(id)
+    end
+  end
+
+  # This item will check for an item ID and ilevel combination existing in the
+  # database. If that combination doesn't exist, reload the whole item. Loading
+  # single items doesn't take very long, so we're safe to just load the whole
+  # thing (and all of the versions).
+  def self.check_for_import(id, item_level, source='wowapi')
+    # TODO: should we lock the database in some way here to avoid race condtions?
+    count = Item.where(:remote_id => id, :item_level => item_level).count()
+    if (count == 0)
+      case source
+        when 'wowapi'
+          import_blizzard(id)
       end
-      return if bonuses.nil?
-
-      # if the bonus isn't in the whitelist and isn't one of the legendary ring
-      # IDs, remove it so it doesn't get loaded.
-      bonuses.delete_if { |bonus| !BONUS_ID_WHITELIST.include? bonus and !LEGENDARY_RING_BONUS_IDS.include? bonus }
-
-      # if we're left with no bonuses to load, give up
-      return if bonuses.empty?
-      
-      # make a special import with the given and possible missing bonus id data from armory
-      puts "special import #{id} #{context} #{bonuses.inspect}"
-      # NOTE: Disabled due to the legendary ring breaking things
-#      self.wod_special_import id, context, bonuses
-      return
     end
+  end
 
-    begin
-      json_data = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {}, :json
-    rescue WowArmory::MissingDocument => e
-      puts "wod_import failed initial fetch of #{id}: #{e.message}"
-      return
-    end
+  # Imports an item and all of its variants (contexts, upgrades, etc) from the
+  # Blizzard armory API.
+  def self.import_blizzard(id)
+    puts "importing #{id}"
 
+    # TODO: check for existing items and update as necessary
+
+    # Store a flag and a set of upgrade levels for whether or not the item is upgradable.
+    # This is used later during the item loading process
     upgradable = WowArmory::Item.check_upgradable(id)
     if upgradable
       upgrade_levels = [0,1,2]
@@ -312,138 +254,131 @@ class Item
       upgrade_levels = [0]
     end
 
-    json_data['availableContexts'].each do |context|
-      upgrade_levels.each do |upgrade_level|
-        if context == ''
-          context_data = json_data
-        else
-          context_data = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id, context], {}, :json
-        end
-
-        context_data['bonusSummary']['defaultBonusLists'].clone.each do |defaultBonusListsId|
-          context_data['bonusSummary']['defaultBonusLists'].delete(defaultBonusListsId) unless BONUS_ID_WHITELIST.include? defaultBonusListsId
-        end
-
-        # if the context is trade-skill, add these bonus IDs manually since they don't
-        # aren't in the data returned from Blizzard for whatever reason.
-        if context == 'trade-skill'
-          context_data['bonusSummary']['defaultBonusLists'] =
-            context_data['bonusSummary']['defaultBonusLists'] + TRADESKILL_BONUS_IDS
-        end
-
-        if id == 124636
-          context_data['bonusSummary']['defaultBonusLists'] =
-            context_data['bonusSummary']['defaultBonusLists'] + LEGENDARY_RING_BONUS_IDS + [0]
-        end
-
-        if context_data['bonusSummary']['defaultBonusLists'].empty?
-          context_data['bonusSummary']['defaultBonusLists'] = [0]
-        end
-
-        context_data['bonusSummary']['defaultBonusLists'].each do |defaultBonus|
-          options = {
-            :remote_id => id,
-            :bonus_trees => [defaultBonus],
-            :item_level => json_data["itemLevel"]+5*upgrade_level
-          }
-          db_item = Item.find_or_initialize_by options
-          if db_item.properties.nil?
-            item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees])
-
-            db_item.properties = item.as_json.with_indifferent_access
-            if (upgrade_level != 0)
-              item_stats = WowArmory::Itemstats.new(db_item.properties, upgrade_level)
-              db_item.properties = db_item.properties.merge(item_stats.as_json.with_indifferent_access)
-            end
-            db_item.equip_location = db_item.properties['equip_location']
-            db_item.is_gem = !db_item.properties['gem_slot'].blank?
-            if db_item.new_record?
-              db_item.save
-            end
-            # if available we need to import warforged too
-            # the other stuff like extra socket or tertiary stats are added in the UI dynamically
-            context_data['bonusSummary']['chanceBonusLists'].each do |bonus|
-              next unless BONUS_ID_WHITELIST.include? bonus
-              puts bonus
-              options = {
-                :remote_id => id,
-                :bonus_trees => [defaultBonus] + [bonus],
-                :item_level => json_data["itemLevel"]+5*upgrade_level
-              }
-              db_item_with_bonus = Item.find_or_initialize_by options
-              if db_item_with_bonus.properties.nil?
-                item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees])
-                db_item_with_bonus.properties = item.as_json.with_indifferent_access
-                if (upgrade_level != 0)
-                  item_stats = WowArmory::Itemstats.new(db_item_with_bonus.properties, upgrade_level)
-                  db_item_with_bonus.properties = db_item_with_bonus.properties.merge(item_stats.as_json.with_indifferent_access)
-                end
-                db_item_with_bonus.equip_location = db_item_with_bonus.properties['equip_location']
-                db_item_with_bonus.is_gem = !db_item_with_bonus.properties['gem_slot'].blank?
-                if db_item_with_bonus.new_record?
-                  db_item_with_bonus.save
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-  end
-
-  def self.wod_special_import(id, context, bonuses)
+    # Request the initial json data from the armory and insert it in to the array of
+    # json to be processed further
+    json_data = Array.new
     begin
-      source = 'wowapi'
+      json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {}
+      json_data.push(json)
+    rescue WowArmory::MissingDocument => e
+      puts "import_blizzard failed fetch of #{id}: #{e.message}"
+      return
+    end
 
+    # Check if the item has any available contexts. Remove the first context since that
+    # context is the one the first document's data is valid for. For example, loading
+    # a document for an item with contexts ['raid-normal','raid-heroic'] will default
+    # to returning data for raid-normal.
+    # TODO: what other contexts should be checked for here?
+    contexts = json_data[0]['availableContexts'].clone
+    contexts.delete_at(0)
+
+    # NOTE: SPECIAL CASE HERE, REMOVE LATER
+    # Because of a bug in the Blizzard API, Kazzak items return all of the raid contexts
+    # even though only the raid-normal version of the item is available in-game. Remove
+    # the other contexts and only load the raid-normal version for those items.
+    if KAZZAK_ITEMS.include? id
+      contexts.delete_if { |context| ['raid-heroic','raid-mythic'].include? context }
+    end
+
+    # Next, look at the chance bonus lists that accompany the item. This bonus list is
+    # the things that can be applied to an item, such as extra titles (warforged, crafting
+    # stages), tertiary stats, sockets, etc. We only really care about things like the
+    # titles, since we load an additional item for each one of those. The bonus IDs that 
+    # we care about are white-listed above this method. Keep a list of the ones from each
+    # item that we care about.
+    itemChanceBonuses = json_data[0]['bonusSummary']['chanceBonusLists'].clone
+    itemChanceBonuses.delete_if { |bonus| BONUS_ID_WHITELIST }
+
+    # for the legendary ring, also add the bonsues for each of the ring upgrade steps
+    if (id == 124636)
+      itemChanceBonuses = itemChanceBonuses + LEGENDARY_RING_BONUS_IDS
+    end
+
+    # for trade-skill items, also add the bonuses for each of the "stage" titles
+    if (json_data[0]['context'] == 'trade-skill')
+      itemChanceBonuses = TRADESKILL_BONUS_IDS
+    end
+
+    # Loop through now-trimmed list of bonus IDs and load an additional item for each
+    # one of those IDs from the armory, and store it in the list to be processed
+    itemChanceBonuses.each do |bonus|
       begin
-        url = '/wow/item/%d' % id
-        if context.length != 0 and context != 'quest-reward'
-          url << '/%s/' % context
-        end
-        json_data = WowArmory::Document.fetch 'us', url, {}, :json
+        puts "Loading extra item for bonus ID #{bonus}"
+        params = {
+          :bl => bonus
+        }
+        json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, params
+        json_data.push(json)
       rescue WowArmory::MissingDocument => e
-        puts "wod_special_import: initial fetch of #{id}: #{e.message}"
-        puts "url was #{url}"
+        puts "import_blizzard failed fetch of #{id}/#{context}: #{e.message}"
         return
       end
+    end
 
-      if WowArmory::Item.check_upgradable(id)
-        upgradelevels = [0,1,2]
-      else
-        upgradelevels = [0]
-      end
+    # For each of the extra contexts, load the document for each one of them and store it
+    # in the list of json to deal with
+    contexts.each do |context|
+      begin
+        # TODO: this is probably where we should deal with the bonus IDs also. We need to
+        # load each item with the necessary bonus IDs attached as well as the base items.
+        puts "Loading document for extra context #{context}"
+        json = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id,context], {}
+        json_data.push(json)
 
-      upgradelevels.each do |upgrade_level|
-        options = {
-          :remote_id => id,
-          :bonus_trees => bonuses.sort,
-          :item_level => json_data["itemLevel"]+5*upgrade_level
-        }
-        
-        db_item_with_bonus = Item.find_or_initialize_by options
-        if db_item_with_bonus.properties.nil?
+        # Same thing here with the bonus IDs. Gotta load all of those here too.
+        itemChanceBonuses.each do |bonus|
           begin
-            item = WowArmory::Item.new(id, source, nil, context, options[:bonus_trees], nil)
+            puts "Loading extra item for bonus ID #{bonus}"
+            params = {
+              :bl => bonus
+            }
+            json = WowArmory::Document.fetch 'us', '/wow/item/%d' % [id,context], params
+            json_data.push(json)
           rescue WowArmory::MissingDocument => e
-            # try without context
-            item = WowArmory::Item.new(id, source, nil, '', options[:bonus_trees], nil)
-          end
-          db_item_with_bonus.properties = item.as_json.with_indifferent_access
-          if (upgrade_level != 0)
-            item_stats = WowArmory::Itemstats.new(db_item_with_bonus.properties, upgrade_level)
-            db_item_with_bonus.properties = db_item_with_bonus.properties.merge(item_stats.as_json.with_indifferent_access)
-          end
-          db_item_with_bonus.equip_location = db_item_with_bonus.properties['equip_location']
-          db_item_with_bonus.is_gem = !db_item_with_bonus.properties['gem_slot'].blank?
-          if db_item_with_bonus.new_record?
-            db_item_with_bonus.save
+            puts "import_blizzard failed fetch of #{id}/#{context}: #{e.message}"
+            return
           end
         end
+      rescue WowArmory::MissingDocument => e
+        puts "import_blizzard failed fetch of #{id}/#{context}: #{e.message}"
+        return
       end
-    rescue WowArmory::MissingDocument => e
-      Rails.logger.debug id
-      Rails.logger.debug e.message
-      return
+    end
+
+    puts "Loaded a total of #{json_data.length} json entries for this item"
+
+    # Loop through the json data that was retrieved and process each in turn
+    json_data.each do |json|
+
+      # also loop through all of the upgrade levels, since we create a new item in the
+      # database for each upgrade step.
+      # TODO: could we actually not store a new item for each, but store an array of stats
+      # for each upgrade level?
+      upgrade_levels.each do | upgrade_level |
+
+        # check to see if this item is in the database yet. we check by ID and item level
+        # since those are the two fields that generally differentiate different items.
+        db_item = Item.find_or_initialize_by(:remote_id => json['id'],
+                                             :item_level => json['itemLevel'].to_i+upgrade_level*5)
+
+        # if the item doesn't have properties yet, create a new item from the wow
+        # armory library and then merge that into this record and save it.
+        if db_item.properties.nil?
+          # create an item from the json data that we've retrieved and store it in the
+          # database. the initializer routine will deal with the upgrade level for us.
+          item = WowArmory::Item.new(json, 'wowapi', upgradable, upgrade_level)
+
+          # Merge the data from the armory item into the local db_item. This can't be
+          # done through a function since Ruby doesn't do pass-by-value, so we have to
+          # repeat this hunk of code.
+          db_item.remote_id = item.id
+          db_item.item_level = item.ilevel
+          db_item.properties = item.as_json.with_indifferent_access
+          db_item.is_gem = !db_item.properties['gem_slot'].blank?
+          db_item.save()
+        end
+      end
     end
   end
 

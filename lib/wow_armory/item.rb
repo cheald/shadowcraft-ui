@@ -3,48 +3,28 @@ module WowArmory
     unloadable
 
     @item_enchants = nil
-    @item_upgrades = nil
-    @upgrade_rulesets = nil
 
     include Constants
     include Document
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :requirement, :tag, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :bonus_trees, :chance_bonus_lists
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :upgrade_level, :chance_bonus_lists
     attr_accessor *ACCESSORS
-    
-    def initialize(id, source = 'wowapi', name = nil, context = '', bonus_trees = [], override_ilvl = nil)
-      self.name = name
-      self.ilevel = override_ilvl
-      self.bonus_trees = bonus_trees
 
-      if id == :empty || id == 0 || id.nil?
-        @id = :empty
-        return
-      else
-        @id = id.to_i
-      end
+    def initialize(json, json_source='wowapi', upgradable=false, upgrade_level=0)
+      self.name = json['name']
+      self.ilevel = json['itemLevel'].to_i + upgrade_level*5
+      self.upgradable = upgradable
+      self.upgrade_level = upgrade_level
+      @id = json['id'].to_i
 
-      case source
+      case json_source
         when 'wowapi'
-          url =  if context == ''
-            '/wow/item/%d' % id
-          else
-            '/wow/item/%d/%s' % [id,context]
-          end
-          params = {
-              :bl => bonus_trees.join(',')
-          }
-          @json = WowArmory::Document.fetch 'us', url, params, :json
-          populate_base_data
-        when 'wowhead'
-          populate_base_data_wowhead
-        when 'wowhead_ptr'
-          populate_base_data_wowhead('ptr')
+          populate_base_data_blizzard(json, upgrade_level)
+        when 'wowhead', 'wowhead_ptr'
+          populate_base_data_wowhead(json)
         else
           puts 'ERROR: source not valid'
           return
       end
-
-      self.upgradable = WowArmory::Item.check_upgradable(id)
     end
 
     def as_json(options = {})
@@ -53,98 +33,98 @@ module WowArmory
       end
     end
 
-    # The mapping for upgrades goes as follows:
-    # 1. The RulesetItemUpgrade file contains a list of items that can be
-    #    upgraded and maps to a ID of the kind of upgrade.
-    # 2. The ItemUpgrade file contains a list of kinds of upgrades and maps
-    #    from those IDs to the number of upgrades for that kind (via a
-    #    chain of previous IDs) and the currency necessary for the upgrade.
-    #
-    # For ShC, we only care about valor upgrades so we can skip any other
-    # kind of upgrade.
-    def self.check_upgradable(id)
-      if upgrade_rulesets.key?(id.to_s)
-        rule = upgrade_rulesets[id.to_s]
-        if item_upgrades.key?(rule.to_s)
-          currency = item_upgrades[rule.to_s]
-          # valor in 6.2.3 is currency type 1191
-          if currency == 1191
-            return true
-          end
-        end
-      end
-      return false
-    end
-
     private
 
-    def populate_base_data
-      self.name ||= @json['name']
-      self.quality = @json['quality']
-      self.equip_location = @json['inventoryType']
-      self.ilevel ||= @json['itemLevel']
-      self.icon = @json['icon']
+    # Populates the object data based on json data from a Blizzard API query
+    # TODO: go through all of these values and verify that all of the are still
+    # necessary.
+    def populate_base_data_blizzard(json, upgrade_level)
+      self.quality = json['quality']
+      self.equip_location = json['inventoryType']
+      self.icon = json['icon']
 
-      if @json['hasSockets']
+      # If the item has sockets, store a bunch of information about the sockets
+      # on the item. This includes a list of the colors of each of the sockets
+      # as well as information about socket bonus the item has.
+      if json['hasSockets']
         self.sockets = []
-        sockets = @json['socketInfo']['sockets']
+        sockets = json['socketInfo']['sockets']
         sockets.each do |socket|
           self.sockets.push socket['type'].capitalize
         end
-        unless @json['socketInfo']['socketBonus'].nil?
-          self.socket_bonus = scan_str(@json['socketInfo']['socketBonus'])
+        unless json['socketInfo']['socketBonus'].nil?
+          self.socket_bonus = scan_str(json['socketInfo']['socketBonus'])
         end
       end
-      unless @json['nameDescription'].nil?
-        self.tag = @json['nameDescription']
-      end
-      if @json['itemClass'] == 3 # gem
+
+      if json['itemClass'] == 3 # gem
         puts 'Gem = True'
-        if @json['gemInfo'].nil?
+        if json['gemInfo'].nil?
           self.stats = {}
         else
-          self.gem_slot = @json['gemInfo']['type']['type'].capitalize
-          self.stats = scan_str(@json['gemInfo']['bonus']['name'])
+          self.gem_slot = json['gemInfo']['type']['type'].capitalize
+          self.stats = scan_str(json['gemInfo']['bonus']['name'])
           puts 'stats from api'
           puts self.stats.inspect
         end
-      elsif @json['itemClass'] == 4 # armor
-        self.armor_class ||= ARMOR_CLASS[@json['itemSubClass']]
+      elsif json['itemClass'] == 4 # armor
+        # Armor class is the type of item (cloth/leather/mail/plate). It's
+        # only set to something if the itemClass is armor.
+        self.armor_class ||= ARMOR_CLASS[json['itemSubClass']]
       end
 
-      unless @json['bonusStats'].nil?
+      # json['bonusStats'] contains a list of the stats on the item itself. if
+      # the item is upgradable, this is where we will modify the stats on the
+      # item to match the proper values for the upgrade level.
+      unless json['bonusStats'].nil?
         self.stats = {}
-        @json['bonusStats'].each do |entry|
-            unless STAT_LOOKUP.has_key?(entry['stat'])
-              puts "STAT ID missing: #{entry['stat']}"
-              next
-            end
-            self.stats[STAT_LOOKUP[entry['stat']]] = entry['amount']
+        json['bonusStats'].each do |entry|
+          unless STAT_LOOKUP.has_key?(entry['stat'])
+            puts "STAT ID missing: #{entry['stat']}"
+            next
+          end
+
+          # TODO: it's terrible to do this math repeatedly with every item.
+          # TODO: turn this into a lookup table.
+          if (self.upgradable)
+            multiplier = WowArmory::Itemstats.get_upgrade_multiplier(upgrade_level)
+          else
+            multiplier = 1.0
+          end
+
+          stat = entry['amount'].to_f*multiplier
+          self.stats[STAT_LOOKUP[entry['stat']]] = stat.to_i
         end
       end
 
-      if @json['bonusSummary']['chanceBonusLists'].nil?
+      # If an item has chanceBonusLists, then it's an item that can have
+      # various bonuses attached to it like item sockets, random enchantments,
+      # etc. Store these with the item if they exist so they can be displayed
+      # on the popup for the item.
+      if json['bonusSummary']['chanceBonusLists'].nil?
         self.chance_bonus_lists = []
       else
-        self.chance_bonus_lists = @json['bonusSummary']['chanceBonusLists']
+        self.chance_bonus_lists = json['bonusSummary']['chanceBonusLists']
       end
 
-      @json['bonusSummary']['defaultBonusLists'].each do |bonusId|
+      # TODO: what is this for? These 5 bonus IDs are for the 100% secondary
+      # stat bonuses.
+      json['bonusSummary']['defaultBonusLists'].each do |bonusId|
         if [486, 487, 488, 489, 490].include? bonusId then
           self.chance_bonus_lists.push(bonusId)
         end
       end
 
-      unless @json['weaponInfo'].nil?
-        self.speed = @json['weaponInfo']['weaponSpeed'].to_f
-        self.dps = @json['weaponInfo']['dps'].to_f
-        self.subclass = @json['itemSubClass']
+      # If this item is a weapon, we need to store a little bit of information
+      # about it.
+      unless json['weaponInfo'].nil?
+        self.speed = json['weaponInfo']['weaponSpeed'].to_f
+        self.dps = json['weaponInfo']['dps'].to_f
+        self.subclass = json['itemSubClass']
       end
-
-      self.upgradable = WowArmory::Item.check_upgradable(@json['id'])
-      puts "populate_base_data: upgradable = #{self.upgradable}"
     end
 
+    # Populates the object data based on json data from a Wowhead query
     def populate_base_data_wowhead(prefix = 'www')
       doc = Nokogiri::XML open("http://#{prefix}.wowhead.com/item=%d&xml" % @id, 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0').read
       eqstats = JSON::load('{%s}' % doc.css('jsonEquip').text)
@@ -205,6 +185,9 @@ module WowArmory
       end
     end
 
+    # This method takes a string like "+4 Critical Strike" and turns it into a
+    # hash of two values. The values are the attribute being modified and the
+    # value of the modifier.
     def scan_str(str)
       map = SCAN_ATTRIBUTES.map do |attr|
         if str =~/\+(\d+) (#{attr})/i
@@ -227,34 +210,5 @@ module WowArmory
         end
       end
     end
-
-    # item_upgrades and upgrade_rulesets are used to determine if a piece of gear is
-    # eligible for a valor upgrade. They are used in the check_upgradable method.
-    def self.item_upgrades
-      # The header on the ItemUpgrade data looks like (as of 6.2.3):
-      # id,upgrade_group,upgrade_ilevel,prev_id,id_currency_type,cost
-      # We only care about the prev_id and id_currency_type ones
-      @@item_upgrades ||= Hash.new.tap do |hash|
-        CSV.foreach(File.join(File.dirname(__FILE__), 'data', 'ItemUpgrade.dbc.csv')) do |row|
-          row3 = row[3].to_i
-          row4 = row[4].to_i
-          if row3 != 0 and row4 != 0
-            hash[row3.to_s] = row4
-          end
-        end
-      end
-    end
-
-    def self.upgrade_rulesets
-      # The header on the RulesetItemUpgrade data looks like (as of 6.2.3):
-      # id,upgrade_level,id_upgrade_base,id_item
-      # We only care about the last two of these.
-      @@upgrade_rulesets ||= Hash.new.tap do |hash|
-        CSV.foreach(File.join(File.dirname(__FILE__), 'data', 'RulesetItemUpgrade.dbc.csv')) do |row|
-          hash[row[3]] = row[2].to_i
-        end
-      end
-    end
-
   end
 end

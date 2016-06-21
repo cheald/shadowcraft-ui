@@ -11,7 +11,6 @@ class Character
   field :portrait
   field :uid, :index => true
 
-  RACES = ['Human', 'Gnome', 'Dwarf', 'Night Elf', 'Worgen', 'Troll', 'Orc', 'Goblin', 'Undead', 'Pandaren']
   REGIONS = ['US', 'EU', 'KR', 'TW', 'CN', 'SEA']
   CLASSES = ['rogue']
   MAX_LEVEL = 100
@@ -76,8 +75,8 @@ class Character
       properties['gear'].each do |slot, item|
         # import item and all their upgrade_levels. This will also automatically import
         # items that are missing from the database
-        # NOTE: disabled due to the legendary ring breaking stuff.
-#        Item.wod_import item['item_id'].to_i, item['context'], item['bonus_trees']
+        Item.check_for_import(item['item_id'].to_i, item['itemLevel'].to_i)
+
         # import every gem from the equipped item
         [item['g0'], item['g1'], item['g2']].each do |gemid|
           # only proceed if there is a gem

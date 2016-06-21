@@ -2,31 +2,25 @@ module WowArmory
   class Character
     unloadable
 
-    ACHIEVEMENTS = [7534, 8008, 7535]
-    QUESTS = [32595]
-
     include Constants
     include Document
 
-    attr_accessor :realm, :region, :name, :active, :gear, :race, :level, :player_class, :talents, :portrait, :achievements, :quests
+    attr_accessor :realm, :region, :name, :active_spec, :gear, :race, :level, :player_class, :talents, :portrait
 
     def initialize(character, realm, region = 'US')
       @character = character
       @realm = realm
       @region = region
       params = {
-          :fields => 'talents,items,achievements,quests'
+          :fields => 'talents,items'
       }
-      @json = WowArmory::Document.fetch region, '/wow/character/%s/%s' % [normalize_realm(realm), normalize_character(character)], params, :json
+      @json = WowArmory::Document.fetch region, '/wow/character/%s/%s' % [normalize_realm(realm), normalize_character(character)], params
 
       populate!
 
       @json['talents'].each_with_index do |tree, index|
-        self.active = index if tree['selected']
+        self.active_spec = index if tree['selected']
       end
-
-      self.achievements = @json['achievements']['achievementsCompleted'].find_all{|id| ACHIEVEMENTS.include? id }
-      self.quests = @json['quests'].find_all{|id| QUESTS.include? id }
     end
 
     def gear
@@ -38,7 +32,7 @@ module WowArmory
         :gear => gear,
         :race => race,
         :level => level,
-        :active => active,
+        :active_spec => active_spec,
         :player_class => player_class,
         :talents => self.talents.map do |tree|
           glyphs = tree['glyphs'].map do |glyphset, set|
@@ -46,8 +40,6 @@ module WowArmory
           end.flatten
           {:spec => tree['calcSpec'], :talents => tree['calcTalent'], :glyphs => glyphs}
         end,
-        :achievements => achievements,
-        :quests => quests
       }
     end
 
@@ -79,9 +71,7 @@ module WowArmory
           'item_level' => v['itemLevel'],
           'name' => v['name'],
           'enchant' => tooltip['enchant'],
-          'g0' => tooltip['gem0'],
-          'g1' => tooltip['gem1'],
-          'g2' => tooltip['gem2'],
+          'gems' => [tooltip['gem0'],tooltip['gem1'],tooltip['gem2']],
           'slot' => SLOT_MAP[k],
         }
         info['suffix'] = tooltip['suffix'].to_i unless tooltip['suffix'].blank?
@@ -89,10 +79,7 @@ module WowArmory
           upgrade = tooltip['upgrade']
           info['upgrade_level'] = upgrade['current'] if upgrade['current'] > 0
         end
-        info['bonus_trees'] = v['bonusLists']
-        (0..9).each do |pos|
-          info["b#{pos}"] = v['bonusLists'][pos]
-        end
+        info['bonuses'] = v['bonusLists']
         info['context'] = v['context']
         @gear[info['slot'].to_s] = info
       end
