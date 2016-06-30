@@ -131,6 +131,8 @@
         R.ENCHANT_SLOTS[s][R.ENCHANT_SLOTS[s].length] = enchant;
         R.ENCHANT_LOOKUP[enchant.id] = enchant;
       }
+      delete R.ENCHANTS;
+
       R.ITEM_LOOKUP2 = {};
       for(i = 0; i < R.ITEMS.length; i++) {
         var item = R.ITEMS[i];
@@ -154,14 +156,17 @@
         R.ITEM_LOOKUP2[item.identifier] = item;
       }
       delete R.ITEMS;
+
       R.TALENT_LOOKUP = {};
       for(var talent = 0; talent < R.TALENTS.length; talent++) {
         var t = R.TALENTS[talent];
         R.TALENT_LOOKUP[t.spec + ":" + t.tier + ":" + t.column] = t;
       }
+
       R.ARTIFACT_LOOKUP = {};
       for(var index = 0; index < R.ARTIFACTS.length; index++) {
         var a = R.ARTIFACTS[index];
         R.ARTIFACT_LOOKUP[a.id] = a;
       }
+      delete R.ARTIFACTS;
     })(window.ShadowcraftData);

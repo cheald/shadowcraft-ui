@@ -909,7 +909,6 @@ class ShadowcraftGear
     gear = Shadowcraft.Data.gear
 
     requireDagger = needsDagger()
-    combatSpec = Shadowcraft.Data.activeSpec == "Z"
     subtletyNeedsDagger = Shadowcraft.Data.activeSpec == "b" && Shadowcraft.Data.options.rotation.use_hemorrhage in ['uptime','never']
 
     loc_all = Shadowcraft.ServerData.SLOT_CHOICES[equip_location]
@@ -924,6 +923,17 @@ class ShadowcraftGear
         continue
 
       continue if l.id == 124636
+
+      # Filter weapons to only display the artifact for the current spec and the
+      # correct hand.
+      if slot == 15
+        continue if Shadowcraft.Data.activeSpec == "a" and l.id != 128870
+        continue if Shadowcraft.Data.activeSpec == "Z" and l.id != 128872
+        continue if Shadowcraft.Data.activeSpec == "b" and l.id != 128476
+      if slot == 16
+        continue if Shadowcraft.Data.activeSpec == "a" and l.id != 128869
+        continue if Shadowcraft.Data.activeSpec == "Z" and l.id != 134552
+        continue if Shadowcraft.Data.activeSpec == "b" and l.id != 128479
 
       # Filter out items that are outside the min and max ilvls set on the options
       # panel
