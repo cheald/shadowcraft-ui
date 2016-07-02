@@ -106,6 +106,7 @@ var ttlib = {
     var bonus = $this.data("tooltip-bonus");
     var rank = $this.data("tooltip-rank");
     var gems = $this.data("tooltip-gems");
+    var spec = $this.data("tooltip-spec");
     if(!id) { return; }
     var t = $this.data("tooltip-type") || "item";
     var url = "http://www.wowhead.com/" + t + "=" + id + "&power";
@@ -123,6 +124,9 @@ var ttlib = {
     }
     if(gems) {
       url += "&gems=" + gems;
+    }
+    if(spec) {
+      url += "&spec=" + spec;
     }
     url += "&lvl=110";
 

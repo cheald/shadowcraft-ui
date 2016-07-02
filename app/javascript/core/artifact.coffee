@@ -31,6 +31,11 @@ class ShadowcraftArtifact
       relic2: "fel"
       relic3: "fel"
 
+  WOWHEAD_SPEC_IDS =
+    "a": 259
+    "Z": 260
+    "b": 261
+
   @ARTIFACT_ITEM_IDS = [128476, 128479, 128872, 134552, 128869, 128870]
 
   RELIC_TYPE_MAP =
@@ -113,6 +118,13 @@ class ShadowcraftArtifact
     )
     $("#artifactframe .line").each(->
       $(this).addClass("inactive")
+    )
+
+    # Relics too!
+    $("#artifactframe .relicframe").each(->
+      $(this).children(".relicicon").addClass("inactive")
+      $(this).removeData("tooltip-id")
+      $(this).removeData("tooltip-spec")
     )
 
     # if there's no artifact data in the data object, just return and don't do
@@ -209,6 +221,7 @@ class ShadowcraftArtifact
         button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relic.icon+".jpg")
         button.removeClass("inactive")
         relicdiv.data("tooltip-id", relic.id)
+        relicdiv.data("tooltip-spec", WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec])
         for key,val of RELIC_TYPE_MAP
           if (val == relic.type)
             type = key
@@ -224,7 +237,6 @@ class ShadowcraftArtifact
         Shadowcraft.Data.gear[16].gems[i] = relic.id
       else
         button.addClass("inactive")
-        relicdiv.removeData("tooltip-id")
 
     # Update the stored item level of the artifact weapons so that a
     # recalculation takes the relics into account.
@@ -388,6 +400,7 @@ class ShadowcraftArtifact
         item: relic
         gear: {}
         ttid: relic.id
+        ttspec: WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec]
         search: escape(relic.n)
         desc: desc
         percent: relic.__ep / max * 100
