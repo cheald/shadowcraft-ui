@@ -11,29 +11,6 @@ module WowArmory
 
     include Constants
 
-    # The mapping for upgrades goes as follows:
-    # 1. The RulesetItemUpgrade file contains a list of items that can be
-    #    upgraded and maps to a ID of the kind of upgrade.
-    # 2. The ItemUpgrade file contains a list of kinds of upgrades and maps
-    #    from those IDs to the number of upgrades for that kind (via a
-    #    chain of previous IDs) and the currency necessary for the upgrade.
-    #
-    # For ShC, we only care about valor upgrades so we can skip any other
-    # kind of upgrade.
-    def self.check_upgradable(id)
-      if upgrade_rulesets.key?(id.to_s)
-        rule = upgrade_rulesets[id.to_s]
-        if item_upgrades.key?(rule.to_s)
-          currency = item_upgrades[rule.to_s]
-          # valor in 6.2.3 is currency type 1191
-          if currency == 1191
-            return true
-          end
-        end
-      end
-      return false
-    end
-
     def self.get_upgrade_multiplier(upgrade_level=0)
       if @upgrade_multipliers[upgrade_level].nil?
         @upgrade_multipliers[upgrade_level] =  1.0 / (1.15 ** (-(upgrade_level*5.0) / 15.0))
@@ -97,35 +74,6 @@ module WowArmory
 
       puts "#{self.name} #{@properties[:tag]} #{@properties[:ilevel]}"
       puts self.stats.inspect
-    end
-
-
-    # item_upgrades and upgrade_rulesets are used to determine if a piece of gear is
-    # eligible for a valor upgrade. They are used in the check_upgradable method.
-    def self.item_upgrades
-      # The header on the ItemUpgrade data looks like (as of 6.2.3):
-      # id,upgrade_group,upgrade_ilevel,prev_id,id_currency_type,cost
-      # We only care about the prev_id and id_currency_type ones
-      @@item_upgrades ||= Hash.new.tap do |hash|
-        CSV.foreach(File.join(File.dirname(__FILE__), 'data', 'ItemUpgrade.dbc.csv')) do |row|
-          row3 = row[3].to_i
-          row4 = row[4].to_i
-          if row3 != 0 and row4 != 0
-            hash[row3.to_s] = row4
-          end
-        end
-      end
-    end
-
-    def self.upgrade_rulesets
-      # The header on the RulesetItemUpgrade data looks like (as of 6.2.3):
-      # id,upgrade_level,id_upgrade_base,id_item
-      # We only care about the last two of these.
-      @@upgrade_rulesets ||= Hash.new.tap do |hash|
-        CSV.foreach(File.join(File.dirname(__FILE__), 'data', 'RulesetItemUpgrade.dbc.csv')) do |row|
-          hash[row[3]] = row[2].to_i
-        end
-      end
     end
   end
 end

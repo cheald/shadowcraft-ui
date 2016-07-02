@@ -1,120 +1,182 @@
 id,desc,flags
-    2,Now with extra description,0x00ffffff
-   20,Season 10,0xff00ff00
-  226,Season 10 Elite,0xff00ff00
-  525,Season 9 Elite,0xff00ff00
-  653,Season 9,0xff00ff00
- 1013,Season 11,0xff00ff00
- 1208,Season 11 Elite,0xff00ff00
- 1591,Season 19,0xff00ff00
- 1593,This Color Hurts My Eyes,0xffff0000
- 1641,Raid Finder,0xff00ff00
- 2015,Heroic,0x0000ff00
- 2023,Season 10 Elite,0xffffffff
- 2255,Season 12,0x0000ff00
- 2667,Season 12 Elite,0x0000ff00
- 3564,,0x0000ff00
- 3759,Crafting Material,0xff66bbff
- 3765,100 Slot bag,0xffffffff
- 3845,Heroic Elite,0x0000ff00
- 3859,Elite,0x0000ff00
- 3933,Season 13,0x0000ff00
- 3934,Season 13 Elite,0x0000ff00
- 4918,Rank 1,0xff00ffff
- 4949,Rank 2,0xff00ffff
- 4953,Rank 3,0xff00ffff
- 4957,Rank 4,0xff00ffff
- 4961,Rank 5,0xff00ffff
- 4965,Rank 7,0xff00ffff
- 4969,Rank 8,0xff00ffff
- 4970,Rank 6,0xff00ffff
- 5213,Scenario Item,0xffffffff
- 5616,Thunderforged,0x0000ff00
- 6360,Heroic Thunderforged,0x0000ff00
- 6798,Rank 9,0xff00ffff
- 6842,Rank ??,0xff00ffff
- 6843,Season 8,0x0000ff00
- 6894,Season 8 Elite,0x0000ff00
- 7052,Season 7,0x0000ff00
- 7225,Season 7 Elite,0x0000ff00
- 7261,Season 6,0x0000ff00
- 7434,Season 6 Elite,0x0000ff00
- 7463,Season 5,0x0000ff00
- 7636,Season 4,0x0000ff00
- 7775,Season 3,0x0000ff00
- 7906,Season 2,0x0000ff00
- 8027,Season 1,0x0000ff00
- 8869,Flexible,0x0000ff00
- 9059,Season 14,0x0000ff00
- 9459,Season 14 Elite,0x0000ff00
-10066,Heroic Thunderforged,0x00ff0000
-10126,Season 15,0x0000ff00
-10520,Season 15 Elite,0x0000ff00
-11080,Timeless,0x0000ff00
-11179,Heroic Warforged,0x0000ff00
-11428,Warforged,0x0000ff00
-12743,Trophy,0xff66bbff
-12790,Pristine,0xff00ff00
-12934,Alchemy Material,0xff66bbff
-13021,Crafting Material,0xff88aaff
-13111,of Power,0x00000000
-13145,Mythic,0xff00ff00
-13149,Engineering Material,0xff66bbff
-13150,of the Fireflash,0x00000000
-13151,of the Peerless,0x00000000
-13152,of the Quickblade,0x00000000
-13153,of the Savage,0x00000000
-13154,of the Fanatic,0x00000000
-13155,of the Guileful,0x00000000
-13156,of the Feverflare,0x00000000
-13157,of the Aurora,0x00000000
-13158,of the Deft,0x00000000
-13159,of the Zealot,0x00000000
-13160,of the Windshaper,0x00000000
-13161,of the Harmonious,0x00000000
-13162,of the Merciless,0x00000000
-13163,of the Diviner,0x00000000
-13164,of the Noble,0x00000000
-13165,of the Strategist,0x00000000
-13166,of the Augur,0x00000000
-13167,of the Stalwart,0x00000000
-13168,of the Herald,0x00000000
-13169,of the Stormbreaker,0x00000000
-13170,of the Impatient,0x00000000
-13171,of the Savant,0x00000000
-13172,of the Adaptable,0x00000000
-13173,of the Relentless,0x00000000
-13174,of the Pious,0x00000000
-13175,of the Unbreakable,0x00000000
-13176,of the Decimator,0x00000000
-13178,Warlords Tournament,0x0000ff00
-13181,Cooking Ingredient,0xff66bbff
-13184,Crafting Reagent,0xff66bbff
-13185,Stage 2 of 6,0x0000ff00
-13186,Stage 3 of 6,0x0000ff00
-13187,Stage 1 of 6,0x0000ff00
-13188,Mythic Warforged,0xff00ff00
-13190,Follower Equipment,0xff71d5ff
-13191,Garrison Resource,0xff66bbff
-13192,Trading Post Part,0xff00ccff
-13193,Normal,0x0000ff00
-13194,Trading Post Module,0xff00ccff
-13195,Pristine,0xff66bbff
-13196,Warlords Season 1,0x0000ff00
-13197,Racial PvP Token,0xff88aaff
-13198,Warlords Season 1 Elite,0x0000ff00
-13208,Stage 4 of 6,0x0000ff00
-13209,Garrison Blueprint,0xff66bbff
-13210,Timewalker,0xffe6cc80
-13211,Warlords Season 2,0x0000ff00
-13212,Warlords Season 2 Elite,0x0000ff00
-13213,Warlords Season 3,0x0000ff00
-13214,Warlords Season 3 Elite,0x0000ff00
-13215,Pickpocketing,0xff00ccff
-13216,Timewarped,0xff00ff00
-13217,Stage 5 of 6,0x0000ff00
-13218,Stage 6 of 6,0x0000ff00
-13220,Timewarped Warforged,0xff00ff00
-13222,Empowered,0x0000ff00
-13224,Naval Equipment,0x0000ff00
-13225,Baleful,0xff00ff00
+2,"'Now with extra description'",16777215
+20,"'Season 10'",4278255360
+226,"'Season 10 Elite'",4278255360
+525,"'Season 9 Elite'",4278255360
+653,"'Season 9'",4278255360
+1013,"'Season 11'",4278255360
+1208,"'Season 11 Elite'",4278255360
+1591,"'Season 19'",4278255360
+1593,"'This Color Hurts My Eyes'",4294901760
+1641,"'Raid Finder'",4278255360
+2015,"'Heroic'",65280
+2023,"'Season 10 Elite'",4294967295
+2255,"'Season 12'",65280
+2667,"'Season 12 Elite'",65280
+3564,"",65280
+3759,"'Crafting Material'",4284922879
+3765,"'100 Slot bag'",4294967295
+3845,"'Heroic Elite'",65280
+3859,"'Elite'",65280
+3933,"'Season 13'",65280
+3934,"'Season 13 Elite'",65280
+4918,"'Rank 1'",4278255615
+4949,"'Rank 2'",4278255615
+4953,"'Rank 3'",4278255615
+4957,"'Rank 4'",4278255615
+4961,"'Rank 5'",4278255615
+4965,"'Rank 7'",4278255615
+4969,"'Rank 8'",4278255615
+4970,"'Rank 6'",4278255615
+5213,"'Scenario Item'",4294967295
+5616,"'Thunderforged'",65280
+6360,"'Heroic Thunderforged'",65280
+6798,"'Rank 9'",4278255615
+6842,"'Rank ??'",4278255615
+6843,"'Season 8'",65280
+6894,"'Season 8 Elite'",65280
+7052,"'Season 7'",65280
+7225,"'Season 7 Elite'",65280
+7261,"'Season 6'",65280
+7434,"'Season 6 Elite'",65280
+7463,"'Season 5'",65280
+7636,"'Season 4'",65280
+7775,"'Season 3'",65280
+7906,"'Season 2'",65280
+8027,"'Season 1'",65280
+8869,"'Flexible'",65280
+9059,"'Season 14'",65280
+9459,"'Season 14 Elite'",65280
+10066,"'Heroic Thunderforged'",16711680
+10126,"'Season 15'",65280
+10520,"'Season 15 Elite'",65280
+11080,"'Timeless'",65280
+11179,"'Heroic Warforged'",65280
+11428,"'Warforged'",65280
+12743,"'Trophy'",4284922879
+12790,"'Pristine'",4278255360
+12934,"'Alchemy Material'",4284922879
+13021,"'Crafting Material'",4287146751
+13111,"'of Power'",0
+13145,"'Mythic'",4278255360
+13149,"'Engineering Material'",4284922879
+13150,"'of the Fireflash'",0
+13151,"'of the Peerless'",0
+13152,"'of the Quickblade'",0
+13153,"'of the Savage'",0
+13154,"'of the Fanatic'",0
+13155,"'of the Guileful'",0
+13156,"'of the Feverflare'",0
+13157,"'of the Aurora'",0
+13158,"'of the Deft'",0
+13159,"'of the Zealot'",0
+13160,"'of the Windshaper'",0
+13161,"'of the Harmonious'",0
+13162,"'of the Merciless'",0
+13163,"'of the Diviner'",0
+13164,"'of the Noble'",0
+13165,"'of the Strategist'",0
+13166,"'of the Augur'",0
+13167,"'of the Stalwart'",0
+13168,"'of the Herald'",0
+13169,"'of the Stormbreaker'",0
+13170,"'of the Impatient'",0
+13171,"'of the Savant'",0
+13172,"'of the Adaptable'",0
+13173,"'of the Relentless'",0
+13174,"'of the Pious'",0
+13175,"'of the Unbreakable'",0
+13176,"'of the Decimator'",0
+13178,"'Warlords Tournament'",65280
+13181,"'Cooking Ingredient'",4284922879
+13184,"'Crafting Reagent'",4284922879
+13185,"'Stage 2 of 6'",65280
+13186,"'Stage 3 of 6'",65280
+13187,"'Stage 1 of 6'",65280
+13188,"'Mythic Warforged'",4278255360
+13190,"'Follower Equipment'",4285650431
+13191,"'Garrison Resource'",4284922879
+13192,"'Trading Post Part'",4278242559
+13193,"'Normal'",65280
+13194,"'Trading Post Module'",4278242559
+13195,"'Pristine'",4284922879
+13196,"'Warlords Season 1'",65280
+13197,"'Racial PvP Token'",4287146751
+13198,"'Warlords Season 1 Elite'",65280
+13201,"'Tier 0'",65280
+13202,"'Tier 1 - Holy'",65280
+13203,"'Tier 1 - Fire'",65280
+13204,"'Tier 1 - Corrupted'",65280
+13205,"'Tier 2 - Holy'",65280
+13206,"'Tier 2 - Fire'",65280
+13207,"'Tier 2 - Corrupted'",65280
+13208,"'Stage 4 of 6'",65280
+13209,"'Garrison Blueprint'",4284922879
+13210,"'Timewalker'",4293315712
+13211,"'Warlords Season 2'",65280
+13212,"'Warlords Season 2 Elite'",65280
+13213,"'Warlords Season 3'",65280
+13214,"'Warlords Season 3 Elite'",65280
+13215,"'Pickpocketing'",4278242559
+13216,"'Timewarped'",4278255360
+13217,"'Stage 5 of 6'",65280
+13218,"'Stage 6 of 6'",65280
+13219,"'Artifact Power'",4293315712
+13220,"'Timewarped Warforged'",4278255360
+13222,"'Empowered'",65280
+13223,"'Ancient Mana'",4284922879
+13224,"'Naval Equipment'",65280
+13225,"'Baleful'",4278255360
+13226,"'Legion Season 1'",65280
+13227,"'Legion Season 1 Elite'",65280
+13228,"'Champion Equipment'",4294955008
+13230,"'Stage 1 of 9'",65280
+13231,"'Stage 2 of 9'",65280
+13232,"'Stage 3 of 9'",65280
+13233,"'Stage 4 of 9'",65280
+13234,"'Stage 5 of 9'",65280
+13235,"'Stage 6 of 9'",65280
+13236,"'Stage 7 of 9'",65280
+13237,"'Stage 8 of 9'",65280
+13238,"'Stage 9 of 9'",65280
+13239,"'Titanforged'",65280
+13241,""Odyn's Fury"",4293315712
+13242,""Helya's Wrath"",4293315712
+13243,"'Frostreaper'",4293315712
+13244,"'Icebringer'",4293315712
+13245,"'Verus'",4293315712
+13246,"'Muramas'",4293315712
+13247,""Al'burq"",4293315712
+13248,""Alra'ed"",4293315712
+13249,"'Anguish'",4293315712
+13250,"'Sorrow'",4293315712
+13251,"'Fate'",4293315712
+13252,"'Fortune'",4293315712
+13253,"'Gorefang'",4293315712
+13254,""Akaari's Will"",4293315712
+13256,"'Obliterum: 0/7'",65280
+13257,"'Obliterum: 1/7'",65280
+13258,"'Obliterum: 2/7'",65280
+13259,"'Obliterum: 3/7'",65280
+13260,"'Obliterum: 4/7'",65280
+13261,"'Obliterum: 5/7'",65280
+13262,"'Obliterum: 6/7'",65280
+13263,"'Obliterum: 7/7'",65280
+13264,"'Obliteratable'",4287146751
+13265,"'Mythic 2'",4278255360
+13266,"'Mythic 3'",4278255360
+13267,"'Mythic 4'",4278255360
+13268,"'Mythic 5'",4278255360
+13269,"'Mythic 6'",4278255360
+13270,"'Mythic 7'",4278255360
+13271,"'Mythic 8'",4278255360
+13272,"'Mythic 9'",4278255360
+13273,"'Mythic 10'",4278255360
+13274,"'Mythic 2 Jackpot'",4278255360
+13275,"'Mythic 3 Jackpot'",4278255360
+13276,"'Mythic 4 Jackpot'",4278255360
+13277,"'Mythic 5 Jackpot'",4278255360
+13278,"'Mythic 6 Jackpot'",4278255360
+13279,"'Mythic 7 Jackpot'",4278255360
+13280,"'Mythic 8 Jackpot'",4278255360
+13281,"'Mythic 9 Jackpot'",4278255360

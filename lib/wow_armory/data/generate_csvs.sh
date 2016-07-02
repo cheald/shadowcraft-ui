@@ -6,21 +6,27 @@ pushd ${SCRIPT_DIR} > /dev/null
 mkdir -p csv_temp
 cd csv_temp
 git clone https://github.com/simulationcraft/simc.git simc
-mv simc/dbc_extract .
-mv simc/casc_extract .
+
+# TODO: remove this after beta
+pushd simc > /dev/null
+git checkout legion-dev
+popd
+
+mv simc/dbc_extract3 simc/casc_extract .
 rm -rf simc
 
 mkdir -p casc_data
 cd casc_extract
-./casc_extract.py -m batch --cdn -o ../casc_data | tee ../casc_data/extract.log
+# TODO: remove the --beta flag here after beta
+./casc_extract.py -m batch --cdn --beta -o ../casc_data | tee ../casc_data/extract.log
 cd ..
 
 CDN_VERSION=`awk -F": " '/Current CDN/ {print $2}' casc_data/extract.log`
-BUILD_NUMBER=`awk -F. '/Current build/ {print $NF}' casc_data/extract.log`
+BUILD_NUMBER=`awk -F"[/,]" '/Available versions/ {print $2}' casc_data/extract.log`
 CASC_DATA_DIR="${PWD}/casc_data/${CDN_VERSION}/DBFilesClient"
 
 mkdir -p csvs
-cd dbc_extract
+cd dbc_extract3
 for i in ItemBonus ItemNameDescription SpellItemEnchantment RandPropPoints ItemUpgrade RulesetItemUpgrade; do
     echo "Generating CSV for $i..."
     ./dbc_extract.py -b ${BUILD_NUMBER} -p ${CASC_DATA_DIR} -t csv --delim=, $i > ../csvs/${i}.dbc.csv

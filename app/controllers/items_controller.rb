@@ -76,13 +76,14 @@ class ItemsController < ApplicationController
 
     item_bonuses = {}
     CSV.foreach(File.join(Rails.root, 'lib', 'wow_armory', 'data', 'ItemBonus.dbc.csv')) do |row|
-      unless item_bonuses.has_key? row[1].to_i
-        item_bonuses[row[1].to_i] = []
+      id_node = row[3].to_i
+      unless item_bonuses.has_key? id_node
+        item_bonuses[id_node] = []
       end
       entry = {
-        :type => row[2].to_i,
-        :val1 => row[3].to_i,
-        :val2 => row[4].to_i
+        :type => row[4].to_i,
+        :val1 => row[1].to_i,
+        :val2 => row[2].to_i
       }
 
       # Bonus Types (value of column 3):
@@ -103,7 +104,7 @@ class ItemsController < ApplicationController
       elsif entry[:type] == 6
         entry[:val2] = SOCKET_MAP[entry[:val2].to_i]
       end
-      item_bonuses[row[1].to_i].push entry
+      item_bonuses[id_node].push entry
     end
     @item_bonuses = item_bonuses
     @rand_prop_points = rand_prop_points

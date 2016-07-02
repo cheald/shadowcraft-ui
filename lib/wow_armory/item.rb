@@ -255,27 +255,27 @@ module WowArmory
     # item_upgrades and upgrade_rulesets are used to determine if a piece of gear is
     # eligible for a valor upgrade. They are used in the check_upgradable method.
     def self.item_upgrades
-      # The header on the ItemUpgrade data looks like (as of 6.2.3):
-      # id,upgrade_group,upgrade_ilevel,prev_id,id_currency_type,cost
+      # The header on the ItemUpgrade data looks like (as of 7.0.3):
+      # id,cost,prev_id,id_currency_type,upgrade_group,upgrade_ilevel
       # We only care about the prev_id and id_currency_type ones
       @@item_upgrades ||= Hash.new.tap do |hash|
         CSV.foreach(File.join(File.dirname(__FILE__), 'data', 'ItemUpgrade.dbc.csv')) do |row|
-          row3 = row[3].to_i
-          row4 = row[4].to_i
-          if row3 != 0 and row4 != 0
-            hash[row3.to_s] = row4
+          prev_id = row[2].to_i
+          currency_type = row[3].to_i
+          if prev_id != 0 and currency_type != 0
+            hash[prev_id.to_s] = currency_type
           end
         end
       end
     end
 
     def self.upgrade_rulesets
-      # The header on the RulesetItemUpgrade data looks like (as of 6.2.3):
-      # id,upgrade_level,id_upgrade_base,id_item
+      # The header on the RulesetItemUpgrade data looks like (as of 7.0.3):
+      # id,id_item,id_upgrade_base
       # We only care about the last two of these.
       @@upgrade_rulesets ||= Hash.new.tap do |hash|
         CSV.foreach(File.join(File.dirname(__FILE__), 'data', 'RulesetItemUpgrade.dbc.csv')) do |row|
-          hash[row[3]] = row[2].to_i
+          hash[row[1]] = row[2].to_i
         end
       end
     end
