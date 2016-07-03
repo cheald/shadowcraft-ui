@@ -8,6 +8,7 @@ module WowArmory
     @item_enchants = nil
     @item_upgrades = nil
     @upgrade_rulesets = nil
+    @upgrade_multipliers = {}
 
     include Constants
     include Document
@@ -64,6 +65,15 @@ module WowArmory
 
     private
 
+    # Returns a multiplier used for re-calculating stats on an item used in
+    # valor upgrades.
+    def get_upgrade_multiplier(upgrade_level=0)
+      if @upgrade_multipliers[upgrade_level].nil?
+        @upgrade_multipliers[upgrade_level] =  1.0 / (1.15 ** (-(upgrade_level*5.0) / 15.0))
+      end
+      return @upgrade_multipliers[upgrade_level]
+    end
+
     # Populates the object data based on json data from a Blizzard API query
     # TODO: go through all of these values and verify that all of the are still
     # necessary.
@@ -116,10 +126,8 @@ module WowArmory
             next
           end
 
-          # TODO: it's terrible to do this math repeatedly with every item.
-          # TODO: turn this into a lookup table.
           if (self.upgradable)
-            multiplier = WowArmory::Itemstats.get_upgrade_multiplier(upgrade_level)
+            multiplier = get_upgrade_multiplier(upgrade_level)
           else
             multiplier = 1.0
           end
