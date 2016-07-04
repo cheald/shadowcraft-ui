@@ -599,7 +599,7 @@ class ShadowcraftGear
         bonusable = null
         if item
           item.sockets ||= []
-          enchantable = EnchantSlots[item.equip_location]? && getApplicableEnchants(i, item).length > 0
+          enchantable = gear.id not in ShadowcraftGear.ARTIFACTS && EnchantSlots[item.equip_location]? && getApplicableEnchants(i, item).length > 0
 
           bonus_keys = _.keys(Shadowcraft.ServerData.ITEM_BONUSES)
           bonuses_equipped = []

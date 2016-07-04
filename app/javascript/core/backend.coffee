@@ -109,7 +109,8 @@ class ShadowcraftBackend
       if g.id
         item = [
           g.id,
-          g.item_level
+          g.item_level,
+          g.enchant
         ]
         gear_ids.push(item)
     payload.g = gear_ids

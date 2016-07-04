@@ -36,6 +36,10 @@ class ShadowcraftComputation:
         5334: "mark_of_the_frostwolf",
         5337: "mark_of_warsong",
         5384: "mark_of_the_bleeding_hollow",
+        5437: "mark_of_the_claw",
+        5438: "mark_of_the_distant_army",
+        5439: "mark_of_the_hidden_satyr",
+        5890: "mark_of_the_trained_soldier",
         0: None
     }
 
@@ -292,7 +296,6 @@ class ShadowcraftComputation:
         # ##################################################################################
         # Set up gear buffs.
         buff_list = []
-        buff_list.append('gear_specialization')
 
         if len(self.tier17IDS & gear) >= 2:
             buff_list.append('rogue_t17_2pc')
@@ -322,6 +325,12 @@ class ShadowcraftComputation:
             if k in gear:
                 buff_list.append(self.gearBoosts[k])
 
+        # Add enchant procs to the list of gear buffs
+        for k in gear_data:
+            if k[2] != 0 and k[2] in self.enchantMap:
+                buff_list.append(self.enchantMap[k[2]])
+
+        print buff_list
         _gear_buffs = stats.GearBuffs(*buff_list)
 
         # ##################################################################################
