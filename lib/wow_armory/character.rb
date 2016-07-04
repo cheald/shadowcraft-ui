@@ -21,8 +21,6 @@ module WowArmory
       @json['talents'].each_with_index do |tree, index|
         self.active = index if tree['selected']
       end
-
-      populate_artifacts
     end
 
     def gear
@@ -64,10 +62,6 @@ module WowArmory
         next unless v.is_a? Hash
         next if SLOT_MAP[k].nil?
 
-        # TODO: take this out after we have data from Blizzard
-        next if k == "mainHand"
-        next if k == "offHand"
-
         tooltip = v['tooltipParams'] || {}
         info = {
           'id' => v['id'],
@@ -89,56 +83,6 @@ module WowArmory
         end
         @gear[info['slot'].to_s] = info
       end
-    end
-
-    # TODO: take this out after we have data from blizzard
-    def populate_artifacts
-
-      activeSpec = self.talents[self.active]['calcSpec']
-
-      info = {
-        'item_level' => 750,
-        'enchant' => 0,
-        'gems' => [],
-        'slot' => 15,
-        'suffix' => nil,
-        'bonuses' => [743],
-        'context' => ''
-      }
-      info['gems'] = [0,0,0]
-      info['upgrade_level'] = 0
-
-      if activeSpec == 'a'
-        info['id'] = 128870
-      elsif activeSpec == 'Z'
-        info['id'] = 128872
-      elsif activeSpec == 'b'
-        info['id'] = 128476
-      end
-
-      @gear[info['slot'].to_s] = info
-
-      info = {
-        'item_level' => 750,
-        'enchant' => 0,
-        'gems' => [],
-        'slot' => 16,
-        'suffix' => nil,
-        'bonuses' => [],
-        'context' => ''
-      }
-      info['gems'] = [0,0,0]
-      info['upgrade_level'] = 0
-      
-      if activeSpec == 'a'
-        info['id'] = 128869
-      elsif activeSpec == 'Z'
-        info['id'] = 134552
-      elsif activeSpec == 'b'
-        info['id'] = 128479
-      end
-
-      @gear[info['slot'].to_s] = info
     end
   end
 end
