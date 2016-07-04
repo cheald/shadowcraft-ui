@@ -2467,6 +2467,9 @@
 
     updateArtifactItem = function(id, oldIlvl, newIlvl) {
       var baseItem, ident, newStats, updatedItem;
+      if (indexOf.call(ShadowcraftArtifact.ARTIFACT_ITEM_IDS, id) < 0) {
+        return;
+      }
       ident = id + ":750:0";
       baseItem = Shadowcraft.ServerData.ITEM_LOOKUP2[ident];
       updatedItem = $.extend({}, baseItem);
