@@ -81,7 +81,13 @@ class ShadowcraftBackend
         statSummary.multistrike || 0,
         statSummary.versatility || 0
       ],
-      art: data.artifact[data.activeSpec].traits,
+
+    # Don't send artifact information if the character isn't holding two the artifact weapons
+    # for their current spec.
+    payload.art = {}
+    if (mh and oh)
+      if mh.id == ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].mh and oh.id == ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].oh
+        payload.art = data.artifact[data.activeSpec].traits
 
     if mh?
       payload.mh = [

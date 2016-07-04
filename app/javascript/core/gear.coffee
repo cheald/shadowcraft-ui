@@ -18,6 +18,17 @@ class ShadowcraftGear
     5384: "mark_of_the_bleeding_hollow"
 
   LEGENDARY_RINGS=[118302, 118307, 124636]
+  @ARTIFACTS = [128476, 128479, 128872, 134552, 128869, 128870]
+  @ARTIFACT_SETS =
+    a:
+      mh: 128870
+      oh: 128869
+    Z:
+      mh: 128872
+      oh: 134552
+    b:
+      mh: 128476
+      oh: 128479
 
   Sets =
     T17:
@@ -333,6 +344,7 @@ class ShadowcraftGear
       gear = data.gear[slotIndex]
       continue unless gear
       continue if gear.locked
+      continue if gear.id in ShadowcraftGear.ARTIFACTS
 
       item = getItem(gear.id, gear.item_level, gear.suffix)
       gem_offset = statOffset(gear, FACETS.GEMS)
@@ -650,15 +662,21 @@ class ShadowcraftGear
         opt.ttgems = if ttgems != "0:0:0" then ttgems else null
         opt.ep = if item then getEP(item, i).toFixed(1) else 0
         opt.slot = i + ''
-        opt.gems = gems
         opt.socketbonus = bonuses
         opt.bonusable = true # TODO
-        opt.sockets = if item then item.sockets else null
         opt.enchantable = enchantable
         opt.enchant = enchant
         opt.upgradable = if item then item.upgradable else false
         opt.upgrade = upgrade
         opt.bonusable = bonusable
+
+        if item and item.id not in ShadowcraftGear.ARTIFACTS
+          opt.sockets = item.sockets
+          opt.gems = gems
+        else
+          opt.sockets = null
+          opt.gems = null
+
         if item
           opt.lock = true
           if gear.locked
@@ -873,7 +891,7 @@ class ShadowcraftGear
 
   # Gets an item from the item lookup table based on item ID and ilvl.
   getItem = (itemId, itemLevel, suffix) ->
-    if (itemId in ShadowcraftArtifact.ARTIFACT_ITEM_IDS)
+    if (itemId in ShadowcraftGear.ARTIFACTS)
       item = Shadowcraft.Data.artifact_items[itemId]
     else
       arm = [itemId, itemLevel, suffix || 0]
@@ -1288,9 +1306,6 @@ class ShadowcraftGear
     Shadowcraft.Gear.updateDisplay()
     true
 
-  # Called when a user clicks an item in a popup window
-  clickPopupItem = (e) ->
-
   boot: ->
     app = this
     $slots = $(".slots")
@@ -1403,6 +1418,8 @@ class ShadowcraftGear
                         slotGear.gems[i] = null
               if item.bonus_tree
                 slotGear.bonuses = item.bonus_tree
+              if (item.id in ShadowcraftGear.ARTIFACTS)
+                Shadowcraft.Artifact.updateArtifactItem(item.id, item.ilvl, item.ilvl)
             else
               slotGear.id = null
               slotGear.item_level = null

@@ -36,8 +36,6 @@ class ShadowcraftArtifact
     "Z": 260
     "b": 261
 
-  @ARTIFACT_ITEM_IDS = [128476, 128479, 128872, 134552, 128869, 128870]
-
   RELIC_TYPE_MAP =
     "iron": 0
     "blood": 1
@@ -81,6 +79,11 @@ class ShadowcraftArtifact
     return {current: level, max: max_level}
 
   updateArtifactItem = (id, oldIlvl, newIlvl) ->
+    # if the item isn't an artifact weapon, just return here and don't do
+    # anything. getStatsForIlvl would have thrown an exception anyways.
+    if id not in ShadowcraftGear.ARTIFACTS
+      return
+
     ident = id+":750:0"
     baseItem = Shadowcraft.ServerData.ITEM_LOOKUP2[ident]
 
@@ -95,6 +98,9 @@ class ShadowcraftArtifact
     if (Shadowcraft.Data.artifact_items == undefined)
       Shadowcraft.Data.artifact_items = {}
     Shadowcraft.Data.artifact_items[id] = updatedItem
+
+  updateArtifactItem: (id, oldIlvl, newIlvl) ->
+    updateArtifactItem(id, oldIlvl, newIlvl)
 
   # Redoes the display of all of the traits based on the data stored in the
   # global Shadowcraft.Data object. This will turn everything off and
