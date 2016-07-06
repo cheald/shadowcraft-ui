@@ -31,18 +31,19 @@ class ShadowcraftGear
       oh: 128479
 
   Sets =
-    T17:
-      ids: [115570, 115571, 115572, 115573, 115574]
-      bonuses: {4: "rogue_t17_4pc", 2: "rogue_t17_2pc"}
-    T17_LFR:
-      ids: [120384, 120383, 120382, 120381, 120380, 120379]
-      bonuses: {4: "rogue_t17_4pc_lfr"}
     T18:
       ids: [124248, 124257, 124263, 124269, 124274]
       bonuses: {4: "rogue_t18_4pc", 2: "rogue_t18_2pc"}
     T18_LFR:
       ids: [128130, 128121, 128125, 128054, 128131, 128137]
       bonuses: {4: "rogue_t18_4pc_lfr"}
+    T19:
+      ids: [138326, 138329, 138332, 138335, 138338, 138371]
+      bonuses: {4: "rogue_t19_4pc", 2: "rogue_t19_2pc"}
+    ORDERHALL:
+      ids: [139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746]
+      bonuses: {8: "rogue_orderhall_8pc"}
+      
 
   # Default weights for the DPS calculations. These get reset by calculation
   # passes through the engine.
@@ -780,12 +781,12 @@ class ShadowcraftGear
     other =
       mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps
       offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps
-      t17_2pc: source.other_ep.rogue_t17_2pc || 0
-      t17_4pc: source.other_ep.rogue_t17_4pc || 0
-      t17_4pc_lfr: source.other_ep.rogue_t17_4pc_lfr || 0
       t18_2pc: source.other_ep.rogue_t18_2pc || 0
       t18_4pc: source.other_ep.rogue_t18_4pc || 0
       t18_4pc_lfr: source.other_ep.rogue_t18_4pc_lfr || 0
+      t19_2pc: source.other_ep.rogue_t19_2pc || 0
+      t19_4pc: source.other_ep.rogue_t19_4pc || 0
+      orderhall_8pc: source.other_ep.rogue_orderhall_8pc || 0
 
     all = _.extend(Weights, other)
 
@@ -803,7 +804,7 @@ class ShadowcraftGear
         $.data(exist.get(0), "sortkey", 0)
         if key in ["mainhand_dps","offhand_dps"]
           $.data(exist.get(0), "sortkey", 1)
-        else if key in ["t17_2pc","t17_4pc","t17_4pc_lfr","t18_2pc","t18_4pc","t18_4pc_lfr"]
+        else if key in ["t18_2pc","t18_4pc","t18_4pc_lfr","t19_2pc","t19_4pc","rogue_orderhall_8pc"]
           $.data(exist.get(0), "sortkey", 2)
       $.data(exist.get(0), "weight", weight)
 

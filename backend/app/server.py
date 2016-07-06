@@ -166,10 +166,10 @@ class ShadowcraftComputation:
     # combines gearProcs and gearBoosts
     trinketMap = dict(gearProcs, **gearBoosts)
 
-    tier17IDS = frozenset([115570, 115571, 115572, 115573, 115574])
-    tier17LFRIDS = frozenset([120384, 120383, 120382, 120381, 120380, 120379])
     tier18IDS = frozenset([124248, 124257, 124263, 124269, 124274])
     tier18LFRIDS = frozenset([128130, 128121, 128125, 128054, 128131, 128137])
+    tier19IDS = frozenset([138326, 138329, 138332, 138335, 138338, 138371])
+    orderhallIDS = frozenset([139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746])
 
     subclassMap = {
     -1: None,
@@ -290,15 +290,6 @@ class ShadowcraftComputation:
         # Set up gear buffs.
         buff_list = []
 
-        if len(self.tier17IDS & gear) >= 2:
-            buff_list.append('rogue_t17_2pc')
-
-        if len(self.tier17IDS & gear) >= 4:
-            buff_list.append('rogue_t17_4pc')
-
-        if len(self.tier17LFRIDS & gear) >= 4:
-            buff_list.append('rogue_t17_4pc_lfr')
-
         if len(self.tier18IDS & gear) >= 2:
             buff_list.append('rogue_t18_2pc')
 
@@ -308,11 +299,20 @@ class ShadowcraftComputation:
         if len(self.tier18LFRIDS & gear) >= 4:
             buff_list.append('rogue_t18_4pc_lfr')
 
+        if len(self.tier19IDS & gear) >= 2:
+            buff_list.append('rogue_t19_2pc')
+
+        if len(self.tier19IDS & gear) >= 4:
+            buff_list.append('rogue_t19_4pc')
+
+        if len(self.orderhallIDS & gear) == 8:
+            buff_list.append('rogue_orderhall_8pc')
+
         agi_bonus = 0
-        if len(self.tier17LFRIDS & gear) >= 2:
-            agi_bonus += 100
         if len(self.tier18LFRIDS & gear) >= 2:
             agi_bonus += 115
+        if len(self.orderhallIDS & gear) >= 6:
+            agi_bonus += 1000
 
         for k in self.gearBoosts:
             if k in gear:
@@ -443,7 +443,7 @@ class ShadowcraftComputation:
             _opt = input.get("settings", {})
             out["ep"] = calculator.get_ep(ep_stats=default_ep_stats)
 
-            out["other_ep"] = calculator.get_other_ep(['rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr','rogue_t17_2pc','rogue_t17_4pc','rogue_t17_4pc_lfr'])
+            out["other_ep"] = calculator.get_other_ep(['rogue_t19_2pc','rogue_t19_4pc','rogue_orderhall_8pc','rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr'])
 
             exclude_items = [item for item in gear if item in self.trinkets]
             exclude_procs = [self.gearProcs[x] for x in exclude_items]
