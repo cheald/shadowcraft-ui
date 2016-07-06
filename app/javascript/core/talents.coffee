@@ -170,11 +170,15 @@ class ShadowcraftTalents
     ).mousedown((e) ->
       switch(e.button)
         when 0
-          Shadowcraft.update() if app.applyTalent(this, true)
+          if (app.applyTalent(this, true))
+            Shadowcraft.update()
+            Shadowcraft.Talents.trigger("changedTalents")
           checkForWarnings("talents")
         when 2
           return if !$(this).hasClass("active")
-          Shadowcraft.update() if app.applyTalent(this, false)
+          if (app.applyTalent(this, false))
+            Shadowcraft.update()
+            Shadowcraft.Talents.trigger("changedTalents")
           checkForWarnings("talents")
 
       $(this).trigger("mouseenter")

@@ -119,7 +119,6 @@ class ShadowcraftOptions
       response_time: {type: "input", name: "Response Time", 'default': 0.5, datatype: 'float', min: 0.1, max: 5}
       time_in_execute_range: {type: "input", name: "Time in Execute Range", desc: "Only used in Assassination Spec", 'default': 0.35, datatype: 'float', min: 0, max: 1}
       lethal_poison: {name: "Lethal Poison", type: 'select', options: {'dp': 'Deadly Poison', 'wp': 'Wound Poison'}, 'default': 'dp'}
-      utility_poison: {name: "Utility Poison", type: 'select', options: {'lp': 'Leeching Poison', 'n': 'Other/None'}, 'default': 'lp'}
       num_boss_adds: {name: "Number of Boss Adds", datatype: 'float', type: 'input', min: 0, max: 20, 'default': 0}
       demon_enemy: {name: "Enemy is Demon", desc: 'Enables damage buff from heirloom trinket against demons (The Demon Button)', datatype: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
     })
@@ -169,7 +168,6 @@ class ShadowcraftOptions
       adv_params: {type: "input", name: "Advanced Parameters", default: "", datatype: 'string'}
     })
 
-
   changeOption = (elem, inputType, val) ->
     $this = $(elem)
     data = Shadowcraft.Data
@@ -217,11 +215,40 @@ class ShadowcraftOptions
       $("#settings section.mutilate, #settings section.combat, #settings section.subtlety").hide()
       if Shadowcraft.Data.activeSpec == "a"
         $("#settings section.mutilate").show()
+        if (Shadowcraft.Data.activeTalents.split("")[5] == "0")
+          
+          $("#opt-general-lethal_poison").append($("<option></option>").attr("value","ap").text("Agonizing Poison"))
+
       else if Shadowcraft.Data.activeSpec == "Z"
         $("#settings section.combat").show()
+        $("#opt-general-lethal_poison option[value='ap']").remove()
       else
         $("#settings section.subtlety").show()
+        $("#opt-general-lethal_poison option[value='ap']").remove()
 
+    Shadowcraft.Talents.bind "changedTalents", ->
+      Shadowcraft.Console.remove(".options-poisons")
+      if Shadowcraft.Data.activeSpec == "a"
+        # if in assassination, check to see if agonizing poison is selected
+        agonizing = (Shadowcraft.Data.activeTalents.split("")[5] == "0")
+        poisonSelect = $("#opt-general-lethal_poison")
+
+        # if the user has ap selected in the options, but don't have the talent
+        # selected, default back to dp and warn the user that we did it.
+        if !agonizing
+          if poisonSelect.val() == "ap"
+            Shadowcraft.Console.warn("ap", "Agonizing Poison was selected in options. Defaulting to Deadly Poison", null, "warn", "options-poisons")
+            poisonSelect.val("dp")
+          $("#opt-general-lethal_poison option[value='ap']").remove()
+        else
+          poisonSelect.append($("<option></option>").attr("value","ap").text("Agonizing Poison"))
+      else
+        # if not in assassination, remove agonizing poison from the list and
+        # default back to deadly poison.
+        if poisonSelect.val() == "ap"
+          poisonSelect.val("dp")
+        $("#opt-general-lethal_poison option[value='ap']").remove()
+        
     this
 
   constructor: ->
