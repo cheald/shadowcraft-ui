@@ -52,8 +52,8 @@ class ShadowcraftBackend
     payload =
       r: data.options.general.race
       l: data.options.general.level
-      pot: if data.options.general.potion then 1 else 0
-      prepot: if data.options.general.prepot then 1 else 0
+      pot: ShadowcraftOptions.buffPotions.indexOf(data.options.general.potion)
+      prepot: ShadowcraftOptions.buffPotions.indexOf(data.options.general.prepot)
       b: buffList
       bf: buffFood
       ro: data.options.rotation

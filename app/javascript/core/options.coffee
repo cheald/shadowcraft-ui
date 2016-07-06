@@ -1,23 +1,22 @@
 class ShadowcraftOptions
   @buffMap = [
     'short_term_haste_buff',
-    'stat_multiplier_buff',
-    'crit_chance_buff',
-    'haste_buff',
-    'multistrike_buff',
-    'attack_power_buff',
-    'mastery_buff',
-    'versatility_buff',
-    'flask_wod_agi'
+    'flask_legion_agi'
   ]
 
   @buffFoodMap = [
-    'food_wod_versatility',
-    'food_wod_mastery',
-    'food_wod_crit',
-    'food_wod_haste',
-    'food_wod_multistrike',
-    'food_felmouth_frenzy'
+    'food_750_crit',
+    'food_750_haste',
+    'food_750_mastery',
+    'food_750_versatility',
+    'food_400_feast',
+    'food_high_proc'
+  ]
+
+  @buffPotions = [
+    'potion_old_war',
+    'potion_deadly_grace',
+    'potion_none'
   ]
 
   cast = (val, dtype) ->
@@ -131,25 +130,17 @@ class ShadowcraftOptions
       show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this item level in gear lists", datatype: 'integer', type: 'input', min: 540, max: 1000, 'default': 540}
       show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
       epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
-      show_warforged: {name: "Show Warforged Items", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
     })
 
     @setup("#settings #playerBuffs", "buffs", {
-      food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_wod_versatility', options: {'food_wod_versatility': '125 Versatility', 'food_wod_mastery': '125 Mastery', 'food_wod_crit': '125 Crit', 'food_wod_haste': '125 Haste', 'food_wod_multistrike': '125 Multistrike', 'food_felmouth_frenzy': 'Felmouth Frenzy' } },
-      flask_wod_agi: {name: "Agility Flask", desc: "WoD Flask (200 Agility)", 'default': true, datatype: 'bool'},
+      food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_750_versatility', options: {'food_750_crit': 'The Hungry Magister (750 Crit)', 'food_750_haste': 'Azshari Salad (750 Haste)', 'food_750_mastery': 'Nightborne Delicacy Platter (750 Mastery)', 'food_750_versatility': 'Seed-Battered Fish Plate (750 Versatility)', 'food_400_feast': 'Lavish Suramar Feast (400 Stat)', 'food_high_proc': 'Fishbrul Special (High Fire Proc)' } },
+      flask_legion_agi: {name: "Legion Agility Flask", desc: "Flask of the Seventh Demon (1300 Agility)", 'default': true, datatype: 'bool'},
       short_term_haste_buff: {name: "+30% Haste/40 sec", desc: "Heroism/Bloodlust/Time Warp", 'default': true, datatype: 'bool'},
-      stat_multiplier_buff: {name: "5% All Stats", desc: "Blessing of Kings/Mark of the Wild/Legacy of the Emperor", 'default': true, datatype: 'bool'},
-      crit_chance_buff: {name: "5% Crit", desc: "Leader of the Pack/Arcane Brilliance/Legacy of the White Tiger", 'default': true, datatype: 'bool'},
-      haste_buff: {name: "5% Haste", desc: "Unleashed Rage/Unholy Aura/Swiftblade's Cunning", 'default': true, datatype: 'bool'},
-      multistrike_buff: {name: "5% Multistrike", desc: "Swiftblade's Cunning", 'default': true, datatype: 'bool'},
-      attack_power_buff: {name: "10% Attack Power", desc: "Horn of Winter/Trueshot Aura/Battle Shout", 'default': true, datatype: 'bool'},
-      mastery_buff: {name: "Mastery", desc: "Blessing of Might/Grace of Air", 'default': true, datatype: 'bool'},
-      versatility_buff: {name: "3% Versatility", desc: "", 'default': true, datatype: 'bool'},
     })
 
     @setup("#settings #raidOther", "general", {
-      prepot: {type: "check", name: "Pre-pot", 'default': false, datatype: 'bool'},
-      potion: {type: "check", name: "Combat potion", 'default': true, datatype: 'bool'},
+      prepot: {name: 'Pre-pot', type: 'select', datatype: 'string', default: 'potion_old_war', options: {'potion_old_war': 'Potion of the Old War', 'potion_deadly_grace': 'Potion of Deadly Grace', 'potion_none': 'None'} },
+      potion: {name: 'Combat Potion', type: 'select', datatype: 'string', default: 'potion_old_war', options: {'potion_old_war': 'Potion of the Old War', 'potion_deadly_grace': 'Potion of Deadly Grace', 'potion_none': 'None'} }
     })
 
     @setup("#settings section.mutilate .settings", "rotation", {

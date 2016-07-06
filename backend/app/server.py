@@ -192,23 +192,16 @@ class ShadowcraftComputation:
 
     buffMap = [
         'short_term_haste_buff',
-        'stat_multiplier_buff',
-        'crit_chance_buff',
-        'haste_buff',
-        'multistrike_buff',
-        'attack_power_buff',
-        'mastery_buff',
-        'versatility_buff',
-        'flask_wod_agi',
+        'flask_legion_agi',
     ]
 
     buffFoodMap = [
-        'food_wod_versatility_125',
-        'food_wod_mastery_125',
-        'food_wod_crit_125',
-        'food_wod_haste_125',
-        'food_wod_multistrike_125',
-        'food_felmouth_frenzy'
+        'food_crit_700',
+        'food_haste_700',
+        'food_mastery_700',
+        'food_versatility_700',
+        'food_400_feast',
+        'food_high_fire_proc',
     ]
 
     if __builtin__.shadowcraft_engine_version >= 6.0:
