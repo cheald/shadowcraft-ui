@@ -86,13 +86,14 @@ class ItemsController < ApplicationController
         :val2 => row[2].to_i
       }
 
-      # Bonus Types (value of column 3):
+      # Bonus Types (value of column 4):
+      # 1 = Item level increase.
       # 2 = Stat.  This is for items with random stats.  Take the value of column 4 and
       #     replace it with the stat from the STAT_LOOKUP array in WowArmory::Constants
       # 5 = Name (heroic, stages, etc).  Take the value of column 4 and replace it with
       #     the name from the item from the item_name_description lookup.  This pulls data
       #     from the WoD_ItemNameDescription.csv file.  These entries are used to display
-	  #     the green text next to items in the list.
+      #     the green text next to items in the list.
       # 6 = Socket.  Take the value of column 4 and replace it with the socket type from
       #     the SOCKET_MAP array in WowArmory::Constants.
       if entry[:type] == 2
@@ -103,6 +104,8 @@ class ItemsController < ApplicationController
         entry[:val1] = item_name_description[entry[:val1]]
       elsif entry[:type] == 6
         entry[:val2] = SOCKET_MAP[entry[:val2].to_i]
+      elsif entry[:type] == 1
+        entry.delete(:val2)
       end
       item_bonuses[id_node].push entry
     end

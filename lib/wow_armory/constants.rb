@@ -59,7 +59,8 @@ module WowArmory
       'offHand' => 16,
     }
 
-    
+    # TODO: missing some mappings in here based on data from ItemBonus.dbc. The follow
+    # types are missing: 7, 9, 10, 11, 12, 13, 17, 18
     SOCKET_MAP = {
       1 => 'Meta',
       2 => 'Red',

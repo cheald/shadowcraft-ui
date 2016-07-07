@@ -107,6 +107,21 @@
           {{/entries}}
       {{/groups/tertiary}}
     {{/groups/tertiary_active}}
+    {{#groups/titanforged_active}}
+    %fieldset.bonus_line
+      %Legend Titanforged Upgrades
+      <select class="optionSelect" name="{{key}}">
+      {{#groups/titanforged}}
+      %label.label_select
+        <option value="{{bonusId}}" {{#active}}selected="selected"{{/active}}>
+        {{#entries}}
+        {{val2}} / {{val1}} /
+        {{/entries}}
+        ({{ep}} EP)
+        </option>
+      {{/groups/titanforged}}
+      </select>
+    {{/groups/titanforged_active}}
     %input.ui-button.ui-widget.ui-state-default.ui-corner-all.applyBonuses{:role => "button", :value => "Apply"}
     -#%input.ui-button.ui-widget.ui-state-default.ui-corner-all.clearBonuses{:role => "button", :value => "Reset"}
 

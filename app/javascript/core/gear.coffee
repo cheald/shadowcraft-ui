@@ -1216,6 +1216,7 @@ class ShadowcraftGear
       suffixes: []
       tertiary: []
       sockets: []
+      titanforged: []
     }
     for bonusId in item.chance_bonus_lists
       group = {}
@@ -1245,10 +1246,23 @@ class ShadowcraftGear
             group['entries'].push entry
             group.ep += getStatWeight(entry.val1, entry.val2)
             subgroup = "tertiary" unless subgroup?
+          when 1 # item level increases
+            if (bonusId >= 1477 and bonusId <= 1672)
+              ilvl_bonus = entry['val1']
+              entry['val1'] = "+"+ilvl_bonus+" Item Levels "
+              if ilvl_bonus < 15
+                entry['val1'] += "(Warforged)"
+              else
+                entry['val1'] += "(Titanforged)"
+              entry['val2'] = "Item Level " + (item.ilvl+ilvl_bonus)
+              group['entries'].push entry
+              group.ep = 0 # TODO calculate this based on the item
+              subgroup = "titanforged"
       if subgroup?
         group.ep = group.ep.toFixed(2)
         groups[subgroup].push group
         groups[subgroup+"_active"] = true
+
     for key,subgroup of groups
       continue unless _.isArray(subgroup)
       subgroup.sort (a, b) ->
