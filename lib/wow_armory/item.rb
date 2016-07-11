@@ -80,7 +80,15 @@ module WowArmory
       self.quality = json['quality']
       self.equip_location = json['inventoryType']
       self.icon = json['icon']
-      self.context = json['context']
+
+      # Special case legendary rings, since they don't come with a context in
+      # the item data (but do when you get them with character data!)
+      if (@id == 124636)
+        puts "legendary ring"
+        self.context = "quest-reward"
+      else
+        self.context = json['context']
+      end
 
       # If the item has sockets, store a bunch of information about the sockets
       # on the item. This includes a list of the colors of each of the sockets

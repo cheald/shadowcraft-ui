@@ -221,10 +221,6 @@ class Item
                         576, 577, 582, 583, 591, 592, 593, 594, 602, 609, 615, 617, 618, 619, 620,
                         645, 656, 692]
 
-  # These are kept separate because we don't want to import all of them all at once.
-  # Just import them organically as each ilvl becomes available.
-  LEGENDARY_RING_BONUS_IDS = (622..641).to_a
-
   # For some reason the crafted items don't come with the "stage" bonus IDs in their
   # chanceBonusList entry.  This is the list of bonus IDs for those stages and is
   # handled slightly differently.  See below for the check for trade-skill for more
@@ -390,11 +386,6 @@ class Item
   def self.get_valid_bonus_IDs(possible_IDs, item_id, context)
     itemChanceBonuses = possible_IDs.clone()
     itemChanceBonuses.delete_if { |bonus| !BONUS_ID_WHITELIST.include? bonus }
-
-    # for the legendary ring, also add the bonsues for each of the ring upgrade steps
-    if (item_id == 124636)
-      itemChanceBonuses = itemChanceBonuses + LEGENDARY_RING_BONUS_IDS
-    end
 
     # for trade-skill items, also add the bonuses for each of the "stage" titles
     if (context == 'trade-skill')
