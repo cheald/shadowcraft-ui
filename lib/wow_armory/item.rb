@@ -12,19 +12,18 @@ module WowArmory
     include Constants
     include Document
     # TODO: document these with some description of what each one is used for
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :upgrade_level, :chance_bonus_lists, :bonus_tree, :tag
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :chance_bonus_lists, :bonus_tree, :tag, :context
     attr_accessor *ACCESSORS
 
-    def initialize(json, json_source='wowapi', upgradable=false, upgrade_level=0)
+    def initialize(json, json_source='wowapi')
       self.name = json['name']
-      self.ilevel = json['itemLevel'].to_i + upgrade_level*5
-      self.upgradable = upgradable
-      self.upgrade_level = upgrade_level
+      self.ilevel = json['itemLevel'].to_i
       @id = json['id'].to_i
+      self.upgradable = WowArmory::Item.check_upgradable(@id)
 
       case json_source
         when 'wowapi'
-          populate_base_data_blizzard(json, upgrade_level)
+          populate_base_data_blizzard(json)
         when 'wowhead', 'wowhead_ptr'
           populate_base_data_wowhead()
         else
@@ -77,10 +76,11 @@ module WowArmory
     # Populates the object data based on json data from a Blizzard API query
     # TODO: go through all of these values and verify that all of the are still
     # necessary.
-    def populate_base_data_blizzard(json, upgrade_level)
+    def populate_base_data_blizzard(json)
       self.quality = json['quality']
       self.equip_location = json['inventoryType']
       self.icon = json['icon']
+      self.context = json['context']
 
       # If the item has sockets, store a bunch of information about the sockets
       # on the item. This includes a list of the colors of each of the sockets
@@ -115,9 +115,6 @@ module WowArmory
         self.armor_class ||= ARMOR_CLASS[json['itemSubClass']]
       end
 
-      # json['bonusStats'] contains a list of the stats on the item itself. if
-      # the item is upgradable, this is where we will modify the stats on the
-      # item to match the proper values for the upgrade level.
       unless json['itemClass'] == 3 || json['bonusStats'].nil?
         self.stats = {}
         json['bonusStats'].each do |entry|
@@ -125,15 +122,7 @@ module WowArmory
             puts "STAT ID missing: #{entry['stat']}"
             next
           end
-
-          if (self.upgradable)
-            multiplier = get_upgrade_multiplier(upgrade_level)
-          else
-            multiplier = 1.0
-          end
-
-          stat = entry['amount'].to_f*multiplier
-          self.stats[STAT_LOOKUP[entry['stat']]] = stat.round.to_i
+          self.stats[STAT_LOOKUP[entry['stat']]] = entry['amount']
         end
       end
 
@@ -171,6 +160,7 @@ module WowArmory
         self.dps = json['weaponInfo']['dps'].to_f
         self.subclass = json['itemSubClass']
       end
+
     end
 
     # Populates the object data based on json data from a Wowhead query
@@ -287,5 +277,53 @@ module WowArmory
         end
       end
     end
+
+    def self.item_bonuses
+      @@item_bonuses ||= Hash.new.tap do |hash|
+        CSV.foreach(File.join(Rails.root, 'lib', 'wow_armory', 'data', 'ItemBonus.dbc.csv')) do |row|
+          id_node = row[3].to_i
+          unless hash.has_key? id_node
+            hash[id_node] = []
+          end
+          entry = {
+            :type => row[4].to_i,
+            :val1 => row[1].to_i,
+            :val2 => row[2].to_i
+          }
+
+          # Bonus Types (value of column 4):
+          # 1 = Item level increase.
+          # 2 = Stat.  This is for items with random stats.  Take the value of column 4 and
+          #     replace it with the stat from the STAT_LOOKUP array in WowArmory::Constants
+          # 5 = Name (heroic, stages, etc).  Take the value of column 4 and replace it with
+          #     the name from the item from the item_name_description lookup.  This pulls data
+          #     from the WoD_ItemNameDescription.csv file.  These entries are used to display
+          #     the green text next to items in the list.
+          # 6 = Socket.  Take the value of column 4 and replace it with the socket type from
+          #     the SOCKET_MAP array in WowArmory::Constants.
+          if entry[:type] == 2
+            if STAT_LOOKUP[entry[:val1]]
+              entry[:val1] = STAT_LOOKUP[entry[:val1]]
+            end
+          elsif entry[:type] == 5
+            entry[:val1] = item_name_description[entry[:val1]]
+          elsif entry[:type] == 6
+            entry[:val2] = SOCKET_MAP[entry[:val2].to_i]
+          elsif entry[:type] == 1
+            entry.delete(:val2)
+          end
+          hash[id_node].push entry
+        end
+      end
+    end
+
+    def self.item_name_description
+      @@item_name_description ||= Hash.new.tap do |hash|
+        CSV.foreach(File.join(Rails.root, 'lib', 'wow_armory', 'data', 'ItemNameDescription.dbc.csv')) do |row|
+          hash[row[0].to_i] = row[1]
+        end
+      end
+    end
+
   end
 end

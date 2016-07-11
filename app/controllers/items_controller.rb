@@ -70,55 +70,11 @@ class ItemsController < ApplicationController
     @gems.reject! {|g| !(g.properties['stats'].keys & bad_keys).empty? }
     @enchants = Enchant.all
     @talents = Talent.all
-    Rails.logger.debug(@talents.first.as_json)
     @relics = Relic.all
     @artifacts = Artifact.all
 
-    item_bonuses = {}
-    CSV.foreach(File.join(Rails.root, 'lib', 'wow_armory', 'data', 'ItemBonus.dbc.csv')) do |row|
-      id_node = row[3].to_i
-      unless item_bonuses.has_key? id_node
-        item_bonuses[id_node] = []
-      end
-      entry = {
-        :type => row[4].to_i,
-        :val1 => row[1].to_i,
-        :val2 => row[2].to_i
-      }
-
-      # Bonus Types (value of column 4):
-      # 1 = Item level increase.
-      # 2 = Stat.  This is for items with random stats.  Take the value of column 4 and
-      #     replace it with the stat from the STAT_LOOKUP array in WowArmory::Constants
-      # 5 = Name (heroic, stages, etc).  Take the value of column 4 and replace it with
-      #     the name from the item from the item_name_description lookup.  This pulls data
-      #     from the WoD_ItemNameDescription.csv file.  These entries are used to display
-      #     the green text next to items in the list.
-      # 6 = Socket.  Take the value of column 4 and replace it with the socket type from
-      #     the SOCKET_MAP array in WowArmory::Constants.
-      if entry[:type] == 2
-        if STAT_LOOKUP[entry[:val1]]
-          entry[:val1] = STAT_LOOKUP[entry[:val1]]
-        end
-      elsif entry[:type] == 5
-        entry[:val1] = item_name_description[entry[:val1]]
-      elsif entry[:type] == 6
-        entry[:val2] = SOCKET_MAP[entry[:val2].to_i]
-      elsif entry[:type] == 1
-        entry.delete(:val2)
-      end
-      item_bonuses[id_node].push entry
-    end
-    @item_bonuses = item_bonuses
+    @item_bonuses = WowArmory::Item.item_bonuses
     @rand_prop_points = rand_prop_points
-  end
-
-  def item_name_description
-    @@item_name_description ||= Hash.new.tap do |hash|
-      CSV.foreach(File.join(Rails.root, 'lib', 'wow_armory', 'data', 'ItemNameDescription.dbc.csv')) do |row|
-        hash[row[0].to_i] = row[1]
-      end
-    end
   end
 
   def rand_prop_points

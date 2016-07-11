@@ -134,6 +134,7 @@
       delete R.ENCHANTS;
 
       R.ITEM_LOOKUP2 = {};
+      R.ITEM_BY_CONTEXT = {}
       for(i = 0; i < R.ITEMS.length; i++) {
         var item = R.ITEMS[i];
         expandItem(item, iStatMap);
@@ -154,6 +155,9 @@
         if(R.SLOT_CHOICES[item.equip_location] === undefined) { R.SLOT_CHOICES[item.equip_location] = []; }
         R.SLOT_CHOICES[item.equip_location][R.SLOT_CHOICES[item.equip_location].length] = item.identifier;
         R.ITEM_LOOKUP2[item.identifier] = item;
+        if (item.context.length != 0) {
+          R.ITEM_BY_CONTEXT[item.id+":"+item.context] = item;
+        }
       }
       delete R.ITEMS;
 

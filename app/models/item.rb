@@ -33,7 +33,7 @@ class Item
       :q => properties['quality'],
       :stats => properties['stats'],
     }
-    
+
     if properties['sockets'] and !properties['sockets'].empty?
       json[:so] = properties['sockets']
     end
@@ -63,9 +63,6 @@ class Item
       json[:subclass] = properties['subclass']
     end
 
-    if properties['upgrade_level']
-      json[:upgrade_level] = properties['upgrade_level']
-    end
     if properties['upgradable']
       json[:upgradable] = properties['upgradable']
     end
@@ -74,6 +71,9 @@ class Item
     end
     if properties['bonus_tree']
       json[:bonus_tree] = properties['bonus_tree']
+    end
+    if properties['context']
+      json[:context] = properties['context']
     end
 
     json
@@ -217,9 +217,9 @@ class Item
   # This whitelist skips any of the randomly generated bonus IDs such as any "of the"
   # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.
   BONUS_ID_WHITELIST = [1, 15, 17, 18, 44, 171, 448, 449, 450, 451, 499, 526, 527, 545, 546, 547,
-                        553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 566, 567, 571, 573, 575,
+                        553, 554, 555, 556, 557, 558, 559, 566, 567, 571, 573, 575,
                         576, 577, 582, 583, 591, 592, 593, 594, 602, 609, 615, 617, 618, 619, 620,
-                        642, 644, 645, 646, 648, 651, 656, 692, 755, 756, 757, 758, 759, 760]
+                        645, 656, 692]
 
   # These are kept separate because we don't want to import all of them all at once.
   # Just import them organically as each ilvl becomes available.
@@ -268,15 +268,6 @@ class Item
     puts "importing #{id}"
 
     # TODO: check for existing items and update as necessary
-
-    # Store a flag and a set of upgrade levels for whether or not the item is upgradable.
-    # This is used later during the item loading process
-    upgradable = WowArmory::Item.check_upgradable(id)
-    if upgradable
-      upgrade_levels = [0,1,2]
-    else
-      upgrade_levels = [0]
-    end
 
     # Request the initial json data from the armory and insert it in to the array of
     # json to be processed further
@@ -369,33 +360,26 @@ class Item
     # Loop through the json data that was retrieved and process each in turn
     json_data.each do |json|
 
-      # also loop through all of the upgrade levels, since we create a new item in the
-      # database for each upgrade step.
-      # TODO: could we actually not store a new item for each, but store an array of stats
-      # for each upgrade level?
-      upgrade_levels.each do | upgrade_level |
+      # check to see if this item is in the database yet. we check by ID and item level
+      # since those are the two fields that generally differentiate different items.
+      db_item = Item.find_or_initialize_by(:remote_id => json['id'],
+                                           :item_level => json['itemLevel'].to_i,)
 
-        # check to see if this item is in the database yet. we check by ID and item level
-        # since those are the two fields that generally differentiate different items.
-        db_item = Item.find_or_initialize_by(:remote_id => json['id'],
-                                             :item_level => json['itemLevel'].to_i+upgrade_level*5)
+      # if the item doesn't have properties yet, create a new item from the wow
+      # armory library and then merge that into this record and save it.
+      if db_item.properties.nil?
+        # create an item from the json data that we've retrieved and store it in the
+        # database. the initializer routine will deal with the upgrade level for us.
+        item = WowArmory::Item.new(json, 'wowapi')
 
-        # if the item doesn't have properties yet, create a new item from the wow
-        # armory library and then merge that into this record and save it.
-        if db_item.properties.nil?
-          # create an item from the json data that we've retrieved and store it in the
-          # database. the initializer routine will deal with the upgrade level for us.
-          item = WowArmory::Item.new(json, 'wowapi', upgradable, upgrade_level)
-
-          # Merge the data from the armory item into the local db_item. This can't be
-          # done through a function since Ruby doesn't do pass-by-value, so we have to
-          # repeat this hunk of code.
-          db_item.remote_id = item.id
-          db_item.item_level = item.ilevel
-          db_item.properties = item.as_json.with_indifferent_access
-          db_item.is_gem = !db_item.properties['gem_slot'].blank?
-          db_item.save()
-        end
+        # Merge the data from the armory item into the local db_item. This can't be
+        # done through a function since Ruby doesn't do pass-by-value, so we have to
+        # repeat this hunk of code.
+        db_item.remote_id = item.id
+        db_item.item_level = item.ilevel
+        db_item.properties = item.as_json.with_indifferent_access
+        db_item.is_gem = !db_item.properties['gem_slot'].blank?
+        db_item.save()
       end
     end
   end
@@ -463,10 +447,10 @@ class Item
         :subclass => 15,
         :armor_class => nil,
         :upgradable => false,
-        :upgrade_level => 0,
         :chance_bonus_lists => [],
         :bonus_tree => [743],
         :tag => "Gorefang",
+        :context => "artifact"
       }
       db_item.is_gem = false
       db_item.save()
@@ -496,10 +480,10 @@ class Item
         :subclass => 15,
         :armor_class => nil,
         :upgradable => false,
-        :upgrade_level => 0,
         :chance_bonus_lists => [],
         :bonus_tree => [],
         :tag => "Akaari's Will",
+        :context => "artifact"
       }
       db_item.is_gem = false
       db_item.save()
@@ -529,10 +513,10 @@ class Item
         :subclass => 15,
         :armor_class => nil,
         :upgradable => false,
-        :upgrade_level => 0,
         :chance_bonus_lists => [],
         :bonus_tree => [743],
         :tag => "Anguish",
+        :context => "artifact"
       }
       db_item.is_gem = false
       db_item.save()
@@ -563,10 +547,10 @@ class Item
         :subclass => 15,
         :armor_class => nil,
         :upgradable => false,
-        :upgrade_level => 0,
         :chance_bonus_lists => [],
         :bonus_tree => [],
         :tag => "Sorrow",
+        :context => "artifact"
       }
       db_item.is_gem = false
       db_item.save()
@@ -596,10 +580,10 @@ class Item
         :subclass => 15,
         :armor_class => nil,
         :upgradable => false,
-        :upgrade_level => 0,
         :chance_bonus_lists => [],
         :bonus_tree => [743],
         :tag => "Fate",
+        :context => "artifact"
       }
       db_item.is_gem = false
       db_item.save()
@@ -629,10 +613,10 @@ class Item
         :subclass => 15,
         :armor_class => nil,
         :upgradable => false,
-        :upgrade_level => 0,
         :chance_bonus_lists => [],
         :bonus_tree => [],
         :tag => "Fortune",
+        :context => "artifact"
       }
       db_item.is_gem = false
       db_item.save()

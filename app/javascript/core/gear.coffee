@@ -43,7 +43,6 @@ class ShadowcraftGear
     ORDERHALL:
       ids: [139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746]
       bonuses: {8: "rogue_orderhall_8pc"}
-      
 
   # Default weights for the DPS calculations. These get reset by calculation
   # passes through the engine.
