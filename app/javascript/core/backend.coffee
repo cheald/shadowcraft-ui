@@ -27,8 +27,8 @@ class ShadowcraftBackend
 
     statSummary = Shadowcraft.Gear.sumStats()
 
-    mh = Shadowcraft.Gear.getItem(data.gear[15].id, data.gear[15].item_level, data.gear[15].suffix) if data.gear[15]
-    oh = Shadowcraft.Gear.getItem(data.gear[16].id, data.gear[16].item_level, data.gear[16].suffix) if data.gear[16]
+    mh = Shadowcraft.Gear.getItem(data.gear[15].id, data.gear[15].context) if data.gear[15]
+    oh = Shadowcraft.Gear.getItem(data.gear[16].id, data.gear[16].context) if data.gear[16]
 
     buffList = []
     for key, val of data.options.buffs
