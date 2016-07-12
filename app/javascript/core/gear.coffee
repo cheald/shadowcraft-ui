@@ -114,6 +114,7 @@ class ShadowcraftGear
   # Gets the EP value for an item out of the last run of calculation data
   getEP = (item, slot=-1, ignore=[]) ->
 
+    console.log "getEP: ignore = " + ignore
     stats = {}
     sumItem(stats, item)
 
@@ -576,7 +577,10 @@ class ShadowcraftGear
   # View helpers
   ###
 
-  updateDisplay: (skipUpdate) ->
+  sortTagBonuses = (a,b) ->
+    return a.position-b.position
+
+  updateDisplay: ->
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
     EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS
     Gems = Shadowcraft.ServerData.GEM_LOOKUP
@@ -590,26 +594,47 @@ class ShadowcraftGear
         gear = data.gear[i]
         item = getItem(gear.id, gear.context)
         gems = []
+        sockets = []
         bonuses = null
         enchant = EnchantLookup[gear.enchant]
         enchantable = null
-        upgradable = null
         bonusable = null
         if item
-          item.sockets ||= []
           enchantable = gear.id not in ShadowcraftGear.ARTIFACTS && EnchantSlots[item.equip_location]? && getApplicableEnchants(i, item).length > 0
 
           bonus_keys = _.keys(Shadowcraft.ServerData.ITEM_BONUSES)
-          bonuses_equipped = []
-          if item.sockets and item.sockets.length > 0
-            for socketIndex in [item.sockets.length-1..0]
-              if item.sockets[socketIndex] == "Prismatic"
-                item.sockets.pop()
+
+          tag_bonuses = []
           if gear.bonuses?
             for bonus in gear.bonuses
-              bonuses_equipped.push bonus
-              if _.contains(bonus_keys, bonus+"")
-                applyBonusToItem(item, bonus, i) # here happens all the magic
+              for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonus]
+                switch bonus_entry.type
+                  when 4 # tags
+                    tag_bonus =
+                      position: bonus_entry.val2
+                      desc_id: bonus_entry.val1
+                    tag_bonuses.push tag_bonus
+                    break
+                  when 6 # sockets
+                    # TODO: how to actually handle this? We probably shouldn't just mark every
+                    # gem as prismatic.
+                    break
+
+          tag = ""
+          if (tag_bonuses.length > 0)
+            tag_bonuses.sort(sortTagBonuses)
+            for bonus in tag_bonuses
+              if (tag.length > 0)
+                tag += " "
+              tag += Shadowcraft.ServerData.ITEM_DESCRIPTIONS[bonus['desc_id']]
+
+          if tag.length == 0
+            tag = item.tag
+
+          # Check if there are any bonus traits like sockets or tertiary stats that can
+          # be applied to this item.
+          # TODO: WF/TF add support here.
+          # TODO: add suffix support here.
           if item.chance_bonus_lists?
             for bonusId in item.chance_bonus_lists
               continue if not bonusId?
@@ -622,23 +647,14 @@ class ShadowcraftGear
                   when 2
                     bonusable = true
                     break
-          allSlotsMatch = item.sockets && item.sockets.length > 0
-          for socket,index in item.sockets
-            if (gear.gems?)
-              gem = Gems[gear.gems[index]]
-              gems[gems.length] = {socket: socket, gem: gem}
-              continue if socket == "Prismatic" # prismatic sockets don't contribute to socket bonus
-              if !gem or !gem[socket]
-                allSlotsMatch = false
 
-          if allSlotsMatch
-            bonuses = []
-            for stat, amt of item.socketbonus
-              bonuses[bonuses.length] = {stat: titleize(stat), amount: amt}
-
+          # If there's an enchant already on this item, grab the description of it so that
+          # it can be displayed correctly.
           if enchant and !enchant.desc
             enchant.desc = statsToDesc(enchant)
 
+          # If this item can be upgradable, determine the current upgrade level and max
+          # level so that the arrow can be displayed correctly.
           if item.upgradable
             curr_level = "0"
             curr_level = gear.upgrade_level.toString() if gear.upgrade_level?
@@ -646,27 +662,37 @@ class ShadowcraftGear
             upgrade =
               curr_level: curr_level
               max_level: max_level
+
+          # Generate an array of the gem objects for each gem attached to a piece of gear
+          for gem in gear.gems
+            if gem != 0
+              gems[gems.length] = {gem: Gems[gem]}
+
+        # If there wasn't a description for the enchant just use the name instead.
         if enchant and enchant.desc == ""
           enchant.desc = enchant.name
+
+        # Join the list of gems together so they all display correctly.
         ttgems = gear.gems.join(":")
 
         opt = {}
         opt.item = item
+        opt.tag = tag
         opt.identifier = item.id + ":" + item.ilvl + ":" + (item.suffix || 0) if item
         opt.ttid = item.id if item
         opt.ttrand = if item then item.suffix else null
-        opt.ttupgd = if item then item.upgrade_level else null
-        opt.ttbonus = if bonuses_equipped then bonuses_equipped.join(":") else null
+        opt.ttupgd = if item then upgrade['curr_level'] else null
+        opt.ttbonus = if gear.bonuses then gear.bonuses.join(":") else null
         opt.ttgems = if ttgems != "0:0:0" then ttgems else null
         opt.ep = if item then getEP(item, i).toFixed(1) else 0
         opt.slot = i + ''
+        opt.bonusable = bonusable
         opt.socketbonus = bonuses
-        opt.bonusable = true # TODO
         opt.enchantable = enchantable
         opt.enchant = enchant
         opt.upgradable = if item then item.upgradable else false
         opt.upgrade = upgrade
-        opt.bonusable = bonusable
+        opt.gems = gear.gems
 
         if item and item.id not in ShadowcraftGear.ARTIFACTS
           opt.sockets = item.sockets
