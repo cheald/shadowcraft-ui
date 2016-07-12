@@ -46,6 +46,8 @@
       R.ITEM_BONUSES = #{raw @item_bonuses.to_json};
       R.RAND_PROP_POINTS = #{raw @rand_prop_points.to_json};
 
+      R.ITEM_DESCRIPTIONS = #{raw @item_descriptions.to_json};
+
       function expandItem(item, map) {
         if (map != null) {
           expandStats(item, map);

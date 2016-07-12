@@ -328,7 +328,16 @@ module WowArmory
     def self.item_name_description
       @@item_name_description ||= Hash.new.tap do |hash|
         CSV.foreach(File.join(Rails.root, 'lib', 'wow_armory', 'data', 'ItemNameDescription.dbc.csv')) do |row|
-          hash[row[0].to_i] = row[1]
+          # for some reason all of the values in this table have '' around every string. remove
+          # those and just store the strings.
+          text = row[1]
+          if text[0] == '\''
+            text = text[1..-1]
+          end
+          if text[-1,1] == '\''
+            text = text.chomp('\'')
+          end
+          hash[row[0].to_i] = text
         end
       end
     end
