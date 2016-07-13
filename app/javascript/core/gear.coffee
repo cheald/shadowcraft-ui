@@ -536,6 +536,8 @@ class ShadowcraftGear
     Shadowcraft.Gear.updateDisplay()
 
   # Adds a bonus to an item.
+  # TODO: this should absolutely not modify the item that we get from the server data. It should
+  # modify the gear entry, and the gear entry only.
   applyBonusToItem = (item, bonusId, slot, apply = true) ->
     for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
       switch bonus_entry.type
@@ -1154,18 +1156,16 @@ class ShadowcraftGear
   # Called when a user clicks on a gem section in an item. This opens a
   # popup with a list of applicable gems for the item.
   clickSlotGem = ->
-    ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2
     GemList = Shadowcraft.ServerData.GEMS
     data = Shadowcraft.Data
 
     buf = clickSlot(this, "gem")
     $slot = buf[0]
     slot = buf[1]
-    item = ItemLookup[$slot.data("identifier")]
     gemSlot = $slot.find(".gem").index(this)
     $.data(document.body, "gem-slot", gemSlot)
-    gemType = item.sockets[gemSlot]
-    selected_id = data.gear[slot].gems[gemSlot]
+    selected_gem_id = data.gear[slot].gems[gemSlot]
+    gemType = Shadowcraft.ServerData.GEM_LOOKUP[selected_gem_id].slot
 
     otherGearGems = []
     for i in [0..2]
@@ -1182,15 +1182,13 @@ class ShadowcraftGear
     max = null
     for gem in GemList
       if usedNames[gem.name]
-        if gem.id == selected_id
-          selected_id = usedNames[gem.name]
+        if gem.id == selected_gem_id
+          selected_gem_id = usedNames[gem.name]
         continue
 
       usedNames[gem.name] = gem.id
-      continue if gem.name.indexOf("Perfect") == 0 and selected_id != gem.id
+      continue if gem.name.indexOf("Perfect") == 0 and selected_gem_id != gem.id
       continue unless canUseGem(gem, gemType)
-      continue if gem.name.indexOf('Taladite') >= 0 and item? and item.quality == 7 and item.ilvl <= 620 # do not recommend wod gems to heirlooms
-      continue if gem.name.indexOf('Taladite') >= 0 and item? and item.id in [98148,102248] and item.ilvl <= 616 # do not recommend wod gems for legendary cloak
       max ||= gem.__ep
       gEP = gem.__ep
       desc = statsToDesc(gem)
@@ -1214,7 +1212,7 @@ class ShadowcraftGear
     )
 
     $popupbody.get(0).innerHTML = buffer
-    $popupbody.find(".slot[id='" + selected_id + "']").addClass("active")
+    $popupbody.find(".slot[id='" + selected_gem_id + "']").addClass("active")
     showPopup($popup)
     false
 
