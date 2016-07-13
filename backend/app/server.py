@@ -192,10 +192,11 @@ class ShadowcraftComputation:
 
     buffMap = [
         'short_term_haste_buff',
-        'flask_legion_agi',
+        'flask_wod_agi',
     ]
 
     buffFoodMap = [
+        'food_wod_versatility_125',
         'food_crit_700',
         'food_haste_700',
         'food_mastery_700',
