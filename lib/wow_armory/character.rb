@@ -2,6 +2,8 @@ module WowArmory
   class Character
     unloadable
 
+    @@item_enchants = nil
+
     include Constants
     include Document
 
@@ -81,6 +83,7 @@ module WowArmory
           upgrade = tooltip['upgrade']
           info['upgrade_level'] = upgrade['current'] if upgrade['current'] > 0
         end
+
         @gear[info['slot'].to_s] = info
       end
     end
