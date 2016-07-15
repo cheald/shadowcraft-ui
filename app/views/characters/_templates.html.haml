@@ -126,11 +126,10 @@
     -#%input.ui-button.ui-widget.ui-state-default.ui-corner-all.clearBonuses{:role => "button", :value => "Reset"}
 
 - mustache("itemSlot") do
-  .slot{:id => "{{item/id}}", :"data-identifier" => "{{identifier}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}"}<
+  .slot{:id => "{{item/id}}", :"data-identifier" => "{{identifier}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}", :"data-upgrade" => "{{ttupgd}}", :"data-name" => "{{item/name}}", :"data-tag" => "{{tag}}", :"data-context" => "{{item/context}}", :"data-bonus" => "{{ttbonus}}"}<
     .image<
       {{#item}}
       {{#icon}}
-      -#%img{:src => "http://wow.zamimg.com/images/wow/icons/large/{{.}}.jpg"}
       %img{:src => "http://us.media.blizzard.com/wow/icons/56/{{.}}.jpg"}
       {{/icon}}
       {{/item}}
@@ -143,7 +142,7 @@
     .name.tt{:class => "quality-{{item/quality}}", :"data-tooltip-id" => "{{ttid}}", :"data-tooltip-rand" => "{{ttrand}}", :"data-tooltip-upgd" => "{{ttupgd}}", :"data-tooltip-bonus" => "{{ttbonus}}", :"data-tooltip-gems" => "{{ttgems}}", :"data-tooltip-spec" => "{{ttspec}}"}
       {{item/name}}
       {{item/name_suffix}}
-      %em.heroic {{item/tag}}
+      %em.heroic {{tag}}
       {{#upgradable}}
       {{#upgrade}}
       %em.upgrade {{curr_level}}/{{max_level}}
@@ -179,7 +178,7 @@
       {{#gems}}
       .gem.tt{:class => "{{slot}}", :"data-tooltip-id" => "{{gem/id}}"}
         %span.socket
-          %img{:src => "/images/icons/Socket_{{socket}}.png"}
+          %img{:src => "/images/icons/Socket_{{gem/slot}}.png"}
         {{#gem}}
         %span.img<
           %img{:src => "http://wow.zamimg.com/images/wow/icons/small/{{icon}}.jpg"}

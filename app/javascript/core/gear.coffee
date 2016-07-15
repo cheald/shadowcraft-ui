@@ -44,6 +44,8 @@ class ShadowcraftGear
       ids: [139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746]
       bonuses: {8: "rogue_orderhall_8pc"}
 
+  @WF_BONUS_IDS = []
+
   # Default weights for the DPS calculations. These get reset by calculation
   # passes through the engine.
   Weights =
@@ -582,6 +584,25 @@ class ShadowcraftGear
   sortTagBonuses = (a,b) ->
     return a.position-b.position
 
+  makeTag = (bonuses) ->
+    tag_bonuses = []
+    for bonus in bonuses
+      for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonus]
+        if bonus_entry.type == 4
+          tag_bonus =
+            position: bonus_entry.val2
+            desc_id: bonus_entry.val1
+          tag_bonuses.push tag_bonus
+
+    tag = ""
+    if (tag_bonuses.length > 0)
+      tag_bonuses.sort(sortTagBonuses)
+      for bonus in tag_bonuses
+        if (tag.length > 0)
+          tag += " "
+        tag += Shadowcraft.ServerData.ITEM_DESCRIPTIONS[bonus['desc_id']]
+    return tag
+
   updateDisplay: ->
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
     EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS
@@ -605,30 +626,9 @@ class ShadowcraftGear
           enchantable = gear.id not in ShadowcraftGear.ARTIFACTS && EnchantSlots[item.equip_location]? && getApplicableEnchants(i, item).length > 0
 
           bonus_keys = _.keys(Shadowcraft.ServerData.ITEM_BONUSES)
-
-          tag_bonuses = []
-          if gear.bonuses?
-            for bonus in gear.bonuses
-              for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonus]
-                switch bonus_entry.type
-                  when 4 # tags
-                    tag_bonus =
-                      position: bonus_entry.val2
-                      desc_id: bonus_entry.val1
-                    tag_bonuses.push tag_bonus
-                    break
-                  when 6 # sockets
-                    # TODO: how to actually handle this? We probably shouldn't just mark every
-                    # gem as prismatic.
-                    break
-
           tag = ""
-          if (tag_bonuses.length > 0)
-            tag_bonuses.sort(sortTagBonuses)
-            for bonus in tag_bonuses
-              if (tag.length > 0)
-                tag += " "
-              tag += Shadowcraft.ServerData.ITEM_DESCRIPTIONS[bonus['desc_id']]
+          if (gear.bonuses?)
+            tag = makeTag(gear.bonuses)
 
           if tag.length == 0
             tag = item.tag
@@ -940,6 +940,13 @@ class ShadowcraftGear
   needsDagger = ->
     Shadowcraft.Data.activeSpec == "a"
 
+  recalculateStats = (original, old_ilvl, new_ilvl) ->
+    multiplier =  1.0 / Math.pow(1.15, ((new_ilvl-old_ilvl) / 15.0 * -1))
+    stats = {}
+    for k,v of original
+      stats[k] = v * multiplier;
+    return stats
+
   # Called when a user clicks on the name in a slot. This opens a popup with
   # a list of items.
   clickSlotName = ->
@@ -952,6 +959,7 @@ class ShadowcraftGear
     GemList = Shadowcraft.ServerData.GEMS
 
     gear = Shadowcraft.Data.gear
+    equipped = gear[slot]
 
     requireDagger = needsDagger()
     subtletyNeedsDagger = Shadowcraft.Data.activeSpec == "b" && Shadowcraft.Data.options.rotation.use_hemorrhage in ['uptime','never']
@@ -965,6 +973,34 @@ class ShadowcraftGear
       l = ShadowcraftData.ITEM_LOOKUP2[lid]
       if lid == selected_identifier # always show equipped item
         loc.push l
+
+        # If the equipped item has WF/TF bonus ID on it, generate a second item
+        # and add it to the list. This way the base item and the WF/TF item
+        # will both display.
+        hasUpgrade = false
+        bonuses = $(equipped.bonuses).not(l.bonus_tree).get()
+        for bonus in bonuses
+          for entry in ShadowcraftData.ITEM_BONUSES[bonus]
+            if entry.type == 1
+              hasUpgrade = true
+              break
+          if hasUpgrade
+            break
+
+        if (hasUpgrade)
+          clone = $.extend({}, l)
+          clone.identifier = ""+clone.id+":"+equipped.item_level+":0"
+          clone.ilvl = equipped.item_level
+          clone.bonus_tree = equipped.bonuses
+          clone.tag = makeTag(equipped.bonuses)
+          clone.stats = recalculateStats(l.stats, l.ilvl, equipped.item_level)
+          clone.upgrade_level = equipped.upgrade_level
+          loc.push clone
+
+          # Modify the selected identifier so that the right item will be selected
+          # in the list.
+          selected_identifier = clone.identifier
+
         continue
 
       # Don't display all of the different versions of the legendary ring.
@@ -987,10 +1023,6 @@ class ShadowcraftGear
       continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && subtletyNeedsDagger && l.subclass != 15
-      continue if l.upgrade_level != 0 and Shadowcraft.Data.options.general.show_upgrades == 0 and lid != selected_identifier
-      continue if l.tag? and /Warforged$/.test(l.tag) and Shadowcraft.Data.options.general.show_warforged == 0 and lid != selected_identifier
-      continue if l.upgrade_level != 0 and l.upgrade_level > getMaxUpgradeLevel(l)
-      continue if l.suffix and Shadowcraft.Data.options.general.show_random_items > l.ilvl and lid != selected_identifier
 
       # prevent unique-equippable items from showing up when it's already equipped
       # in another slot. this is mostly trinkets (slots 12 and 13) or legendary
@@ -1014,12 +1046,12 @@ class ShadowcraftGear
     gem_offset = statOffset(gear[slot], FACETS.GEMS)
     epSort(GemList) # Needed for gemming recommendations
 
-    # set bonus
     setBonEP = {}
     for set_name, set of Sets
       setCount = getEquippedSetCount(set.ids, equip_location)
       setBonEP[set_name] ||= 0
       setBonEP[set_name] += setBonusEP(set, setCount)
+
     for l in loc
       # TODO variable might not be necessary anymore
       l.sockets ||= []
@@ -1068,6 +1100,7 @@ class ShadowcraftGear
           max_level: max_level
       buffer += Templates.itemSlot(
         item: l
+        tag: l.tag
         identifier: l.id + ":" + l.ilvl + ":" + (l.suffix || 0)
         gear: {}
         gems: []
@@ -1420,9 +1453,6 @@ class ShadowcraftGear
     $popupbody.click $.delegate
       ".slot" : (e) ->
         Shadowcraft.Console.purgeOld()
-        ItemLookup = Shadowcraft.ServerData.ITEM_LOOKUP2
-        EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
-        Gems = Shadowcraft.ServerData.GEM_LOOKUP
         data = Shadowcraft.Data
 
         slot = $.data(document.body, "selecting-slot")
@@ -1435,40 +1465,23 @@ class ShadowcraftGear
           identifier = $this.data("identifier")
           slotGear[update] = if val != 0 then val else null
           if update == "item_id"
-            item = ItemLookup[identifier]
-            if item
-              slotGear.id = item.id
-              slotGear.item_level = item.ilvl
-              slotGear.name = item.name
-              slotGear.context = item.context ? null
-              slotGear.tag = item.tag ? null
-              slotGear.suffix = item.suffix ? null
-              slotGear.upgrade_level = item.upgrade_level ? null
-              if item.sockets
-                socketlength = item.sockets.length
-                for i in [0..2]
-                  if i >= socketlength
-                    slotGear.gems[i] = null
-                  else if slotGear.gems[i]?
-                    gem = Gems[slotGear.gems[i]]
-                    if gem
-                      if not canUseGem Gems[slotGear.gems[i]], item.sockets[i], [], slot
-                        slotGear.gems[i] = null
-              if item.bonus_tree
-                slotGear.bonuses = item.bonus_tree
-              if (item.id in ShadowcraftGear.ARTIFACTS)
-                Shadowcraft.Artifact.updateArtifactItem(item.id, item.ilvl, item.ilvl)
-            else
-              slotGear.id = null
-              slotGear.item_level = null
-              slotGear.gems[i] = null for i in [0..2]
-              slotGear.bonuses[i] = null for i in [0..9]
-              slotGear.suffix = null
+            bonuses = ""+$this.data("bonus")
+            idparts = identifier.split(":")
+            slotGear.id = parseInt(idparts[0])
+            slotGear.item_level = parseInt(idparts[1])
+            slotGear.name = $this.data("name")
+            slotGear.context = $this.data("context")
+            slotGear.tag = $this.data("tag")
+            upgd_level = parseInt($this.data("upgrade"))
+            slotGear.upgrade_level = if not isNaN(upgd_level) then upgd_level else 0
+            slotGear.bonuses = bonuses.split(":")
+            if (slotGear.id in ShadowcraftGear.ARTIFACTS)
+              Shadowcraft.Artifact.updateArtifactItem(slotGear.id, slotGear.item_level, slotGear.item_level)
           else
             enchant_id = if not isNaN(val) then val else null
             item = getItem(slotGear.id, slotGear.context)
             if enchant_id?
-              Shadowcraft.Console.log("Changing " + item.name + " enchant to " + EnchantLookup[enchant_id].name)
+              Shadowcraft.Console.log("Changing " + item.name + " enchant to " + Shadowcraft.ServerData.ENCHANT_LOOKUP[enchant_id].name)
             else
               Shadowcraft.Console.log("Removing Enchant from " + item.name)
         else if update == "gem"
@@ -1477,7 +1490,7 @@ class ShadowcraftGear
           gem_id = $.data(document.body, "gem-slot")
           item = getItem(slotGear.id, slotGear.context)
           if item_id?
-            Shadowcraft.Console.log("Regemming " + item.name + " socket " + (gem_id + 1) + " to " + Gems[item_id].name)
+            Shadowcraft.Console.log("Regemming " + item.name + " socket " + (gem_id + 1) + " to " + Shadowcraft.ServerData.GEM_LOOKUP[item_id].name)
           else
             Shadowcraft.Console.log("Removing Gem from " + item.name + " socket " + (gem_id + 1))
           slotGear.gems[gem_id] = item_id
