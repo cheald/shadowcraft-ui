@@ -72,10 +72,10 @@ class Character
 
       # iterate over the player's gear and import any items or gem that are missing
       properties['gear'].each do |slot, item|
-        Item.check_for_import(item['id'].to_i, item['item_level'].to_i)
+        Item.check_item_for_import(item['id'].to_i, item['context'])
         item['gems'].each do |gemid|
           unless gemid.nil? or gemid == 0
-            db_item = Item.check_for_import(gemid.to_i, 0, true)
+            db_item = Item.check_gem_for_import(gemid.to_i)
           end
         end
       end

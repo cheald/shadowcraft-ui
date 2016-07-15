@@ -236,20 +236,23 @@ class Item
     end
   end
 
-  # This item will check for an item ID and ilevel combination existing in the
-  # database. If that combination doesn't exist, reload the whole item. Loading
-  # single items doesn't take very long, so we're safe to just load the whole
-  # thing (and all of the versions). This also works for gems.
-  def self.check_for_import(id, item_level, is_gem=false, source='wowapi')
-    # TODO: should we lock the database in some way here to avoid race condtions?
-    if is_gem
-      # For a gem, don't bother checking the item_level. Gems do have an item
-      # level associated with them (for some reason), but there's only one
-      # version of each gem stored in the DB.
-      count = Item.where(:remote_id => id)
-    else
-      count = Item.where(:remote_id => id, :item_level => item_level).count()
+  # This function will check for an item ID and context combination existing in the
+  # database. If that combination doesn't exist, reload the whole item. Loading single
+  # items doesn't take very long, so we're safe to just load the whole thing.
+  def self.check_item_for_import(id, context, source='wowapi')
+    count = Item.where(:remote_id => id, :"properties.context" => context).count()
+    if (count == 0)
+      case source
+        when 'wowapi'
+          import_blizzard(id)
+      end
     end
+  end
+
+  # Same as above, but for gems. This just checks item IDs since every gem has a different
+  # item ID.
+  def self.check_gem_for_import(id, source='wowapi')
+    count = Item.where(:remote_id => id)
     if (count == 0)
       case source
         when 'wowapi'
