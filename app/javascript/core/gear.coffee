@@ -106,11 +106,16 @@ class ShadowcraftGear
 
   # Generates a map of all of the stats for an item, summing each of the sources
   # together.
-  sumItem = (s, i, key) ->
+  sumItem = (s, i, key='stats', ilvl_difference=0) ->
     key ||= 'stats'
-    for stat of i[key]
+    if (ilvl_difference != 0)
+      newstats = recalculateStatsDiff(i[key], ilvl_difference)
+    else
+      newstats = i[key]
+
+    for stat of newstats
       s[stat] ||= 0
-      s[stat] += i[key][stat]
+      s[stat] += Math.round(newstats[stat])
     null
 
   # Gets the EP value for an item out of the last run of calculation data
@@ -181,7 +186,9 @@ class ShadowcraftGear
     return unless item?
 
     if (facets & FACETS.ITEM) == FACETS.ITEM
-      sumItem(out, item)
+      # if the item level is different between the gear and the item, we need to pass
+      # the difference so the stats are adjusted accordingly.
+      sumItem(out, item, 'stats', gear.item_level-item.ilvl)
 
     if (facets & FACETS.GEMS) == FACETS.GEMS
       matchesAllSockets = item.sockets and item.sockets.length > 0
@@ -204,12 +211,12 @@ class ShadowcraftGear
 
   # Returns the complete stats for all of the items added together for a character.
   # Facets can be used to limit the data to the item, gems, or enchants.
-  sumStats: (facets) ->
+  sumStats: ->
     stats = {}
     data = Shadowcraft.Data
 
     for si, i in SLOT_ORDER
-      Shadowcraft.Gear.sumSlot(data.gear[si], stats, facets)
+      Shadowcraft.Gear.sumSlot(data.gear[si], stats, null)
 
     @statSum = stats
     return stats
@@ -940,12 +947,15 @@ class ShadowcraftGear
   needsDagger = ->
     Shadowcraft.Data.activeSpec == "a"
 
-  recalculateStats = (original, old_ilvl, new_ilvl) ->
-    multiplier =  1.0 / Math.pow(1.15, ((new_ilvl-old_ilvl) / 15.0 * -1))
+  recalculateStatsDiff = (original, ilvl_difference) ->
+    multiplier =  1.0 / Math.pow(1.15, (ilvl_difference / 15.0 * -1))
     stats = {}
     for k,v of original
       stats[k] = v * multiplier;
     return stats
+
+  recalculateStats = (original, old_ilvl, new_ilvl) ->
+    recalculateStatsDiff(original, new_ilvl-old_ilvl)
 
   # Called when a user clicks on the name in a slot. This opens a popup with
   # a list of items.
