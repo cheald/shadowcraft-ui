@@ -191,17 +191,10 @@ class ShadowcraftGear
       sumItem(out, item, 'stats', gear.item_level-item.ilvl)
 
     if (facets & FACETS.GEMS) == FACETS.GEMS
-      matchesAllSockets = item.sockets and item.sockets.length > 0
-      for socketIndex, socket of item.sockets
-        if gear.gems?
-          gid = gear.gems[socketIndex]
-          if gid and gid > 0
-            gem = Shadowcraft.ServerData.GEM_LOOKUP[gid]
-            sumItem(out, gem) if(gem)
-          matchesAllSockets = false if !gem or !gem[socket]
-
-      if matchesAllSockets
-        sumItem(out, item, "socketbonus")
+      for gid in gear.gems
+        if gid and gid > 0
+          gem = Shadowcraft.ServerData.GEM_LOOKUP[gid]
+          sumItem(out, gem) if(gem)
 
     if (facets & FACETS.ENCHANT) == FACETS.ENCHANT
       enchant_id = gear.enchant
