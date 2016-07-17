@@ -21,8 +21,8 @@ cd casc_extract
 ./casc_extract.py -m batch --cdn --beta -o ../casc_data | tee ../casc_data/extract.log
 cd ..
 
-CDN_VERSION=`awk -F": " '/Current CDN/ {print $2}' casc_data/extract.log`
-BUILD_NUMBER=`awk -F"[/,]" '/Available versions/ {print $2}' casc_data/extract.log`
+CDN_VERSION=`awk -F": " '/^Current build version/ {print $2}' casc_data/extract.log`
+BUILD_NUMBER=`awk -F. '/^Current build version/ {print $NF}' casc_data/extract.log`
 CASC_DATA_DIR="${PWD}/casc_data/${CDN_VERSION}/DBFilesClient"
 
 mkdir -p csvs
