@@ -44,7 +44,13 @@ class ShadowcraftGear
       ids: [139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746]
       bonuses: {8: "rogue_orderhall_8pc"}
 
-  @WF_BONUS_IDS = []
+  # This is a list of the bonus IDs that mean "item level upgrade" for
+  # the warforged/titanforged support.
+  @WF_BONUS_IDS = [546..547]
+  Array::push.apply @WF_BONUS_IDS, [560..562]
+  Array::push.apply @WF_BONUS_IDS, [644,646,651,656]
+  Array::push.apply @WF_BONUS_IDS, [754..766]
+  Array::push.apply @WF_BONUS_IDS, [1477..1672]
 
   # Default weights for the DPS calculations. These get reset by calculation
   # passes through the engine.
@@ -118,6 +124,13 @@ class ShadowcraftGear
       s[stat] += Math.round(newstats[stat])
     null
 
+  # Gets the total EP for a block of stats
+  getEPForStatBlock = (stats, ignore) ->
+    total = 0
+    for stat, value of stats
+      total += getStatWeight(stat, value, ignore) || 0
+    return total
+
   # Gets the EP value for an item out of the last run of calculation data
   getEP = (item, slot=-1, ignore=[]) ->
 
@@ -126,10 +139,7 @@ class ShadowcraftGear
     sumItem(stats, item)
 
     # Add all of the EP for all of the stats
-    total = 0
-    for stat, value of stats
-      weight = getStatWeight(stat, value, ignore) || 0
-      total += weight
+    total = getEPForStatBlock(stats, ignore)
 
     # If there was already a calculation done, there's some extra EP to add based on
     # weapon damage, enchants, and trinkets.
@@ -447,10 +457,11 @@ class ShadowcraftGear
     else
       this.optimizeEnchants depth + 1
 
-  # TODO: what does this do?
+  # Returns a list of all of the gems available with EPs for each of them. Used
+  # when opening the bonuses popup.
+  # TODO: what makes this different from getGemRecommentationList?
   getBestNormalGem = ->
     Gems = Shadowcraft.ServerData.GEMS
-    # TODO: why copy this?
     copy = $.extend(true, [], Gems)
     list = []
     for gem in copy
@@ -511,55 +522,30 @@ class ShadowcraftGear
 
     $("#bonuses select option").each ->
       val = parseInt($(this).val(), 10)
-      if $(this).is(':selected')
+      if $(this).is(':selected') and !isNaN(val)
         checkedBonuses.push val
-      else
+      else if !isNaN(val)
         uncheckedBonuses.push val
 
     union = _.union(currentBonuses, checkedBonuses)
     newBonuses = _.difference(union, uncheckedBonuses)
 
-    # remove all from old bonuses
-    for bonus in currentBonuses
-      if bonus in uncheckedBonuses
-        applyBonusToItem(item, bonus, slot, false)
-
-    # apply new bonuses
+    # Apply new bonuses, and fix the item level the piece of gear base on whether
+    # a warforged/titanforged bonus ID is applied.
     gear.bonuses = newBonuses
+    gear.item_level = item.ilvl + (gear.upgrade_level * getUpgradeLevelSteps(item))
+    for bonus in newBonuses
+      if bonus in ShadowcraftGear.WF_BONUS_IDS
+        for entry in Shadowcraft.ServerData.ITEM_BONUSES[bonus]
+          if entry.type == 1
+            gear.item_level += entry.val1
 
     $("#bonuses").removeClass("visible")
     Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
 
-  # Adds a bonus to an item.
-  # TODO: this should absolutely not modify the item that we get from the server data. It should
-  # modify the gear entry, and the gear entry only.
-  applyBonusToItem = (item, bonusId, slot, apply = true) ->
-    for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
-      switch bonus_entry.type
-        when 6 # cool extra sockets
-          if apply
-            last = item.sockets[item.sockets.length - 1]
-            item.sockets.push "Prismatic"
-            if item.gems?
-              item.gems.push(0)
-            else
-              item.gems = []
-          else
-            item.sockets.pop()
-        when 5 # item name suffix
-          if apply
-            item.name_suffix = bonus_entry.val1
-          else
-            item.name_suffix = ""
-        when 2 # awesome extra stats
-          value = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[item.ilvl][1 + getRandPropRow(slot)])
-          item.stats[bonus_entry.val1] ||= 0
-          if apply
-            item.stats[bonus_entry.val1] = value
-          else
-            item.stats[bonus_entry.val1] -= value
-
+  # Returns true if a piece of gear has a bonus on it that means an added
+  # socket.
   hasSocket = (gear) ->
     # This is all of the bonus IDs that mean +socket. Ridiculous.
     socketBonuses = [523, 572, 608]
@@ -575,12 +561,16 @@ class ShadowcraftGear
   # View helpers
   ###
 
+  # Used by makeTag to sort a set of bonuses based on the val2 field in
+  # ITEM_BONUSES to make sure that the tag text is ordered correctly.
   sortTagBonuses = (a,b) ->
     return a.position-b.position
 
+  # Generates a tag string from a set of bonuses.
   makeTag = (bonuses) ->
     tag_bonuses = []
     for bonus in bonuses
+      continue if not bonus
       for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonus]
         if bonus_entry.type == 4
           tag_bonus =
@@ -597,6 +587,7 @@ class ShadowcraftGear
         tag += Shadowcraft.ServerData.ITEM_DESCRIPTIONS[bonus['desc_id']]
     return tag
 
+  # Updates the display, redrawing all of the elements on the gear tab.
   updateDisplay: ->
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP
     EnchantSlots = Shadowcraft.ServerData.ENCHANT_SLOTS
@@ -938,7 +929,7 @@ class ShadowcraftGear
     multiplier =  1.0 / Math.pow(1.15, (ilvl_difference / 15.0 * -1))
     stats = {}
     for k,v of original
-      stats[k] = v * multiplier;
+      stats[k] = v * multiplier
     return stats
 
   recalculateStats = (original, old_ilvl, new_ilvl) ->
@@ -977,6 +968,7 @@ class ShadowcraftGear
         hasUpgrade = false
         bonuses = $(equipped.bonuses).not(l.bonus_tree).get()
         for bonus in bonuses
+          continue if bonus == ""
           for entry in ShadowcraftData.ITEM_BONUSES[bonus]
             if entry.type == 1
               hasUpgrade = true
@@ -1059,7 +1051,7 @@ class ShadowcraftGear
       l.__gearEP = getEP(l, slot, gear_offset)
       l.__gearEP = 0 if isNaN l.__gearEP
       l.__setBonusEP = 0 if isNaN l.__setBonusEP
-      l.__ep = l.__gearEP + l.__gemRec.ep + l.__setBonusEP
+      l.__ep = l.__gearEP + l.__setBonusEP
 
     loc.sort(sortComparator)
     maxIEP = 1
@@ -1105,7 +1097,7 @@ class ShadowcraftGear
         ttrand: ttrand
         ttupgd: ttupgd
         ttbonus: ttbonus
-        desc: "#{l.__gearEP.toFixed(1)} base / #{l.__gemRec.ep.toFixed(1)} gem #{if l.__setBonusEP > 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
+        desc: "#{l.__gearEP.toFixed(1)} base #{if l.__setBonusEP > 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
         search: escape(l.name + " " + l.tag)
         percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01
         ep: iEP.toFixed(1)
@@ -1257,11 +1249,26 @@ class ShadowcraftGear
     slot = parseInt($slot.data("slot"), 10)
     $.data(document.body, "selecting-slot", slot)
 
-    identifier = $slot.data("identifier")
-    item = Shadowcraft.ServerData.ITEM_LOOKUP2[identifier]
-
     gear = data.gear[slot]
     currentBonuses = gear.bonuses
+    item = getItem(gear.id, gear.context)
+
+    # Calculate this here so that if the item supports WF/TF we can use
+    # the value to display the upgrade difference.
+    gear_stats = []
+    sumItem(gear_stats, item)
+    base_item_ep = getEPForStatBlock(gear_stats)
+
+    # Check if one of the bonus IDs currently on the gear is a WF/TF
+    current_tf_id = 0
+    current_tf_value = 0
+    for bonusId in currentBonuses
+      if bonusId in ShadowcraftGear.WF_BONUS_IDS
+        current_tf_id = bonusId
+        for val in Shadowcraft.ServerData.ITEM_BONUSES[current_tf_id]
+          if val.type == 1
+            current_tf_value = val.val1
+    
     # TODO build all possible bonuses with status selected or not, etc.
     groups = {
       suffixes: []
@@ -1283,36 +1290,64 @@ class ShadowcraftGear
           'val2': bonus_entry.val2
         }
         switch bonus_entry.type
-          when 6 # cool extra sockets
+          when 6 # extra sockets
+            console.log "extra socket"
             group['entries'].push entry
-            gem = getBestNormalGem
+            gem = getBestNormalGem()
             group.ep += getEP(gem)
             subgroup = "sockets"
           when 5 # item name suffix
             group['entries'].push entry
             subgroup = "suffixes"
-          when 2 # awesome extra stats
+          when 2 # tertiary stats
             entry['val2'] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[item.ilvl][1 + getRandPropRow(slot)])
             entry['val1'] = bonus_entry.val1
             group['entries'].push entry
             group.ep += getStatWeight(entry.val1, entry.val2)
             subgroup = "tertiary" unless subgroup?
           when 1 # item level increases
-            if (bonusId >= 1477 and bonusId <= 1672)
+            if bonusId in ShadowcraftGear.WF_BONUS_IDS
               ilvl_bonus = entry['val1']
               entry['val1'] = "+"+ilvl_bonus+" Item Levels "
               if ilvl_bonus < 15
                 entry['val1'] += "(Warforged)"
               else
                 entry['val1'] += "(Titanforged)"
-              entry['val2'] = "Item Level " + (item.ilvl+ilvl_bonus)
+              new_ilvl = gear.item_level-current_tf_value+ilvl_bonus
+              entry['val2'] = "Item Level " + new_ilvl
               group['entries'].push entry
-              group.ep = 0 # TODO calculate this based on the item
+              temp_stats = []
+              sumItem(temp_stats, item, 'stats', ilvl_bonus-current_tf_value)
+              temp_ep = getEPForStatBlock(temp_stats)
+              group.ep = temp_ep-base_item_ep
               subgroup = "titanforged"
       if subgroup?
         group.ep = group.ep.toFixed(2)
         groups[subgroup].push group
         groups[subgroup+"_active"] = true
+
+    # If any wf/tf entries were added to that subgroup, add a "None" item
+    # as well.
+    if groups['titanforged'].length != 0
+      group = {}
+      subgroup = 'titanforged'
+      group['bonusId'] = 0 # This ends up leaving the value unset
+      group['active'] = (current_tf_id == 0)
+      if current_tf_value == 0
+        group['ep'] = "0.00"
+      else
+        temp_stats = []
+        sumItem(temp_stats, item, 'stats', -current_tf_value)
+        temp_ep = getEPForStatBlock(temp_stats)
+        group['ep'] = (temp_ep-base_item_ep).toFixed(2)
+      group['entries'] = []
+      entry = {
+        'type': 1
+        'val1': "None "
+        'val2': "Item Level " + (item.ilvl + (gear.upgrade_level * getUpgradeLevelSteps(item)))
+      }
+      group['entries'].push entry
+      groups['titanforged'].push group
 
     for key,subgroup of groups
       continue unless _.isArray(subgroup)
