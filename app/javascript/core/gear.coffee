@@ -272,11 +272,9 @@ class ShadowcraftGear
     return false unless gem?
     gem.requires?.profession? and gem.requires.profession == profession
 
-  canUseGem = (gem, gemType) ->
+  canUseGem = (gem) ->
     if gem.requires?.profession?
       return false if isProfessionalGem(gem, 'jewelcrafting')
-
-    return false if not gem[gemType]
     true
 
   # Check if the gems have equal stats to pretend that optimize gems not change gems to
@@ -288,27 +286,24 @@ class ShadowcraftGear
     return true
 
   # Determines the best set of gems for an item.
-  getGemmingRecommendation = (gem_list, item, offset) ->
-    if !item.sockets or item.sockets.length == 0
+  getGemmingRecommendation = (gem_list, gear, offset) ->
+    if !hasSocket(gear)
       return {ep: 0, gems: []}
 
     straightGemEP = 0
     sGems = []
-    for gemType in item.sockets
-      broke = false
-      for gem in gem_list
-        continue unless canUseGem(gem, gemType)
-        continue if gem.name.indexOf('Taladite') >= 0 and item.quality == 7 and item.ilvl <= 620
-        continue if gem.name.indexOf('Taladite') >= 0 and item.id == 102248 and item.ilvl <= 616
-        straightGemEP += getEP(gem, null, offset)
-        sGems.push gem.id
-        broke = true
-        break
-      sGems.push null if !broke
+    foundgem = false
+    for gem in gem_list
+      continue unless canUseGem(gem)
+      straightGemEP += getEP(gem, null, offset)
+      sGems.push gem.id
+      foundgem = true
+      break
+    sGems.push null if !foundgem
 
     epValue = straightGemEP
     gems = sGems
-    return {ep: epValue, takeBonus: true, gems: gems}
+    return {ep: epValue, gems: gems}
 
   # Called when a user clicks the Lock All button
   lockAll: () ->
@@ -347,25 +342,24 @@ class ShadowcraftGear
       continue if gear.locked
       continue if gear.id in ShadowcraftGear.ARTIFACTS
 
-      item = getItemByContext(gear.id, gear.context)
       gem_offset = statOffset(gear, FACETS.GEMS)
 
-      if item
-        rec = getGemmingRecommendation(gem_list, item, gem_offset)
-        for gem, gemIndex in rec.gems
-          from_gem = Gems[gear.gems[gemIndex]]
-          to_gem = Gems[gem]
-          continue unless to_gem?
-          if gear.gems[gemIndex] != gem
-            if from_gem && to_gem
-              continue if from_gem.name == to_gem.name
-              continue if equalGemStats(from_gem, to_gem)
-              Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} from #{from_gem.name} to #{to_gem.name}"
-            else
-              Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} to #{to_gem.name}"
+      rec = getGemmingRecommendation(gem_list, gear, gem_offset)
+      for gem, gemIndex in rec.gems
+        from_gem = Gems[gear.gems[gemIndex]]
+        to_gem = Gems[gem]
+        continue unless to_gem?
+        if gear.gems[gemIndex] != gem
+          item = getItem(gear.id, gear.context)
+          if from_gem && to_gem
+            continue if from_gem.name == to_gem.name
+            continue if equalGemStats(from_gem, to_gem)
+            Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} from #{from_gem.name} to #{to_gem.name}"
+          else
+            Shadowcraft.Console.log "Regemming #{item.name} socket #{gemIndex+1} to #{to_gem.name}"
 
-            gear.gems[gemIndex] = gem
-            madeChanges = true
+          gear.gems[gemIndex] = gem
+          madeChanges = true
 
     # If we didn't make changes on this pass, or we've went down 10 levels already
     # then stop, update the DPS calculation, update the display, and log the changes.
@@ -1057,8 +1051,6 @@ class ShadowcraftGear
 
     for l in loc
       # TODO variable might not be necessary anymore
-      l.sockets ||= []
-      l.__gemRec = getGemmingRecommendation(GemList, l, gem_offset)
       l.__setBonusEP = 0
       for set_name, set of Sets
         if set.ids.indexOf(l.id) >= 0
