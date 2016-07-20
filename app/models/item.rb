@@ -18,6 +18,7 @@ class Item
 
   def icon
     return '' if self.properties.nil?
+    return '' if self.properties['icon'] == nil
     self.properties['icon'].split('/').last
   end
 
