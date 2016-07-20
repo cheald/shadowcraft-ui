@@ -4036,7 +4036,7 @@
             opt.ttid = item.id;
           }
           opt.ttrand = item ? item.suffix : null;
-          opt.ttupgd = item ? upgrade['curr_level'] : null;
+          opt.ttupgd = upgrade ? upgrade['curr_level'] : null;
           opt.ttbonus = gear.bonuses ? gear.bonuses.join(":") : null;
           opt.ttgems = ttgems !== "0:0:0" ? ttgems : null;
           opt.ep = item ? getEP(item, i).toFixed(1) : 0;
