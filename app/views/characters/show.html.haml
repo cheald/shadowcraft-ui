@@ -145,6 +145,27 @@
       .panel-content
 
     #docs
+      %h3 7.0 Beta Release 1
+      
+      Fixes/Additions:
+      %ul
+        %li - Warforged/Titanforged support. This required removal of warforged items from the database, which has the potential to cause lots of problems. Warforged selection is now on the Bonuses popup like sockets and tertiary stats. One bonus of this is that it also reduced the page load size considerably (~1.5MB savings!), which should help with load times.
+        %li - Death to the gigantic URLs of Shadowcraft! History is now stored as sha256 hashes on the server side, and aren't exposed to the user unless specifically requested. If you need to share a configuration, use the "Get Debug URL" option from the Gear-Icon tab (but see the Known Bugs below).
+        %li - Massive performance improvement to "Refresh from armory". It should be nearly instant now if all of a character's gear is in the database.
+        %li - Added support for Agonizing Poison, if selected as a talent.
+        %li - Added Tier 19 and Order Hall set support to backend. These won't be available until data is loaded for Legion items.
+        %li - Added support for relic and artifact trait EP display.
+        %li - Fixed how Unique-Equipped items work. If you have a Unique-Equipped item equipped (like a trinket), it won't show up in the list of options for your other trinket slot.
+        %li - Lots of fixes around how weapons are supported in relation to Artifact weapons being the only thing a character should have equipped.
+        %li - Removed the Google+ and Facebook like buttons. They were causing tab crashes in Chrome, and no one really used them anyways.
+        %li - Fixed lots and lots of nit-picky display issues with relics and artifacts.
+
+      <br/>Known Issues:
+      %ul
+        %li - "Get Debug URL" option not working correctly. The popup with the URL never appears as it should.
+        %li - "Reset to last armory import" option not working correctly.
+
+      <br/><br/>
       %h3 7.0 Alpha Release 2
 
       Fixes/Additions:
@@ -161,7 +182,7 @@
         %li - URLs got even longer due to adding the artifact data to them.
         %li - Any issues listed below not marked fixed.
 
-      <br/>
+      <br/><br/>
       %h3 7.0 Alpha Release 1
       
       Fixes:
