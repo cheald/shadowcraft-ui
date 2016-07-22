@@ -50,7 +50,11 @@ module WowArmory
       self.realm = @json['realm'].to_i
       self.player_class = CLASS_MAP[@json['class'].to_i] || 'unknown'
       self.race = RACE_MAP[@json['race'].to_i]
-      self.talents = @json['talents']
+
+      # For talents, make sure to ignore any blank specs. Druids will actually have 4 specs
+      # filled in, but rogues will return three good specs and one with a blank calcSpec
+      # field.
+      self.talents = @json['talents'].reject{|x| x['calcSpec'] == ""}
 
       self.portrait = 'http://%s.battle.net/static-render/%s/%s' % [ @region.downcase, @region.downcase, @json['thumbnail'] ]
 
