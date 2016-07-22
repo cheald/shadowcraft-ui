@@ -192,7 +192,7 @@ class ShadowcraftGear
     return unless gear?.id?
     facets ||= FACETS.ALL
 
-    item = getItem(gear.id, gear.context)
+    item = getItem(gear.id, gear.context, gear.item_level)
     return unless item?
 
     if (facets & FACETS.ITEM) == FACETS.ITEM
@@ -360,7 +360,7 @@ class ShadowcraftGear
         to_gem = Gems[gem]
         continue unless to_gem?
         if gear.gems[gemIndex] != gem
-          item = getItem(gear.id, gear.context)
+          item = getItem(gear.id, gear.context, gear.item_level)
           if from_gem && to_gem
             continue if from_gem.name == to_gem.name
             continue if equalGemStats(from_gem, to_gem)
@@ -431,7 +431,7 @@ class ShadowcraftGear
       continue unless gear
       continue if gear.locked
 
-      item = getItem(gear.id, gear.context)
+      item = getItem(gear.id, gear.context, gear.item_level)
       continue unless item
       enchant_offset = statOffset(gear, FACETS.ENCHANT)
 
@@ -505,7 +505,7 @@ class ShadowcraftGear
     slot = $.data(document.body, "selecting-slot")
     gear = data.gear[slot]
     return unless gear
-    item = getItem(gear.id, gear.context)
+    item = getItem(gear.id, gear.context, gear.item_level)
 
     currentBonuses = []
     if gear.bonuses?
@@ -603,7 +603,7 @@ class ShadowcraftGear
       for i, slotIndex in slotSet
         data.gear[i] ||= {}
         gear = data.gear[i]
-        item = getItem(gear.id, gear.context)
+        item = getItem(gear.id, gear.context, gear.item_level)
         gems = []
         sockets = []
         bonuses = null
@@ -906,19 +906,26 @@ class ShadowcraftGear
     return [$slot, slotIndex]
 
   # Gets an item from the item lookup table based on item ID and context.
-  getItem = (itemId, context) ->
+  getItem = (itemId, context, ilvl) ->
     if (itemId in ShadowcraftGear.ARTIFACTS)
       item = Shadowcraft.Data.artifact_items[itemId]
     else
       arm = [itemId, context]
       itemString = arm.join(':')
       item = Shadowcraft.ServerData.ITEM_BY_CONTEXT[itemString]
+
+      # If we couldn't find an item by context, try to find the item by ilvl
+      if not item?
+        arm = [itemId, ilvl, 0]
+        itemString = arm.join(':')
+        item = Shadowcraft.ServerData.ITEM_LOOKUP2[itemString]
+        
     if not item? and itemId
       console.warn "item not found by context", itemString
     return item
 
-  getItem: (itemId, context) ->
-    return getItem(itemId, context)
+  getItem: (itemId, context, ilvl) ->
+    return getItem(itemId, context, ilvl)
 
   getMaxUpgradeLevel = (item) ->
     return 2
@@ -1134,7 +1141,7 @@ class ShadowcraftGear
 
     gear = Shadowcraft.Data.gear[slot]
     offset = statOffset(gear, FACETS.ENCHANT)
-    item = getItem(gear.id, gear.context)
+    item = getItem(gear.id, gear.context, gear.item_level)
     for enchant in enchants
       enchant.__ep = getEP(enchant, slot, offset)
       enchant.__ep = 0 if isNaN enchant.__ep
@@ -1255,7 +1262,7 @@ class ShadowcraftGear
 
     gear = data.gear[slot]
     currentBonuses = gear.bonuses
-    item = getItem(gear.id, gear.context)
+    item = getItem(gear.id, gear.context, gear.item_level)
 
     # Calculate this here so that if the item supports WF/TF we can use
     # the value to display the upgrade difference.
@@ -1379,7 +1386,7 @@ class ShadowcraftGear
     data = Shadowcraft.Data
 
     gear = data.gear[slot]
-    item = getItem(gear.id, gear.context)
+    item = getItem(gear.id, gear.context, gear.item_level)
     max = getMaxUpgradeLevel(item)
     if (gear.upgrade_level == max)
       gear.item_level -= getUpgradeLevelSteps(item) * max
@@ -1402,7 +1409,7 @@ class ShadowcraftGear
     gear = data.gear[slot]
     gear.locked ||= false
     data.gear[slot].locked = not gear.locked
-    item = getItem(gear.id, gear.context)
+    item = getItem(gear.id, gear.context, gear.item_level)
     if item
       if data.gear[slot].locked
         Shadowcraft.Console.log("Locking " + item.name + " for Optimize Gems")
@@ -1513,7 +1520,7 @@ class ShadowcraftGear
               Shadowcraft.Artifact.updateArtifactItem(slotGear.id, slotGear.item_level, slotGear.item_level)
           else
             enchant_id = if not isNaN(val) then val else null
-            item = getItem(slotGear.id, slotGear.context)
+            item = getItem(slotGear.id, slotGear.context, slotGear.item_level)
             if enchant_id?
               Shadowcraft.Console.log("Changing " + item.name + " enchant to " + Shadowcraft.ServerData.ENCHANT_LOOKUP[enchant_id].name)
             else
@@ -1522,7 +1529,7 @@ class ShadowcraftGear
           item_id = parseInt($this.attr("id"), 10)
           item_id = if not isNaN(item_id) then item_id else null
           gem_id = $.data(document.body, "gem-slot")
-          item = getItem(slotGear.id, slotGear.context)
+          item = getItem(slotGear.id, slotGear.context, slotGear.item_level)
           if item_id?
             Shadowcraft.Console.log("Regemming " + item.name + " socket " + (gem_id + 1) + " to " + Shadowcraft.ServerData.GEM_LOOKUP[item_id].name)
           else

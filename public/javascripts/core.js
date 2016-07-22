@@ -1259,10 +1259,10 @@
       Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       statSummary = Shadowcraft.Gear.sumStats();
       if (data.gear[15]) {
-        mh = Shadowcraft.Gear.getItem(data.gear[15].id, data.gear[15].context);
+        mh = Shadowcraft.Gear.getItem(data.gear[15].id, data.gear[15].context, data.gear[15].item_level);
       }
       if (data.gear[16]) {
-        oh = Shadowcraft.Gear.getItem(data.gear[16].id, data.gear[16].context);
+        oh = Shadowcraft.Gear.getItem(data.gear[16].id, data.gear[16].context, data.gear[16].item_level);
       }
       buffList = [];
       ref = data.options.buffs;
@@ -1716,7 +1716,7 @@
         if (!gear || _.isEmpty(gear)) {
           continue;
         }
-        item = Shadowcraft.Gear.getItem(gear.id, gear.context);
+        item = Shadowcraft.Gear.getItem(gear.id, gear.context, gear.item_level);
         if (!item) {
           continue;
         }
@@ -3429,7 +3429,7 @@
         return;
       }
       facets || (facets = FACETS.ALL);
-      item = getItem(gear.id, gear.context);
+      item = getItem(gear.id, gear.context, gear.item_level);
       if (item == null) {
         return;
       }
@@ -3660,7 +3660,7 @@
             continue;
           }
           if (gear.gems[gemIndex] !== gem) {
-            item = getItem(gear.id, gear.context);
+            item = getItem(gear.id, gear.context, gear.item_level);
             if (from_gem && to_gem) {
               if (from_gem.name === to_gem.name) {
                 continue;
@@ -3745,7 +3745,7 @@
         if (gear.locked) {
           continue;
         }
-        item = getItem(gear.id, gear.context);
+        item = getItem(gear.id, gear.context, gear.item_level);
         if (!item) {
           continue;
         }
@@ -3834,7 +3834,7 @@
       if (!gear) {
         return;
       }
-      item = getItem(gear.id, gear.context);
+      item = getItem(gear.id, gear.context, gear.item_level);
       currentBonuses = [];
       if (gear.bonuses != null) {
         currentBonuses = gear.bonuses;
@@ -3961,7 +3961,7 @@
           i = slotSet[slotIndex];
           (base = data.gear)[i] || (base[i] = {});
           gear = data.gear[i];
-          item = getItem(gear.id, gear.context);
+          item = getItem(gear.id, gear.context, gear.item_level);
           gems = [];
           sockets = [];
           bonuses = null;
@@ -4337,7 +4337,7 @@
       return [$slot, slotIndex];
     };
 
-    getItem = function(itemId, context) {
+    getItem = function(itemId, context, ilvl) {
       var arm, item, itemString;
       if ((indexOf.call(ShadowcraftGear.ARTIFACTS, itemId) >= 0)) {
         item = Shadowcraft.Data.artifact_items[itemId];
@@ -4345,6 +4345,11 @@
         arm = [itemId, context];
         itemString = arm.join(':');
         item = Shadowcraft.ServerData.ITEM_BY_CONTEXT[itemString];
+        if (item == null) {
+          arm = [itemId, ilvl, 0];
+          itemString = arm.join(':');
+          item = Shadowcraft.ServerData.ITEM_LOOKUP2[itemString];
+        }
       }
       if ((item == null) && itemId) {
         console.warn("item not found by context", itemString);
@@ -4352,8 +4357,8 @@
       return item;
     };
 
-    ShadowcraftGear.prototype.getItem = function(itemId, context) {
-      return getItem(itemId, context);
+    ShadowcraftGear.prototype.getItem = function(itemId, context, ilvl) {
+      return getItem(itemId, context, ilvl);
     };
 
     getMaxUpgradeLevel = function(item) {
@@ -4605,7 +4610,7 @@
       max = 0;
       gear = Shadowcraft.Data.gear[slot];
       offset = statOffset(gear, FACETS.ENCHANT);
-      item = getItem(gear.id, gear.context);
+      item = getItem(gear.id, gear.context, gear.item_level);
       for (m = 0, len = enchants.length; m < len; m++) {
         enchant = enchants[m];
         enchant.__ep = getEP(enchant, slot, offset);
@@ -4746,7 +4751,7 @@
       $.data(document.body, "selecting-slot", slot);
       gear = data.gear[slot];
       currentBonuses = gear.bonuses;
-      item = getItem(gear.id, gear.context);
+      item = getItem(gear.id, gear.context, gear.item_level);
       gear_stats = [];
       sumItem(gear_stats, item);
       base_item_ep = getEPForStatBlock(gear_stats);
@@ -4889,7 +4894,7 @@
       slot = buf[1];
       data = Shadowcraft.Data;
       gear = data.gear[slot];
-      item = getItem(gear.id, gear.context);
+      item = getItem(gear.id, gear.context, gear.item_level);
       max = getMaxUpgradeLevel(item);
       if (gear.upgrade_level === max) {
         gear.item_level -= getUpgradeLevelSteps(item) * max;
@@ -4912,7 +4917,7 @@
       gear = data.gear[slot];
       gear.locked || (gear.locked = false);
       data.gear[slot].locked = !gear.locked;
-      item = getItem(gear.id, gear.context);
+      item = getItem(gear.id, gear.context, gear.item_level);
       if (item) {
         if (data.gear[slot].locked) {
           Shadowcraft.Console.log("Locking " + item.name + " for Optimize Gems");
@@ -5030,7 +5035,7 @@
               }
             } else {
               enchant_id = !isNaN(val) ? val : null;
-              item = getItem(slotGear.id, slotGear.context);
+              item = getItem(slotGear.id, slotGear.context, slotGear.item_level);
               if (enchant_id != null) {
                 Shadowcraft.Console.log("Changing " + item.name + " enchant to " + Shadowcraft.ServerData.ENCHANT_LOOKUP[enchant_id].name);
               } else {
@@ -5041,7 +5046,7 @@
             item_id = parseInt($this.attr("id"), 10);
             item_id = !isNaN(item_id) ? item_id : null;
             gem_id = $.data(document.body, "gem-slot");
-            item = getItem(slotGear.id, slotGear.context);
+            item = getItem(slotGear.id, slotGear.context, slotGear.item_level);
             if (item_id != null) {
               Shadowcraft.Console.log("Regemming " + item.name + " socket " + (gem_id + 1) + " to " + Shadowcraft.ServerData.GEM_LOOKUP[item_id].name);
             } else {

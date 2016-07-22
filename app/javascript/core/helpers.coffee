@@ -86,7 +86,7 @@ checkForWarnings = (section) ->
     Shadowcraft.Console.remove(".items")
     for slotIndex, gear of data.gear
       continue if !gear or _.isEmpty(gear)
-      item = Shadowcraft.Gear.getItem(gear.id, gear.context)
+      item = Shadowcraft.Gear.getItem(gear.id, gear.context, gear.item_level)
       continue unless item
       if item.name.indexOf("Rune of Re-Origination") != -1
         Shadowcraft.Console.warn(item, "is not fully supported but also bad for rogues.", "It is recommended to not use this trinket.", "warn", "items")
