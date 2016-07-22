@@ -3917,6 +3917,10 @@
         if (!bonus) {
           continue;
         }
+        if (!Shadowcraft.ServerData.ITEM_BONUSES[bonus]) {
+          console.warn("Bonus ID " + bonus + " is not valid");
+          continue;
+        }
         ref = Shadowcraft.ServerData.ITEM_BONUSES[bonus];
         for (n = 0, len1 = ref.length; n < len1; n++) {
           bonus_entry = ref[n];
@@ -4032,6 +4036,7 @@
           if (item) {
             opt.identifier = item.id + ":" + item.ilvl + ":" + (item.suffix || 0);
           }
+          opt.ilvl = gear.item_level;
           if (item) {
             opt.ttid = item.id;
           }

@@ -571,6 +571,9 @@ class ShadowcraftGear
     tag_bonuses = []
     for bonus in bonuses
       continue if not bonus
+      if not Shadowcraft.ServerData.ITEM_BONUSES[bonus]
+        console.warn "Bonus ID " + bonus + " is not valid"
+        continue
       for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonus]
         if bonus_entry.type == 4
           tag_bonus =
