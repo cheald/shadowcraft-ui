@@ -9,10 +9,6 @@
         "item_level": {
           "type": "integer"
         },
-        "name": {
-          "type": "string",
-          "maxLength": 50
-        },
         "enchant": {
           "type": "integer"
         },
@@ -42,7 +38,7 @@
           "maxLength": 50
         }
       },
-      "required": ["id", "item_level", "name", "enchant", "gems", "slot", "bonuses", "context"]
+      "required": ["id", "item_level", "enchant", "gems", "slot", "bonuses", "context"]
     },
     "gear": {
       "type": "object",
@@ -143,10 +139,6 @@
           "type": "string",
           "maxLength": 2
         },
-        "utility_poison": {
-          "type": "string",
-          "maxLength": 2
-        },
         "num_boss_adds": {
           "type": "integer",
           "minimum": 0
@@ -162,10 +154,11 @@
         "min_ilvl": {
           "type": "integer"
         },
+        "dynamic_ilvl": {
+          "type": "boolean"
+        },
         "show_random_items": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1
+          "type": "integer"
         },
         "show_upgrades": {
           "type": "integer",
@@ -178,13 +171,15 @@
           "maximum": 1
         },
         "prepot": {
-          "type": "boolean"
+          "type": "string",
+          "max_length": 25
         },
         "potion": {
-          "type": "boolean"
+          "type": "string",
+          "max_length": 25
         }
       },
-      "required": ["level", "race", "patch", "night_elf_racial", "duration", "response_time", "time_in_execute_range", "lethal_poison", "utility_poison", "num_boss_adds", "demon_enemy", "max_ilvl", "min_ilvl", "show_random_items", "show_upgrades", "epic_gems", "prepot", "potion"]
+      "required": ["level", "race", "patch", "night_elf_racial", "duration", "response_time", "time_in_execute_range", "lethal_poison", "num_boss_adds", "demon_enemy", "max_ilvl", "min_ilvl", "dynamic_ilvl", "show_random_items", "show_upgrades", "epic_gems", "prepot", "potion"]
     },
     "options_buffs": {
       "type": "object",
@@ -193,35 +188,14 @@
           "type": "string",
           "maxLength": 30
         },
-        "flask_wod_agi": {
+        "flask_legion_agi": {
           "type": "boolean"
         },
         "short_term_haste_buff": {
           "type": "boolean"
-        },
-        "stat_multiplier_buff": {
-          "type": "boolean"
-        },
-        "crit_chance_buff": {
-          "type": "boolean"
-        },
-        "haste_buff": {
-          "type": "boolean"
-        },
-        "multistrike_buff": {
-          "type": "boolean"
-        },
-        "attack_power_buff": {
-          "type": "boolean"
-        },
-        "mastery_buff": {
-          "type": "boolean"
-        },
-        "versatility_buff": {
-          "type": "boolean"
         }
       },
-      "required": ["food_buff", "flask_wod_agi", "short_term_haste_buff", "stat_multiplier_buff", "crit_chance_buff", "haste_buff", "multistrike_buff", "attack_power_buff", "mastery_buff", "versatility_buff"]
+      "required": ["food_buff", "flask_legion_agi", "short_term_haste_buff"]
     },
     "options_rotation": {
       "type": "object",
@@ -298,17 +272,19 @@
     },
     "all_options": {
       "type": "object",
-      "general": {
-        "$ref": "#/definitions/options_general"
-      },
-      "buffs": {
-        "$ref": "#/definitions/options_buffs"
-      },
-      "rotation": {
-        "$ref": "#/definitions/options_rotation"
-      },
-      "advanced": {
-        "$ref": "#/definitions/options_advanced"
+      "properties": {
+        "general": {
+          "$ref": "#/definitions/options_general"
+        },
+        "buffs": {
+          "$ref": "#/definitions/options_buffs"
+        },
+        "rotation": {
+          "$ref": "#/definitions/options_rotation"
+        },
+        "advanced": {
+          "$ref": "#/definitions/options_advanced"
+        }
       },
       "required": ["general", "buffs", "rotation", "advanced"]
     },
@@ -357,8 +333,8 @@
       "items": {
         "$ref": "#/definitions/talents"
       },
-      "minItems": 2,
-      "maxItems": 2
+      "minItems": 3,
+      "maxItems": 3
     },
     "active": {
       "type": "integer",
