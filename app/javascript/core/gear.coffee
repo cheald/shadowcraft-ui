@@ -949,6 +949,7 @@ class ShadowcraftGear
   # Called when a user clicks on the name in a slot. This opens a popup with
   # a list of items.
   clickSlotName = ->
+    console.profile()
     buf = clickSlot(this, "item_id")
     $slot = buf[0]
     slot = buf[1]
@@ -1019,8 +1020,12 @@ class ShadowcraftGear
 
       # Filter out items that are outside the min and max ilvls set on the options
       # panel
-      continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
-      continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
+      if (Shadowcraft.Data.options.general.dynamic_ilvl and equipped)
+        continue if l.ilvl < equipped.item_level-50 or l.ilvl > equipped.item_level+50
+      else
+        continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
+        continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
+        
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && subtletyNeedsDagger && l.subclass != 15
 
@@ -1123,6 +1128,7 @@ class ShadowcraftGear
 
     $popupbody.get(0).innerHTML = buffer
     $popupbody.find(".slot[data-identifier='#{selected_identifier}']").addClass("active")
+    console.profileEnd()
     showPopup($popup)
     false
 

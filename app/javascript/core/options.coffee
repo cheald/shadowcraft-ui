@@ -124,8 +124,9 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #generalFilter", "general", {
+      dynamic_ilvl: {name: "Dynamic ILevel filtering", type: "check", desc: "Dynamically filters items in gear lists to +/- 50 Ilevels of the item equipped in that slot. Disable this option to use the manual filtering options below.", default: true, datatype: 'bool'}
       max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this item level in gear lists", 'default': 1000, datatype: 'integer', min: 540, max: 1000}
-      min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this item level in gear lists", 'default': 540, datatype: 'integer', min: 540, max: 1000},
+      min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this item level in gear lists", 'default': 540, datatype: 'integer', min: 540, max: 1000}
       show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this item level in gear lists", datatype: 'integer', type: 'input', min: 540, max: 1000, 'default': 540}
       show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
       epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}

@@ -2015,6 +2015,13 @@
         }
       });
       this.setup("#settings #generalFilter", "general", {
+        dynamic_ilvl: {
+          name: "Dynamic ILevel filtering",
+          type: "check",
+          desc: "Dynamically filters items in gear lists to +/- 50 Ilevels of the item equipped in that slot. Disable this option to use the manual filtering options below.",
+          "default": true,
+          datatype: 'bool'
+        },
         max_ilvl: {
           name: "Max ILevel",
           type: "input",
@@ -4390,6 +4397,7 @@
 
     clickSlotName = function() {
       var $slot, GemList, bonus, bonus_trees, bonuses, buf, buffer, clone, curr_level, entry, equip_location, equipped, gear, gear_offset, gem_offset, hasUpgrade, iEP, l, len, len1, len2, len3, len4, len5, lid, loc, loc_all, m, maxIEP, max_level, minIEP, n, o, q, ref, ref1, ref2, ref3, ref4, ref5, requireDagger, selected_identifier, set, setBonEP, setCount, set_name, slot, subtletyNeedsDagger, ttbonus, ttid, ttrand, ttupgd, u, upgrade, w;
+      console.profile();
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
@@ -4464,11 +4472,17 @@
             continue;
           }
         }
-        if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
-          continue;
-        }
-        if (l.ilvl < Shadowcraft.Data.options.general.min_ilvl) {
-          continue;
+        if (Shadowcraft.Data.options.general.dynamic_ilvl && equipped) {
+          if (l.ilvl < equipped.item_level - 50 || l.ilvl > equipped.item_level + 50) {
+            continue;
+          }
+        } else {
+          if (l.ilvl > Shadowcraft.Data.options.general.max_ilvl) {
+            continue;
+          }
+          if (l.ilvl < Shadowcraft.Data.options.general.min_ilvl) {
+            continue;
+          }
         }
         if ((slot === 15 || slot === 16) && requireDagger && l.subclass !== 15) {
           continue;
@@ -4595,6 +4609,7 @@
       });
       $popupbody.get(0).innerHTML = buffer;
       $popupbody.find(".slot[data-identifier='" + selected_identifier + "']").addClass("active");
+      console.profileEnd();
       showPopup($popup);
       return false;
     };
