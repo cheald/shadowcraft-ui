@@ -1554,9 +1554,9 @@ h1#head span {
 
 /* line 408, ../../app/assets/stylesheets/partials/_app.sass */
 #card .img {
-  width: 130px;
+  width: 84px;
   border: 1px solid #555555;
-  height: 70px;
+  height: 84px;
   overflow: hidden;
   float: left;
   position: relative;
@@ -1565,36 +1565,34 @@ h1#head span {
 /* line 415, ../../app/assets/stylesheets/partials/_app.sass */
 #card .img img {
   position: absolute;
-  left: 3px;
-  bottom: -12px;
 }
 
-/* line 419, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 417, ../../app/assets/stylesheets/partials/_app.sass */
 #card.goblin .img img {
   left: -190px;
   bottom: -45px;
 }
 
-/* line 422, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 420, ../../app/assets/stylesheets/partials/_app.sass */
 #card.undead .img img {
   left: -190px;
   bottom: -45px;
 }
 
-/* line 425, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 423, ../../app/assets/stylesheets/partials/_app.sass */
 #card.worgen .img img {
   left: -140px;
   bottom: -45px;
 }
 
-/* line 428, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 426, ../../app/assets/stylesheets/partials/_app.sass */
 #card.orc .img img {
   bottom: -43px;
 }
 
-/* line 430, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 428, ../../app/assets/stylesheets/partials/_app.sass */
 #card .info {
-  margin-left: 150px;
+  margin-left: 94px;
   text-align: left;
   font-size: 2.8em;
   display: block;
@@ -1602,18 +1600,18 @@ h1#head span {
   white-space: nowrap;
 }
 
-/* line 437, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 435, ../../app/assets/stylesheets/partials/_app.sass */
 #card .info span {
   display: block;
 }
 
-/* line 439, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 437, ../../app/assets/stylesheets/partials/_app.sass */
 #card .info .realm {
   margin-top: 10px;
   font-size: 0.4em;
 }
 
-/* line 443, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 441, ../../app/assets/stylesheets/partials/_app.sass */
 h1 {
   margin: 0.5em 0;
   font-size: 2.5em;
@@ -1621,24 +1619,24 @@ h1 {
   color: #777777;
 }
 
-/* line 448, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 446, ../../app/assets/stylesheets/partials/_app.sass */
 h1 .info {
   font-size: 0.35em;
   font-weight: normal;
   color: #333333;
 }
 
-/* line 452, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 450, ../../app/assets/stylesheets/partials/_app.sass */
 a {
   color: #3aaaf9;
 }
 
-/* line 455, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 453, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-tabs-panel {
   overflow: hidden;
 }
 
-/* line 458, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 456, ../../app/assets/stylesheets/partials/_app.sass */
 input[type='text'] {
   background-color: rgba(80, 80, 80, 0.2);
   border: 0px;
@@ -1652,31 +1650,31 @@ input[type='text'] {
   transition: all 0.25s;
 }
 
-/* line 465, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 463, ../../app/assets/stylesheets/partials/_app.sass */
 input[type='text']:focus {
   outline: none;
   background-color: rgba(192, 192, 212, 0.5);
   color: #111111;
 }
 
-/* line 470, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 468, ../../app/assets/stylesheets/partials/_app.sass */
 .window {
   border: 1px solid #333333;
   border-width: 0 0 1px;
   font-size: 0.9em;
 }
 
-/* line 471, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 469, ../../app/assets/stylesheets/partials/_app.sass */
 .window .inner {
   padding: 1em;
 }
 
-/* line 476, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 474, ../../app/assets/stylesheets/partials/_app.sass */
 .window:first-child {
   border-width: 1px 0;
 }
 
-/* line 478, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 476, ../../app/assets/stylesheets/partials/_app.sass */
 .window h3 {
   cursor: pointer;
   background: rgba(0, 0, 0, 0.2);
@@ -1686,7 +1684,7 @@ input[type='text']:focus {
   margin: 0 0 0.5em;
 }
 
-/* line 486, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 484, ../../app/assets/stylesheets/partials/_app.sass */
 .floater {
   display: inline-block;
   vertical-align: middle;
@@ -1699,12 +1697,12 @@ input[type='text']:focus {
   font-size: 0.8em;
 }
 
-/* line 487, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 485, ../../app/assets/stylesheets/partials/_app.sass */
 .floater .inner {
   padding: 1em;
 }
 
-/* line 497, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 495, ../../app/assets/stylesheets/partials/_app.sass */
 .floater h3 {
   cursor: pointer;
   background: rgba(0, 0, 0, 0.2);
@@ -1715,7 +1713,7 @@ input[type='text']:focus {
   margin: 0 0 0.5em;
 }
 
-/* line 506, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 504, ../../app/assets/stylesheets/partials/_app.sass */
 .flash {
   position: fixed;
   top: 20px;
@@ -1730,7 +1728,7 @@ input[type='text']:focus {
   padding: 10px 20px;
 }
 
-/* line 519, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 517, ../../app/assets/stylesheets/partials/_app.sass */
 #header {
   padding: 10px 0px 10px 25px;
   text-shadow: black -1px -1px 1px;
@@ -1742,7 +1740,7 @@ input[type='text']:focus {
   display: none;
 }
 
-/* line 529, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 527, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-selectmenu-menu {
   background: #050505;
   border-color: #222222;
@@ -1750,17 +1748,17 @@ input[type='text']:focus {
   font-size: 0.8em;
 }
 
-/* line 535, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 533, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-selectmenu-status {
   white-space: nowrap;
 }
 
-/* line 537, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 535, ../../app/assets/stylesheets/partials/_app.sass */
 a {
   text-decoration: none;
 }
 
-/* line 540, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 538, ../../app/assets/stylesheets/partials/_app.sass */
 a.wowhead {
   opacity: 0.2;
   background: url(/images/wowhead.png) center center no-repeat;
@@ -1776,18 +1774,18 @@ a.wowhead {
   transition: opacity 0.1s;
 }
 
-/* line 549, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 547, ../../app/assets/stylesheets/partials/_app.sass */
 a.wowhead:hover {
   opacity: 1;
 }
 
-/* line 552, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 550, ../../app/assets/stylesheets/partials/_app.sass */
 em.upgrade {
   color: #ffd100 !important;
   font-size: 0.9em;
 }
 
-/* line 556, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 554, ../../app/assets/stylesheets/partials/_app.sass */
 img.upgrade {
   width: 16px;
   height: 16px;
@@ -1796,7 +1794,7 @@ img.upgrade {
   margin: 0px;
 }
 
-/* line 564, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 562, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .label_check, #tabs .label_radio, #create_character .label_check, #create_character .label_radio {
   display: inline-block;
   vertical-align: middle;
@@ -1808,45 +1806,45 @@ img.upgrade {
   -moz-user-select: none;
 }
 
-/* line 573, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 571, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .label_radio, #create_character .label_radio {
   background-position: left -311px;
 }
 
-/* line 575, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 573, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .label_radio:hover, #create_character .label_radio:hover {
   background-position: left -522px;
 }
 
-/* line 578, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 576, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .c_on, #create_character .c_on {
   background-position: left -99px !important;
 }
 
-/* line 580, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 578, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .r_on, #create_character .r_on {
   background-position: left -418px !important;
 }
 
-/* line 583, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 581, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .c_on, #tabs .r_on, #create_character .c_on, #create_character .r_on {
   color: white !important;
 }
 
-/* line 586, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 584, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .label_check input, #tabs .label_radio input, #create_character .label_check input, #create_character .label_radio input {
   position: absolute;
   left: -9999px;
 }
 
-/* line 591, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 589, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings h3, #tabs #advanced .panel-content h3, #tabs #bonuses h3, #tabs #docs h3, #create_character #settings h3, #create_character #advanced .panel-content h3, #create_character #bonuses h3, #create_character #docs h3 {
   font-size: 1.3em;
   font-weight: bold;
   margin: 0 0.5em 1em;
 }
 
-/* line 595, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 593, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings .option-list, #tabs #advanced .panel-content .option-list, #tabs #bonuses .option-list, #tabs #docs .option-list, #create_character #settings .option-list, #create_character #advanced .panel-content .option-list, #create_character #bonuses .option-list, #create_character #docs .option-list {
   float: left;
   display: inline-block;
@@ -1855,7 +1853,7 @@ img.upgrade {
   margin-bottom: 2em;
 }
 
-/* line 600, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 598, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings section.cluster, #tabs #advanced .panel-content section.cluster, #tabs #bonuses section.cluster, #tabs #docs section.cluster, #create_character #settings section.cluster, #create_character #advanced .panel-content section.cluster, #create_character #bonuses section.cluster, #create_character #docs section.cluster {
   overflow: hidden;
   background: #0c0c0c;
@@ -1865,7 +1863,7 @@ img.upgrade {
   border-radius: 5px;
 }
 
-/* line 608, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 606, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings select, #tabs #advanced .panel-content select, #tabs #bonuses select, #tabs #docs select, #create_character #settings select, #create_character #advanced .panel-content select, #create_character #bonuses select, #create_character #docs select {
   background: #222222;
   color: white;
@@ -1873,12 +1871,12 @@ img.upgrade {
   padding: 5px;
 }
 
-/* line 613, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 611, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings select option, #tabs #advanced .panel-content select option, #tabs #bonuses select option, #tabs #docs select option, #create_character #settings select option, #create_character #advanced .panel-content select option, #create_character #bonuses select option, #create_character #docs select option {
   padding: 2px 0;
 }
 
-/* line 616, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 614, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings .label_check, #tabs #settings .input, #tabs #settings .select, #tabs #advanced .panel-content .label_check, #tabs #advanced .panel-content .input, #tabs #advanced .panel-content .select, #tabs #bonuses .label_check, #tabs #bonuses .input, #tabs #bonuses .select, #tabs #docs .label_check, #tabs #docs .input, #tabs #docs .select, #create_character #settings .label_check, #create_character #settings .input, #create_character #settings .select, #create_character #advanced .panel-content .label_check, #create_character #advanced .panel-content .input, #create_character #advanced .panel-content .select, #create_character #bonuses .label_check, #create_character #bonuses .input, #create_character #bonuses .select, #create_character #docs .label_check, #create_character #docs .input, #create_character #docs .select {
   display: block;
   width: 500px;
@@ -1889,24 +1887,24 @@ img.upgrade {
   border-radius: 5px;
 }
 
-/* line 624, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 622, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings .label_check:hover, #tabs #settings .input:hover, #tabs #settings .select:hover, #tabs #advanced .panel-content .label_check:hover, #tabs #advanced .panel-content .input:hover, #tabs #advanced .panel-content .select:hover, #tabs #bonuses .label_check:hover, #tabs #bonuses .input:hover, #tabs #bonuses .select:hover, #tabs #docs .label_check:hover, #tabs #docs .input:hover, #tabs #docs .select:hover, #create_character #settings .label_check:hover, #create_character #settings .input:hover, #create_character #settings .select:hover, #create_character #advanced .panel-content .label_check:hover, #create_character #advanced .panel-content .input:hover, #create_character #advanced .panel-content .select:hover, #create_character #bonuses .label_check:hover, #create_character #bonuses .input:hover, #create_character #bonuses .select:hover, #create_character #docs .label_check:hover, #create_character #docs .input:hover, #create_character #docs .select:hover {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* line 627, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 625, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings .input, #tabs #settings .select, #tabs #advanced .panel-content .input, #tabs #advanced .panel-content .select, #tabs #bonuses .input, #tabs #bonuses .select, #tabs #docs .input, #tabs #docs .select, #create_character #settings .input, #create_character #settings .select, #create_character #advanced .panel-content .input, #create_character #advanced .panel-content .select, #create_character #bonuses .input, #create_character #bonuses .select, #create_character #docs .input, #create_character #docs .select {
   padding-left: 10px;
   width: 520px;
 }
 
-/* line 630, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 628, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings .input .select-container, #tabs #settings .select .select-container, #tabs #advanced .panel-content .input .select-container, #tabs #advanced .panel-content .select .select-container, #tabs #bonuses .input .select-container, #tabs #bonuses .select .select-container, #tabs #docs .input .select-container, #tabs #docs .select .select-container, #create_character #settings .input .select-container, #create_character #settings .select .select-container, #create_character #advanced .panel-content .input .select-container, #create_character #advanced .panel-content .select .select-container, #create_character #bonuses .input .select-container, #create_character #bonuses .select .select-container, #create_character #docs .input .select-container, #create_character #docs .select .select-container {
   display: inline-block;
   vertical-align: middle;
 }
 
-/* line 632, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 630, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings .input span.label, #tabs #settings .select span.label, #tabs #advanced .panel-content .input span.label, #tabs #advanced .panel-content .select span.label, #tabs #bonuses .input span.label, #tabs #bonuses .select span.label, #tabs #docs .input span.label, #tabs #docs .select span.label, #create_character #settings .input span.label, #create_character #settings .select span.label, #create_character #advanced .panel-content .input span.label, #create_character #advanced .panel-content .select span.label, #create_character #bonuses .input span.label, #create_character #bonuses .select span.label, #create_character #docs .input span.label, #create_character #docs .select span.label {
   display: inline-block;
   vertical-align: middle;
@@ -1915,7 +1913,7 @@ img.upgrade {
   margin-right: 10px;
 }
 
-/* line 639, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 637, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings .select span.desc, #tabs #settings .input span.desc, #tabs #advanced .panel-content .select span.desc, #tabs #advanced .panel-content .input span.desc, #tabs #bonuses .select span.desc, #tabs #bonuses .input span.desc, #tabs #docs .select span.desc, #tabs #docs .input span.desc, #create_character #settings .select span.desc, #create_character #settings .input span.desc, #create_character #advanced .panel-content .select span.desc, #create_character #advanced .panel-content .input span.desc, #create_character #bonuses .select span.desc, #create_character #bonuses .input span.desc, #create_character #docs .select span.desc, #create_character #docs .input span.desc {
   display: block;
   clear: left;
@@ -1926,12 +1924,12 @@ img.upgrade {
   margin-left: 170px;
 }
 
-/* line 647, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 645, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings .label_check, #tabs #advanced .panel-content .label_check, #tabs #bonuses .label_check, #tabs #docs .label_check, #create_character #settings .label_check, #create_character #advanced .panel-content .label_check, #create_character #bonuses .label_check, #create_character #docs .label_check {
   background-position: 3px 2px;
 }
 
-/* line 649, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 647, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings .label_check span, #tabs #advanced .panel-content .label_check span, #tabs #bonuses .label_check span, #tabs #docs .label_check span, #create_character #settings .label_check span, #create_character #advanced .panel-content .label_check span, #create_character #bonuses .label_check span, #create_character #docs .label_check span {
   font-weight: normal;
   display: block;
@@ -1940,12 +1938,12 @@ img.upgrade {
   margin-top: -0.5em;
 }
 
-/* line 657, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 655, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #bonuses .label_check, #tabs #bonuses .input, #tabs #bonuses .select, #create_character #bonuses .label_check, #create_character #bonuses .input, #create_character #bonuses .select {
   width: inherit;
 }
 
-/* line 660, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 658, ../../app/assets/stylesheets/partials/_app.sass */
 #errorExplanation {
   background: rgba(0, 0, 0, 0.3);
   text-align: left;
@@ -1953,17 +1951,17 @@ img.upgrade {
   margin: 1em 0;
 }
 
-/* line 665, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 663, ../../app/assets/stylesheets/partials/_app.sass */
 #errorExplanation h2 {
   font-size: 1.5em;
 }
 
-/* line 667, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 665, ../../app/assets/stylesheets/partials/_app.sass */
 #errorExplanation ul {
   padding: 1em;
 }
 
-/* line 670, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 668, ../../app/assets/stylesheets/partials/_app.sass */
 .pct {
   display: inline-block;
   vertical-align: middle;
@@ -1974,7 +1972,7 @@ img.upgrade {
   height: 13px;
 }
 
-/* line 677, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 675, ../../app/assets/stylesheets/partials/_app.sass */
 .pct .label {
   z-index: 11;
   font-size: 0.7em;
@@ -1990,7 +1988,7 @@ img.upgrade {
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* line 690, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 688, ../../app/assets/stylesheets/partials/_app.sass */
 .pct .pct-inner {
   position: absolute;
   top: 1px;
@@ -2001,7 +1999,7 @@ img.upgrade {
   background: #666666;
 }
 
-/* line 699, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 697, ../../app/assets/stylesheets/partials/_app.sass */
 .popup {
   min-width: 500px;
   position: absolute;
@@ -2012,17 +2010,17 @@ img.upgrade {
   z-index: 1000;
 }
 
-/* line 707, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 705, ../../app/assets/stylesheets/partials/_app.sass */
 .popup .close-popup {
   top: 15px;
 }
 
-/* line 709, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 707, ../../app/assets/stylesheets/partials/_app.sass */
 .popup.visible {
   visibility: visible;
 }
 
-/* line 711, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 709, ../../app/assets/stylesheets/partials/_app.sass */
 .popup h1 {
   margin: -1em -1em 1em;
   font-size: 1em;
@@ -2032,7 +2030,7 @@ img.upgrade {
   border-bottom: 1px solid #333333;
 }
 
-/* line 718, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 716, ../../app/assets/stylesheets/partials/_app.sass */
 .popup .body {
   overflow-y: auto;
   overflow-x: hidden;
@@ -2041,7 +2039,7 @@ img.upgrade {
   min-width: 250px;
 }
 
-/* line 725, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 723, ../../app/assets/stylesheets/partials/_app.sass */
 .popup #filter {
   height: 40px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
@@ -2051,7 +2049,7 @@ img.upgrade {
   right: 0;
 }
 
-/* line 732, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 730, ../../app/assets/stylesheets/partials/_app.sass */
 .popup #filter input {
   outline: none;
   position: absolute;
@@ -2063,37 +2061,37 @@ img.upgrade {
   color: #aaaaaa;
 }
 
-/* line 742, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 740, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-button-text {
   text-shadow: #111111 -1px -1px 0px;
 }
 
-/* line 745, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 743, ../../app/assets/stylesheets/partials/_app.sass */
 #bonuses {
   padding: 1em;
 }
 
-/* line 747, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 745, ../../app/assets/stylesheets/partials/_app.sass */
 #bonuses fieldset {
   margin: 2em 0;
   border-top: 1px solid #05405d;
 }
 
-/* line 750, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 748, ../../app/assets/stylesheets/partials/_app.sass */
 #bonuses fieldset legend {
   font-weight: bold;
   margin-left: 1em;
   margin-bottom: 0.5em;
 }
 
-/* line 756, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 754, ../../app/assets/stylesheets/partials/_app.sass */
 #tools button {
   display: block;
   margin: 5px auto;
   min-width: 135px;
 }
 
-/* line 761, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 759, ../../app/assets/stylesheets/partials/_app.sass */
 #logs {
   position: absolute;
   top: 260px;
@@ -2104,44 +2102,44 @@ img.upgrade {
   overflow-y: automatic;
 }
 
-/* line 771, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 769, ../../app/assets/stylesheets/partials/_app.sass */
 .awin-large #logs {
   bottom: 295px;
 }
 
-/* line 775, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 773, ../../app/assets/stylesheets/partials/_app.sass */
 .awin-medium #logs {
   bottom: 265px;
 }
 
-/* line 779, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 777, ../../app/assets/stylesheets/partials/_app.sass */
 .awin-small #logs {
   bottom: 75px;
 }
 
-/* line 784, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 782, ../../app/assets/stylesheets/partials/_app.sass */
 #console .inner, #log .inner {
   max-height: 50%;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-/* line 790, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 788, ../../app/assets/stylesheets/partials/_app.sass */
 #log .gold {
   color: #ffdc89;
 }
 
-/* line 792, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 790, ../../app/assets/stylesheets/partials/_app.sass */
 #log .underline {
   border-bottom: 1px dotted #333333;
 }
 
-/* line 795, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 793, ../../app/assets/stylesheets/partials/_app.sass */
 #console {
   color: #ccc;
 }
 
-/* line 797, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 795, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log {
   font-size: 1.2em;
   padding: 8px 0 8px 24px;
@@ -2151,34 +2149,34 @@ img.upgrade {
   background: url(/images/log.png) 5px 10px no-repeat;
 }
 
-/* line 799, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 797, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log .sub {
   margin: 2px;
   font-size: 0.9em;
   color: #666666;
 }
 
-/* line 807, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 805, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log:first-child {
   border-top: 0;
 }
 
-/* line 809, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 807, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log:last-child {
   border-bottom: 0;
 }
 
-/* line 812, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 810, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log.warning {
   background-image: url(/images/alert.png);
 }
 
-/* line 814, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 812, ../../app/assets/stylesheets/partials/_app.sass */
 #console .log.error {
   background-image: url(/images/delete.png);
 }
 
-/* line 817, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 815, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip {
   max-width: 300px;
   background: rgba(0, 0, 0, 0.85);
@@ -2193,7 +2191,7 @@ img.upgrade {
   font-size: 0.9em;
 }
 
-/* line 829, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 827, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip .title {
   font-size: 1.1em;
   font-weight: bold;
@@ -2201,46 +2199,46 @@ img.upgrade {
   margin-bottom: 0.3em;
 }
 
-/* line 834, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 832, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip .desc {
   color: #ffd200;
 }
 
-/* line 835, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 833, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip .desc p {
   margin: 1em 0;
 }
 
-/* line 838, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 836, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip.small {
   padding: 2px;
   font-size: 0.8em;
 }
 
-/* line 841, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 839, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip.small .title {
   margin: 0;
 }
 
-/* line 843, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 841, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip.clean {
   border: 0;
   box-shadow: 0px 0px 3px 3px black;
   background: rgba(0, 0, 0, 0.75);
 }
 
-/* line 847, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 845, ../../app/assets/stylesheets/partials/_app.sass */
 #tooltip.clean .title {
   color: #eeddcc;
 }
 
-/* line 851, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 849, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .panel-content {
   padding-top: 18px;
   padding-left: 198px;
 }
 
-/* line 855, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 853, ../../app/assets/stylesheets/partials/_app.sass */
 #talents #specactive {
   font-size: 2em;
   text-align: left;
@@ -2254,12 +2252,12 @@ img.upgrade {
   height: 34px;
 }
 
-/* line 866, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 864, ../../app/assets/stylesheets/partials/_app.sass */
 #talents #specactive .spec-name {
   padding-left: 44px;
 }
 
-/* line 868, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 866, ../../app/assets/stylesheets/partials/_app.sass */
 #talents #specactive .spec-icon {
   position: absolute;
   width: 36px;
@@ -2271,7 +2269,7 @@ img.upgrade {
   box-shadow: 0 0 4px 0 black;
 }
 
-/* line 878, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 876, ../../app/assets/stylesheets/partials/_app.sass */
 #talents #talentframe {
   padding: 3px;
   border: 1px solid #333333;
@@ -2280,7 +2278,7 @@ img.upgrade {
   vertical-align: middle;
 }
 
-/* line 883, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 881, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers {
   display: inline-block;
   vertical-align: middle;
@@ -2289,49 +2287,49 @@ img.upgrade {
   height: 509px;
 }
 
-/* line 889, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 887, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-0 {
   top: 10px;
   left: 10px;
 }
 
-/* line 889, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 887, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-1 {
   top: 80px;
   left: 10px;
 }
 
-/* line 889, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 887, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-2 {
   top: 150px;
   left: 10px;
 }
 
-/* line 889, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 887, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-3 {
   top: 220px;
   left: 10px;
 }
 
-/* line 889, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 887, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-4 {
   top: 290px;
   left: 10px;
 }
 
-/* line 889, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 887, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-5 {
   top: 360px;
   left: 10px;
 }
 
-/* line 889, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 887, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .row-level-6 {
   top: 430px;
   left: 10px;
 }
 
-/* line 892, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 890, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tiers .level {
   border: 1px solid #333333;
   background-color: rgba(0, 0, 0, 0.4);
@@ -2351,7 +2349,7 @@ img.upgrade {
   text-align: center;
 }
 
-/* line 909, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 907, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree {
   display: inline-block;
   vertical-align: middle;
@@ -2361,57 +2359,57 @@ img.upgrade {
   background-repeat: no-repeat;
 }
 
-/* line 917, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 915, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-0 {
   top: 10px;
 }
 
-/* line 917, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 915, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-1 {
   top: 80px;
 }
 
-/* line 917, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 915, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-2 {
   top: 150px;
 }
 
-/* line 917, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 915, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-3 {
   top: 220px;
 }
 
-/* line 917, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 915, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-4 {
   top: 290px;
 }
 
-/* line 917, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 915, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-5 {
   top: 360px;
 }
 
-/* line 917, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 915, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .row-6 {
   top: 430px;
 }
 
-/* line 920, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 918, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .col-0 {
   left: 10px;
 }
 
-/* line 920, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 918, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .col-1 {
   left: 110px;
 }
 
-/* line 920, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 918, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .col-2 {
   left: 210px;
 }
 
-/* line 923, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 921, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .talent {
   cursor: pointer;
   border: 1px solid #333333;
@@ -2425,7 +2423,7 @@ img.upgrade {
   position: absolute;
 }
 
-/* line 930, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 928, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .talent .grey {
   position: absolute;
   top: 0;
@@ -2436,34 +2434,34 @@ img.upgrade {
   border-radius: 3px;
 }
 
-/* line 938, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 936, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .talent.active .grey {
   display: none;
 }
 
-/* line 940, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 938, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .talent.active {
   opacity: 1;
   border-color: #ffdd00;
 }
 
-/* line 943, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 941, ../../app/assets/stylesheets/partials/_app.sass */
 #talents .tree .talent:hover {
   border-color: lime;
 }
 
-/* line 951, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 949, ../../app/assets/stylesheets/partials/_app.sass */
 #talentrankings .pct, #upgraderankings .pct, #dpsbreakdown .pct, #traitrankings .pct {
   width: 120px;
   height: 7px;
 }
 
-/* line 954, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 952, ../../app/assets/stylesheets/partials/_app.sass */
 #talentrankings .pct .label, #upgraderankings .pct .label, #dpsbreakdown .pct .label, #traitrankings .pct .label {
   margin-top: -3px;
 }
 
-/* line 956, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 954, ../../app/assets/stylesheets/partials/_app.sass */
 #talentrankings .pct-inner, #upgraderankings .pct-inner, #dpsbreakdown .pct-inner, #traitrankings .pct-inner {
   -webkit-transition: width 1s;
   -moz-transition: width 1s;
@@ -2472,24 +2470,24 @@ img.upgrade {
   transition: width 1s;
 }
 
-/* line 958, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 956, ../../app/assets/stylesheets/partials/_app.sass */
 #talentrankings .talent_contribution, #upgraderankings .talent_contribution, #dpsbreakdown .talent_contribution, #traitrankings .talent_contribution {
   margin-bottom: 14px;
   font-weight: bold;
 }
 
-/* line 961, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 959, ../../app/assets/stylesheets/partials/_app.sass */
 #talentrankings .talent_contribution .name, #upgraderankings .talent_contribution .name, #dpsbreakdown .talent_contribution .name, #traitrankings .talent_contribution .name {
   font-size: 0.8em;
 }
 
-/* line 965, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 963, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact .panel-content {
   padding-top: 18px;
   padding-left: 198px;
 }
 
-/* line 971, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 969, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactactive {
   font-size: 2em;
   text-align: left;
@@ -2503,12 +2501,12 @@ img.upgrade {
   height: 34px;
 }
 
-/* line 982, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 980, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactactive .spec-name {
   padding-left: 44px;
 }
 
-/* line 984, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 982, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactactive .spec-icon {
   position: absolute;
   width: 36px;
@@ -2520,7 +2518,7 @@ img.upgrade {
   box-shadow: 0 0 4px 0 black;
 }
 
-/* line 993, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 991, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactactive .power-spent {
   float: right;
   font-size: 0.75em;
@@ -2528,7 +2526,7 @@ img.upgrade {
   padding-right: 5px;
 }
 
-/* line 1000, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 998, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe {
   border: 1px solid #333333;
   background: #050505;
@@ -2539,7 +2537,7 @@ img.upgrade {
   position: relative;
 }
 
-/* line 1008, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1006, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .trait {
   position: absolute;
   height: 90px;
@@ -2547,7 +2545,7 @@ img.upgrade {
   cursor: pointer;
 }
 
-/* line 1014, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1012, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relic {
   z-index: 2;
   height: 90px;
@@ -2555,12 +2553,12 @@ img.upgrade {
   cursor: pointer;
 }
 
-/* line 1019, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1017, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relic.inactive {
   visibility: hidden;
 }
 
-/* line 1022, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1020, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .icon {
   position: absolute;
   z-index: 3;
@@ -2572,12 +2570,12 @@ img.upgrade {
   background: black;
 }
 
-/* line 1031, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1029, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .icon.inactive {
   opacity: 0.6;
 }
 
-/* line 1034, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1032, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .ring {
   position: absolute;
   z-index: 4;
@@ -2585,13 +2583,13 @@ img.upgrade {
   top: 5px;
 }
 
-/* line 1040, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1038, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .ring-thin {
   left: 17px;
   top: 17px;
 }
 
-/* line 1044, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1042, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .line {
   z-index: 0;
   position: absolute;
@@ -2601,12 +2599,12 @@ img.upgrade {
   transform-origin: 50% 50%;
 }
 
-/* line 1051, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1049, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .line.inactive {
   background-image: url(/images/artifacts/artifact-line-inactive.png);
 }
 
-/* line 1054, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1052, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .level {
   background-color: black;
   border: 1px solid #666666;
@@ -2622,12 +2620,12 @@ img.upgrade {
   z-index: 5;
 }
 
-/* line 1068, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1066, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .level.inactive {
   display: none;
 }
 
-/* line 1071, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1069, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relicframe {
   height: 80px;
   width: 80px;
@@ -2637,7 +2635,7 @@ img.upgrade {
   z-index: 10;
 }
 
-/* line 1079, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1077, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relicframe .relicicon {
   height: 30px;
   width: 30px;
@@ -2648,32 +2646,32 @@ img.upgrade {
   z-index: 11;
 }
 
-/* line 1088, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1086, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact #artifactframe .relicframe .relicicon.inactive {
   display: none;
 }
 
-/* line 1091, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1089, ../../app/assets/stylesheets/partials/_app.sass */
 #artifact_button_div {
   padding: 10px;
 }
 
-/* line 1094, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1092, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs {
   border: 0;
 }
 
-/* line 1096, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1094, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs #settings, #tabs #buffs, #tabs #target, #tabs #docs {
   padding: 2em;
 }
 
-/* line 1099, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1097, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel {
   border: 1px solid #333333;
 }
 
-/* line 1101, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1099, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel label {
   white-space: nowrap;
   vertical-align: middle;
@@ -2686,12 +2684,12 @@ img.upgrade {
   color: #777777;
 }
 
-/* line 1110, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1108, ../../app/assets/stylesheets/partials/_app.sass */
 #tabs .ui-tabs-panel label:hover {
   color: white;
 }
 
-/* line 1113, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1111, ../../app/assets/stylesheets/partials/_app.sass */
 .slots {
   width: 49%;
   min-width: 340px;
@@ -2699,19 +2697,19 @@ img.upgrade {
   float: left;
 }
 
-/* line 1119, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1117, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gem {
   position: relative;
 }
 
-/* line 1121, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1119, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gem .socket {
   position: absolute;
   top: 9px;
   left: 13px;
 }
 
-/* line 1126, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1124, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem, .slots .enchant, .slots .bonuses, .slots .name {
   background: #0e0e0e url(/images/texture.png);
   margin-bottom: 2px;
@@ -2726,12 +2724,12 @@ img.upgrade {
   transition: background 0.2s;
 }
 
-/* line 1134, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1132, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem:hover, .slots .gems .gem.active, .slots .enchant:hover, .slots .enchant.active, .slots .bonuses:hover, .slots .bonuses.active, .slots .name:hover, .slots .name.active {
   background-color: rgba(0, 128, 255, 0.15);
 }
 
-/* line 1136, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1134, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem .img, .slots .enchant .img, .slots .bonuses .img, .slots .name .img {
   background: url(/images/empty.png);
   width: 13px;
@@ -2744,26 +2742,26 @@ img.upgrade {
   display: inline-block;
 }
 
-/* line 1144, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1142, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .gems .gem .img img, .slots .enchant .img img, .slots .bonuses .img img, .slots .name .img img {
   width: 17px;
   margin-left: -2px;
   margin-top: -2px;
 }
 
-/* line 1151, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1149, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant .img {
   width: 17px;
   height: 17px;
   margin-right: 5px;
 }
 
-/* line 1155, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1153, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant .img img {
   width: 24px;
 }
 
-/* line 1158, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1156, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .bonus {
   color: lime;
   margin-bottom: 4px;
@@ -2771,31 +2769,31 @@ img.upgrade {
   padding: 4px 4px 4px 35px;
 }
 
-/* line 1164, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1162, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .bonuses img {
   vertical-align: middle;
   margin-right: 5px;
 }
 
-/* line 1167, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1165, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .bonuses .oldstat {
   color: #ee0000;
   padding-right: 1em;
 }
 
-/* line 1170, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1168, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .bonuses .newstat {
   color: #00ee00;
   padding-right: 1em;
 }
 
-/* line 1174, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1172, ../../app/assets/stylesheets/partials/_app.sass */
 .slots .enchant {
   color: lime;
   font-size: 0.9em;
 }
 
-/* line 1178, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1176, ../../app/assets/stylesheets/partials/_app.sass */
 .slot {
   position: relative;
   min-height: 60px;
@@ -2811,18 +2809,18 @@ img.upgrade {
   background: #0a0a0a;
 }
 
-/* line 1187, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1185, ../../app/assets/stylesheets/partials/_app.sass */
 .slot:hover {
   background-color: #1f232a;
   cursor: pointer;
 }
 
-/* line 1191, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1189, ../../app/assets/stylesheets/partials/_app.sass */
 .slot.active, .slot .active {
   background-color: #1f232a;
 }
 
-/* line 1196, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1194, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .gems {
   /* .Red
    *   background: rgba( $full, 0, 0, $opac )
@@ -2838,7 +2836,7 @@ img.upgrade {
    *   background: rgba( 0, $full, 0, $opac ) */
 }
 
-/* line 1211, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1209, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image {
   background: url(/images/empty.png);
   position: absolute;
@@ -2852,12 +2850,12 @@ img.upgrade {
   border-radius: 3px;
 }
 
-/* line 1222, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1220, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image img {
   width: 48px;
 }
 
-/* line 1224, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1222, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .image .ilvl {
   font-size: 0.7em;
   color: white;
@@ -2870,7 +2868,7 @@ img.upgrade {
   border-radius: 2px;
 }
 
-/* line 1234, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1232, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock {
   opacity: 0.3;
   position: absolute;
@@ -2883,24 +2881,24 @@ img.upgrade {
   transition: hover 0.1s;
 }
 
-/* line 1240, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1238, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock.lock_on {
   opacity: 1;
 }
 
-/* line 1242, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1240, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .lock:hover {
   opacity: 1;
 }
 
-/* line 1245, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1243, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name {
   font-weight: bold;
   font-size: 1.07em;
   text-shadow: black -1px -1px;
 }
 
-/* line 1249, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1247, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name .aep {
   color: white;
   font-weight: normal;
@@ -2908,7 +2906,7 @@ img.upgrade {
   font-style: normal;
 }
 
-/* line 1255, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1253, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .name .heroic {
   color: lime;
   padding: 0 0em;
@@ -2916,7 +2914,7 @@ img.upgrade {
   font-size: 0.7em;
 }
 
-/* line 1261, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1259, ../../app/assets/stylesheets/partials/_app.sass */
 .slot .desc {
   display: block;
   font-size: 0.8em;
@@ -2924,13 +2922,13 @@ img.upgrade {
   padding: 2px 0;
 }
 
-/* line 1267, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1265, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives {
   padding-top: 40px;
   border: 1px solid #222222 !important;
 }
 
-/* line 1270, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1268, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot {
   margin: 5px 15px 5px 50px;
   min-height: 46px;
@@ -2939,33 +2937,33 @@ img.upgrade {
   background: transparent;
 }
 
-/* line 1276, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1274, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot:hover {
   background: rgba(30, 35, 40, 0.9);
 }
 
-/* line 1278, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1276, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active, .alternatives .slot .active {
   background: #053255;
 }
 
-/* line 1280, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1278, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active .pct, .alternatives .slot .active .pct {
   border-color: #0d81dc;
 }
 
-/* line 1282, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1280, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot.active .pct-inner, .alternatives .slot .active .pct-inner {
   background-color: #0d81dc;
 }
 
-/* line 1285, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1283, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .gem {
   display: inline-block;
   vertical-align: middle;
 }
 
-/* line 1287, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1285, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .image {
   width: 36px;
   height: 36px;
@@ -2973,56 +2971,56 @@ img.upgrade {
   top: 2px;
 }
 
-/* line 1292, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1290, ../../app/assets/stylesheets/partials/_app.sass */
 .alternatives .slot .image img {
   margin-left: -2px;
   margin-top: -2px;
   width: 40px;
 }
 
-/* line 1297, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1295, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-2 {
   color: #00dc00;
 }
 
-/* line 1299, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1297, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-3 {
   color: #007cf6;
 }
 
-/* line 1301, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1299, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-4 {
   color: #A335EE;
 }
 
-/* line 1303, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1301, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-5 {
   color: #FF8000;
 }
 
-/* line 1305, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1303, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-6 {
   color: #E5CC80;
 }
 
-/* line 1307, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1305, ../../app/assets/stylesheets/partials/_app.sass */
 .quality-7 {
   color: #E5CC80;
 }
 
-/* line 1310, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1308, ../../app/assets/stylesheets/partials/_app.sass */
 #impex {
   padding: 1em;
 }
 
-/* line 1312, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1310, ../../app/assets/stylesheets/partials/_app.sass */
 #impex h3 {
   font-size: 1.3em;
   font-weight: bold;
   margin: 0.7em 0;
 }
 
-/* line 1316, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1314, ../../app/assets/stylesheets/partials/_app.sass */
 #impex textarea {
   font-family: "liberation mono", "courier new", monospace;
   font-size: 0.8em;
@@ -3035,88 +3033,88 @@ img.upgrade {
 }
 
 @media screen and (max-width: 1281px) {
-  /* line 1328, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1326, ../../app/assets/stylesheets/partials/_app.sass */
   #container.characters-new, #container.characters-create, #container.characters-refresh {
     background: #050505 url(/images/splash-s.jpg) bottom left no-repeat;
   }
 
-  /* line 1331, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1329, ../../app/assets/stylesheets/partials/_app.sass */
   #create_character {
     bottom: 200px;
     left: 250px;
   }
 
-  /* line 1336, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1334, ../../app/assets/stylesheets/partials/_app.sass */
   #card .img {
     width: 90px;
   }
 
-  /* line 1338, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1336, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info {
     margin-left: 100px;
   }
 
-  /* line 1340, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1338, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info .name {
     font-size: 0.75em;
   }
 
-  /* line 1342, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1340, ../../app/assets/stylesheets/partials/_app.sass */
   #card .info .realm {
     font-size: 0.3em;
   }
 
-  /* line 1345, ../../app/assets/stylesheets/partials/_app.sass */
+  /* line 1343, ../../app/assets/stylesheets/partials/_app.sass */
   .popup .body {
     max-height: 400px;
   }
 }
-/* line 1348, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1346, ../../app/assets/stylesheets/partials/_app.sass */
 #dialogs {
   display: none;
 }
 
-/* line 1351, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1349, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-widget-overlay {
   background: rgba(0, 0, 0, 0.8);
 }
 
-/* line 1354, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1352, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-dialog {
   background: rgba(10, 15, 20, 0.9);
   border: 2px solid #065175;
   border-radius: 5px;
 }
 
-/* line 1359, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1357, ../../app/assets/stylesheets/partials/_app.sass */
 .ui-widget-content.ui-dialog-buttonpane {
   border-color: #222222;
 }
 
-/* line 1363, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1361, ../../app/assets/stylesheets/partials/_app.sass */
 #saveSnapshot label {
   font-weight: bold;
   margin-bottom: 0.5em;
 }
 
-/* line 1366, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1364, ../../app/assets/stylesheets/partials/_app.sass */
 #saveSnapshot #snapshotName {
   width: 200px;
   margin: auto;
 }
 
-/* line 1371, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1369, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table {
   border-collapse: collapse;
   width: 100%;
 }
 
-/* line 1374, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1372, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table th, #loadSnapshot table td {
   border: 1px solid rgba(40, 51, 61, 0.9);
 }
 
-/* line 1376, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1374, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table th {
   background: rgba(20, 25, 30, 0.9);
   padding: 2px 5px;
@@ -3124,17 +3122,17 @@ img.upgrade {
   font-weight: bold;
 }
 
-/* line 1381, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1379, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td:first-child {
   width: 75%;
 }
 
-/* line 1383, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1381, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td {
   padding: 5px;
 }
 
-/* line 1385, ../../app/assets/stylesheets/partials/_app.sass */
+/* line 1383, ../../app/assets/stylesheets/partials/_app.sass */
 #loadSnapshot table td a {
   font-weight: bold;
   text-decoration: underline;
