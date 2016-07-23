@@ -22,7 +22,7 @@ class ShadowcraftArtifact
       main: 202665
       relic1: "blood"
       relic2: "iron"
-      relic3: "wind"
+      relic3: "storm"
     "b":
       icon: "inv_knife_1h_artifactfangs_d_01"
       text: "Fangs of the Devourer"
@@ -46,7 +46,7 @@ class ShadowcraftArtifact
     "fire": 6
     "water": 7
     "life": 8
-    "wind": 9
+    "storm": 9
     "holy": 10
 
   # Stores whether a trait is currently active

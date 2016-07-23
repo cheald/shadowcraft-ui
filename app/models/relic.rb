@@ -29,7 +29,7 @@ class Relic
 
     item_ids = []
 
-    # In this order: Iron, Blood, Shadow, Fel, Wind
+    # In this order: Iron, Blood, Shadow, Fel, Storm
     item_ids += get_ids_from_wowhead_by_type(-8)
     item_ids += get_ids_from_wowhead_by_type(-9)
     item_ids += get_ids_from_wowhead_by_type(-10)

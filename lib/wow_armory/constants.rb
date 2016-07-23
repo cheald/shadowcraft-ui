@@ -186,7 +186,7 @@ module WowArmory
       'Fire' => 6,
       'Water' => 7,
       'Life' => 8,
-      'Wind' => 9,
+      'Storm' => 9,
       'Holy' => 10,
     }
   end
