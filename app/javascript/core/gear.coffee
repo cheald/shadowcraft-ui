@@ -1510,18 +1510,18 @@ class ShadowcraftGear
         if update == "item_id" || update == "enchant"
           val = parseInt($this.attr("id"), 10)
           identifier = $this.data("identifier")
-          slotGear[update] = if val != 0 then val else null
           if update == "item_id"
             bonuses = ""+$this.data("bonus")
             idparts = identifier.split(":")
             slotGear.id = parseInt(idparts[0])
             slotGear.item_level = parseInt(idparts[1])
-            slotGear.name = $this.data("name")
             slotGear.context = $this.data("context")
-            slotGear.tag = $this.data("tag")
             upgd_level = parseInt($this.data("upgrade"))
             slotGear.upgrade_level = if not isNaN(upgd_level) then upgd_level else 0
-            slotGear.bonuses = bonuses.split(":")
+            if (bonuses.length > 0)
+              slotGear.bonuses = bonuses.split(":")
+            else
+              slotGear.bonuses = []
             if (slotGear.id in ShadowcraftGear.ARTIFACTS)
               Shadowcraft.Artifact.updateArtifactItem(slotGear.id, slotGear.item_level, slotGear.item_level)
           else

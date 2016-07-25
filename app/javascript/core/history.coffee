@@ -52,7 +52,7 @@ class ShadowcraftHistory
   # Save the current data state into in the browser's local storage.
   save: ->
     if @app.Data?
-      $.jStorage.set(Shadowcraft.uuid, @app.Data)      
+      $.jStorage.set(Shadowcraft.uuid, @app.Data)
       return
 
   # Saves a snapshot into the local web storage with a specified name.
@@ -147,4 +147,3 @@ class ShadowcraftHistory
   loadSnapshot: (data) ->
     Shadowcraft.Data = data
     Shadowcraft.loadData()
-    

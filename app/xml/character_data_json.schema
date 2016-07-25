@@ -38,7 +38,8 @@
           "maxLength": 50
         }
       },
-      "required": ["id", "item_level", "enchant", "gems", "slot", "bonuses", "context"]
+      "required": ["id", "item_level", "enchant", "gems", "slot", "bonuses", "context"],
+      "additionalProperties": false
     },
     "gear": {
       "type": "object",
@@ -92,7 +93,8 @@
           "$ref": "#/definitions/gear_slot"
         }
       },
-      "required": ["0", "1", "2", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"]
+      "required": ["0", "1", "2", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+      "additionalProperties": false
     },
     "talents": {
       "type": "object",
@@ -106,7 +108,8 @@
           "maxLength": 7
         }
       },
-      "required": ["spec", "talents"]
+      "required": ["spec", "talents"],
+      "additionalProperties": false
     },
     "options_general": {
       "type": "object",
@@ -179,7 +182,8 @@
           "max_length": 25
         }
       },
-      "required": ["level", "race", "patch", "night_elf_racial", "duration", "response_time", "time_in_execute_range", "lethal_poison", "num_boss_adds", "demon_enemy", "max_ilvl", "min_ilvl", "dynamic_ilvl", "show_random_items", "show_upgrades", "epic_gems", "prepot", "potion"]
+      "required": ["level", "race", "patch", "night_elf_racial", "duration", "response_time", "time_in_execute_range", "lethal_poison", "num_boss_adds", "demon_enemy", "max_ilvl", "min_ilvl", "dynamic_ilvl", "show_random_items", "show_upgrades", "epic_gems", "prepot", "potion"],
+      "additionalProperties": false
     },
     "options_buffs": {
       "type": "object",
@@ -195,7 +199,8 @@
           "type": "boolean"
         }
       },
-      "required": ["food_buff", "flask_legion_agi", "short_term_haste_buff"]
+      "required": ["food_buff", "flask_legion_agi", "short_term_haste_buff"],
+      "additionalProperties": false
     },
     "options_rotation": {
       "type": "object",
@@ -255,7 +260,8 @@
           "maxLength": 10
         }
       },
-      "required": ["min_envenom_size_non_execute", "min_envenom_size_execute", "opener_name_assassination", "opener_use_assassination", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "opener_name_combat", "opener_use_combat", "use_hemorrhage", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"]
+      "required": ["min_envenom_size_non_execute", "min_envenom_size_execute", "opener_name_assassination", "opener_use_assassination", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "opener_name_combat", "opener_use_combat", "use_hemorrhage", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"],
+      "additionalProperties": false
     },
     "options_advanced": {
       "type": "object",
@@ -268,7 +274,8 @@
           "maxLength": 50
         }
       },
-      "required": ["latency", "adv_params"]
+      "required": ["latency", "adv_params"],
+      "additionalProperties": false
     },
     "all_options": {
       "type": "object",
@@ -286,7 +293,8 @@
           "$ref": "#/definitions/options_advanced"
         }
       },
-      "required": ["general", "buffs", "rotation", "advanced"]
+      "required": ["general", "buffs", "rotation", "advanced"],
+      "additionalProperties": false
     },
 
     "artifact_trait": {
