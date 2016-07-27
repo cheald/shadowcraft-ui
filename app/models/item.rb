@@ -97,6 +97,10 @@ class Item
     # blue items
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 600, 665)
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 695, 705) # pvp
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 701, 750)
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 751, 800)
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 801, 850)
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 851, 900)
 
     # epic items
     # TODO: no idea why we break this up into three parts. It's probably something
@@ -104,9 +108,12 @@ class Item
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 630, 665)
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 666, 700)
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 701, 750)
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 751, 800)
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 801, 850)
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 851, 900)
 
     # trinkets
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4.-4?filter=minle=530;ro=1"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4.-4?filter=minle=630;ro=1"
 
     # 6.1 alchemy trinkets
     item_ids += [122601, 122602, 122603, 122604]
@@ -118,11 +125,8 @@ class Item
     # legendary ring
     item_ids += [124636]
 
-    # do not import mop trinkets here, so remove them
-    item_ids -= [105029, 104780, 102301, 105278, 104531, 105527] # haromms_talisman
-    item_ids -= [105082, 104833, 102302, 105331, 104584, 105580] # sigil_of_rampage
-    item_ids -= [104974, 104725, 102292, 105223, 104476, 105472] # assurance_of_consequence
-    item_ids -= [105114, 104865, 102311, 105363, 104616, 105612] # ticking_ebon_detonator
+    # Artifact weapons
+    item_ids += [128476, 128479, 128870, 128869, 128872, 134552]
 
     # remove duplicates
     item_ids = item_ids.uniq
@@ -218,7 +222,7 @@ class Item
   # This whitelist skips any of the randomly generated bonus IDs such as any "of the"
   # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.
   BONUS_ID_WHITELIST = [1, 15, 17, 18, 44, 171, 448, 449, 450, 451, 499, 526, 527, 545, 546, 547,
-                        553, 554, 555, 556, 557, 558, 559, 566, 567, 571, 573, 575,
+                        553, 554, 555, 556, 557, 558, 559, 566, 567, 573, 575,
                         576, 577, 582, 583, 591, 592, 593, 594, 602, 609, 615, 617, 618, 619, 620,
                         645, 656, 692]
 
@@ -363,7 +367,7 @@ class Item
       # check to see if this item is in the database yet. we check by ID and item level
       # since those are the two fields that generally differentiate different items.
       db_item = Item.find_or_initialize_by(:remote_id => json['id'],
-                                           :item_level => json['itemLevel'].to_i,)
+                                           :context => json['context'])
 
       # if the item doesn't have properties yet, create a new item from the wow
       # armory library and then merge that into this record and save it.
@@ -413,210 +417,6 @@ class Item
 
   def self.reindex!
     self.all.each { |i| i.save }
-  end
-
-  # TODO: this method can go away once live hits since we'll actually have the artifact
-  # data from the blizzard API.
-  def self.populate_artifacts
-    db_item = Item.find_or_initialize_by(:remote_id => 128476, :item_level => 750)
-    if (db_item.properties.nil?)
-      db_item.remote_id = 128476
-      db_item.item_level = 750
-      db_item.properties = {
-        :stats => {
-          :agility => 219,
-          :stamina => 328,
-          :crit => 148,
-          :mastery => 142},
-        :icon => "inv_knife_1h_artifactfangs_d_01",
-        :id => 128476,
-        :name => "Fangs of the Devourer",
-        :equip_location => 13,
-        :ilevel => 750,
-        :quality => 4, # TODO
-        :socket_bonus => nil,
-        :sockets => nil,
-        :gem_slot => nil,
-        :speed => 1.8,
-        :dps => 712.82,
-        :subclass => 15,
-        :armor_class => nil,
-        :upgradable => false,
-        :chance_bonus_lists => [],
-        :bonus_tree => [743],
-        :tag => "Gorefang",
-        :context => "artifact"
-      }
-      db_item.is_gem = false
-      db_item.save()
-    end
-
-    db_item = Item.find_or_initialize_by(:remote_id => 128479, :item_level => 750)
-    if (db_item.properties.nil?)
-      db_item.remote_id = 128479
-      db_item.item_level = 750
-      db_item.properties = {
-        :stats => {
-          :agility => 219,
-          :stamina => 328,
-          :crit => 148,
-          :mastery => 142},
-        :icon => "inv_knife_1h_artifactfangs_d_01",
-        :id => 128476,
-        :name => "Fangs of the Devourer",
-        :equip_location => 13,
-        :ilevel => 750,
-        :quality => 4, # TODO
-        :socket_bonus => nil,
-        :sockets => nil, # TODO
-        :gem_slot => nil,
-        :speed => 1.8,
-        :dps => 712.82,
-        :subclass => 15,
-        :armor_class => nil,
-        :upgradable => false,
-        :chance_bonus_lists => [],
-        :bonus_tree => [],
-        :tag => "Akaari's Will",
-        :context => "artifact"
-      }
-      db_item.is_gem = false
-      db_item.save()
-    end
-
-    db_item = Item.find_or_initialize_by(:remote_id => 128870, :item_level => 750)
-    if (db_item.properties.nil?)
-      db_item.remote_id = 128870
-      db_item.item_level = 750
-      db_item.properties = {
-        :stats => {
-          :agility => 219,
-          :stamina => 328,
-          :crit => 148,
-          :mastery => 142},
-        :icon => "inv_knife_1h_artifactgarona_d_01",
-        :id => 128870,
-        :name => "The Kingslayers",
-        :equip_location => 13,
-        :ilevel => 750,
-        :quality => 4, # TODO
-        :socket_bonus => nil,
-        :sockets => nil,
-        :gem_slot => nil,
-        :speed => 1.8,
-        :dps => 712.82,
-        :subclass => 15,
-        :armor_class => nil,
-        :upgradable => false,
-        :chance_bonus_lists => [],
-        :bonus_tree => [743],
-        :tag => "Anguish",
-        :context => "artifact"
-      }
-      db_item.is_gem = false
-      db_item.save()
-    end
-
-
-    db_item = Item.find_or_initialize_by(:remote_id => 128869, :item_level => 750)
-    if (db_item.properties.nil?)
-      db_item.remote_id = 128869
-      db_item.item_level = 750
-      db_item.properties = {
-        :stats => {
-          :agility => 219,
-          :stamina => 328,
-          :crit => 148,
-          :mastery => 142},
-        :icon => "inv_knife_1h_artifactgarona_d_01",
-        :id => 128869,
-        :name => "The Kingslayers",
-        :equip_location => 13,
-        :ilevel => 750,
-        :quality => 4, # TODO
-        :socket_bonus => nil,
-        :sockets => nil,
-        :gem_slot => nil,
-        :speed => 1.8,
-        :dps => 712.82,
-        :subclass => 15,
-        :armor_class => nil,
-        :upgradable => false,
-        :chance_bonus_lists => [],
-        :bonus_tree => [],
-        :tag => "Sorrow",
-        :context => "artifact"
-      }
-      db_item.is_gem = false
-      db_item.save()
-    end
-
-    db_item = Item.find_or_initialize_by(:remote_id => 128872, :item_level => 750)
-    if (db_item.properties.nil?)
-      db_item.remote_id = 128872
-      db_item.item_level = 750
-      db_item.properties = {
-        :stats => {
-          :agility => 219,
-          :stamina => 328,
-          :crit => 148,
-          :mastery => 142},
-        :icon => "inv_knife_1h_artifactskywall_d_01",
-        :id => 128872,
-        :name => "The Dreadblades",
-        :equip_location => 13,
-        :ilevel => 750,
-        :quality => 4, # TODO
-        :socket_bonus => nil,
-        :sockets => nil,
-        :gem_slot => nil,
-        :speed => 2.6,
-        :dps => 712.75,
-        :subclass => 15,
-        :armor_class => nil,
-        :upgradable => false,
-        :chance_bonus_lists => [],
-        :bonus_tree => [743],
-        :tag => "Fate",
-        :context => "artifact"
-      }
-      db_item.is_gem = false
-      db_item.save()
-    end
-
-    db_item = Item.find_or_initialize_by(:remote_id => 134552, :item_level => 750)
-    if (db_item.properties.nil?)
-      db_item.remote_id = 134552
-      db_item.item_level = 750
-      db_item.properties = {
-        :stats => {
-          :agility => 219,
-          :stamina => 328,
-          :crit => 148,
-          :mastery => 142},
-        :icon => "inv_knife_1h_artifactskywall_d_01",
-        :id => 134552,
-        :name => "The Dreadblades",
-        :equip_location => 13,
-        :ilevel => 750,
-        :quality => 4, # TODO
-        :socket_bonus => nil,
-        :sockets => nil,
-        :gem_slot => nil,
-        :speed => 2.6,
-        :dps => 712.75,
-        :subclass => 15,
-        :armor_class => nil,
-        :upgradable => false,
-        :chance_bonus_lists => [],
-        :bonus_tree => [],
-        :tag => "Fortune",
-        :context => "artifact"
-      }
-      db_item.is_gem = false
-      db_item.save()
-    end
-
   end
 
 end
