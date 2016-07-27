@@ -149,20 +149,12 @@
       %img.upgrade{:src => "/images/up_arrow.png"}
       {{/upgrade}}
       {{/upgradable}}
-      -#{{#item/id}}
       %a.wowhead{:href => "http://legion.wowhead.com/item={{ttid}}", :target => "_blank"} Wowhead
-      -#{{/item/id}}
 
     {{#bonusable}}
     .bonuses<
       =image_tag "/images/reforge.png"
-      {{#bonuses}}
-      %span.oldstat -1 Test
-      %span.newstat +1 Test
-      {{/bonuses}}
-      {{^bonuses}}
       Modify Bonuses
-      {{/bonuses}}
     {{/bonusable}}
 
     {{#enchantable}}

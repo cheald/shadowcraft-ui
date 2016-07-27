@@ -43,7 +43,7 @@ ShadowcraftApp.bind "boot", ->
         {width: 130, left: 9.634, top: 70.286, angle: 154.423, spell1: 202524, spell2: 202533},
       ]
 
-      return Templates.artifact(traits: traits, lines: lines, relic1: 'blood', relic2: 'iron', relic3: 'wind')
+      return Templates.artifact(traits: traits, lines: lines, relic1: 'blood', relic2: 'iron', relic3: 'storm')
 
     useFangs: ->
       $("#artifactframe").css("background-image", "url('/images/artifacts/fangs-bg.jpg')")
@@ -87,7 +87,7 @@ ShadowcraftApp.bind "boot", ->
         {width: 77, left: 48.194, top: 72.358, angle: 32.869, spell1: 197244, spell2: 197256},
       ]
   
-      return Templates.artifact(traits: traits, lines: lines, relic1: 'shadow', relic2: 'fel', relic3: 'fel')
+      return Templates.artifact(traits: traits, lines: lines, relic1: 'fel', relic2: 'shadow', relic3: 'fel')
       
     useKingslayers: ->
       $("#artifactframe").css("background-image", "url('/images/artifacts/kingslayers-bg.jpg')")

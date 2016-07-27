@@ -27,8 +27,8 @@ class ShadowcraftArtifact
       icon: "inv_knife_1h_artifactfangs_d_01"
       text: "Fangs of the Devourer"
       main: 209782
-      relic1: "shadow"
-      relic2: "fel"
+      relic1: "fel"
+      relic2: "shadow"
       relic3: "fel"
 
   WOWHEAD_SPEC_IDS =
@@ -49,9 +49,6 @@ class ShadowcraftArtifact
     "storm": 9
     "holy": 10
 
-  # Stores whether a trait is currently active
-  active_mapping = {}
-
   # Stores which of the relic icons was clicked on. This is 0-2, but defaults
   # back to -1 after the click has been processed.
   clicked_relic_slot = 0
@@ -69,7 +66,6 @@ class ShadowcraftArtifact
     trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
     trait.children(".icon").removeClass("inactive")
     trait.children(".level").removeClass("inactive")
-    active_mapping[parseInt(trait.attr("data-tooltip-id"))] = true
 
     relic_power = trait.data("relic-power")
     level = artifact_data.traits[spell_id]+relic_power
@@ -113,9 +109,7 @@ class ShadowcraftArtifact
     main_spell_id = SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].main
 
     # Disable everything.
-    active_mapping = {}
     $("#artifactframe .trait").each(->
-      active_mapping[parseInt($(this).attr("data-tooltip-id"))] = false
       $(this).children(".level").addClass("inactive")
       $(this).children(".icon").addClass("inactive")
       $(this).children(".relic").addClass("inactive")
@@ -144,7 +138,6 @@ class ShadowcraftArtifact
     if (artifact_data.traits[main_spell_id] == 0)
 
       # enable the level for the main icon and set the level to 0/1
-      active_mapping[main_spell_id] = true
       main = $("#artifactframe .trait[data-tooltip-id='"+main_spell_id+"']")
       main.children(".level").text("0/"+main.attr("max_level"))
       main.children(".level").removeClass("inactive")
@@ -234,6 +227,7 @@ class ShadowcraftArtifact
             break
         # TODO: should this apply multiple relic outlines to a single trait
         # or just the last one that it encounters?
+        trait = $("#artifactframe .trait[data-tooltip-id='#{relicTrait.spell}'")
         trait.children(".relic").attr("src", "/images/artifacts/relic-"+type+".png")
         trait.children(".relic").removeClass("inactive")
 
@@ -243,6 +237,32 @@ class ShadowcraftArtifact
         Shadowcraft.Data.gear[16].gems[i] = relic.id
       else
         button.addClass("inactive")
+
+    # One last check. Make sure that any activated trait that has relic power
+    # but no active connections only has the relic power as the level. This may
+    # happen when a user increases the level of a trait that has a relic attach
+    # and then decreases all of the connected traits that would disable it. We
+    # don't properly decrease the value of that trait when it's disabled.
+    # NOTE: this is kind of a hack and there might be a better way to do this.
+    $("#artifactframe .trait").not(".inactive").each(->
+      if ($(this).data("relic-power") > 0)
+        spell_id = $(this).attr("data-tooltip-id")
+        has_active_attactment = false
+        if ($("#artifactframe .line[spell1='#{spell_id}']").not(".inactive").length > 0)
+          has_active_attachment = true
+        if ($("#artifactframe .line[spell2='#{spell_id}']").not(".inactive").length > 0)
+          has_active_attachment = true
+
+        if (!has_active_attachment)
+          artifact_data.traits[spell_id] = 0
+          relic_power = trait.data("relic-power")
+          level = relic_power
+          max_level = parseInt(trait.attr("max_level"))+relic_power
+          trait.children(".level").text(""+level+"/"+max_level)
+          trait.data("tooltip-rank", level-1)
+    )
+    
+    trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
 
     # Update the stored item level of the artifact weapons so that a
     # recalculation takes the relics into account.
@@ -273,6 +293,20 @@ class ShadowcraftArtifact
     max_level = parseInt(trait.attr("max_level"))
     if (artifact_data.traits[spell_id] == max_level)
       return
+
+    # don't allow the user to increase the value of this trait if there are no
+    # connected traits at max level. This may happen if the user attaches a
+    # relic to a trait, which removes the "inactive" CSS class. We don't want
+    # them to be able to increase the value beyond that.
+    if (trait.data("relic-power") > 0)
+      has_active_attachement = false
+      if ($("#artifactframe .line[spell1='"+spell_id+"']").not(".inactive").length > 0)
+        has_active_attachment = true
+      if ($("#artifactframe .line[spell2='"+spell_id+"']").not(".inactive").length > 0)
+        has_active_attachment = true
+
+      if (!has_active_attachment)
+        return
 
     artifact_data.traits[spell_id] += 1
     current_level = artifact_data.traits[spell_id]
@@ -507,7 +541,7 @@ class ShadowcraftArtifact
     for id of artifact_data.traits
       artifact_data.traits[id] = 0
 
-    for i in [0...2]
+    for i in [0..2]
       artifact_data.relics[i] = 0
 
     updateTraits()

@@ -134,7 +134,6 @@ class ShadowcraftGear
   # Gets the EP value for an item out of the last run of calculation data
   getEP = (item, slot=-1, ignore=[]) ->
 
-    console.log "getEP: ignore = " + ignore
     stats = {}
     sumItem(stats, item)
 
@@ -493,10 +492,6 @@ class ShadowcraftGear
       b.normal_ep - a.normal_ep
     list
 
-  clearBonuses = ->
-    console.log 'clear'
-    return
-
   # Called when a user clicks the apply button on the bonuses popup
   # window. This adds a bonus to an item in the user's gear.
   applyBonuses: ->
@@ -655,8 +650,12 @@ class ShadowcraftGear
 
           # Generate an array of the gem objects for each gem attached to a piece of gear
           for gem in gear.gems
-            if gem != 0
+            if gem != 0 and gem != null
               gems[gems.length] = {gem: Gems[gem]}
+
+        if hasSocket(gear) and gems.length == 0
+          gem = {gem: {slot: "Prismatic"}}
+          gems.push gem
 
         # If there wasn't a description for the enchant just use the name instead.
         if enchant and enchant.desc == ""
@@ -683,13 +682,10 @@ class ShadowcraftGear
         opt.enchant = enchant
         opt.upgradable = if item then item.upgradable else false
         opt.upgrade = upgrade
-        opt.gems = gear.gems
 
-        if item and item.id not in ShadowcraftGear.ARTIFACTS
-          opt.sockets = item.sockets
+        if gear.id not in ShadowcraftGear.ARTIFACTS
           opt.gems = gems
         else
-          opt.sockets = null
           opt.gems = null
 
         if item
@@ -937,7 +933,7 @@ class ShadowcraftGear
     Shadowcraft.Data.activeSpec == "a"
 
   recalculateStatsDiff = (original, ilvl_difference) ->
-    multiplier =  1.0 / Math.pow(1.15, (ilvl_difference / 15.0 * -1))
+    multiplier =  1.0 / Math.pow(1.15, (ilvl_difference / -15.0))
     stats = {}
     for k,v of original
       stats[k] = v * multiplier
@@ -1202,7 +1198,6 @@ class ShadowcraftGear
     gemSlot = $slot.find(".gem").index(this)
     $.data(document.body, "gem-slot", gemSlot)
     selected_gem_id = data.gear[slot].gems[gemSlot]
-    gemType = Shadowcraft.ServerData.GEM_LOOKUP[selected_gem_id].slot
 
     otherGearGems = []
     for i in [0..2]
@@ -1225,7 +1220,7 @@ class ShadowcraftGear
 
       usedNames[gem.name] = gem.id
       continue if gem.name.indexOf("Perfect") == 0 and selected_gem_id != gem.id
-      continue unless canUseGem(gem, gemType)
+      continue unless canUseGem(gem, "Prismatic")
       max ||= gem.__ep
       gEP = gem.__ep
       desc = statsToDesc(gem)
@@ -1308,7 +1303,6 @@ class ShadowcraftGear
         }
         switch bonus_entry.type
           when 6 # extra sockets
-            console.log "extra socket"
             group['entries'].push entry
             gem = getBestNormalGem()
             group.ep += getEP(gem)
@@ -1467,7 +1461,6 @@ class ShadowcraftGear
         $this.attr("checked", not $this.attr("checked")?)
         Shadowcraft.setupLabels("#bonuses")
       ".applyBonuses" : this.applyBonuses
-      ".clearBonuses" : clearBonuses
 
     # Register the callback handlers for all of the various parts of each item
     # on the UI.
