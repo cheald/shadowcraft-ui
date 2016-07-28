@@ -910,14 +910,21 @@ class ShadowcraftGear
       itemString = arm.join(':')
       item = Shadowcraft.ServerData.ITEM_BY_CONTEXT[itemString]
 
-      # If we couldn't find an item by context, try to find the item by ilvl
+      # If we couldn't find it by the above check, try again forcing the context to "none"
+      if not item?
+        arm = [itemId, "none"]
+        itemString = arm.join(':')
+        item = Shadowcraft.ServerData.ITEM_BY_CONTEXT[itemString]
+
+      # If that still didn't work, try again by looking for an ID/ilvl combination instead
       if not item?
         arm = [itemId, ilvl, 0]
         itemString = arm.join(':')
         item = Shadowcraft.ServerData.ITEM_LOOKUP2[itemString]
-        
-    if not item? and itemId
-      console.warn "item not found by context", itemString
+
+    if not item?
+      console.warn "item not found: #{itemId}"
+
     return item
 
   getItem: (itemId, context, ilvl) ->
@@ -1021,7 +1028,7 @@ class ShadowcraftGear
       else
         continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
         continue if l.ilvl < Shadowcraft.Data.options.general.min_ilvl
-        
+
       continue if (slot == 15 || slot == 16) && requireDagger && l.subclass != 15
       continue if (slot == 15) && subtletyNeedsDagger && l.subclass != 15
 
@@ -1280,7 +1287,7 @@ class ShadowcraftGear
         for val in Shadowcraft.ServerData.ITEM_BONUSES[current_tf_id]
           if val.type == 1
             current_tf_value = val.val1
-    
+
     # TODO build all possible bonuses with status selected or not, etc.
     groups = {
       suffixes: []

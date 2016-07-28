@@ -159,6 +159,8 @@
         R.ITEM_LOOKUP2[item.identifier] = item;
         if (item.context.length != 0) {
           R.ITEM_BY_CONTEXT[item.id+":"+item.context] = item;
+        } else {
+          R.ITEM_BY_CONTEXT[item.id+":none"] = item;
         }
       }
       delete R.ITEMS;
