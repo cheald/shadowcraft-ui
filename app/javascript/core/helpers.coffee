@@ -78,8 +78,6 @@ checkForWarnings = (section) ->
           else if (i == 6)
             level = 100
           Shadowcraft.Console.warn({}, "Level #{level} Talent not set", null, 'warn', 'talents')
-        if i == 5 and row == "0"
-          Shadowcraft.Console.warn({}, "Talent Shuriken Toss is not fully supported by Shadowcraft.", "It is recommended to not use this talent.", 'warn', 'talents')
 
   if section == undefined or section == "gear"
     # Warn items

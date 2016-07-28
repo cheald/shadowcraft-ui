@@ -26,15 +26,16 @@ class Talent
   def self.populate()
 
     begin
-      talents = WowArmory::Talents.new('US','legion')
+      talents = WowArmory::Talents.new('US')
       talents.talents.each do |spec,spec_talents|
         spec_talents.each do |talent|
-          db_item = Talent.find_or_initialize_by({:remote_id => talent[:spell].to_i, :spec => spec})
-          db_item.name = talent[:name]
-          db_item.icon = talent[:icon]
-          db_item.tier = talent[:tier].to_i
-          db_item.column = talent[:column].to_i
+          db_item = Talent.find_or_initialize_by({:remote_id => talent["spell"].to_i, :spec => spec})
+          db_item.name = talent["name"]
+          db_item.icon = talent["icon"]
+          db_item.tier = talent["tier"].to_i
+          db_item.column = talent["column"].to_i
           db_item.spec = spec
+          puts db_item
           if db_item.new_record?
             db_item.save()
           end
