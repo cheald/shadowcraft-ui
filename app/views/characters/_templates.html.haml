@@ -30,8 +30,7 @@
 - mustache "artifactactive" do
   %span.spec-icon{:style => "background-image: url(http://wow.zamimg.com/images/wow/icons/medium/{{icon}}.jpg);"}
   %span.spec-name {{name}}
--# Enable this once we know how much power gets spent on each trait
--#  %span.power-spent{:style => "float:right"} Relic Power Spent: 0
+  %span.power-spent{:style => "float:right"} Trait Points Spent: {{points}}
 
 - mustache "tooltip" do
   {{#title}}

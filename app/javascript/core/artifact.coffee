@@ -244,25 +244,37 @@ class ShadowcraftArtifact
     # and then decreases all of the connected traits that would disable it. We
     # don't properly decrease the value of that trait when it's disabled.
     # NOTE: this is kind of a hack and there might be a better way to do this.
-    $("#artifactframe .trait").not(".inactive").each(->
-      if ($(this).data("relic-power") > 0)
-        spell_id = $(this).attr("data-tooltip-id")
-        has_active_attactment = false
-        if ($("#artifactframe .line[spell1='#{spell_id}']").not(".inactive").length > 0)
+    total_artifact_points = 0
+    $("#artifactframe .trait").children(".level").not(".inactive").each(->
+      local_trait = $(this).parent()
+      local_spell_id = local_trait.attr("data-tooltip-id")
+      if (local_trait.data("relic-power") > 0)
+        has_active_attachment = false
+        if ($("#artifactframe .line[spell1='#{local_spell_id}']").not(".inactive").length > 0)
           has_active_attachment = true
-        if ($("#artifactframe .line[spell2='#{spell_id}']").not(".inactive").length > 0)
+        if ($("#artifactframe .line[spell2='#{local_spell_id}']").not(".inactive").length > 0)
           has_active_attachment = true
 
         if (!has_active_attachment)
-          artifact_data.traits[spell_id] = 0
-          relic_power = trait.data("relic-power")
+          artifact_data.traits[local_spell_id] = 0
+          relic_power = local_trait.data("relic-power")
           level = relic_power
-          max_level = parseInt(trait.attr("max_level"))+relic_power
-          trait.children(".level").text(""+level+"/"+max_level)
-          trait.data("tooltip-rank", level-1)
+          max_level = parseInt(local_trait.attr("max_level"))+relic_power
+          local_trait.children(".level").text(""+level+"/"+max_level)
+          local_trait.data("tooltip-rank", level-1)
+
+      total_artifact_points += artifact_data.traits[local_spell_id]
+      return
     )
-    
+
     trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
+
+    buffer = Templates.artifactActive({
+      name: SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].text
+      icon: SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].icon
+      points: "#{total_artifact_points}"
+    })
+    $("#artifactactive").get(0).innerHTML = buffer
 
     # Update the stored item level of the artifact weapons so that a
     # recalculation takes the relics into account.
@@ -489,6 +501,7 @@ class ShadowcraftArtifact
     buffer = Templates.artifactActive({
       name: SPEC_ARTIFACT[str].text
       icon: SPEC_ARTIFACT[str].icon
+      points: "0"
     })
     $("#artifactactive").get(0).innerHTML = buffer
 
