@@ -324,7 +324,6 @@ class ShadowcraftComputation:
             if k[2] != 0 and k[2] in self.enchantMap:
                 buff_list.append(self.enchantMap[k[2]])
 
-        print buff_list
         _gear_buffs = stats.GearBuffs(*buff_list)
 
         # ##################################################################################
@@ -497,7 +496,7 @@ class ShadowcraftComputation:
         except (KeyError) as e:
             import traceback
             traceback.print_exc()
-            out["error"] = "Error: " + e.message
+            out["error"] = "Key Error in data sent to backend: " + ':'.join(map(str,e.message))
             return out
 
 engine = ShadowcraftComputation()
