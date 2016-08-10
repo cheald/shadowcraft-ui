@@ -85,6 +85,9 @@ class ShadowcraftOptions
           when "input"
             template = Templates.input
             options = {}
+          when "subheader"
+            template = Templates.subheader
+            options = {}
         if template
           s.append template($.extend({
             key: key

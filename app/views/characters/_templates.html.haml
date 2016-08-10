@@ -201,6 +201,9 @@
     %input.optionInput(type="text" name="{{key}}" id="opt-{{namespace}}-{{key}}" data-ns="{{namespace}}")
     %span.desc {{desc}}
 
+- mustache("subheader") do
+  %h5(id="opt-{{namespace}}-{{key}}") {{desc}}
+
 - mustache("select") do
   %label.select
     %span.label {{label}}

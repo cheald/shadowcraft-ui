@@ -7,6 +7,7 @@ ShadowcraftApp.bind "boot", ->
     checkbox:            Handlebars.compile $("#template-checkbox").html()
     select:              Handlebars.compile $("#template-select").html()
     input:               Handlebars.compile $("#template-input").html()
+    subheader:           Handlebars.compile $("#template-subheader").html()
     talentTree:          Handlebars.compile $("#template-tree").html()
     talentTier:          Handlebars.compile $("#template-tier").html()
     specActive:          Handlebars.compile $("#template-specactive").html()
