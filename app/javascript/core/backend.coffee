@@ -79,7 +79,6 @@ class ShadowcraftBackend
         statSummary.crit || 0,
         statSummary.haste || 0,
         statSummary.mastery || 0,
-        statSummary.multistrike || 0,
         statSummary.versatility || 0
       ],
 

@@ -439,7 +439,7 @@ class ShadowcraftComputation:
             out["total_dps"] = sum(entry[1] for entry in out["breakdown"].items())
 
             # Get EP Values
-            default_ep_stats = ['agi', 'haste', 'crit', 'mastery', 'multistrike', 'versatility', 'ap']
+            default_ep_stats = ['agi', 'haste', 'crit', 'mastery', 'versatility', 'ap']
             _opt = input.get("settings", {})
             out["ep"] = calculator.get_ep(ep_stats=default_ep_stats)
 

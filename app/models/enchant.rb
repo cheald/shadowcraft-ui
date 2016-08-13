@@ -91,9 +91,9 @@ class Enchant
                    })
     Enchant.create({
                      :spell_id => 5301,
-                     :stats => {'multistrike' => 30},
+                     :stats => {'mastery' => 30},
                      :icon => 'inv_enchant_formulagood_01',
-                     :item_name => 'Enchant Ring - Breath of Multistrike',
+                     :item_name => 'Enchant Ring - Breath of Mastery',
                      :equip_location => 11, # Ring
                      :tooltip_spell => 110620
                    })
@@ -131,9 +131,9 @@ class Enchant
                    })
     Enchant.create({
                      :spell_id => 5327,
-                     :stats => {'multistrike' => 50},
+                     :stats => {'mastery' => 50},
                      :icon => 'inv_enchant_formulasuperior_01',
-                     :item_name => 'Enchant Ring - Gift of Multistrike',
+                     :item_name => 'Enchant Ring - Gift of Mastery',
                      :equip_location => 11, # Ring
                      :tooltip_spell => 110641
                    })
@@ -172,9 +172,9 @@ class Enchant
                    })
     Enchant.create({
                      :spell_id => 5294,
-                     :stats => {'multistrike' => 40},
+                     :stats => {'haste' => 40},
                      :icon => 'inv_enchant_formulagood_01',
-                     :item_name => 'Enchant Neck - Breath of Multistrike',
+                     :item_name => 'Enchant Neck - Breath of Haste',
                      :equip_location => 2, # Neck
                      :tooltip_spell => 110627
                    })
@@ -212,9 +212,9 @@ class Enchant
                    })
     Enchant.create({
                      :spell_id => 5320,
-                     :stats => {'multistrike' => 75},
+                     :stats => {'haste' => 75},
                      :icon => 'inv_enchant_formulasuperior_01',
-                     :item_name => 'Enchant Neck - Gift of Multistrike',
+                     :item_name => 'Enchant Neck - Gift of Haste',
                      :equip_location => 2, # Neck
                      :tooltip_spell => 110648
                    })
@@ -253,9 +253,9 @@ class Enchant
                    })
     Enchant.create({
                      :spell_id => 5302,
-                     :stats => {'multistrike' => 100},
+                     :stats => {'crit' => 100},
                      :icon => 'inv_enchant_formulagood_01',
-                     :item_name => 'Enchant Cloak - Breath of Multistrike',
+                     :item_name => 'Enchant Cloak - Breath of Critical Strike',
                      :equip_location => 16, # Cloak
                      :tooltip_spell => 110634
                    })
@@ -293,9 +293,9 @@ class Enchant
                    })
     Enchant.create({
                      :spell_id => 5313,
-                     :stats => {'multistrike' => 100},
+                     :stats => {'crit' => 100},
                      :icon => 'inv_enchant_formulasuperior_01',
-                     :item_name => 'Enchant Cloak - Gift of Multistrike',
+                     :item_name => 'Enchant Cloak - Gift of Critical Strike',
                      :equip_location => 16, # Cloak
                      :tooltip_spell => 110655
                    })
