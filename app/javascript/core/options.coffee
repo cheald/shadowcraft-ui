@@ -162,9 +162,22 @@ class ShadowcraftOptions
     })
 
     @setup("#settings section.subtlety .settings", "rotation", {
-      use_hemorrhage: {type: "select", name: "CP Builder", options: {'never': "Backstab", 'always': "Hemorrhage", 'uptime': "Use Backstab and Hemorrhage for 100% DoT uptime"}, default: 'uptime', datatype: 'string'}
-      opener_name_subtlety: {type: "select", name: "Opener Name", options: {'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
-      opener_use_subtlety: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
+      sub_other_header: {type: "subheader", desc: "Main Rotation Options"}
+      cp_builder: {type: "select", name: "CP Builder", options: {'backstab':'Backstab','gloomblade':'Gloomblade','shuriken_storm':'Shuriken Storm'}, default: 'backstab', datatype: 'string'}
+      dance_cp_builder: {type: "select", name: "Dance CP Builder", options: {"shuriken_storm":"Shuriken Storm", "shadowstrike":"shadowstrike"}, default: "shadowstrike", datatype: "string"}
+      symbols_policy: {type: "select", name: "SoD Policy", options: {'always':"Use on cooldown", 'just':"Only use SoD when needed to refresh"}, default: "just", datatype: "string"}
+
+      sub_finisher_header: {type: "subheader", desc: "Finisher Thresholds (Minimum CPs for each finisher)"}
+      eviscerate_cps: {type: "select", name: "Eviscerate", options: [6,5,4,3,2,1], 'default': 5, datatype: 'integer', min: 1, max: 6}
+      finality_eviscerate_cps: {type: "select", name: "Finality: Eviscerate", options: [6,5,4,3,2,1], 'default': 5, datatype: 'integer', min: 1, max: 6}
+      nightblade_cps: {type: "select", name: "Nightblade", options: [6,5,4,3,2,1], 'default': 5, datatype: 'integer', min: 1, max: 6}
+      finality_nightblade_cps: {type: "select", name: "Finality: Nightblade", options: [6,5,4,3,2,1], 'default': 5, datatype: 'integer', min: 1, max: 6}
+
+      sub_dance_header: {type: "subheader", desc: "Shadow Dance Finisher Priority"}
+      sub_dance_prio_fin_nb: {type: "input", name: "Finality: Nightblade", 'default': 4, datatype: 'integer', min: 0, max: 4, desc: "The following four options should have values 1-4 to set the priority during Shadow Dance. 4 is the highest priority. 1 is the lowest. To remove an ability from the order, set the value to zero."}
+      sub_dance_prio_fin_evis: {type: "input", name: "Finality: Eviscerate", 'default': 3, datatype: 'integer', min: 0, max: 4}
+      sub_dance_prio_nb: {type: "input", name: "Nightblade", 'default': 2, datatype: 'integer', min: 0, max: 4}
+      sub_dance_prio_evis: {type: "input", name: "Eviscerate", 'default': 1, datatype: 'integer', min: 0, max: 4}
     })
 
     @setup("#settings #advancedSettings", "advanced", {
@@ -220,7 +233,7 @@ class ShadowcraftOptions
       if Shadowcraft.Data.activeSpec == "a"
         $("#settings section.mutilate").show()
         if (Shadowcraft.Data.activeTalents.split("")[5] == "0")
-          
+
           $("#opt-general-lethal_poison").append($("<option></option>").attr("value","ap").text("Agonizing Poison"))
 
       else if Shadowcraft.Data.activeSpec == "Z"
@@ -252,7 +265,7 @@ class ShadowcraftOptions
         if poisonSelect.val() == "ap"
           poisonSelect.val("dp")
         $("#opt-general-lethal_poison option[value='ap']").remove()
-        
+
     this
 
   constructor: ->

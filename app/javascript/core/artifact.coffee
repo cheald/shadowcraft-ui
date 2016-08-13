@@ -565,7 +565,7 @@ class ShadowcraftArtifact
     ranking = Shadowcraft.lastCalculation.artifact_ranking
     max = _.max(ranking)
     for trait,ep of ranking
-      val = parseFloat(ep)
+      val = Math.round(parseFloat(ep) * 100.0)/ 100.0
       trait_name = ShadowcraftData.ARTIFACT_LOOKUP[parseInt(trait)].n
       pct = val / max * 100 + 0.01
 

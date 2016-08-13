@@ -20,9 +20,10 @@ from shadowcraft.objects import buffs
 from shadowcraft.objects import race
 from shadowcraft.objects import stats
 from shadowcraft.objects import procs
-from shadowcraft.objects import proc_data
 from shadowcraft.objects import talents
 from shadowcraft.objects import glyphs
+from shadowcraft.objects import artifact
+from shadowcraft.objects import artifact_data
 
 from shadowcraft.core import i18n
 
@@ -31,11 +32,6 @@ import uuid
 
 class ShadowcraftComputation:
     enchantMap = {
-        5330: "mark_of_the_thunderlord",
-        5331: "mark_of_the_shattered_hand",
-        5334: "mark_of_the_frostwolf",
-        5337: "mark_of_warsong",
-        5384: "mark_of_the_bleeding_hollow",
         5437: "mark_of_the_claw",
         5438: "mark_of_the_distant_army",
         5439: "mark_of_the_hidden_satyr",
@@ -71,65 +67,73 @@ class ShadowcraftComputation:
     }
     
     artifactTraits = {
+        # Assassination/Kingslayers
+        'a': {
+            214368: 'assassins_blades',
+            192657: 'bag_of_tricks',
+            192326: 'balanced_blades',
+            192923: 'blood_of_the_assassinated',
+            192323: 'fade_into_shadows',
+            192428: 'from_the_shadows',
+            192759: 'kingsbane',
+            192329: 'gushing_wounds',
+            192318: 'master_alchemist',
+            192349: 'master_assassin',
+            192376: 'poison_knives',
+            192315: 'serrated_edge',
+            192422: 'shadow_swiftness',
+            192345: 'shadow_walker',
+            192424: 'surge_of_toxins',
+            192310: 'toxic_blades',
+            192384: 'urge_to_kill',
+        },
+
         # Outlaw/Dreadblades traits
-        216230: 'black_powder',
-        202507: 'blade_dancer',
-        202628: 'blademaster',
-        202897: 'blunderbuss',
-        202769: 'blurred_time',
-        202665: 'curse_of_the_dreadblades',
-        202463: 'cursed_edges',
-        202521: 'cursed_leather',
-        202755: 'deception',
-        202524: 'fatebringer',
-        202514: 'fates_thirst',
-        202907: 'fortunes_boon',
-        202530: 'fortune_strikes',
-        202533: 'ghostly_shell',
-        202820: 'greed',
-        202522: 'gunslinger',
-        202753: 'hidden_blade',
+        'Z': {
+            216230: 'black_powder',
+            202507: 'blade_dancer',
+            202628: 'blademaster',
+            202897: 'blunderbuss',
+            202769: 'blurred_time',
+            202665: 'curse_of_the_dreadblades',
+            202463: 'cursed_edges',
+            202521: 'cursed_leather',
+            202755: 'deception',
+            202524: 'fatebringer',
+            202514: 'fates_thirst',
+            202907: 'fortunes_boon',
+            202530: 'fortune_strikes',
+            202533: 'ghostly_shell',
+            202820: 'greed',
+            202522: 'gunslinger',
+            202753: 'hidden_blade',
+        },
 
         # Subtlety/Fangs traits
-        209835: 'akarris_soul',
-        197241: 'catlike_reflexes',
-        197233: 'demons_kiss',
-        197604: 'embrace_of_darkness',
-        197239: 'energetic_stabbing',
-        197256: 'flickering_shadows',
-        197406: 'finality',
-        197369: 'fortunes_bite',
-        197244: 'ghost_armor',
-        209782: 'goremaws_bite',
-        197234: 'gutripper',
-        197235: 'precision_strike',
-        197231: 'the_quiet_knife',
-        197610: 'second_shuriken',
-        221856: 'shadow_fangs',
-        209781: 'shadow_nova',
-        197386: 'soul_shadows',
-
-        # Assassination/Kingslayers
-        214368: 'assassins_blades',
-        192657: 'bag_of_tricks',
-        192326: 'balanced_blades',
-        192923: 'blood_of_the_assassinated',
-        192323: 'fade_into_shadows',
-        192428: 'from_the_shadows',
-        192759: 'kingsbane',
-        192329: 'gushing_wounds',
-        192318: 'master_alchemist',
-        192349: 'master_assassin',
-        192376: 'poison_knives',
-        192315: 'serrated_edge',
-        192422: 'shadow_swiftness',
-        192345: 'shadow_walker',
-        192424: 'surge_of_toxins',
-        192310: 'toxic_blades',
-        192384: 'urge_to_kill',
+        'b': {
+            209835: 'akarris_soul',
+            197241: 'catlike_reflexes',
+            197233: 'demons_kiss',
+            197604: 'embrace_of_darkness',
+            197239: 'energetic_stabbing',
+            197256: 'flickering_shadows',
+            197406: 'finality',
+            197369: 'fortunes_bite',
+            197244: 'ghost_armor',
+            209782: 'goremaws_bite',
+            197234: 'gutripper',
+            197235: 'precision_strike',
+            197231: 'the_quiet_knife',
+            197610: 'second_shuriken',
+            221856: 'shadow_fangs',
+            209781: 'shadow_nova',
+            197386: 'soul_shadows',
+        },
     }
 
-    artifactTraitsReverse = {v: k for k, v in artifactTraits.iteritems()}
+    artifactTraitsReverse = {}
+    for k,v in artifactTraits.iteritems():
+        artifactTraitsReverse[k] = {v2: k2 for k2, v2 in v.iteritems()}
 
     gearProcs = trinkets.copy()
     gearProcs.update(otherProcs)
@@ -214,7 +218,13 @@ class ShadowcraftComputation:
                 'ksp_immediately',
                 'blade_flurry',
             ], [
-                'use_hemorrhage',
+                'cp_builder',
+                'dance_cp_builder',
+                'symbols_policy',
+                'eviscerate_cps',
+                'finality_eviscerate_cps',
+                'nightblade_cps',
+                'finality_nightblade_cps',
             ]
         ]
 
@@ -267,6 +277,7 @@ class ShadowcraftComputation:
 
         # Base
         _level = int(input.get("l", 100))
+        _level = 110
 
         # Buffs
         buff_list = []
@@ -368,63 +379,79 @@ class ShadowcraftComputation:
             s[3], # Crit
             s[4], # Haste
             s[5], # Mastery
-            0,
-            s[6], # Multistrike
-            s[7], # Versatility
+            s[6], # Versatility
             _level)
         # ##################################################################################
-
-        # Talents
-        t = input.get("t", '')
-        _talents = talents.Talents(t , "rogue", _level)
-
-        # Glyphs
-        _glyphs = glyphs.Glyphs("rogue", *input.get("gly", []))
 
         _spec = input.get("spec", 'a')
         if _spec == "a":
             tree = 0
+            spec = "assassination"
         elif _spec == "Z":
             tree = 1
+            spec = "outlaw"
         else:
             tree = 2
+            spec = "subtlety"
+
+        # Talents
+        t = input.get("t", '')
+        _talents = talents.Talents(t, spec, "rogue", _level)
 
         rotation_keys = input.get("ro", { 'opener_name': 'default', 'opener_use': 'always'})
         if not rotation_keys["opener_name"] in self.validOpenerKeys[tree]:
             rotation_keys["opener_name"] = "default"
         rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
+
         settings_options = {}
-        if __builtin__.shadowcraft_engine_version >= 5.4:
-            settings_options['num_boss_adds'] = _opt.get("num_boss_adds", 0)
-        if __builtin__.shadowcraft_engine_version >= 6.0:
-            settings_options['is_day'] = _opt.get("night_elf_racial", 0) == 1
-            settings_options['is_demon'] = _opt.get("demon_enemy", 0) == 1
-           
+        settings_options['num_boss_adds'] = _opt.get("num_boss_adds", 0)
+        settings_options['is_day'] = _opt.get("night_elf_racial", 0) == 1
+        settings_options['is_demon'] = _opt.get("demon_enemy", 0) == 1
+
+        if spec == "subtlety":
+            sub_dance_prio_map = {}
+            for i in [('sub_dance_prio_fin_nb','finality:nightblade'), ('sub_dance_prio_fin_evis','finality:eviscerate'), ('sub_dance_prio_nb','nightblade'), ('sub_dance_prio_evis','eviscerate')]:
+                sub_dance_prio_map[i[1]] = rotation_keys[i[0]]
+
+            sub_dance_prio_map = {k:v for k,v in sub_dance_prio_map.items() if v != 0}
+            sub_dance_prio = sorted(sub_dance_prio_map, key=sub_dance_prio_map.get, reverse=True)
+            rotation_options['dance_finisher_priority'] = sub_dance_prio
+        
         if tree == 0:
             _cycle = settings.AssassinationCycle(**rotation_options)
         elif tree == 1:
             _cycle = settings.CombatCycle(**rotation_options)
         else:
-            _cycle = settings.SubtletyCycle(5, **rotation_options)
+            _cycle = settings.SubtletyCycle(**rotation_options)
+            _cycle.cp_builder
         _settings = settings.Settings(_cycle,
-            time_in_execute_range = _opt.get("time_in_execute_range", 0.35),
             response_time = _opt.get("response_time", 0.5),
             duration = duration,
-            dmg_poison = _opt.get("dmg_poison", 'dp'),
-            utl_poison = _opt.get("utl_poison", None),
-            opener_name = rotation_keys["opener_name"],
-            use_opener = rotation_keys["opener_use"],
             latency = _opt.get("latency", 0.03),
             adv_params = _opt.get("adv_params", ''),
             default_ep_stat = 'ap',
             **settings_options
         )
 
-        artifact = {}
-        for k,v in input['art'].iteritems():
-            artifact[self.artifactTraits[int(k)]] = v
+        if len(input['art']) == 0:
+            # if no artifact data was passed (probably because the user had the wrong
+            # weapons equipped), pass a string of zeros as the trait data.
+            _traits = artifact.Artifact(spec, "rogue", "0"*len(artifact_data.traits[("rogue",spec)]))
+        elif len(input['art']) == len(artifact_data.traits[("rogue",spec)])-1:
+            traitstr = ""
+            remap = {}
+            for k,v in input['art'].iteritems():
+                remap[self.artifactTraits[_spec][int(k)]] = v
+            for t in artifact_data.traits[("rogue",spec)]:
+                if (t in remap):
+                    traitstr += str(remap[t])
+                else:
+                    traitstr += "0"
+            _traits = artifact.Artifact(spec, "rogue", traitstr)
+        else:
+            _traits = None
 
-        calculator = AldrianasRogueDamageCalculator(_stats, _talents, _glyphs, _buffs, _race, _settings, _level)
+        calculator = AldrianasRogueDamageCalculator(_stats, _talents, _traits, _buffs, _race, spec, _settings, _level)
         return calculator
 
     def get_all(self, input):
@@ -455,7 +482,8 @@ class ShadowcraftComputation:
             # Compute weapon ep
             out["mh_ep"], out["oh_ep"] = calculator.get_weapon_ep(dps=True, enchants=True)
             out["mh_speed_ep"], out["oh_speed_ep"] = calculator.get_weapon_ep([2.4, 2.6, 1.7, 1.8])
-            if input.get("spec", 'a') == "Z":
+            _spec = input.get("spec","a")
+            if _spec == "Z":
               out["mh_type_ep"], out["oh_type_ep"] = calculator.get_weapon_type_ep()
 
             # Talent ranking is slow. This is done last per a note from nextormento.
@@ -465,29 +493,13 @@ class ShadowcraftComputation:
 
             # Get the artifact ranking and change the IDs from the engine back to
             # the item IDs using the artifactMap data.
-#            artifactRanks = calculator.get_artifact_ranking()
-            artifactRanks = {
-                'akarris_soul': 0.0,
-                'catlike_reflexes': 3.2,
-                'demons_kiss': 0.0,
-                'embrace_of_darkness': 0.0,
-                'energetic_stabbing': 5.1,
-                'flickering_shadows': 0.0,
-                'finality': 0.0,
-                'fortunes_bite': 0.0,
-                'ghost_armor': 0.0,
-                'goremaws_bite': 7.3,
-                'gutripper': 0.0,
-                'precision_strike': 0.0,
-                'the_quiet_knife': 0.0,
-                'second_shuriken': 0.0,
-                'shadow_fangs': 4.9,
-                'shadow_nova': 0.0,
-                'soul_shadows': 0.0
-            }
+            artifactRanks = calculator.get_trait_ranking()
             out["artifact_ranking"] = {}
-            for k,v in artifactRanks.iteritems():
-                out["artifact_ranking"][self.artifactTraitsReverse[k]] = v
+            for trait,spell_id in self.artifactTraitsReverse[_spec].iteritems():
+                if trait in artifactRanks:
+                    out['artifact_ranking'][spell_id] = artifactRanks[trait]
+                else:
+                    out['artifact_ranking'][spell_id] = 0
 
             return out
         except (InputNotModeledException, exceptions.InvalidInputException) as e:

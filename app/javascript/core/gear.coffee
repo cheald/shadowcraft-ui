@@ -858,6 +858,7 @@ class ShadowcraftGear
       val = parseFloat(val)
       name = titleize(skill)
       skill = skill.replace(/\./g,'_')
+      skill = skill.replace(/:/g,'_')
       exist = $("#dpsbreakdown #talent-weight-" + skill)
       if isNaN(val)
         name += " (NYI)"
