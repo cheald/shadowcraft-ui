@@ -35,8 +35,7 @@ class ShadowcraftBackend
       if val
         buffList.push ShadowcraftOptions.buffMap.indexOf(key)
 
-    #buffFood = ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff)
-    buffFood = 0
+    buffFood = ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff)
 
     talentArray = data.activeTalents.split ""
     for val, key in talentArray

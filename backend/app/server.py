@@ -200,13 +200,12 @@ class ShadowcraftComputation:
     ]
 
     buffFoodMap = [
-        'food_wod_versatility_125',
-        'food_crit_700',
-        'food_haste_700',
-        'food_mastery_700',
-        'food_versatility_700',
-        'food_400_feast',
-        'food_high_fire_proc',
+        'food_legion_crit_375',
+        'food_legion_haste_375',
+        'food_legion_mastery_375',
+        'food_legion_versatility_375',
+        'food_legion_200_feast',
+        'food_legion_damage_3'
     ]
 
     if __builtin__.shadowcraft_engine_version >= 6.0:
