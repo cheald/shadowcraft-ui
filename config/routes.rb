@@ -5,6 +5,7 @@ Roguesim::Application.routes.draw do
   # to turn on maintenance mode. this will override all of the other rules
   # and redirect all requests to a static text page.
   #match '*foo', :to => redirect('/maintenance.html')
+  #root :to => redirect('/maintenance.html')
   
   match "/:region/:realm/:name", :to => "characters#show", :as => :character, :region => /us|eu|kr|tw|cn|sea/i
   match "/:region/:realm/:name/refresh", :to => "characters#refresh", :as => :refresh_character, :region => /us|eu|kr|tw|cn|sea/i
