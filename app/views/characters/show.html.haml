@@ -145,6 +145,30 @@
       .panel-content
 
     #docs
+      %h3 7.0 Beta Release 3
+      Fixes/Additions:
+      %ul
+        %li
+          \- OMG AN ENGINE! Fierydemise has the Subtlety model working. Outlaw and Assassination are still in progress. Make sure to try out all of the new options on the Options tab, all of the talents, and all of the artifact traits. Let us know if you find places where the numbers really don't make sense (like something giving way too much DPS). Some notes from Fiery:
+          %ul
+            %li --- Shadow Focus Value is too high
+            %li --- Not all settings/trait/talent have been tested, some may lead to anomolous results, please report weird results
+            %li --- Model currently assumes no combo point waste so anticipation has low value
+            %li --- Single rank traits are unranked once taken
+            %li --- Legionblade and second shuriken traits are not implemented
+            %li --- Legendaries, set bonuses, and legion trinket procs are not currently modeled
+        %li - Warforged/Titanforged support. This required a serious rewrite of a bunch of the item handling code. You can now select WF/TF from the same place you add sockets/tertiary stats. One thing to note is that Warforged items won't show up in the gear lists anymore.
+        %li - More squashing of item display bugs. If you load a character and you're missing something, let Tamen know.
+        %li - Added a counter to the Artifact tab that shows the amount of trait points spent (not Artifact Power)
+        %li - Fixed lots of bugs related to snapshots and resetting to last armory import.
+        
+      <br/>Known Issues:
+      %ul
+        %li - No Assassination or Outlaw models. Don't expect those specs to work right.
+        %li - Adding a socket to an item makes the DPS go down, even if you didn't equip anything in the socket. UPDATE: still broken.
+        %li - Loads of duplicate items in the gear lists. This is a bug with the Blizzard API. It has been reported to them. There's nothing I can really do about it until they fix the API. UPDATE: Blizzard acknowledged it. No ETA on them fixing it.
+
+      <br/><br/>
       %h3 7.0 Beta Release 2
       
       Fixes/Additions:
@@ -157,7 +181,7 @@
       <br/>Known Issues:
       %ul
         %li - Still no 7.0 Engine. It's making me sad.
-        %li - Loads of dusplicate items in the gear lists. This is a bug with the Blizzard API. It has been reported to them and summarily ignored. There's nothing I can really do about it until they fix the API.
+        %li - Loads of duplicate items in the gear lists. This is a bug with the Blizzard API. It has been reported to them and summarily ignored. There's nothing I can really do about it until they fix the API.
         %li - Talents will display weirdly for a spec if you haven't configured that spec on your character. This will be fixed to not display any selected talents in a later release.
         %li - Stock talent sets need to be fixed to actually mean something.
         %li - Adding a socket to an item makes the DPS go down, even if you didn't equip anything in the socket.

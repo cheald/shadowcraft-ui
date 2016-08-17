@@ -304,6 +304,7 @@
       checkbox: Handlebars.compile($("#template-checkbox").html()),
       select: Handlebars.compile($("#template-select").html()),
       input: Handlebars.compile($("#template-input").html()),
+      subheader: Handlebars.compile($("#template-subheader").html()),
       talentTree: Handlebars.compile($("#template-tree").html()),
       talentTier: Handlebars.compile($("#template-tier").html()),
       specActive: Handlebars.compile($("#template-specactive").html()),
@@ -1272,7 +1273,7 @@
           buffList.push(ShadowcraftOptions.buffMap.indexOf(key));
         }
       }
-      buffFood = 0;
+      buffFood = ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff);
       talentArray = data.activeTalents.split("");
       for (key = j = 0, len = talentArray.length; j < len; key = ++j) {
         val = talentArray[key];
@@ -1317,7 +1318,7 @@
         },
         spec: data.activeSpec,
         t: talentString,
-        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit || 0, statSummary.haste || 0, statSummary.mastery || 0, statSummary.multistrike || 0, statSummary.versatility || 0]
+        sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit || 0, statSummary.haste || 0, statSummary.mastery || 0, statSummary.versatility || 0]
       };
       payload.art = {};
       if (mh && oh) {
@@ -1701,9 +1702,6 @@
             }
             Shadowcraft.Console.warn({}, "Level " + level + " Talent not set", null, 'warn', 'talents');
           }
-          if (i === 5 && row === "0") {
-            Shadowcraft.Console.warn({}, "Talent Shuriken Toss is not fully supported by Shadowcraft.", "It is recommended to not use this talent.", 'warn', 'talents');
-          }
         }
       }
     }
@@ -1796,7 +1794,7 @@
 
     ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'flask_legion_agi'];
 
-    ShadowcraftOptions.buffFoodMap = ['food_750_crit', 'food_750_haste', 'food_750_mastery', 'food_750_versatility', 'food_400_feast', 'food_high_proc'];
+    ShadowcraftOptions.buffFoodMap = ['food_legion_375_crit', 'food_legion_375_haste', 'food_legion_375_mastery', 'food_legion_375_versatility', 'food_legion_feast_200', 'food_legion_damage_3'];
 
     ShadowcraftOptions.buffPotions = ['potion_old_war', 'potion_deadly_grace', 'potion_none'];
 
@@ -1896,6 +1894,10 @@
             case "input":
               template = Templates.input;
               options = {};
+              break;
+            case "subheader":
+              template = Templates.subheader;
+              options = {};
           }
           if (template) {
             s.append(template($.extend({
@@ -1929,7 +1931,7 @@
         patch: {
           type: "select",
           name: "Patch/Engine",
-          'default': 60,
+          "default": 60,
           datatype: 'integer',
           options: {
             60: '6.2'
@@ -1938,7 +1940,7 @@
         level: {
           type: "input",
           name: "Level",
-          'default': 100,
+          "default": 100,
           datatype: 'integer',
           min: 100,
           max: 100
@@ -1947,7 +1949,7 @@
           type: "select",
           options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"],
           name: "Race",
-          'default': "Human"
+          "default": "Human"
         },
         night_elf_racial: {
           name: "Racial (Night Elf)",
@@ -1962,7 +1964,7 @@
         duration: {
           type: "input",
           name: "Fight Duration",
-          'default': 360,
+          "default": 360,
           datatype: 'integer',
           min: 15,
           max: 1200
@@ -1970,7 +1972,7 @@
         response_time: {
           type: "input",
           name: "Response Time",
-          'default': 0.5,
+          "default": 0.5,
           datatype: 'float',
           min: 0.1,
           max: 5
@@ -1979,7 +1981,7 @@
           type: "input",
           name: "Time in Execute Range",
           desc: "Only used in Assassination Spec",
-          'default': 0.35,
+          "default": 0.35,
           datatype: 'float',
           min: 0,
           max: 1
@@ -1991,7 +1993,7 @@
             'dp': 'Deadly Poison',
             'wp': 'Wound Poison'
           },
-          'default': 'dp'
+          "default": 'dp'
         },
         num_boss_adds: {
           name: "Number of Boss Adds",
@@ -1999,7 +2001,7 @@
           type: 'input',
           min: 0,
           max: 20,
-          'default': 0
+          "default": 0
         },
         demon_enemy: {
           name: "Enemy is Demon",
@@ -2009,7 +2011,7 @@
             1: 'Yes',
             0: 'No'
           },
-          'default': 0
+          "default": 0
         }
       });
       this.setup("#settings #generalFilter", "general", {
@@ -2024,7 +2026,7 @@
           name: "Max ILevel",
           type: "input",
           desc: "Don't show items over this item level in gear lists",
-          'default': 1000,
+          "default": 1000,
           datatype: 'integer',
           min: 540,
           max: 1000
@@ -2033,7 +2035,7 @@
           name: "Min ILevel",
           type: "input",
           desc: "Don't show items under this item level in gear lists",
-          'default': 540,
+          "default": 540,
           datatype: 'integer',
           min: 540,
           max: 1000
@@ -2045,7 +2047,7 @@
           type: 'input',
           min: 540,
           max: 1000,
-          'default': 540
+          "default": 540
         },
         show_upgrades: {
           name: "Show Upgrades",
@@ -2056,7 +2058,7 @@
             1: 'Yes',
             0: 'No'
           },
-          'default': 0
+          "default": 0
         },
         epic_gems: {
           name: "Recommend Epic Gems",
@@ -2073,26 +2075,26 @@
           name: "Food Buff",
           type: 'select',
           datatype: 'string',
-          "default": 'food_750_versatility',
+          "default": 'food_legion_375_versatility',
           options: {
-            'food_750_crit': 'The Hungry Magister (750 Crit)',
-            'food_750_haste': 'Azshari Salad (750 Haste)',
-            'food_750_mastery': 'Nightborne Delicacy Platter (750 Mastery)',
-            'food_750_versatility': 'Seed-Battered Fish Plate (750 Versatility)',
-            'food_400_feast': 'Lavish Suramar Feast (400 Stat)',
-            'food_high_proc': 'Fishbrul Special (High Fire Proc)'
+            'food_legion_375_crit': 'The Hungry Magister (375 Crit)',
+            'food_legion_375_haste': 'Azshari Salad (375 Haste)',
+            'food_legion_375_mastery': 'Nightborne Delicacy Platter (375 Mastery)',
+            'food_legion_375_versatility': 'Seed-Battered Fish Plate (375 Versatility)',
+            'food_legion_feast_200': 'Lavish Suramar Feast (200 Agility)',
+            'food_legion_damage_3': 'Fishbrul Special (High Fire Proc)'
           }
         },
         flask_legion_agi: {
           name: "Legion Agility Flask",
           desc: "Flask of the Seventh Demon (1300 Agility)",
-          'default': true,
+          "default": true,
           datatype: 'bool'
         },
         short_term_haste_buff: {
           name: "+30% Haste/40 sec",
           desc: "Heroism/Bloodlust/Time Warp",
-          'default': true,
+          "default": true,
           datatype: 'bool'
         }
       });
@@ -2125,7 +2127,7 @@
           type: "select",
           name: "Min CP/Envenom > 35%",
           options: [5, 4, 3, 2, 1],
-          'default': 4,
+          "default": 4,
           desc: "CP for Envenom when using Mutilate, no effect with Anticipation",
           datatype: 'integer',
           min: 1,
@@ -2135,7 +2137,7 @@
           type: "select",
           name: "Min CP/Envenom < 35%",
           options: [5, 4, 3, 2, 1],
-          'default': 5,
+          "default": 5,
           desc: "CP for Envenom when using Dispatch, no effect with Anticipation",
           datatype: 'integer',
           min: 1,
@@ -2149,7 +2151,7 @@
             'ambush': "Ambush",
             'garrote': "Garrote"
           },
-          'default': 'ambush',
+          "default": 'ambush',
           datatype: 'string'
         },
         opener_use_assassination: {
@@ -2160,7 +2162,7 @@
             'opener': "Start of the Fight",
             'never': "Never"
           },
-          'default': 'always',
+          "default": 'always',
           datatype: 'string'
         }
       });
@@ -2172,7 +2174,7 @@
             'true': "Killing Spree on cooldown",
             'false': "Wait for Bandit's Guile before using Killing Spree"
           },
-          'default': 'true',
+          "default": 'true',
           datatype: 'string'
         },
         revealing_strike_pooling: {
@@ -2197,7 +2199,7 @@
             'ambush': "Ambush",
             'garrote': "Garrote"
           },
-          'default': 'ambush',
+          "default": 'ambush',
           datatype: 'string'
         },
         opener_use_combat: {
@@ -2208,49 +2210,146 @@
             'opener': "Start of the Fight",
             'never': "Never"
           },
-          'default': 'always',
+          "default": 'always',
           datatype: 'string'
         }
       });
       this.setup("#settings section.subtlety .settings", "rotation", {
-        use_hemorrhage: {
+        sub_other_header: {
+          type: "subheader",
+          desc: "Main Rotation Options"
+        },
+        cp_builder: {
           type: "select",
           name: "CP Builder",
           options: {
-            'never': "Backstab",
-            'always': "Hemorrhage",
-            'uptime': "Use Backstab and Hemorrhage for 100% DoT uptime"
+            'backstab': 'Backstab',
+            'gloomblade': 'Gloomblade',
+            'shuriken_storm': 'Shuriken Storm'
           },
-          "default": 'uptime',
+          "default": 'backstab',
           datatype: 'string'
         },
-        opener_name_subtlety: {
+        dance_cp_builder: {
           type: "select",
-          name: "Opener Name",
+          name: "Dance CP Builder",
           options: {
-            'ambush': "Ambush",
-            'garrote': "Garrote"
+            "shuriken_storm": "Shuriken Storm",
+            "shadowstrike": "Shadowstrike"
           },
-          'default': 'ambush',
-          datatype: 'string'
+          "default": "shadowstrike",
+          datatype: "string"
         },
-        opener_use_subtlety: {
+        symbols_policy: {
           type: "select",
-          name: "Opener Usage",
+          name: "SoD Policy",
           options: {
-            'always': "Always",
-            'opener': "Start of the Fight",
-            'never': "Never"
+            'always': "Use on cooldown",
+            'just': "Only use SoD when needed to refresh"
           },
-          'default': 'always',
-          datatype: 'string'
+          "default": "just",
+          datatype: "string"
+        },
+        symbols_during_vanish: {
+          type: "check",
+          name: "Use SoD during Vanish",
+          "default": true,
+          datatype: "bool"
+        },
+        max_vanish_builders: {
+          type: "select",
+          name: "Max Vanish Builders",
+          options: [3, 2, 1, 0],
+          "default": 3,
+          datatype: 'integer',
+          desc: "Maximum number of CP builders to use during Vanish. This option is modified by the Subterfuge talent."
+        },
+        max_dance_builders: {
+          type: "select",
+          name: "Max Dance Builders",
+          options: [4, 3, 2, 1, 0],
+          "default": 4,
+          datatype: 'integer',
+          desc: "Maximum number of CP builders to use during Shadow Dance. This option is modified by the Subterfuge talent."
+        },
+        sub_finisher_header: {
+          type: "subheader",
+          desc: "Finisher Thresholds (Minimum CPs for each finisher)"
+        },
+        eviscerate_cps: {
+          type: "select",
+          name: "Eviscerate",
+          options: [6, 5, 4, 3, 2, 1],
+          "default": 5,
+          datatype: 'integer',
+          desc: "This option is modified by the Deeper Strategem talent"
+        },
+        nightblade_cps: {
+          type: "select",
+          name: "Nightblade",
+          options: [6, 5, 4, 3, 2, 1],
+          "default": 5,
+          datatype: 'integer',
+          desc: "This option is modified by the Deeper Strategem talent"
+        },
+        finality_eviscerate_cps: {
+          type: "select",
+          name: "Finality: Eviscerate",
+          options: [6, 5, 4, 3, 2, 1],
+          "default": 5,
+          datatype: 'integer',
+          desc: "This option is modified by the Deeper Strategem talent"
+        },
+        finality_nightblade_cps: {
+          type: "select",
+          name: "Finality: Nightblade",
+          options: [6, 5, 4, 3, 2, 1],
+          "default": 5,
+          datatype: 'integer',
+          desc: "This option is modified by the Deeper Strategem talent"
+        },
+        dfa_cps: {
+          type: "select",
+          name: "Death From Above",
+          options: [6, 5, 4, 3, 2, 1],
+          "default": 5,
+          datatype: 'integer',
+          desc: "This option is modified by the Deeper Strategem talent"
+        },
+        sub_dance_header: {
+          type: "subheader",
+          desc: "Shadow Dance Finishers"
+        },
+        sub_dance_evis: {
+          type: "check",
+          name: "Eviscerate",
+          "default": true,
+          datatype: 'bool'
+        },
+        sub_dance_nb: {
+          type: "check",
+          name: "Nightblade",
+          "default": true,
+          datatype: 'bool'
+        },
+        sub_dance_fin_evis: {
+          type: "check",
+          name: "Finality: Eviscerate",
+          "default": true,
+          datatype: 'bool'
+        },
+        sub_dance_fin_nb: {
+          type: "check",
+          name: "Finality: Nightblade",
+          "default": true,
+          datatype: 'bool'
         }
       });
       return this.setup("#settings #advancedSettings", "advanced", {
         latency: {
           type: "input",
           name: "Latency",
-          'default': 0.03,
+          "default": 0.03,
           datatype: 'float',
           min: 0.0,
           max: 5
@@ -2326,13 +2425,14 @@
         } else if (Shadowcraft.Data.activeSpec === "Z") {
           $("#settings section.combat").show();
           return $("#opt-general-lethal_poison option[value='ap']").remove();
-        } else {
+        } else if (Shadowcraft.Data.activeSpec === "b") {
           $("#settings section.subtlety").show();
           return $("#opt-general-lethal_poison option[value='ap']").remove();
         }
       });
       Shadowcraft.Talents.bind("changedTalents", function() {
-        var agonizing, poisonSelect;
+        var agonizing, box, ds_active, i, j, len, len1, m, max_dance, max_vanish, poisonSelect, ref, ref1;
+        ds_active = Shadowcraft.Data.activeTalents.split("")[2] === "0";
         Shadowcraft.Console.remove(".options-poisons");
         if (Shadowcraft.Data.activeSpec === "a") {
           agonizing = Shadowcraft.Data.activeTalents.split("")[5] === "0";
@@ -2346,11 +2446,54 @@
           } else {
             return poisonSelect.append($("<option></option>").attr("value", "ap").text("Agonizing Poison"));
           }
-        } else {
-          if (poisonSelect.val() === "ap") {
-            poisonSelect.val("dp");
+        } else if (Shadowcraft.Data.activeSpec === "b") {
+          if (ds_active) {
+            console.log("ds active");
+            ref = ['eviscerate', 'nightblade', 'finality_eviscerate', 'finality_nightblade'];
+            for (j = 0, len = ref.length; j < len; j++) {
+              i = ref[j];
+              box = $("#opt-rotation-" + i + "_cps");
+              if ($("#opt-rotation-" + i + "_cps option[value='6']").length === 0) {
+                box.prepend($("<option></option>").attr("value", "6").text("6"));
+              }
+            }
+          } else {
+            console.log("ds inactive");
+            ref1 = ['eviscerate', 'nightblade', 'finality_eviscerate', 'finality_nightblade'];
+            for (m = 0, len1 = ref1.length; m < len1; m++) {
+              i = ref1[m];
+              box = $("#opt-rotation-" + i + "_cps");
+              if (box.val() === "6") {
+                box.val("5");
+              }
+              $("#opt-rotation-" + i + "_cps option[value='6']").remove();
+            }
           }
-          return $("#opt-general-lethal_poison option[value='ap']").remove();
+          max_dance = $("#opt-rotation-max_dance_builders");
+          max_vanish = $("#opt-rotation-max_vanish_builders");
+          if (Shadowcraft.Data.activeTalents.split("")[1] === "1") {
+            console.log("subterfuge active");
+            if ($("#opt-rotation-max_dance_builders option[value='4']").length === 0) {
+              max_dance.prepend($("<option></option>").attr("value", "4").text("4"));
+            }
+            if ($("#opt-rotation-max_vanish_builders option[value='2']").length === 0) {
+              max_vanish.prepend($("<option></option>").attr("value", "2").text("2"));
+            }
+            if ($("#opt-rotation-max_vanish_builders option[value='3']").length === 0) {
+              return max_vanish.prepend($("<option></option>").attr("value", "3").text("3"));
+            }
+          } else {
+            console.log("subterfuge inactive");
+            if (parseInt(max_dance.val()) > 3) {
+              max_dance.val("3");
+            }
+            $("#opt-rotation-max_dance_builders option[value='4']").remove();
+            if (parseInt(max_vanish.val()) > 1) {
+              max_vanish.val("1");
+            }
+            $("#opt-rotation-max_vanish_builders option[value='3']").remove();
+            return $("#opt-rotation-max_vanish_builders option[value='2']").remove();
+          }
         }
       });
       return this;
@@ -2474,7 +2617,7 @@
     };
 
     updateTraits = function() {
-      var active, button, current, done, i, ilvl, j, key, levels, m, main, main_spell_id, oldIlvl, relic, relicTrait, relicdiv, spell, spell_id, stack, trait, type, val;
+      var active, buffer, button, current, done, i, ilvl, j, key, levels, m, main, main_spell_id, oldIlvl, relic, relicTrait, relicdiv, spell, spell_id, stack, total_artifact_points, trait, type, val;
       active = SPEC_ARTIFACT[Shadowcraft.Data.activeSpec];
       main_spell_id = SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].main;
       $("#artifactframe .trait").each(function() {
@@ -2578,28 +2721,37 @@
           button.addClass("inactive");
         }
       }
-      $("#artifactframe .trait").not(".inactive").each(function() {
-        var has_active_attachment, has_active_attactment, level, max_level, relic_power;
-        if ($(this).data("relic-power") > 0) {
-          spell_id = $(this).attr("data-tooltip-id");
-          has_active_attactment = false;
-          if ($("#artifactframe .line[spell1='" + spell_id + "']").not(".inactive").length > 0) {
+      total_artifact_points = 0;
+      $("#artifactframe .trait").children(".level").not(".inactive").each(function() {
+        var has_active_attachment, level, local_spell_id, local_trait, max_level, relic_power;
+        local_trait = $(this).parent();
+        local_spell_id = local_trait.attr("data-tooltip-id");
+        if (local_trait.data("relic-power") > 0) {
+          has_active_attachment = false;
+          if ($("#artifactframe .line[spell1='" + local_spell_id + "']").not(".inactive").length > 0) {
             has_active_attachment = true;
           }
-          if ($("#artifactframe .line[spell2='" + spell_id + "']").not(".inactive").length > 0) {
+          if ($("#artifactframe .line[spell2='" + local_spell_id + "']").not(".inactive").length > 0) {
             has_active_attachment = true;
           }
           if (!has_active_attachment) {
-            artifact_data.traits[spell_id] = 0;
-            relic_power = trait.data("relic-power");
+            artifact_data.traits[local_spell_id] = 0;
+            relic_power = local_trait.data("relic-power");
             level = relic_power;
-            max_level = parseInt(trait.attr("max_level")) + relic_power;
-            trait.children(".level").text("" + level + "/" + max_level);
-            return trait.data("tooltip-rank", level - 1);
+            max_level = parseInt(local_trait.attr("max_level")) + relic_power;
+            local_trait.children(".level").text("" + level + "/" + max_level);
+            local_trait.data("tooltip-rank", level - 1);
           }
         }
+        total_artifact_points += artifact_data.traits[local_spell_id];
       });
       trait = $("#artifactframe .trait[data-tooltip-id='" + spell_id + "']");
+      buffer = Templates.artifactActive({
+        name: SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].text,
+        icon: SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].icon,
+        points: "" + total_artifact_points
+      });
+      $("#artifactactive").get(0).innerHTML = buffer;
       updateArtifactItem(Shadowcraft.Data.gear[15].id, oldIlvl, ilvl);
       updateArtifactItem(Shadowcraft.Data.gear[16].id, oldIlvl, ilvl);
       Shadowcraft.update();
@@ -2797,7 +2949,8 @@
       var buffer;
       buffer = Templates.artifactActive({
         name: SPEC_ARTIFACT[str].text,
-        icon: SPEC_ARTIFACT[str].icon
+        icon: SPEC_ARTIFACT[str].icon,
+        points: "0"
       });
       $("#artifactactive").get(0).innerHTML = buffer;
       if (str === "a") {
@@ -2861,7 +3014,7 @@
       max = _.max(ranking);
       for (trait in ranking) {
         ep = ranking[trait];
-        val = parseFloat(ep);
+        val = Math.round(parseFloat(ep) * 100.0) / 100.0;
         trait_name = ShadowcraftData.ARTIFACT_LOOKUP[parseInt(trait)].n;
         pct = val / max * 100 + 0.01;
         exist = $("#traitrankings #talent-weight-" + trait);
@@ -4312,6 +4465,7 @@
         val = parseFloat(val);
         name = titleize(skill);
         skill = skill.replace(/\./g, '_');
+        skill = skill.replace(/:/g, '_');
         exist = $("#dpsbreakdown #talent-weight-" + skill);
         if (isNaN(val)) {
           name += " (NYI)";
@@ -4380,13 +4534,18 @@
         itemString = arm.join(':');
         item = Shadowcraft.ServerData.ITEM_BY_CONTEXT[itemString];
         if (item == null) {
+          arm = [itemId, "none"];
+          itemString = arm.join(':');
+          item = Shadowcraft.ServerData.ITEM_BY_CONTEXT[itemString];
+        }
+        if (item == null) {
           arm = [itemId, ilvl, 0];
           itemString = arm.join(':');
           item = Shadowcraft.ServerData.ITEM_LOOKUP2[itemString];
         }
       }
-      if ((item == null) && itemId) {
-        console.warn("item not found by context", itemString);
+      if (item == null) {
+        console.warn("item not found: " + itemId);
       }
       return item;
     };
