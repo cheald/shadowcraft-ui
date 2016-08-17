@@ -9,7 +9,7 @@ class ShadowcraftOptions
     'food_legion_375_haste',
     'food_legion_375_mastery',
     'food_legion_375_versatility',
-    'food_legion_400_feast',
+    'food_legion_feast_200',
     'food_legion_damage_3'
   ]
 
@@ -136,7 +136,7 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #playerBuffs", "buffs", {
-      food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_legion_375_versatility', options: {'food_legion_375_crit': 'The Hungry Magister (375 Crit)', 'food_legion_375_haste': 'Azshari Salad (375 Haste)', 'food_legion_375_mastery': 'Nightborne Delicacy Platter (375 Mastery)', 'food_legion_375_versatility': 'Seed-Battered Fish Plate (375 Versatility)', 'food_legion_200_feast': 'Lavish Suramar Feast (200 Stat)', 'food_legion_damage_3': 'Fishbrul Special (High Fire Proc)' } },
+      food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_legion_375_versatility', options: {'food_legion_375_crit': 'The Hungry Magister (375 Crit)', 'food_legion_375_haste': 'Azshari Salad (375 Haste)', 'food_legion_375_mastery': 'Nightborne Delicacy Platter (375 Mastery)', 'food_legion_375_versatility': 'Seed-Battered Fish Plate (375 Versatility)', 'food_legion_feast_200': 'Lavish Suramar Feast (200 Agility)', 'food_legion_damage_3': 'Fishbrul Special (High Fire Proc)' } },
       flask_legion_agi: {name: "Legion Agility Flask", desc: "Flask of the Seventh Demon (1300 Agility)", default: true, datatype: 'bool'},
       short_term_haste_buff: {name: "+30% Haste/40 sec", desc: "Heroism/Bloodlust/Time Warp", default: true, datatype: 'bool'},
     })

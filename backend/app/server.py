@@ -204,7 +204,7 @@ class ShadowcraftComputation:
         'food_legion_haste_375',
         'food_legion_mastery_375',
         'food_legion_versatility_375',
-        'food_legion_200_feast',
+        'food_legion_feast_200',
         'food_legion_damage_3'
     ]
 
