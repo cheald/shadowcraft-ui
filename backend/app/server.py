@@ -409,13 +409,10 @@ class ShadowcraftComputation:
         settings_options['is_demon'] = _opt.get("demon_enemy", 0) == 1
 
         if spec == "subtlety":
-            sub_dance_prio_map = {}
-            for i in [('sub_dance_prio_fin_nb','finality:nightblade'), ('sub_dance_prio_fin_evis','finality:eviscerate'), ('sub_dance_prio_nb','nightblade'), ('sub_dance_prio_evis','eviscerate')]:
-                sub_dance_prio_map[i[1]] = rotation_keys[i[0]]
-
-            sub_dance_prio_map = {k:v for k,v in sub_dance_prio_map.items() if v != 0}
-            sub_dance_prio = sorted(sub_dance_prio_map, key=sub_dance_prio_map.get, reverse=True)
-            rotation_options['dance_finisher_priority'] = sub_dance_prio
+            rotation_options['dance_finishers_allowed'] = []
+            for i in [('sub_dance_fin_nb','finality:nightblade'), ('sub_dance_fin_evis','finality:eviscerate'), ('sub_dance_nb','nightblade'), ('sub_dance_evis','eviscerate')]:
+                if rotation_keys[i[0]]:
+                    rotation_options['dance_finishers_allowed'].append(i[1])
         
         if tree == 0:
             _cycle = settings.AssassinationCycle(**rotation_options)
@@ -554,7 +551,6 @@ class ShadowcraftSite(resource.Resource):
             return zbuf.getvalue()
         else:
             return content
-
 
 class ShadowcraftSocket(WebSocketHandler):
     def frameReceived(self, frame):

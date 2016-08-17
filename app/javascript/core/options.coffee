@@ -114,31 +114,31 @@ class ShadowcraftOptions
   initOptions: ->
 
     @setup("#settings #general", "general", {
-      patch: {type: "select", name: "Patch/Engine", 'default': 60, datatype: 'integer', options: {60: '6.2'}},
-      level: {type: "input", name: "Level", 'default': 100, datatype: 'integer', min: 100, max: 100},
-      race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", 'default': "Human"}
+      patch: {type: "select", name: "Patch/Engine", default: 60, datatype: 'integer', options: {60: '6.2'}},
+      level: {type: "input", name: "Level", default: 100, datatype: 'integer', min: 100, max: 100},
+      race: {type: "select", options: ["Human", "Dwarf", "Orc", "Blood Elf", "Gnome", "Worgen", "Troll", "Night Elf", "Undead", "Goblin", "Pandaren"], name: "Race", default: "Human"}
       night_elf_racial: {name: "Racial (Night Elf)", datatype: 'integer', type: 'select', options: {1: 'Day (1% Crit)', 0: 'Night (1% Haste)'}, default: 0}
-      duration: {type: "input", name: "Fight Duration", 'default': 360, datatype: 'integer', min: 15, max: 1200}
-      response_time: {type: "input", name: "Response Time", 'default': 0.5, datatype: 'float', min: 0.1, max: 5}
-      time_in_execute_range: {type: "input", name: "Time in Execute Range", desc: "Only used in Assassination Spec", 'default': 0.35, datatype: 'float', min: 0, max: 1}
-      lethal_poison: {name: "Lethal Poison", type: 'select', options: {'dp': 'Deadly Poison', 'wp': 'Wound Poison'}, 'default': 'dp'}
-      num_boss_adds: {name: "Number of Boss Adds", datatype: 'float', type: 'input', min: 0, max: 20, 'default': 0}
-      demon_enemy: {name: "Enemy is Demon", desc: 'Enables damage buff from heirloom trinket against demons (The Demon Button)', datatype: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
+      duration: {type: "input", name: "Fight Duration", default: 360, datatype: 'integer', min: 15, max: 1200}
+      response_time: {type: "input", name: "Response Time", default: 0.5, datatype: 'float', min: 0.1, max: 5}
+      time_in_execute_range: {type: "input", name: "Time in Execute Range", desc: "Only used in Assassination Spec", default: 0.35, datatype: 'float', min: 0, max: 1}
+      lethal_poison: {name: "Lethal Poison", type: 'select', options: {'dp': 'Deadly Poison', 'wp': 'Wound Poison'}, default: 'dp'}
+      num_boss_adds: {name: "Number of Boss Adds", datatype: 'float', type: 'input', min: 0, max: 20, default: 0}
+      demon_enemy: {name: "Enemy is Demon", desc: 'Enables damage buff from heirloom trinket against demons (The Demon Button)', datatype: 'select', options: {1: 'Yes', 0: 'No'}, default: 0}
     })
 
     @setup("#settings #generalFilter", "general", {
       dynamic_ilvl: {name: "Dynamic ILevel filtering", type: "check", desc: "Dynamically filters items in gear lists to +/- 50 Ilevels of the item equipped in that slot. Disable this option to use the manual filtering options below.", default: true, datatype: 'bool'}
-      max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this item level in gear lists", 'default': 1000, datatype: 'integer', min: 540, max: 1000}
-      min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this item level in gear lists", 'default': 540, datatype: 'integer', min: 540, max: 1000}
-      show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this item level in gear lists", datatype: 'integer', type: 'input', min: 540, max: 1000, 'default': 540}
-      show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, 'default': 0}
+      max_ilvl: {name: "Max ILevel", type: "input", desc: "Don't show items over this item level in gear lists", default: 1000, datatype: 'integer', min: 540, max: 1000}
+      min_ilvl: {name: "Min ILevel", type: "input", desc: "Don't show items under this item level in gear lists", default: 540, datatype: 'integer', min: 540, max: 1000}
+      show_random_items: {name: "Min ILvL (Random Items)", desc: "Don't show random items under this item level in gear lists", datatype: 'integer', type: 'input', min: 540, max: 1000, default: 540}
+      show_upgrades: {name: "Show Upgrades", desc: "Show all upgraded items in gear lists", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}, default: 0}
       epic_gems: {name: "Recommend Epic Gems", datatype: 'integer', type: 'select', options: {1: 'Yes', 0: 'No'}}
     })
 
     @setup("#settings #playerBuffs", "buffs", {
       food_buff: {name: "Food Buff", type: 'select', datatype: 'string', default: 'food_750_versatility', options: {'food_750_crit': 'The Hungry Magister (750 Crit)', 'food_750_haste': 'Azshari Salad (750 Haste)', 'food_750_mastery': 'Nightborne Delicacy Platter (750 Mastery)', 'food_750_versatility': 'Seed-Battered Fish Plate (750 Versatility)', 'food_400_feast': 'Lavish Suramar Feast (400 Stat)', 'food_high_proc': 'Fishbrul Special (High Fire Proc)' } },
-      flask_legion_agi: {name: "Legion Agility Flask", desc: "Flask of the Seventh Demon (1300 Agility)", 'default': true, datatype: 'bool'},
-      short_term_haste_buff: {name: "+30% Haste/40 sec", desc: "Heroism/Bloodlust/Time Warp", 'default': true, datatype: 'bool'},
+      flask_legion_agi: {name: "Legion Agility Flask", desc: "Flask of the Seventh Demon (1300 Agility)", default: true, datatype: 'bool'},
+      short_term_haste_buff: {name: "+30% Haste/40 sec", desc: "Heroism/Bloodlust/Time Warp", default: true, datatype: 'bool'},
     })
 
     @setup("#settings #raidOther", "general", {
@@ -147,41 +147,45 @@ class ShadowcraftOptions
     })
 
     @setup("#settings section.mutilate .settings", "rotation", {
-      min_envenom_size_non_execute: {type: "select", name: "Min CP/Envenom > 35%", options: [5,4,3,2,1], 'default': 4, desc: "CP for Envenom when using Mutilate, no effect with Anticipation", datatype: 'integer', min: 1, max: 5}
-      min_envenom_size_execute: {type: "select", name: "Min CP/Envenom < 35%", options: [5,4,3,2,1], 'default': 5, desc: "CP for Envenom when using Dispatch, no effect with Anticipation", datatype: 'integer', min: 1, max: 5}
-      opener_name_assassination: {type: "select", name: "Opener Name", options: {'mutilate': "Mutilate", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
-      opener_use_assassination: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
+      min_envenom_size_non_execute: {type: "select", name: "Min CP/Envenom > 35%", options: [5,4,3,2,1], default: 4, desc: "CP for Envenom when using Mutilate, no effect with Anticipation", datatype: 'integer', min: 1, max: 5}
+      min_envenom_size_execute: {type: "select", name: "Min CP/Envenom < 35%", options: [5,4,3,2,1], default: 5, desc: "CP for Envenom when using Dispatch, no effect with Anticipation", datatype: 'integer', min: 1, max: 5}
+      opener_name_assassination: {type: "select", name: "Opener Name", options: {'mutilate': "Mutilate", 'ambush': "Ambush", 'garrote': "Garrote"}, default: 'ambush', datatype: 'string'}
+      opener_use_assassination: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, default: 'always', datatype: 'string'}
     })
 
     @setup("#settings section.combat .settings", "rotation", {
-      ksp_immediately: {type: "select", name: "Killing Spree", options: {'true': "Killing Spree on cooldown", 'false': "Wait for Bandit's Guile before using Killing Spree"}, 'default': 'true', datatype: 'string'}
+      ksp_immediately: {type: "select", name: "Killing Spree", options: {'true': "Killing Spree on cooldown", 'false': "Wait for Bandit's Guile before using Killing Spree"}, default: 'true', datatype: 'string'}
       revealing_strike_pooling: {type: "check", name: "Pool for Revealing Strike",  default: true, datatype: 'bool'}
       blade_flurry: {type: "check", name: "Blade Flurry", desc: "Use Blade Flurry", default: false, datatype: 'bool'}
-      opener_name_combat: {type: "select", name: "Opener Name", options: {'sinister_strike': "Sinister Strike", 'revealing_strike': "Revealing Strike", 'ambush': "Ambush", 'garrote': "Garrote"}, 'default': 'ambush', datatype: 'string'}
-      opener_use_combat: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, 'default': 'always', datatype: 'string'}
+      opener_name_combat: {type: "select", name: "Opener Name", options: {'sinister_strike': "Sinister Strike", 'revealing_strike': "Revealing Strike", 'ambush': "Ambush", 'garrote': "Garrote"}, default: 'ambush', datatype: 'string'}
+      opener_use_combat: {type: "select", name: "Opener Usage", options: {'always': "Always", 'opener': "Start of the Fight", 'never': "Never"}, default: 'always', datatype: 'string'}
     })
 
     @setup("#settings section.subtlety .settings", "rotation", {
       sub_other_header: {type: "subheader", desc: "Main Rotation Options"}
       cp_builder: {type: "select", name: "CP Builder", options: {'backstab':'Backstab','gloomblade':'Gloomblade','shuriken_storm':'Shuriken Storm'}, default: 'backstab', datatype: 'string'}
-      dance_cp_builder: {type: "select", name: "Dance CP Builder", options: {"shuriken_storm":"Shuriken Storm", "shadowstrike":"shadowstrike"}, default: "shadowstrike", datatype: "string"}
+      dance_cp_builder: {type: "select", name: "Dance CP Builder", options: {"shuriken_storm":"Shuriken Storm", "shadowstrike":"Shadowstrike"}, default: "shadowstrike", datatype: "string"}
       symbols_policy: {type: "select", name: "SoD Policy", options: {'always':"Use on cooldown", 'just':"Only use SoD when needed to refresh"}, default: "just", datatype: "string"}
+      symbols_during_vanish: {type: "check", name: "Use SoD during Vanish", default: true, datatype: "bool"}
+      max_vanish_builders: {type: "select", name: "Max Vanish Builders", options: [3,2,1,0], default: 3, datatype: 'integer', desc: "Maximum number of CP builders to use during Vanish. This option is modified by the Subterfuge talent."}
+      max_dance_builders: {type: "select", name: "Max Dance Builders", options: [4,3,2,1,0], default: 4, datatype: 'integer', desc: "Maximum number of CP builders to use during Shadow Dance. This option is modified by the Subterfuge talent."}
 
       sub_finisher_header: {type: "subheader", desc: "Finisher Thresholds (Minimum CPs for each finisher)"}
-      eviscerate_cps: {type: "select", name: "Eviscerate", options: [6,5,4,3,2,1], 'default': 5, datatype: 'integer', min: 1, max: 6}
-      finality_eviscerate_cps: {type: "select", name: "Finality: Eviscerate", options: [6,5,4,3,2,1], 'default': 5, datatype: 'integer', min: 1, max: 6}
-      nightblade_cps: {type: "select", name: "Nightblade", options: [6,5,4,3,2,1], 'default': 5, datatype: 'integer', min: 1, max: 6}
-      finality_nightblade_cps: {type: "select", name: "Finality: Nightblade", options: [6,5,4,3,2,1], 'default': 5, datatype: 'integer', min: 1, max: 6}
+      eviscerate_cps: {type: "select", name: "Eviscerate", options: [6,5,4,3,2,1], default: 5, datatype: 'integer', desc: "This option is modified by the Deeper Strategem talent"}
+      nightblade_cps: {type: "select", name: "Nightblade", options: [6,5,4,3,2,1], default: 5, datatype: 'integer', desc: "This option is modified by the Deeper Strategem talent"}
+      finality_eviscerate_cps: {type: "select", name: "Finality: Eviscerate", options: [6,5,4,3,2,1], default: 5, datatype: 'integer', desc: "This option is modified by the Deeper Strategem talent"}
+      finality_nightblade_cps: {type: "select", name: "Finality: Nightblade", options: [6,5,4,3,2,1], default: 5, datatype: 'integer', desc: "This option is modified by the Deeper Strategem talent"}
+      dfa_cps: {type: "select", name: "Death From Above", options: [6,5,4,3,2,1], default: 5, datatype: 'integer', desc: "This option is modified by the Deeper Strategem talent"}
 
-      sub_dance_header: {type: "subheader", desc: "Shadow Dance Finisher Priority"}
-      sub_dance_prio_fin_nb: {type: "input", name: "Finality: Nightblade", 'default': 4, datatype: 'integer', min: 0, max: 4, desc: "The following four options should have values 1-4 to set the priority during Shadow Dance. 4 is the highest priority. 1 is the lowest. To remove an ability from the order, set the value to zero."}
-      sub_dance_prio_fin_evis: {type: "input", name: "Finality: Eviscerate", 'default': 3, datatype: 'integer', min: 0, max: 4}
-      sub_dance_prio_nb: {type: "input", name: "Nightblade", 'default': 2, datatype: 'integer', min: 0, max: 4}
-      sub_dance_prio_evis: {type: "input", name: "Eviscerate", 'default': 1, datatype: 'integer', min: 0, max: 4}
+      sub_dance_header: {type: "subheader", desc: "Shadow Dance Finishers"}
+      sub_dance_evis: {type: "check", name: "Eviscerate", default: true, datatype: 'bool'}
+      sub_dance_nb: {type: "check", name: "Nightblade", default: true, datatype: 'bool'}
+      sub_dance_fin_evis: {type: "check", name: "Finality: Eviscerate", default: true, datatype: 'bool'}
+      sub_dance_fin_nb: {type: "check", name: "Finality: Nightblade", default: true, datatype: 'bool'}
     })
 
     @setup("#settings #advancedSettings", "advanced", {
-      latency: {type: "input", name: "Latency", 'default': 0.03, datatype: 'float', min: 0.0, max: 5}
+      latency: {type: "input", name: "Latency", default: 0.03, datatype: 'float', min: 0.0, max: 5}
       adv_params: {type: "input", name: "Advanced Parameters", default: "", datatype: 'string'}
     })
 
@@ -239,11 +243,15 @@ class ShadowcraftOptions
       else if Shadowcraft.Data.activeSpec == "Z"
         $("#settings section.combat").show()
         $("#opt-general-lethal_poison option[value='ap']").remove()
-      else
+      else if Shadowcraft.Data.activeSpec == "b"
         $("#settings section.subtlety").show()
         $("#opt-general-lethal_poison option[value='ap']").remove()
 
     Shadowcraft.Talents.bind "changedTalents", ->
+
+      # Deeper strategem modifies a lot of options, so just check for it for all specs
+      ds_active = (Shadowcraft.Data.activeTalents.split("")[2] == "0")
+      
       Shadowcraft.Console.remove(".options-poisons")
       if Shadowcraft.Data.activeSpec == "a"
         # if in assassination, check to see if agonizing poison is selected
@@ -259,12 +267,47 @@ class ShadowcraftOptions
           $("#opt-general-lethal_poison option[value='ap']").remove()
         else
           poisonSelect.append($("<option></option>").attr("value","ap").text("Agonizing Poison"))
-      else
-        # if not in assassination, remove agonizing poison from the list and
-        # default back to deadly poison.
-        if poisonSelect.val() == "ap"
-          poisonSelect.val("dp")
-        $("#opt-general-lethal_poison option[value='ap']").remove()
+
+      else if Shadowcraft.Data.activeSpec == "b"
+
+        if ds_active
+          console.log "ds active"
+          for i in ['eviscerate','nightblade','finality_eviscerate','finality_nightblade']
+            box = $("#opt-rotation-#{i}_cps")
+            if $("#opt-rotation-#{i}_cps option[value='6']").length == 0
+              box.prepend($("<option></option>").attr("value","6").text("6"))
+        else
+          console.log "ds inactive"
+          for i in ['eviscerate','nightblade','finality_eviscerate','finality_nightblade']
+            box = $("#opt-rotation-#{i}_cps")
+            if box.val() == "6"
+              box.val("5")
+            $("#opt-rotation-#{i}_cps option[value='6']").remove()
+
+        max_dance = $("#opt-rotation-max_dance_builders")
+        max_vanish = $("#opt-rotation-max_vanish_builders")
+
+        # Subterfuge (row 2, column 2) modifies a few options. Max dance builders is 0-4 with
+        # subterfuge and 0-3 without. Max vanish builders is 0-3 with subterfuge and 0-1
+        # without.
+        if (Shadowcraft.Data.activeTalents.split("")[1] == "1")
+          console.log "subterfuge active"
+          if $("#opt-rotation-max_dance_builders option[value='4']").length == 0
+            max_dance.prepend($("<option></option>").attr("value","4").text("4"))
+          if $("#opt-rotation-max_vanish_builders option[value='2']").length == 0
+            max_vanish.prepend($("<option></option>").attr("value","2").text("2"))
+          if $("#opt-rotation-max_vanish_builders option[value='3']").length == 0
+            max_vanish.prepend($("<option></option>").attr("value","3").text("3"))
+          
+        else
+          console.log "subterfuge inactive"
+          if parseInt(max_dance.val()) > 3
+            max_dance.val("3")
+          $("#opt-rotation-max_dance_builders option[value='4']").remove()
+          if parseInt(max_vanish.val()) > 1
+            max_vanish.val("1")
+          $("#opt-rotation-max_vanish_builders option[value='3']").remove()
+          $("#opt-rotation-max_vanish_builders option[value='2']").remove()
 
     this
 
