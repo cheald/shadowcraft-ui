@@ -453,7 +453,7 @@ class ShadowcraftArtifact
         gear: {}
         ttid: relic.id
         ttspec: WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec]
-        search: escape(relic.n)
+        search: escape(relic.name)
         desc: desc
         percent: relic.__ep / max * 100
         ep: relic.__ep
@@ -621,13 +621,13 @@ class ShadowcraftArtifact
     ).bind("contextmenu", -> false
     )
 
-    $(".popup").mouseover($.delegate
+    $("#artifactpopup").mouseover($.delegate
       ".tt": ttlib.requestTooltip
     ).mouseout($.delegate
       ".tt": ttlib.hide
     )
 
-    $(".popup .body").bind "mousewheel", (event) ->
+    $("#artifactpopup .body").bind "mousewheel", (event) ->
       if (event.wheelDelta < 0 and this.scrollTop + this.clientHeight >= this.scrollHeight) or event.wheelDelta > 0 and this.scrollTop == 0
         event.preventDefault()
         return false
@@ -635,6 +635,76 @@ class ShadowcraftArtifact
     $popupbody.click $.delegate
       ".slot": (e) ->
         selectRelic($(this))
+
+    # Register a bunch of key bindings for the popup windows so that a user
+    # can move up and down in the list with the keyboard, plus select items
+    # with the enter key.
+    $("input.search").keydown((e) ->
+      $this = $(this)
+      $popup = $this.closest("#artifactpopup")
+      switch e.keyCode
+        when 27 #  Esc
+          $this.val("").blur().keyup()
+          e.cancelBubble = true
+          e.stopPropagation()
+        when 38 #  Up arrow
+          slots = $popup.find(".slot:visible")
+          for slot, i in slots
+            if slot.className.indexOf("active") != -1
+              if slots[i-1]?
+                next = $(slots[i-1])
+                break
+              else
+                next = $popup.find(".slot:visible").last()
+                break
+        when 40 # Down arrow
+          slots = $popup.find(".slot:visible")
+          for slot, i in slots
+            if slot.className.indexOf("active") != -1
+              if slots[i+1]?
+                next = $(slots[i+1])
+                break
+              else
+                next = $popup.find(".slot:visible").first()
+                break
+        when 13 # Enter
+          $popup.find(".active").click()
+          return
+
+      if next
+        $popup.find(".slot").removeClass("active")
+        next.addClass("active")
+        ot = next.get(0).offsetTop
+        height = $popup.height()
+        body = $popup.find(".body")
+
+        if ot > body.scrollTop() + height - 30
+          body.animate({scrollTop: next.get(0).offsetTop - height + next.height() + 30}, 150)
+        else if ot < body.scrollTop()
+          body.animate({scrollTop: next.get(0).offsetTop - 30}, 150)
+    ).keyup( (e) ->
+      $this = $(this)
+      popup = $this.parents("#artifactpopup")
+      search = $.trim($this.val().toLowerCase())
+      all = popup.find(".slot:not(.active)")
+      show = all.filter(":regex(data-search, " + escape(search) + ")")
+      hide = all.not(show)
+      show.removeClass("hidden")
+      hide.addClass("hidden")
+    )
+
+    # On escape, clear popups
+    reset = ->
+      $("#artifactpopup:visible").removeClass("visible")
+      ttlib.hide()
+
+    $("body").click(reset).keydown (e) ->
+      if e.keyCode == 27
+        reset()
+
+    $("#filter").click (e) ->
+      e.cancelBubble = true
+      e.stopPropagation()
 
     this
 
