@@ -744,19 +744,20 @@ class ShadowcraftGear
       a_stats.push {
         name: "CP Builder"
         val:
-          switch data.options.rotation.use_hemorrhage
-            when "never" then "Backstab"
-            when "always" then "Hemorrhage"
-            when "uptime" then "Backstab w/ Hemo"
+          switch data.options.rotation.cp_builder
+            when "backstab" then "Backstab"
+            when "gloomblade" then "Gloomblade"
+            when "shuriken_storm" then "Shuriken Storm"
       }
-    if data.options.general.lethal_poison
-      a_stats.push {
-        name: "Poison"
-        val:
-          switch data.options.general.lethal_poison
-            when "wp" then "Wound"
-            when "dp" then "Deadly"
-      }
+    else if ShadowcraftTalents.GetActiveSpecName() == "Assassination"
+      if data.options.general.lethal_poison
+        a_stats.push {
+          name: "Poison"
+          val:
+            switch data.options.general.lethal_poison
+              when "wp" then "Wound"
+              when "dp" then "Deadly"
+        }
     $summary.get(0).innerHTML = Templates.stats {stats: a_stats}
 
   # Updates the display of the Gear Stats section of the Gear tab.
@@ -1023,8 +1024,9 @@ class ShadowcraftGear
         continue if Shadowcraft.Data.activeSpec == "b" and l.id != 128479
 
       # Filter out items that are outside the min and max ilvls set on the options
-      # panel
-      if (Shadowcraft.Data.options.general.dynamic_ilvl and equipped)
+      # panel. Only do this for non-weapons though, so someone can always select their
+      # artifact weapon.
+      if (Shadowcraft.Data.options.general.dynamic_ilvl and equipped and slot != 15 and slot != 16)
         continue if l.ilvl < equipped.item_level-50 or l.ilvl > equipped.item_level+50
       else
         continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
@@ -1619,9 +1621,7 @@ class ShadowcraftGear
     # Bind to the update event from the Options tab for changes that affect the
     # Gear tab.
     Shadowcraft.Options.bind "update", (opt, val) ->
-      if opt in ['rotation.use_hemorrhage']
-        app.updateDisplay()
-      if opt in ['rotation.blade_flurry','general.num_boss_adds','general.lethal_poison']
+      if opt in ['rotation.cp_builder','rotation.blade_flurry','general.num_boss_adds','general.lethal_poison']
         app.updateSummaryWindow()
 
     this.updateDisplay()
