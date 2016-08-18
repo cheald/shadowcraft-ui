@@ -80,6 +80,14 @@ class Enchant
                      :equip_location => 13,
                      :tooltip_spell => 118015
                    })
+    Enchant.create({
+                     :spell_id => 5335,
+                     :stats => {},
+                     :icon => 'inv_enchant_formulasuperior_01',
+                     :item_name => 'Enchant Weapon - Mark of Shadowmoon',
+                     :equip_location => 13,
+                     :tooltip_spell => 112115
+                   })
     # WOD RING
     Enchant.create({
                      :spell_id => 5303,
