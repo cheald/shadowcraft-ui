@@ -1398,6 +1398,8 @@ class ShadowcraftGear
     gear = data.gear[slot]
     item = getItem(gear.id, gear.context, gear.item_level)
     max = getMaxUpgradeLevel(item)
+    if (!gear.upgrade_level)
+      gear.upgrade_level = 0
     if (gear.upgrade_level == max)
       gear.item_level -= getUpgradeLevelSteps(item) * max
       gear.upgrade_level = 0
@@ -1489,7 +1491,7 @@ class ShadowcraftGear
       ".tt": ttlib.hide
     )
 
-    $(".popup .body").bind "mousewheel", (event) ->
+    $("#gearpopup .body").bind "mousewheel", (event) ->
       if (event.wheelDelta < 0 and this.scrollTop + this.clientHeight >= this.scrollHeight) or event.wheelDelta > 0 and this.scrollTop == 0
         event.preventDefault()
         return false
@@ -1527,6 +1529,7 @@ class ShadowcraftGear
               slotGear.bonuses = []
             if (slotGear.id in ShadowcraftGear.ARTIFACTS)
               Shadowcraft.Artifact.updateArtifactItem(slotGear.id, slotGear.item_level, slotGear.item_level)
+              slotGear.enchant = 0
           else
             enchant_id = if not isNaN(val) then val else null
             item = getItem(slotGear.id, slotGear.context, slotGear.item_level)

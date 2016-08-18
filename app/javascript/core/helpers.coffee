@@ -83,7 +83,7 @@ checkForWarnings = (section) ->
     # Warn items
     Shadowcraft.Console.remove(".items")
     for slotIndex, gear of data.gear
-      continue if !gear or _.isEmpty(gear)
+      continue if !gear or _.isEmpty(gear) or gear.id in ShadowcraftGear.ARTIFACTS
       item = Shadowcraft.Gear.getItem(gear.id, gear.context, gear.item_level)
       continue unless item
       enchant = EnchantLookup[gear.enchant]
