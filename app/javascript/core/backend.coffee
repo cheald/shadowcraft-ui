@@ -86,7 +86,7 @@ class ShadowcraftBackend
     payload.art = {}
     if (mh and oh)
       if mh.id == ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].mh and oh.id == ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].oh
-        payload.art = data.artifact[data.activeSpec].traits
+        payload.art = Shadowcraft.Artifact.getPayload()
 
     if mh?
       payload.mh = [

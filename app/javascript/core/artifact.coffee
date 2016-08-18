@@ -596,6 +596,18 @@ class ShadowcraftArtifact
 
     return
 
+  getPayload: ->
+    payload = {}
+    $("#artifactframe .trait").children(".level").each(->
+      local_trait = $(this).parent()
+      local_spell_id = local_trait.attr("data-tooltip-id")
+      payload_value = local_trait.data("relic-power")
+      payload_value += artifact_data.traits[local_spell_id]
+      payload[local_spell_id] = payload_value
+      return
+    )
+    return payload
+
   boot: ->
     app = this
 
