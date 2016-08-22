@@ -1518,18 +1518,32 @@ class ShadowcraftGear
           if update == "item_id"
             bonuses = ""+$this.data("bonus")
             idparts = identifier.split(":")
-            slotGear.id = parseInt(idparts[0])
-            slotGear.item_level = parseInt(idparts[1])
-            slotGear.context = $this.data("context")
-            upgd_level = parseInt($this.data("upgrade"))
-            slotGear.upgrade_level = if not isNaN(upgd_level) then upgd_level else 0
-            if (bonuses.length > 0)
-              slotGear.bonuses = bonuses.split(":")
+            item_id = parseInt(idparts[0])
+
+            if (slot == 15 or slot == 16) and item_id in ShadowcraftGear.ARTIFACTS
+              data.gear[15].id = ShadowcraftGear.ARTIFACT_SETS[Shadowcraft.Data.activeSpec].mh
+              data.gear[15].item_level = parseInt(idparts[1])
+              data.gear[15].context = ""
+              data.gear[15].upgrade_level = 0
+              data.gear[15].bonuses = []
+              data.gear[15].enchant = 0
+              data.gear[16].id = ShadowcraftGear.ARTIFACT_SETS[Shadowcraft.Data.activeSpec].oh
+              data.gear[16].item_level = parseInt(idparts[1])
+              data.gear[16].context = ""
+              data.gear[16].upgrade_level = 0
+              data.gear[16].bonuses = []
+              data.gear[16].enchant = 0
+              Shadowcraft.Artifact.updateArtifactItem(data.gear[15].id, data.gear[15].item_level, data.gear[15].item_level)
             else
-              slotGear.bonuses = []
-            if (slotGear.id in ShadowcraftGear.ARTIFACTS)
-              Shadowcraft.Artifact.updateArtifactItem(slotGear.id, slotGear.item_level, slotGear.item_level)
-              slotGear.enchant = 0
+              slotGear.id = item_id
+              slotGear.item_level = parseInt(idparts[1])
+              slotGear.context = $this.data("context")
+              upgd_level = parseInt($this.data("upgrade"))
+              slotGear.upgrade_level = if not isNaN(upgd_level) then upgd_level else 0
+              if (bonuses.length > 0)
+                slotGear.bonuses = bonuses.split(":")
+              else
+                slotGear.bonuses = []
           else
             enchant_id = if not isNaN(val) then val else null
             item = getItem(slotGear.id, slotGear.context, slotGear.item_level)
