@@ -104,24 +104,38 @@ wait = (msg) ->
   $("#wait").data('timeout', setTimeout('$("#wait").show()', 1000))
 
 showPopup = (popup) ->
+  
+  # close any other visible popups and tooltips
   $(".popup").removeClass("visible")
+  ttlib.hide()
+
+  # make sure that this popup has a close button in the upper right corner and add
+  # click and hover events for it
   if popup.find(".close-popup").length == 0
     popup.append("<a href='#' class='close-popup ui-dialog-titlebar-close ui-corner-all' role='button'><span class='ui-icon ui-icon-closethick'></span></a>")
     popup.find(".close-popup").click(->
-      $(".popup").removeClass("visible")
-      $(".slots").find(".active").removeClass("active")
+      # hide the popup that is this close button's parent
+      $(this).parent().removeClass("visible")
+
+      # if this popup was the gear one, disable the active selection on the gear
+      # slots that opened this popup
+      if $(this).parent()[0].id == "gearpopup"
+        $(".slots").find(".active").removeClass("active")
       return false
     ).hover ->
       $(this).addClass('ui-state-hover')
     , ->
       $(this).removeClass('ui-state-hover')
 
+  # find the tab panel that this popup is being opened from. this will allow us to
+  # position the popup relative to that tab panel.
   $parent = popup.parents(".ui-tabs-panel")
   max = $parent.scrollTop() + $parent.outerHeight()
   top = $.data(document, "mouse-y") - 40 + $parent.scrollTop()
   if top + popup.outerHeight() > max - 20
     top = max - 20 - popup.outerHeight()
 
+  # make sure that the popup is at least 15 pixels from the top of the tab frame
   if top < 15
     top = 15
 
@@ -129,13 +143,15 @@ showPopup = (popup) ->
   if popup.width() + left > $parent.outerWidth() - 40
     left = popup.parents(".ui-tabs-panel").outerWidth() - popup.outerWidth() - 40
 
+  # Position the popup and make it show up.
   popup.css({top: top + "px", left: left + "px"})
   popup.addClass("visible")
-  ttlib.hide()
   body = popup.find(".body")
-  $(".popup #filter input").val("")
+
+  # clear out the filter field on the popup
+  popup.find("#filter input").val("")
   unless Modernizr.touch
-    $(".popup #filter input").focus()
+    popup.find("#filter input").focus()
   ot = popup.find(".active").get(0)
   if ot
     ht = ot.offsetTop - (popup.height() / 3)

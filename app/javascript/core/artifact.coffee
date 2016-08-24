@@ -377,6 +377,11 @@ class ShadowcraftArtifact
 
   # Calculates the EP for a relic.
   getRelicEP = (relic, baseIlvl, baseStats) ->
+    # If we haven't gotten a calculation back from the engine yet (this should *never*
+    # happen unless the engine threw an error), just return a zero EP.
+    if (!Shadowcraft.lastCalculation)
+      return 0
+
     activeSpec = Shadowcraft.Data.activeSpec
     trait = relic.ts[activeSpec]
     ep = trait.rank * Shadowcraft.lastCalculation.artifact_ranking[trait.spell]
