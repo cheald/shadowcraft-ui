@@ -1915,7 +1915,7 @@ img.upgrade {
 #tabs #settings .input span.label, #tabs #settings .select span.label, #tabs #advanced .panel-content .input span.label, #tabs #advanced .panel-content .select span.label, #tabs #bonuses .input span.label, #tabs #bonuses .select span.label, #tabs #docs .input span.label, #tabs #docs .select span.label, #create_character #settings .input span.label, #create_character #settings .select span.label, #create_character #advanced .panel-content .input span.label, #create_character #advanced .panel-content .select span.label, #create_character #bonuses .input span.label, #create_character #bonuses .select span.label, #create_character #docs .input span.label, #create_character #docs .select span.label {
   display: inline-block;
   vertical-align: middle;
-  width: 150px;
+  width: 170px;
   text-align: right;
   margin-right: 10px;
 }
@@ -1928,7 +1928,7 @@ img.upgrade {
   font-size: 0.8em;
   color: #666666;
   font-weight: normal;
-  margin-left: 170px;
+  margin-left: 190px;
   white-space: normal;
 }
 
