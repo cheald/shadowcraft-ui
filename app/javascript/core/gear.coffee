@@ -746,7 +746,6 @@ class ShadowcraftGear
         val:
           switch data.options.rotation.cp_builder
             when "backstab" then "Backstab"
-            when "gloomblade" then "Gloomblade"
             when "shuriken_storm" then "Shuriken Storm"
       }
     else if ShadowcraftTalents.GetActiveSpecName() == "Assassination"

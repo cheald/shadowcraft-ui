@@ -210,35 +210,25 @@ class ShadowcraftComputation:
 
     if __builtin__.shadowcraft_engine_version >= 6.0:
         validCycleKeys = [[
-                'min_envenom_size_non_execute',
-                'min_envenom_size_execute',
-            ], [
-                'revealing_strike_pooling',
-                'ksp_immediately',
-                'blade_flurry',
-            ], [
-                'cp_builder',
-                'dance_cp_builder',
-                'symbols_policy',
-                'eviscerate_cps',
-                'finality_eviscerate_cps',
-                'nightblade_cps',
-                'finality_nightblade_cps',
-            ]
-        ]
-
-    validOpenerKeys = [[
-        'mutilate',
-        'ambush',
-        'garrote'
-       ], [
-        'sinister_strike',
-        'revealing_strike',
-        'ambush',
-        'garrote'
-       ], [
-       ]
-    ]
+            'kingsbane_with_vendetta',
+            'exsang_with_vendetta',
+            'cp_builder',
+        ], [
+            'blade_flurry',
+            'between_the_eyes_policy',
+            'jolly_roger_reroll',
+            'grand_melee_reroll',
+            'shark_reroll',
+            'true_bearing_reroll',
+            'buried_treasure_reroll',
+            'broadsides_reroll',
+            'reroll_policy'
+        ], [
+            'cp_builder',
+            'positional_uptime',
+            'symbols_policy',
+            'dance_finishers_allowed',
+        ]]
 
     def sumstring(self, x):
         total=0
@@ -395,24 +385,34 @@ class ShadowcraftComputation:
         t = input.get("t", '')
         _talents = talents.Talents(t, spec, "rogue", _level)
 
-        rotation_keys = input.get("ro", { 'opener_name': 'default', 'opener_use': 'always'})
+        rotation_keys = input.get("ro", {})
         rotation_options = dict( (key.encode('ascii'), val) for key, val in self.convert_bools(input.get("ro", {})).iteritems() if key in self.validCycleKeys[tree] )
+
+        if spec == "outlaw":
+            opts = ['jolly_roger_reroll','grand_melee_reroll','shark_reroll','true_bearing_reroll','buried_treasure_reroll','broadsides_reroll']
+
+            if rotation_options['reroll_policy'] != 'custom':
+                value = int(rotation_options['reroll_policy'])
+                for opt in opts:
+                    rotation_options[opt] = value
+            else:
+                for opt in opts:
+                    rotation_options[opt] = int(rotation_options[opt])
+            del rotation_options['reroll_policy']
+        elif spec == "subtlety":
+            rotation_options['positional_uptime'] = rotation_options['positional_uptime'] / 100.0
 
         settings_options = {}
         settings_options['num_boss_adds'] = _opt.get("num_boss_adds", 0)
         settings_options['is_day'] = _opt.get("night_elf_racial", 0) == 1
         settings_options['is_demon'] = _opt.get("demon_enemy", 0) == 1
+        settings_options['marked_for_death_resets'] = _opt.get("mfd_resets", 0)
+        settings_options['finisher_threshold'] = _opt.get("finisher_threshold", 0)
 
-        if spec == "subtlety":
-            rotation_options['dance_finishers_allowed'] = []
-            for i in [('sub_dance_fin_nb','finality:nightblade'), ('sub_dance_fin_evis','finality:eviscerate'), ('sub_dance_nb','nightblade'), ('sub_dance_evis','eviscerate')]:
-                if rotation_keys[i[0]]:
-                    rotation_options['dance_finishers_allowed'].append(i[1])
-        
         if tree == 0:
             _cycle = settings.AssassinationCycle(**rotation_options)
         elif tree == 1:
-            _cycle = settings.CombatCycle(**rotation_options)
+            _cycle = settings.OutlawCycle(**rotation_options)
         else:
             _cycle = settings.SubtletyCycle(**rotation_options)
             _cycle.cp_builder

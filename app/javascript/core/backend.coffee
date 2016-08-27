@@ -23,8 +23,6 @@ class ShadowcraftBackend
 
   buildPayload: ->
     data = Shadowcraft.Data
-    Gems = Shadowcraft.ServerData.GEM_LOOKUP
-
     statSummary = Shadowcraft.Gear.sumStats()
 
     mh = Shadowcraft.Gear.getItem(data.gear[15].id, data.gear[15].context, data.gear[15].item_level) if data.gear[15]
@@ -35,19 +33,11 @@ class ShadowcraftBackend
       if val
         buffList.push ShadowcraftOptions.buffMap.indexOf(key)
 
-    buffFood = ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff)
-
     talentArray = data.activeTalents.split ""
     for val, key in talentArray
       talentArray[key] = switch val
         when "." then "0"
         when "0", "1", "2" then parseInt(val,10)+1
-    talentString = talentArray.join('')
-
-    # opener
-    specName = {a: 'assassination', Z: 'combat', b: 'subtlety'}[data.activeSpec]
-    data.options.rotation['opener_name'] = data.options.rotation["opener_name_#{specName}"]
-    data.options.rotation['opener_use'] = data.options.rotation["opener_use_#{specName}"]
 
     payload =
       r: data.options.general.race
@@ -55,22 +45,21 @@ class ShadowcraftBackend
       pot: ShadowcraftOptions.buffPotions.indexOf(data.options.general.potion)
       prepot: ShadowcraftOptions.buffPotions.indexOf(data.options.general.prepot)
       b: buffList
-      bf: buffFood
+      bf: ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff)
       ro: data.options.rotation
       settings: {
-        dmg_poison: data.options.general.lethal_poison
-        utl_poison: data.options.general.utility_poison if data.options.general.utility_poison != 'n'
         duration: data.options.general.duration
         response_time: data.options.general.response_time
-        time_in_execute_range: data.options.general.time_in_execute_range
         num_boss_adds: data.options.general.num_boss_adds
         latency: data.options.advanced.latency
         adv_params: data.options.advanced.adv_params
         night_elf_racial: data.options.general.night_elf_racial
         demon_enemy: data.options.general.demon_enemy
+        mfd_resets: data.options.general.mfd_resets
+        finisher_threshold: data.options.general.finisher_threshold
       }
       spec: data.activeSpec,
-      t: talentString,
+      t: talentArray.join(''),
       sta: [
         statSummary.strength || 0,
         statSummary.agility || 0,
@@ -84,9 +73,8 @@ class ShadowcraftBackend
     # Don't send artifact information if the character isn't holding two the artifact weapons
     # for their current spec.
     payload.art = {}
-    if (mh and oh)
-      if mh.id == ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].mh and oh.id == ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].oh
-        payload.art = Shadowcraft.Artifact.getPayload()
+    if (mh and oh and mh.id == ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].mh and oh.id == ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].oh)
+      payload.art = Shadowcraft.Artifact.getPayload()
 
     if mh?
       payload.mh = [
