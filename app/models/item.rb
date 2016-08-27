@@ -85,8 +85,6 @@ class Item
     populate_gems_wod(prefix, source)
   end
 
-  KAZZAK_ITEMS = [124545, 124546, 127971, 127975, 127976, 127980, 127982]
-
   def self.populate_gear_wod(prefix = 'www', source = 'wowapi')
     @source = source
 
@@ -112,8 +110,10 @@ class Item
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 801, 850)
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 851, 900)
 
-    # trinkets
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items=4.-4?filter=minle=630;ro=1"
+    # Rings, necks, trinkets
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/rings/min-level:630/class:4"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/amulets/min-level:630/class:4"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/trinkets/min-level:630/class:4"
 
     # 6.1 alchemy trinkets
     item_ids += [122601, 122602, 122603, 122604]
@@ -128,7 +128,7 @@ class Item
     # Artifact weapons
     item_ids += [128476, 128479, 128870, 128869, 128872, 134552]
 
-    # remove duplicates
+    # remove duplicates.
     item_ids = item_ids.uniq
 
     pos = 0
@@ -232,6 +232,9 @@ class Item
   # details.
   TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 619, 620]
 
+  KAZZAK_ITEMS = [124545, 124546, 127971, 127975, 127976, 127980, 127982]
+  MIN_ILVL = 600
+
   # This method will directly import an item without checking for an existing
   # version before doing so.
   def self.import(id, source = 'wowapi')
@@ -271,7 +274,11 @@ class Item
   def self.import_blizzard(id)
     puts "importing #{id}"
 
-    # TODO: check for existing items and update as necessary
+    # Check for an existing item before loading everything for this one
+    db_item = Item.find_or_initialize_by(:remote_id => id)
+    unless db_item.properties.nil?
+      return
+    end
 
     # Request the initial json data from the armory and insert it in to the array of
     # json to be processed further
@@ -332,6 +339,11 @@ class Item
         puts "Loading document for extra context #{context}"
         json = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id,context], {}
         json_data.push(json)
+
+        # Flush anything that isn't above the minimum ilvl down the toilet. This happens
+        # because timewalking items get added to the list, and we try to load the base
+        # version of the item too.
+        next if json['itemLevel'] < MIN_ILVL
 
         # Same thing here with the bonus IDs. Gotta load all of those here too.
         itemChanceBonuses = get_valid_bonus_IDs(json['bonusSummary']['chanceBonusLists'], id, json['context'])
