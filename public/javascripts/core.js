@@ -1255,9 +1255,8 @@
     };
 
     ShadowcraftBackend.prototype.buildPayload = function() {
-      var Gems, buffFood, buffList, data, g, gear_ids, item, j, k, key, len, mh, oh, payload, ref, ref1, specName, statSummary, talentArray, talentString, val;
+      var buffList, data, g, gear_ids, item, j, k, key, len, mh, oh, payload, ref, ref1, statSummary, talentArray, val;
       data = Shadowcraft.Data;
-      Gems = Shadowcraft.ServerData.GEM_LOOKUP;
       statSummary = Shadowcraft.Gear.sumStats();
       if (data.gear[15]) {
         mh = Shadowcraft.Gear.getItem(data.gear[15].id, data.gear[15].context, data.gear[15].item_level);
@@ -1273,7 +1272,6 @@
           buffList.push(ShadowcraftOptions.buffMap.indexOf(key));
         }
       }
-      buffFood = ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff);
       talentArray = data.activeTalents.split("");
       for (key = j = 0, len = talentArray.length; j < len; key = ++j) {
         val = talentArray[key];
@@ -1288,43 +1286,32 @@
           }
         })();
       }
-      talentString = talentArray.join('');
-      specName = {
-        a: 'assassination',
-        Z: 'combat',
-        b: 'subtlety'
-      }[data.activeSpec];
-      data.options.rotation['opener_name'] = data.options.rotation["opener_name_" + specName];
-      data.options.rotation['opener_use'] = data.options.rotation["opener_use_" + specName];
       payload = {
         r: data.options.general.race,
         l: data.options.general.level,
         pot: ShadowcraftOptions.buffPotions.indexOf(data.options.general.potion),
         prepot: ShadowcraftOptions.buffPotions.indexOf(data.options.general.prepot),
         b: buffList,
-        bf: buffFood,
+        bf: ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff),
         ro: data.options.rotation,
         settings: {
-          dmg_poison: data.options.general.lethal_poison,
-          utl_poison: data.options.general.utility_poison !== 'n' ? data.options.general.utility_poison : void 0,
           duration: data.options.general.duration,
           response_time: data.options.general.response_time,
-          time_in_execute_range: data.options.general.time_in_execute_range,
           num_boss_adds: data.options.general.num_boss_adds,
           latency: data.options.advanced.latency,
           adv_params: data.options.advanced.adv_params,
           night_elf_racial: data.options.general.night_elf_racial,
-          demon_enemy: data.options.general.demon_enemy
+          demon_enemy: data.options.general.demon_enemy,
+          mfd_resets: data.options.general.mfd_resets,
+          finisher_threshold: data.options.general.finisher_threshold
         },
         spec: data.activeSpec,
-        t: talentString,
+        t: talentArray.join(''),
         sta: [statSummary.strength || 0, statSummary.agility || 0, statSummary.attack_power || 0, statSummary.crit || 0, statSummary.haste || 0, statSummary.mastery || 0, statSummary.versatility || 0]
       };
       payload.art = {};
-      if (mh && oh) {
-        if (mh.id === ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].mh && oh.id === ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].oh) {
-          payload.art = data.artifact[data.activeSpec].traits;
-        }
+      if (mh && oh && mh.id === ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].mh && oh.id === ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].oh) {
+        payload.art = Shadowcraft.Artifact.getPayload();
       }
       if (mh != null) {
         payload.mh = [mh.speed, mh.dps * mh.speed, data.gear[15].enchant, mh.subclass];
@@ -1676,7 +1663,7 @@
   };
 
   checkForWarnings = function(section) {
-    var EnchantLookup, EnchantSlots, data, enchant, enchantable, gear, i, item, j, len, level, mh_id, oh_id, ref, row, slotIndex, talents;
+    var EnchantLookup, EnchantSlots, data, enchant, enchantable, gear, i, item, j, len, level, mh_id, oh_id, ref, ref1, row, slotIndex, talents;
     Shadowcraft.Console.hide();
     data = Shadowcraft.Data;
     EnchantLookup = Shadowcraft.ServerData.ENCHANT_LOOKUP;
@@ -1710,7 +1697,7 @@
       ref = data.gear;
       for (slotIndex in ref) {
         gear = ref[slotIndex];
-        if (!gear || _.isEmpty(gear)) {
+        if (!gear || _.isEmpty(gear) || (ref1 = gear.id, indexOf.call(ShadowcraftGear.ARTIFACTS, ref1) >= 0)) {
           continue;
         }
         item = Shadowcraft.Gear.getItem(gear.id, gear.context, gear.item_level);
@@ -1740,11 +1727,14 @@
   showPopup = function(popup) {
     var $parent, body, ht, left, max, ot, speed, top;
     $(".popup").removeClass("visible");
+    ttlib.hide();
     if (popup.find(".close-popup").length === 0) {
       popup.append("<a href='#' class='close-popup ui-dialog-titlebar-close ui-corner-all' role='button'><span class='ui-icon ui-icon-closethick'></span></a>");
       popup.find(".close-popup").click(function() {
-        $(".popup").removeClass("visible");
-        $(".slots").find(".active").removeClass("active");
+        $(this).parent().removeClass("visible");
+        if ($(this).parent()[0].id === "gearpopup") {
+          $(".slots").find(".active").removeClass("active");
+        }
         return false;
       }).hover(function() {
         return $(this).addClass('ui-state-hover');
@@ -1770,11 +1760,10 @@
       left: left + "px"
     });
     popup.addClass("visible");
-    ttlib.hide();
     body = popup.find(".body");
-    $(".popup #filter input").val("");
+    popup.find("#filter input").val("");
     if (!Modernizr.touch) {
-      $(".popup #filter input").focus();
+      popup.find("#filter input").focus();
     }
     ot = popup.find(".active").get(0);
     if (ot) {
@@ -1790,13 +1779,15 @@
   };
 
   ShadowcraftOptions = (function() {
-    var cast, changeCheck, changeInput, changeOption, changeSelect, enforceBounds;
+    var cast, changeCheck, changeInput, changeOption, changeSelect, enforceBounds, lastSpec;
 
     ShadowcraftOptions.buffMap = ['short_term_haste_buff', 'flask_legion_agi'];
 
     ShadowcraftOptions.buffFoodMap = ['food_legion_375_crit', 'food_legion_375_haste', 'food_legion_375_mastery', 'food_legion_375_versatility', 'food_legion_feast_200', 'food_legion_damage_3'];
 
     ShadowcraftOptions.buffPotions = ['potion_old_war', 'potion_deadly_grace', 'potion_none'];
+
+    lastSpec = "";
 
     cast = function(val, dtype) {
       switch (dtype) {
@@ -1977,24 +1968,6 @@
           min: 0.1,
           max: 5
         },
-        time_in_execute_range: {
-          type: "input",
-          name: "Time in Execute Range",
-          desc: "Only used in Assassination Spec",
-          "default": 0.35,
-          datatype: 'float',
-          min: 0,
-          max: 1
-        },
-        lethal_poison: {
-          name: "Lethal Poison",
-          type: 'select',
-          options: {
-            'dp': 'Deadly Poison',
-            'wp': 'Wound Poison'
-          },
-          "default": 'dp'
-        },
         num_boss_adds: {
           name: "Number of Boss Adds",
           datatype: 'float',
@@ -2005,13 +1978,29 @@
         },
         demon_enemy: {
           name: "Enemy is Demon",
-          desc: 'Enables damage buff from heirloom trinket against demons (The Demon Button)',
+          desc: 'Enables damage buff from heirloom trinket against demons',
           datatype: 'select',
           options: {
             1: 'Yes',
             0: 'No'
           },
           "default": 0
+        },
+        mfd_resets: {
+          name: "MfD Resets Per Minute",
+          datatype: 'float',
+          type: 'input',
+          min: 0.0,
+          max: 5.0,
+          "default": 0
+        },
+        finisher_threshold: {
+          type: "select",
+          name: "Finisher Threshold",
+          options: [6, 5, 4],
+          "default": 5,
+          datatype: "integer",
+          desc: "Minimum CPs to use finisher"
         }
       });
       this.setup("#settings #generalFilter", "general", {
@@ -2039,15 +2028,6 @@
           datatype: 'integer',
           min: 540,
           max: 1000
-        },
-        show_random_items: {
-          name: "Min ILvL (Random Items)",
-          desc: "Don't show random items under this item level in gear lists",
-          datatype: 'integer',
-          type: 'input',
-          min: 540,
-          max: 1000,
-          "default": 540
         },
         show_upgrades: {
           name: "Show Upgrades",
@@ -2123,122 +2103,121 @@
         }
       });
       this.setup("#settings section.mutilate .settings", "rotation", {
-        min_envenom_size_non_execute: {
+        kingsbane: {
           type: "select",
-          name: "Min CP/Envenom > 35%",
-          options: [5, 4, 3, 2, 1],
-          "default": 4,
-          desc: "CP for Envenom when using Mutilate, no effect with Anticipation",
-          datatype: 'integer',
-          min: 1,
-          max: 5
-        },
-        min_envenom_size_execute: {
-          type: "select",
-          name: "Min CP/Envenom < 35%",
-          options: [5, 4, 3, 2, 1],
-          "default": 5,
-          desc: "CP for Envenom when using Dispatch, no effect with Anticipation",
-          datatype: 'integer',
-          min: 1,
-          max: 5
-        },
-        opener_name_assassination: {
-          type: "select",
-          name: "Opener Name",
+          name: "Kingsbane w/ Vendetta",
           options: {
-            'mutilate': "Mutilate",
-            'ambush': "Ambush",
-            'garrote': "Garrote"
+            "just": "Use cooldown if it aligns, but don't delay usage",
+            "only": "Only use cooldown with Vendetta"
           },
-          "default": 'ambush',
-          datatype: 'string'
+          "default": "just"
         },
-        opener_use_assassination: {
+        exsang: {
           type: "select",
-          name: "Opener Usage",
+          name: "Exsang w/ Vendetta",
           options: {
-            'always': "Always",
-            'opener': "Start of the Fight",
-            'never': "Never"
+            "just": "Use cooldown if it aligns, but don't delay usage",
+            "only": "Only use cooldown with Vendetta"
           },
-          "default": 'always',
-          datatype: 'string'
-        }
-      });
-      this.setup("#settings section.combat .settings", "rotation", {
-        ksp_immediately: {
-          type: "select",
-          name: "Killing Spree",
-          options: {
-            'true': "Killing Spree on cooldown",
-            'false': "Wait for Bandit's Guile before using Killing Spree"
-          },
-          "default": 'true',
-          datatype: 'string'
-        },
-        revealing_strike_pooling: {
-          type: "check",
-          name: "Pool for Revealing Strike",
-          "default": true,
-          datatype: 'bool'
-        },
-        blade_flurry: {
-          type: "check",
-          name: "Blade Flurry",
-          desc: "Use Blade Flurry",
-          "default": false,
-          datatype: 'bool'
-        },
-        opener_name_combat: {
-          type: "select",
-          name: "Opener Name",
-          options: {
-            'sinister_strike': "Sinister Strike",
-            'revealing_strike': "Revealing Strike",
-            'ambush': "Ambush",
-            'garrote': "Garrote"
-          },
-          "default": 'ambush',
-          datatype: 'string'
-        },
-        opener_use_combat: {
-          type: "select",
-          name: "Opener Usage",
-          options: {
-            'always': "Always",
-            'opener': "Start of the Fight",
-            'never': "Never"
-          },
-          "default": 'always',
-          datatype: 'string'
-        }
-      });
-      this.setup("#settings section.subtlety .settings", "rotation", {
-        sub_other_header: {
-          type: "subheader",
-          desc: "Main Rotation Options"
+          "default": "just"
         },
         cp_builder: {
           type: "select",
           name: "CP Builder",
           options: {
+            'mutilate': 'Mutilate',
+            'fan_of_knives': 'Fan of Knives'
+          },
+          "default": 'mutilate',
+          datatype: 'string'
+        },
+        lethal_poison: {
+          name: "Lethal Poison",
+          type: 'select',
+          options: {
+            'dp': 'Deadly Poison',
+            'wp': 'Wound Poison'
+          },
+          "default": 'dp'
+        }
+      });
+      this.setup("#settings section.combat .settings", "rotation", {
+        blade_flurry: {
+          type: "check",
+          name: "Blade Flurry",
+          desc: "Use Blade Flurry",
+          "default": false,
+          datatype: "bool"
+        },
+        between_the_eyes_policy: {
+          type: "select",
+          name: "BtE Policy",
+          options: {
+            "shark": "Only use with Shark",
+            "always": "Use BtE on cooldown",
+            "never": "Never use BtE"
+          },
+          "default": "just"
+        },
+        reroll_policy: {
+          type: "select",
+          name: "RtB Reroll Policy",
+          options: {
+            "1": "Reroll single buffs",
+            "2": "Reroll two or fewer buffs",
+            "3": "Reroll three or fewer buffs",
+            "custom": "Custom setup per buff (see below)"
+          },
+          "default": "1"
+        },
+        jolly_roger_reroll: {
+          type: "select",
+          name: "Jolly Roger",
+          options: ['0', '1', '2', '3'],
+          "default": '0',
+          desc: "0 means never reroll combos with this buff. 1 means reroll singles of this buff. 2 means reroll double-buff rolls containing this buff. 3 means reroll triple-buff rolls containing this buff."
+        },
+        grand_melee_reroll: {
+          type: "select",
+          name: "Grand Melee",
+          options: ['0', '1', '2', '3'],
+          "default": '0'
+        },
+        shark_reroll: {
+          type: "select",
+          name: "Shark-Infested Waters",
+          options: ['0', '1', '2', '3'],
+          "default": '0'
+        },
+        true_bearing_reroll: {
+          type: "select",
+          name: "True Bearing",
+          options: ['0', '1', '2', '3'],
+          "default": '0'
+        },
+        buried_treasure_reroll: {
+          type: "select",
+          name: "Buried Treasure",
+          options: ['0', '1', '2', '3'],
+          "default": '0'
+        },
+        broadsides_reroll: {
+          type: "select",
+          name: "Broadsides",
+          options: ['0', '1', '2', '3'],
+          "default": '0'
+        }
+      });
+      this.setup("#settings section.subtlety .settings", "rotation", {
+        cp_builder: {
+          type: "select",
+          name: "CP Builder",
+          options: {
             'backstab': 'Backstab',
-            'gloomblade': 'Gloomblade',
             'shuriken_storm': 'Shuriken Storm'
           },
           "default": 'backstab',
           datatype: 'string'
-        },
-        dance_cp_builder: {
-          type: "select",
-          name: "Dance CP Builder",
-          options: {
-            "shuriken_storm": "Shuriken Storm",
-            "shadowstrike": "Shadowstrike"
-          },
-          "default": "shadowstrike",
-          datatype: "string"
         },
         symbols_policy: {
           type: "select",
@@ -2250,99 +2229,20 @@
           "default": "just",
           datatype: "string"
         },
-        symbols_during_vanish: {
+        dance_finishers_allowed: {
           type: "check",
-          name: "Use SoD during Vanish",
+          name: "Use Finishers during Dance",
           "default": true,
           datatype: "bool"
         },
-        max_vanish_builders: {
-          type: "select",
-          name: "Max Vanish Builders",
-          options: [3, 2, 1, 0],
-          "default": 3,
-          datatype: 'integer',
-          desc: "Maximum number of CP builders to use during Vanish. This option is modified by the Subterfuge talent."
-        },
-        max_dance_builders: {
-          type: "select",
-          name: "Max Dance Builders",
-          options: [4, 3, 2, 1, 0],
-          "default": 4,
-          datatype: 'integer',
-          desc: "Maximum number of CP builders to use during Shadow Dance. This option is modified by the Subterfuge talent."
-        },
-        sub_finisher_header: {
-          type: "subheader",
-          desc: "Finisher Thresholds (Minimum CPs for each finisher)"
-        },
-        eviscerate_cps: {
-          type: "select",
-          name: "Eviscerate",
-          options: [6, 5, 4, 3, 2, 1],
-          "default": 5,
-          datatype: 'integer',
-          desc: "This option is modified by the Deeper Strategem talent"
-        },
-        nightblade_cps: {
-          type: "select",
-          name: "Nightblade",
-          options: [6, 5, 4, 3, 2, 1],
-          "default": 5,
-          datatype: 'integer',
-          desc: "This option is modified by the Deeper Strategem talent"
-        },
-        finality_eviscerate_cps: {
-          type: "select",
-          name: "Finality: Eviscerate",
-          options: [6, 5, 4, 3, 2, 1],
-          "default": 5,
-          datatype: 'integer',
-          desc: "This option is modified by the Deeper Strategem talent"
-        },
-        finality_nightblade_cps: {
-          type: "select",
-          name: "Finality: Nightblade",
-          options: [6, 5, 4, 3, 2, 1],
-          "default": 5,
-          datatype: 'integer',
-          desc: "This option is modified by the Deeper Strategem talent"
-        },
-        dfa_cps: {
-          type: "select",
-          name: "Death From Above",
-          options: [6, 5, 4, 3, 2, 1],
-          "default": 5,
-          datatype: 'integer',
-          desc: "This option is modified by the Deeper Strategem talent"
-        },
-        sub_dance_header: {
-          type: "subheader",
-          desc: "Shadow Dance Finishers"
-        },
-        sub_dance_evis: {
-          type: "check",
-          name: "Eviscerate",
-          "default": true,
-          datatype: 'bool'
-        },
-        sub_dance_nb: {
-          type: "check",
-          name: "Nightblade",
-          "default": true,
-          datatype: 'bool'
-        },
-        sub_dance_fin_evis: {
-          type: "check",
-          name: "Finality: Eviscerate",
-          "default": true,
-          datatype: 'bool'
-        },
-        sub_dance_fin_nb: {
-          type: "check",
-          name: "Finality: Nightblade",
-          "default": true,
-          datatype: 'bool'
+        positional_uptime: {
+          type: "input",
+          name: "Backstab uptime",
+          desc: "Percentage of the fight you are behind the target (0-100). This has no effect if Gloomblade is selected as a talent.",
+          datatype: "integer",
+          "default": 100,
+          min: 0,
+          max: 100
         }
       });
       return this.setup("#settings #advancedSettings", "advanced", {
@@ -2418,82 +2318,48 @@
       Shadowcraft.Talents.bind("changedSpec", function(spec) {
         $("#settings section.mutilate, #settings section.combat, #settings section.subtlety").hide();
         if (Shadowcraft.Data.activeSpec === "a") {
+          if (lastSpec !== Shadowcraft.Data.activeSpec) {
+            $("#opt-rotation-cp_builder").val("mutilate");
+          }
           $("#settings section.mutilate").show();
           if (Shadowcraft.Data.activeTalents.split("")[5] === "0") {
-            return $("#opt-general-lethal_poison").append($("<option></option>").attr("value", "ap").text("Agonizing Poison"));
+            $("#opt-rotation-lethal_poison").append($("<option></option>").attr("value", "ap").text("Agonizing Poison"));
           }
         } else if (Shadowcraft.Data.activeSpec === "Z") {
           $("#settings section.combat").show();
-          return $("#opt-general-lethal_poison option[value='ap']").remove();
         } else if (Shadowcraft.Data.activeSpec === "b") {
           $("#settings section.subtlety").show();
-          return $("#opt-general-lethal_poison option[value='ap']").remove();
+          if (lastSpec !== Shadowcraft.Data.activeSpec) {
+            $("#opt-rotation-cp_builder").val("backstab");
+          }
         }
+        return lastSpec = Shadowcraft.Data.activeSpec;
       });
       Shadowcraft.Talents.bind("changedTalents", function() {
-        var agonizing, box, ds_active, i, j, len, len1, m, max_dance, max_vanish, poisonSelect, ref, ref1;
+        var agonizing, ds_active, finisher_threshold, poisonSelect;
         ds_active = Shadowcraft.Data.activeTalents.split("")[2] === "0";
         Shadowcraft.Console.remove(".options-poisons");
         if (Shadowcraft.Data.activeSpec === "a") {
           agonizing = Shadowcraft.Data.activeTalents.split("")[5] === "0";
-          poisonSelect = $("#opt-general-lethal_poison");
+          poisonSelect = $("#opt-rotation-lethal_poison");
           if (!agonizing) {
             if (poisonSelect.val() === "ap") {
               Shadowcraft.Console.warn("ap", "Agonizing Poison was selected in options. Defaulting to Deadly Poison", null, "warn", "options-poisons");
               poisonSelect.val("dp");
             }
-            return $("#opt-general-lethal_poison option[value='ap']").remove();
+            $("#opt-rotation-lethal_poison option[value='ap']").remove();
           } else {
-            return poisonSelect.append($("<option></option>").attr("value", "ap").text("Agonizing Poison"));
+            poisonSelect.append($("<option></option>").attr("value", "ap").text("Agonizing Poison"));
           }
-        } else if (Shadowcraft.Data.activeSpec === "b") {
-          if (ds_active) {
-            console.log("ds active");
-            ref = ['eviscerate', 'nightblade', 'finality_eviscerate', 'finality_nightblade'];
-            for (j = 0, len = ref.length; j < len; j++) {
-              i = ref[j];
-              box = $("#opt-rotation-" + i + "_cps");
-              if ($("#opt-rotation-" + i + "_cps option[value='6']").length === 0) {
-                box.prepend($("<option></option>").attr("value", "6").text("6"));
-              }
-            }
-          } else {
-            console.log("ds inactive");
-            ref1 = ['eviscerate', 'nightblade', 'finality_eviscerate', 'finality_nightblade'];
-            for (m = 0, len1 = ref1.length; m < len1; m++) {
-              i = ref1[m];
-              box = $("#opt-rotation-" + i + "_cps");
-              if (box.val() === "6") {
-                box.val("5");
-              }
-              $("#opt-rotation-" + i + "_cps option[value='6']").remove();
-            }
+        }
+        finisher_threshold = $("#opt-general-finisher_threshold");
+        if (ds_active) {
+          return finisher_threshold.prepend($("<option></option>").attr("value", "6").text("6"));
+        } else {
+          if (finisher_threshold.find('option:selected').val() === "6") {
+            finisher_threshold.val("5");
           }
-          max_dance = $("#opt-rotation-max_dance_builders");
-          max_vanish = $("#opt-rotation-max_vanish_builders");
-          if (Shadowcraft.Data.activeTalents.split("")[1] === "1") {
-            console.log("subterfuge active");
-            if ($("#opt-rotation-max_dance_builders option[value='4']").length === 0) {
-              max_dance.prepend($("<option></option>").attr("value", "4").text("4"));
-            }
-            if ($("#opt-rotation-max_vanish_builders option[value='2']").length === 0) {
-              max_vanish.prepend($("<option></option>").attr("value", "2").text("2"));
-            }
-            if ($("#opt-rotation-max_vanish_builders option[value='3']").length === 0) {
-              return max_vanish.prepend($("<option></option>").attr("value", "3").text("3"));
-            }
-          } else {
-            console.log("subterfuge inactive");
-            if (parseInt(max_dance.val()) > 3) {
-              max_dance.val("3");
-            }
-            $("#opt-rotation-max_dance_builders option[value='4']").remove();
-            if (parseInt(max_vanish.val()) > 1) {
-              max_vanish.val("1");
-            }
-            $("#opt-rotation-max_vanish_builders option[value='3']").remove();
-            return $("#opt-rotation-max_vanish_builders option[value='2']").remove();
-          }
+          return finisher_threshold.find("option[value='6']").remove();
         }
       });
       return this;
@@ -2831,6 +2697,9 @@
 
     getRelicEP = function(relic, baseIlvl, baseStats) {
       var activeSpec, diff, ep, newStats, stat, trait;
+      if (!Shadowcraft.lastCalculation) {
+        return 0;
+      }
       activeSpec = Shadowcraft.Data.activeSpec;
       trait = relic.ts[activeSpec];
       ep = trait.rank * Shadowcraft.lastCalculation.artifact_ranking[trait.spell];
@@ -2909,7 +2778,7 @@
           gear: {},
           ttid: relic.id,
           ttspec: WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec],
-          search: escape(relic.n),
+          search: escape(relic.name),
           desc: desc,
           percent: relic.__ep / max * 100,
           ep: relic.__ep
@@ -3046,8 +2915,22 @@
       });
     };
 
+    ShadowcraftArtifact.prototype.getPayload = function() {
+      var payload;
+      payload = {};
+      $("#artifactframe .trait").children(".level").each(function() {
+        var local_spell_id, local_trait, payload_value;
+        local_trait = $(this).parent();
+        local_spell_id = local_trait.attr("data-tooltip-id");
+        payload_value = local_trait.data("relic-power");
+        payload_value += artifact_data.traits[local_spell_id];
+        payload[local_spell_id] = payload_value;
+      });
+      return payload;
+    };
+
     ShadowcraftArtifact.prototype.boot = function() {
-      var app;
+      var app, reset;
       app = this;
       $popup = $("#artifactpopup");
       $popupbody = $("#artifactpopup .body");
@@ -3066,12 +2949,12 @@
       }).bind("contextmenu", function() {
         return false;
       });
-      $(".popup").mouseover($.delegate({
+      $("#artifactpopup").mouseover($.delegate({
         ".tt": ttlib.requestTooltip
       })).mouseout($.delegate({
         ".tt": ttlib.hide
       }));
-      $(".popup .body").bind("mousewheel", function(event) {
+      $("#artifactpopup .body").bind("mousewheel", function(event) {
         if ((event.wheelDelta < 0 && this.scrollTop + this.clientHeight >= this.scrollHeight) || event.wheelDelta > 0 && this.scrollTop === 0) {
           event.preventDefault();
           return false;
@@ -3082,6 +2965,90 @@
           return selectRelic($(this));
         }
       }));
+      $("input.search").keydown(function(e) {
+        var $this, body, height, i, j, len, len1, m, next, ot, slot, slots;
+        $this = $(this);
+        $popup = $this.closest("#artifactpopup");
+        switch (e.keyCode) {
+          case 27:
+            $this.val("").blur().keyup();
+            e.cancelBubble = true;
+            e.stopPropagation();
+            break;
+          case 38:
+            slots = $popup.find(".slot:visible");
+            for (i = j = 0, len = slots.length; j < len; i = ++j) {
+              slot = slots[i];
+              if (slot.className.indexOf("active") !== -1) {
+                if (slots[i - 1] != null) {
+                  next = $(slots[i - 1]);
+                  break;
+                } else {
+                  next = $popup.find(".slot:visible").last();
+                  break;
+                }
+              }
+            }
+            break;
+          case 40:
+            slots = $popup.find(".slot:visible");
+            for (i = m = 0, len1 = slots.length; m < len1; i = ++m) {
+              slot = slots[i];
+              if (slot.className.indexOf("active") !== -1) {
+                if (slots[i + 1] != null) {
+                  next = $(slots[i + 1]);
+                  break;
+                } else {
+                  next = $popup.find(".slot:visible").first();
+                  break;
+                }
+              }
+            }
+            break;
+          case 13:
+            $popup.find(".active").click();
+            return;
+        }
+        if (next) {
+          $popup.find(".slot").removeClass("active");
+          next.addClass("active");
+          ot = next.get(0).offsetTop;
+          height = $popup.height();
+          body = $popup.find(".body");
+          if (ot > body.scrollTop() + height - 30) {
+            return body.animate({
+              scrollTop: next.get(0).offsetTop - height + next.height() + 30
+            }, 150);
+          } else if (ot < body.scrollTop()) {
+            return body.animate({
+              scrollTop: next.get(0).offsetTop - 30
+            }, 150);
+          }
+        }
+      }).keyup(function(e) {
+        var $this, all, hide, popup, search, show;
+        $this = $(this);
+        popup = $this.parents("#artifactpopup");
+        search = $.trim($this.val().toLowerCase());
+        all = popup.find(".slot:not(.active)");
+        show = all.filter(":regex(data-search, " + escape(search) + ")");
+        hide = all.not(show);
+        show.removeClass("hidden");
+        return hide.addClass("hidden");
+      });
+      reset = function() {
+        $("#artifactpopup:visible").removeClass("visible");
+        return ttlib.hide();
+      };
+      $("body").click(reset).keydown(function(e) {
+        if (e.keyCode === 27) {
+          return reset();
+        }
+      });
+      $("#filter").click(function(e) {
+        e.cancelBubble = true;
+        return e.stopPropagation();
+      });
       return this;
     };
 
@@ -3096,7 +3063,7 @@
   })();
 
   ShadowcraftTalents = (function() {
-    var DEFAULT_SPECS, SPEC_ICONS, getSpecName;
+    var DEFAULT_SPECS, SPEC_ICONS, TALENT_NAMES, getSpecName, updateTalentRanking;
 
     SPEC_ICONS = {
       "a": "ability_rogue_eviscerate",
@@ -3118,6 +3085,43 @@
         talents: "1210011",
         spec: "b"
       }
+    };
+
+    TALENT_NAMES = {
+      "gloomblade": "Gloomblade",
+      "master_of_subtlety": "Master of Subtlety",
+      "weaponmaster": "Weaponmaster",
+      "nightstalker": "Nightstalker",
+      "shadow_focus": "Shadow Focus",
+      "subterfuge": "Subterfuge",
+      "anticipation": "Anticipation",
+      "deeper_strategem": "Deeper Strategem",
+      "vigor": "Vigor",
+      "cheat_death": "Cheat Death",
+      "elusiveness": "Elusiveness",
+      "soothing_darkness": "Soothing Darkness",
+      "prey_on_the_weak": "Prey on the Weak",
+      "strike_from_the_shadows": "Strike from the Shadows",
+      "tangled_shadow": "Tangled Shadow",
+      "alacrity": "Alacrity",
+      "enveloping_shadows": "Enveloping Shadows",
+      "premeditation": "Premeditation",
+      "death_from_above": "Death from Above",
+      "marked_for_death": "Marked for Death",
+      "master_of_shadows": "Master of Shadows",
+      "ghostly_strike": "Ghostly Strike",
+      "quick_draw": "Quick Draw",
+      "swordmaster": "Swordmaster",
+      "acrobatic_strikes": "Acrobatic Strikes",
+      "grappling_hook": "Grappling Hook",
+      "hit_and_run": "Hit and Run",
+      "iron_stomach": "Iron Stomach",
+      "dirty_tricks": "Dirty Tricks",
+      "parley": "Parley",
+      "prey_on_the_weak": "Prey on the Weak",
+      "cannonball_barrage": "Cannonball Barrage",
+      "killing_spree": "Killing Spree",
+      "slice_and_dice": "Slice and Dice"
     };
 
     ShadowcraftTalents.GetActiveSpecName = function() {
@@ -3316,10 +3320,66 @@
       Shadowcraft.Talents.trigger("changedSpec", spec);
     };
 
+    updateTalentRanking = function() {
+      var buffer, ep, exist, max, pct, ranking, row, row_data, talent, talent_name, target, val;
+      buffer = "";
+      ranking = Shadowcraft.lastCalculation.talent_ranking;
+      console.log(ranking);
+      max = 0;
+      for (row in ranking) {
+        row_data = ranking[row];
+        target = $("#talentrankings .Tier" + row);
+        max = 0;
+        for (talent in row_data) {
+          ep = row_data[talent];
+          if (ep > max) {
+            max = ep;
+          }
+        }
+        buffer = "";
+        for (talent in row_data) {
+          ep = row_data[talent];
+          if (ep === "not implemented" || ep === "implementation error") {
+            ep = 0.0;
+          }
+          val = Math.round(parseFloat(ep) * 100.0) / 100.0;
+          talent_name = TALENT_NAMES[talent];
+          pct = val / max * 100 + 0.01;
+          exist = target.find("#talent-weight-" + talent);
+          if (exist.length === 0) {
+            buffer = Templates.talentContribution({
+              name: "" + talent_name,
+              raw_name: "" + talent,
+              val: val,
+              width: pct
+            });
+            target.append(buffer);
+          }
+          exist = target.find("#talent-weight-" + talent);
+          $.data(exist.get(0), "val", val);
+          exist.show().find(".pct-inner").css({
+            width: pct + "%"
+          });
+          exist.find(".label").text("" + val);
+        }
+        target.find(".talent_contribution").sortElements(function(a, b) {
+          var ad, bd;
+          ad = $.data(a, "val");
+          bd = $.data(b, "val");
+          if (ad > bd) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
+      }
+    };
+
     ShadowcraftTalents.prototype.boot = function() {
       var app, data;
       app = this;
       this.initSidebar();
+      Shadowcraft.Backend.bind("recompute", updateTalentRanking);
       data = Shadowcraft.Data;
       if (!data.activeSpec) {
         data.activeSpec = data.talents[data.active].spec;
@@ -4312,29 +4372,28 @@
         a_stats.push({
           name: "CP Builder",
           val: (function() {
-            switch (data.options.rotation.use_hemorrhage) {
-              case "never":
+            switch (data.options.rotation.cp_builder) {
+              case "backstab":
                 return "Backstab";
-              case "always":
-                return "Hemorrhage";
-              case "uptime":
-                return "Backstab w/ Hemo";
+              case "shuriken_storm":
+                return "Shuriken Storm";
             }
           })()
         });
-      }
-      if (data.options.general.lethal_poison) {
-        a_stats.push({
-          name: "Poison",
-          val: (function() {
-            switch (data.options.general.lethal_poison) {
-              case "wp":
-                return "Wound";
-              case "dp":
-                return "Deadly";
-            }
-          })()
-        });
+      } else if (ShadowcraftTalents.GetActiveSpecName() === "Assassination") {
+        if (data.options.general.lethal_poison) {
+          a_stats.push({
+            name: "Poison",
+            val: (function() {
+              switch (data.options.general.lethal_poison) {
+                case "wp":
+                  return "Wound";
+                case "dp":
+                  return "Deadly";
+              }
+            })()
+          });
+        }
       }
       return $summary.get(0).innerHTML = Templates.stats({
         stats: a_stats
@@ -4582,12 +4641,15 @@
     };
 
     clickSlotName = function() {
-      var $slot, GemList, bonus, bonus_trees, bonuses, buf, buffer, clone, curr_level, entry, equip_location, equipped, gear, gear_offset, gem_offset, hasUpgrade, iEP, l, len, len1, len2, len3, len4, len5, lid, loc, loc_all, m, maxIEP, max_level, minIEP, n, o, q, ref, ref1, ref2, ref3, ref4, ref5, requireDagger, selected_identifier, set, setBonEP, setCount, set_name, slot, subtletyNeedsDagger, ttbonus, ttid, ttrand, ttupgd, u, upgrade, w;
-      console.profile();
+      var $slot, GemList, bonus, bonus_trees, bonuses, buf, buffer, clone, curr_level, entry, equip_location, equipped, gear, gear_offset, gem_offset, hasUpgrade, iEP, l, len, len1, len2, len3, len4, len5, lid, loc, loc_all, m, maxIEP, max_level, minIEP, n, o, q, ref, ref1, ref2, ref3, ref4, ref5, requireDagger, selected, selected_context, selected_id_context, selected_id_ilvl, set, setBonEP, setCount, set_name, slot, subtletyNeedsDagger, ttbonus, ttid, ttrand, ttupgd, u, upgrade, w;
       buf = clickSlot(this, "item_id");
       $slot = buf[0];
       slot = buf[1];
-      selected_identifier = $slot.data("identifier");
+      selected_id_ilvl = $slot.data("identifier");
+      selected_id_context = $slot.data("identifier").split(":")[0];
+      selected_id_context += ":";
+      selected_context = $slot.data("context");
+      selected_id_context += selected_context;
       equip_location = SLOT_INVTYPES[slot];
       GemList = Shadowcraft.ServerData.GEMS;
       gear = Shadowcraft.Data.gear;
@@ -4598,8 +4660,8 @@
       loc = [];
       for (m = 0, len = loc_all.length; m < len; m++) {
         lid = loc_all[m];
-        l = ShadowcraftData.ITEM_LOOKUP2[lid];
-        if (lid === selected_identifier) {
+        l = ShadowcraftData.ITEM_BY_CONTEXT[lid];
+        if (lid === selected_id_context) {
           loc.push(l);
           hasUpgrade = false;
           bonuses = $(equipped.bonuses).not(l.bonus_tree).get();
@@ -4620,7 +4682,7 @@
               break;
             }
           }
-          if (hasUpgrade) {
+          if (hasUpgrade && equipped.upgrade_level > 0) {
             clone = $.extend({}, l);
             clone.identifier = "" + clone.id + ":" + equipped.item_level + ":0";
             clone.ilvl = equipped.item_level;
@@ -4629,7 +4691,7 @@
             clone.stats = recalculateStats(l.stats, l.ilvl, equipped.item_level);
             clone.upgrade_level = equipped.upgrade_level;
             loc.push(clone);
-            selected_identifier = clone.identifier;
+            selected_id_ilvl = clone.identifier;
           }
           continue;
         }
@@ -4658,7 +4720,7 @@
             continue;
           }
         }
-        if (Shadowcraft.Data.options.general.dynamic_ilvl && equipped) {
+        if (Shadowcraft.Data.options.general.dynamic_ilvl && equipped && slot !== 15 && slot !== 16) {
           if (l.ilvl < equipped.item_level - 50 || l.ilvl > equipped.item_level + 50) {
             continue;
           }
@@ -4751,7 +4813,7 @@
         ttrand = l.suffix != null ? l.suffix : "";
         ttupgd = l.upgradable ? l.upgrade_level : "";
         ttbonus = l.bonus_tree != null ? l.bonus_tree.join(":") : "";
-        if (l.identifier === selected_identifier) {
+        if (l.identifier === selected_id_ilvl) {
           bonus_trees = gear[slot].bonuses;
           ttbonus = bonus_trees.join(":");
         }
@@ -4794,8 +4856,12 @@
         ep: 0
       });
       $popupbody.get(0).innerHTML = buffer;
-      $popupbody.find(".slot[data-identifier='" + selected_identifier + "']").addClass("active");
-      console.profileEnd();
+      selected = $popupbody.find(".slot[data-identifier='" + selected_id_ilvl + "']");
+      if (selected.length !== 1) {
+        selected = $popupbody.find(".slot[data-identifier='" + selected_id_ilvl + "'][data-context='" + selected_context + "']");
+        console.log(selected.length);
+      }
+      selected.addClass("active");
       showPopup($popup);
       return false;
     };
@@ -5095,6 +5161,9 @@
       gear = data.gear[slot];
       item = getItem(gear.id, gear.context, gear.item_level);
       max = getMaxUpgradeLevel(item);
+      if (!gear.upgrade_level) {
+        gear.upgrade_level = 0;
+      }
       if (gear.upgrade_level === max) {
         gear.item_level -= getUpgradeLevelSteps(item) * max;
         gear.upgrade_level = 0;
@@ -5194,7 +5263,7 @@
       })).mouseout($.delegate({
         ".tt": ttlib.hide
       }));
-      $(".popup .body").bind("mousewheel", function(event) {
+      $("#gearpopup .body").bind("mousewheel", function(event) {
         if ((event.wheelDelta < 0 && this.scrollTop + this.clientHeight >= this.scrollHeight) || event.wheelDelta > 0 && this.scrollTop === 0) {
           event.preventDefault();
           return false;
@@ -5206,7 +5275,7 @@
       });
       $popupbody.click($.delegate({
         ".slot": function(e) {
-          var $this, bonuses, data, enchant_id, gem_id, identifier, idparts, item, item_id, ref, slot, slotGear, update, upgd_level, val;
+          var $this, bonuses, data, enchant_id, gem_id, identifier, idparts, item, item_id, slot, slotGear, update, upgd_level, val;
           Shadowcraft.Console.purgeOld();
           data = Shadowcraft.Data;
           slot = $.data(document.body, "selecting-slot");
@@ -5219,18 +5288,32 @@
             if (update === "item_id") {
               bonuses = "" + $this.data("bonus");
               idparts = identifier.split(":");
-              slotGear.id = parseInt(idparts[0]);
-              slotGear.item_level = parseInt(idparts[1]);
-              slotGear.context = $this.data("context");
-              upgd_level = parseInt($this.data("upgrade"));
-              slotGear.upgrade_level = !isNaN(upgd_level) ? upgd_level : 0;
-              if (bonuses.length > 0) {
-                slotGear.bonuses = bonuses.split(":");
+              item_id = parseInt(idparts[0]);
+              if ((slot === 15 || slot === 16) && indexOf.call(ShadowcraftGear.ARTIFACTS, item_id) >= 0) {
+                data.gear[15].id = ShadowcraftGear.ARTIFACT_SETS[Shadowcraft.Data.activeSpec].mh;
+                data.gear[15].item_level = parseInt(idparts[1]);
+                data.gear[15].context = "";
+                data.gear[15].upgrade_level = 0;
+                data.gear[15].bonuses = [];
+                data.gear[15].enchant = 0;
+                data.gear[16].id = ShadowcraftGear.ARTIFACT_SETS[Shadowcraft.Data.activeSpec].oh;
+                data.gear[16].item_level = parseInt(idparts[1]);
+                data.gear[16].context = "";
+                data.gear[16].upgrade_level = 0;
+                data.gear[16].bonuses = [];
+                data.gear[16].enchant = 0;
+                Shadowcraft.Artifact.updateArtifactItem(data.gear[15].id, data.gear[15].item_level, data.gear[15].item_level);
               } else {
-                slotGear.bonuses = [];
-              }
-              if ((ref = slotGear.id, indexOf.call(ShadowcraftGear.ARTIFACTS, ref) >= 0)) {
-                Shadowcraft.Artifact.updateArtifactItem(slotGear.id, slotGear.item_level, slotGear.item_level);
+                slotGear.id = item_id;
+                slotGear.item_level = parseInt(idparts[1]);
+                slotGear.context = $this.data("context");
+                upgd_level = parseInt($this.data("upgrade"));
+                slotGear.upgrade_level = !isNaN(upgd_level) ? upgd_level : 0;
+                if (bonuses.length > 0) {
+                  slotGear.bonuses = bonuses.split(":");
+                } else {
+                  slotGear.bonuses = [];
+                }
               }
             } else {
               enchant_id = !isNaN(val) ? val : null;
@@ -5343,10 +5426,7 @@
         return e.stopPropagation();
       });
       Shadowcraft.Options.bind("update", function(opt, val) {
-        if (opt === 'rotation.use_hemorrhage') {
-          app.updateDisplay();
-        }
-        if (opt === 'rotation.blade_flurry' || opt === 'general.num_boss_adds' || opt === 'general.lethal_poison') {
+        if (opt === 'rotation.cp_builder' || opt === 'rotation.blade_flurry' || opt === 'general.num_boss_adds' || opt === 'general.lethal_poison') {
           return app.updateSummaryWindow();
         }
       });
