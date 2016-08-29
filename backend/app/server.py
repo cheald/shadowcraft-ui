@@ -57,6 +57,33 @@ class ShadowcraftComputation:
 
         # 6.2.3
         133597: 'infallible_tracking_charm',
+
+        # 7.0
+        140794: 'arcanogolem_digit',
+        139329: 'bloodthirsty_instinct',
+        137459: 'chaos_talisman',
+        137419: 'chrono_shard',
+        140806: 'convergence_of_fates',
+        128705: 'darkmoon_deck_dominion',
+        140808: 'draught_of_souls',
+        140796: 'entwined_elemental_foci',
+        137539: 'faulty_countermeasure',
+        137369: 'giant_ornamental_pearl',
+        133642: 'horn_of_valor',
+        127842: 'infernal_alchemist_stone',
+        137357: 'mark_of_dargrul',
+        133664: 'memento_of_angerboda',
+        139334: 'natures_call',
+        140802: 'nightblooming_frond',
+        137312: 'nightmare_egg_shell',
+        139320: 'ravaged_seed_pod',
+        136715: 'spiked_counterweight',
+        139325: 'spontaneous_appendages',
+        137373: 'tempered_egg_of_serpentrix',
+        137406: 'terrorbound_nexus',
+        137439: 'tiny_oozeling_in_a_jar',
+        137537: 'tirathons_betrayal',
+        137486: 'windscar_whetstone',
     }
 
     otherProcs = {
@@ -150,6 +177,9 @@ class ShadowcraftComputation:
       trinketGroup.extend(list(subgroup))
       return trinketGroup
 
+    def createGroupMax(base_ilvl, max_ilvl, step_size):
+      group = xrange(base_ilvl, max_ilvl, step_size)
+
     # used for rankings
     trinketGroups = {
         # legendary rings
@@ -162,6 +192,32 @@ class ShadowcraftComputation:
         'malicious_censer': createGroup(createGroup([700,715,730], 1, 6), 2, 5),
         'soul_capacitor': createGroup(createGroup([695,710,725], 1, 6), 2, 5),
         'mirror_of_the_blademaster': createGroup(createGroup([690,705,720], 1, 6), 2, 5),
+        # 7.0 trinkets
+        'arcanogolem_digit': xrange(875, 955, 5),
+        'bloodthirsty_instinct': xrange(850, 930, 5),
+        'chaos_talisman': xrange(820, 900, 5),
+        'chrono_shard': xrange(820, 900, 5),
+        'convergence_of_fates': xrange(875, 955, 5),
+        'darkmoon_deck_dominion': xrange(815, 930, 5),
+        'draught_of_souls': xrange(875, 955, 5),
+        'entwined_elemental_foci': xrange(875, 955, 5),
+        'faulty_countermeasure': xrange(820, 900, 5),
+        'giant_ornamental_pearl': xrange(820, 900, 5),
+        'horn_of_valor': xrange(820, 900, 5),
+        'infernal_alchemist_stone': xrange(815, 930, 5),
+        'mark_of_dargrul': xrange(820, 900, 5),
+        'memento_of_angerboda': xrange(820, 900, 5),
+        'natures_call': xrange(850, 930, 5),
+        'nightblooming_frond': xrange(875, 955, 5),
+        'nightmare_egg_shell': xrange(820, 900, 5),
+        'ravaged_seed_pod': xrange(850, 930, 5),
+        'spiked_counterweight': xrange(820, 900, 5),
+        'spontaneous_appendages': xrange(850, 930, 5),
+        'tempered_egg_of_serpentrix': xrange(820, 900, 5),
+        'terrorbound_nexus': xrange(820, 900, 5),
+        'tiny_oozeling_in_a_jar': xrange(820, 900, 5),
+        'tirathons_betrayal': xrange(820, 900, 5),
+        'windscar_whetstone': xrange(820, 900, 5),
     }
 
     gearBoosts = {
@@ -479,7 +535,7 @@ class ShadowcraftComputation:
               out["mh_type_ep"], out["oh_type_ep"] = calculator.get_weapon_type_ep()
 
             # Talent ranking is slow. This is done last per a note from nextormento.
-            out["talent_ranking"] = [] # calculator.get_talents_ranking()
+            out["talent_ranking"] = calculator.get_talents_ranking()
 
             out["engine_info"] = calculator.get_engine_info()
 
