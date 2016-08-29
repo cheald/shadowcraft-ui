@@ -135,13 +135,6 @@
         "response_time": {
           "type": "number"
         },
-        "time_in_execute_range": {
-          "type": "number"
-        },
-        "lethal_poison": {
-          "type": "string",
-          "maxLength": 2
-        },
         "num_boss_adds": {
           "type": "integer",
           "minimum": 0
@@ -151,16 +144,13 @@
           "minimum": 0,
           "maximum": 1
         },
+        "dynamic_ilvl": {
+          "type": "boolean"
+        },
         "max_ilvl": {
           "type": "integer"
         },
         "min_ilvl": {
-          "type": "integer"
-        },
-        "dynamic_ilvl": {
-          "type": "boolean"
-        },
-        "show_random_items": {
           "type": "integer"
         },
         "show_upgrades": {
@@ -180,9 +170,18 @@
         "potion": {
           "type": "string",
           "max_length": 25
+        },
+        "mfd_resets": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "finisher_threshold": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 6
         }
       },
-      "required": ["level", "race", "patch", "night_elf_racial", "duration", "response_time", "time_in_execute_range", "lethal_poison", "num_boss_adds", "demon_enemy", "max_ilvl", "min_ilvl", "dynamic_ilvl", "show_random_items", "show_upgrades", "epic_gems", "prepot", "potion"],
+      "required": ["level", "race", "patch", "night_elf_racial", "duration", "response_time", "num_boss_adds", "demon_enemy", "dynamic_ilvl", "max_ilvl", "min_ilvl", "show_upgrades", "epic_gems", "prepot", "potion", "mfd_resets", "finisher_threshold"],
       "additionalProperties": false
     },
     "options_buffs": {
@@ -205,62 +204,71 @@
     "options_rotation": {
       "type": "object",
       "properties": {
-        "min_envenom_size_non_execute": {
-          "type": "integer",
-          "maximum": 5
-        },
-        "min_envenom_size_execute": {
-          "type": "integer",
-          "maximum": 5
-        },
-        "opener_name_assassination": {
+        "kingsbane": {
           "type": "string",
           "maxLength": 10
         },
-        "opener_use_assassination": {
+        "exsang": {
           "type": "string",
           "maxLength": 10
         },
-        "ksp_immediately": {
+        "cp_builder": {
           "type": "string",
-          "maxLength": 10
+          "maxLength": 20
         },
-        "revealing_strike_pooling": {
-          "type": "boolean"
+        "lethal_poison": {
+          "type": "string",
+          "maxLength": 2
         },
         "blade_flurry": {
           "type": "boolean"
         },
-        "opener_name_combat": {
+        "between_the_eyes_policy": {
           "type": "string",
           "maxLength": 10
         },
-        "opener_use_combat": {
+        "reroll_policy": {
           "type": "string",
           "maxLength": 10
         },
-        "use_hemorrhage": {
+        "jolly_roger_reroll": {
+          "type": "string",
+          "maxLength": 1
+        },
+        "grand_melee_reroll": {
+          "type": "string",
+          "maxLength": 1
+        },
+        "shark_reroll": {
+          "type": "string",
+          "maxLength": 1
+        },
+        "true_bearing_reroll": {
+          "type": "string",
+          "maxLength": 1
+        },
+        "buried_treasure_reroll": {
+          "type": "string",
+          "maxLength": 1
+        },
+        "broadsides_reroll": {
+          "type": "string",
+          "maxLength": 1
+        },
+        "symbols_policy": {
           "type": "string",
           "maxLength": 10
         },
-        "opener_name_subtlety": {
-          "type": "string",
-          "maxLength": 10
+        "dance_finishers_allowed": {
+          "type": "boolean"
         },
-        "opener_use_subtlety": {
-          "type": "string",
-          "maxLength": 10
-        },
-        "opener_name": {
-          "type": "string",
-          "maxLength": 10
-        },
-        "opener_use": {
-          "type": "string",
-          "maxLength": 10
+        "positional_uptime": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
         }
       },
-      "required": ["min_envenom_size_non_execute", "min_envenom_size_execute", "opener_name_assassination", "opener_use_assassination", "ksp_immediately", "revealing_strike_pooling", "blade_flurry", "opener_name_combat", "opener_use_combat", "use_hemorrhage", "opener_name_subtlety", "opener_use_subtlety", "opener_name", "opener_use"],
+      "required": ["kingsbane", "exsang", "cp_builder", "lethal_poison", "blade_flurry", "between_the_eyes_policy", "reroll_policy", "jolly_roger_reroll", "grand_melee_reroll", "shark_reroll", "true_bearing_reroll", "buried_treasure_reroll", "broadsides_reroll", "symbols_policy", "dance_finishers_allowed", "positional_uptime"],
       "additionalProperties": false
     },
     "options_advanced": {
