@@ -398,6 +398,8 @@ class Item
       # since those are the two fields that generally differentiate different items.
       if json['context'].start_with?('world-quest')
         db_item = Item.find_or_initialize_by(:remote_id => json['id'], :context => 'world-quest')
+      elsif json['context'].start_with?('dungeon-level-up')
+        db_item = Item.find_or_initialize_by(:remote_id => json['id'], :context => 'dungeon-level-up')
       else
         db_item = Item.find_or_initialize_by(:remote_id => json['id'],
                                              :context => json['context'])
@@ -419,6 +421,9 @@ class Item
         if json['context'].start_with?('world-quest')
           db_item.properties['context'] = 'world-quest'
           db_item.properties['tag'] = "World Quest"
+        elsif json['context'].start_with?('dungeon-level-up')
+          db_item.properties['context'] = 'dungeon-level-up'
+          db_item.properties['tag'] = "Level-up Dungeon"
         end
         db_item.is_gem = !db_item.properties['gem_slot'].blank?
         db_item.save()
