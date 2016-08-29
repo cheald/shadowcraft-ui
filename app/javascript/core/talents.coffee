@@ -234,7 +234,6 @@ class ShadowcraftTalents
   updateTalentRanking = ->
     buffer = ""
     ranking = Shadowcraft.lastCalculation.talent_ranking
-    console.log ranking
     max = 0
     for row,row_data of ranking
       target = $("#talentrankings .Tier"+row)

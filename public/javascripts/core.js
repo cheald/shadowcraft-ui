@@ -1234,7 +1234,7 @@
           return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
         default:
           port = 8881;
-          endpoint = "engine-6.2";
+          endpoint = "engine-7.0";
           return "http://" + window.location.hostname + ":" + port + "/" + endpoint;
       }
     };
@@ -1922,19 +1922,19 @@
         patch: {
           type: "select",
           name: "Patch/Engine",
-          "default": 60,
+          "default": 70,
           datatype: 'integer',
           options: {
-            60: '6.2'
+            70: '7.0'
           }
         },
         level: {
           type: "input",
           name: "Level",
-          "default": 100,
+          "default": 110,
           datatype: 'integer',
-          min: 100,
-          max: 100
+          min: 110,
+          max: 110
         },
         race: {
           type: "select",
@@ -3324,7 +3324,6 @@
       var buffer, ep, exist, max, pct, ranking, row, row_data, talent, talent_name, target, val;
       buffer = "";
       ranking = Shadowcraft.lastCalculation.talent_ranking;
-      console.log(ranking);
       max = 0;
       for (row in ranking) {
         row_data = ranking[row];
@@ -4342,15 +4341,7 @@
       data = Shadowcraft.Data;
       $summary = $("#summary .inner");
       a_stats = [];
-      if (data.options.general.patch) {
-        if (data.options.general.patch === 60) {
-          valengine = "6.2";
-        } else {
-          valengine = data.options.general.patch / 10;
-        }
-      } else {
-        valengine = "6.x";
-      }
+      valengine = "7.0";
       a_stats.push({
         name: "Engine",
         val: valengine

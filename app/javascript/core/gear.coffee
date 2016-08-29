@@ -716,13 +716,7 @@ class ShadowcraftGear
     data = Shadowcraft.Data
     $summary = $("#summary .inner")
     a_stats = []
-    if data.options.general.patch
-      if data.options.general.patch == 60
-        valengine = "6.2"
-      else
-        valengine = data.options.general.patch / 10
-    else
-      valengine = "6.x"
+    valengine = "7.0"
     a_stats.push {
       name: "Engine"
       val: valengine

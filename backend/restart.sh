@@ -1,4 +1,4 @@
 #!/bin/bash
 killall twistd
-twistd -y server-6.2.tac --pidfile=tmp/server-6.2.pid --logfile log/server-6.2.log
+twistd -y server-7.0.tac --pidfile=tmp/server-7.0.pid --logfile log/server-7.0.log
 
