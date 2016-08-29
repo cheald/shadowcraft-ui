@@ -17,6 +17,42 @@ class ShadowcraftTalents
       talents: "1210011"
       spec: "b"
 
+  TALENT_NAMES =
+    "gloomblade": "Gloomblade"
+    "master_of_subtlety": "Master of Subtlety"
+    "weaponmaster": "Weaponmaster"
+    "nightstalker": "Nightstalker"
+    "shadow_focus": "Shadow Focus"
+    "subterfuge": "Subterfuge"
+    "anticipation": "Anticipation"
+    "deeper_strategem": "Deeper Strategem"
+    "vigor": "Vigor"
+    "cheat_death": "Cheat Death"
+    "elusiveness": "Elusiveness"
+    "soothing_darkness": "Soothing Darkness"
+    "prey_on_the_weak": "Prey on the Weak"
+    "strike_from_the_shadows": "Strike from the Shadows"
+    "tangled_shadow": "Tangled Shadow"
+    "alacrity": "Alacrity"
+    "enveloping_shadows": "Enveloping Shadows"
+    "premeditation": "Premeditation"
+    "death_from_above": "Death from Above"
+    "marked_for_death": "Marked for Death"
+    "master_of_shadows": "Master of Shadows"
+    "ghostly_strike": "Ghostly Strike"
+    "quick_draw": "Quick Draw"
+    "swordmaster": "Swordmaster"
+    "acrobatic_strikes": "Acrobatic Strikes"
+    "grappling_hook": "Grappling Hook"
+    "hit_and_run": "Hit and Run"
+    "iron_stomach": "Iron Stomach"
+    "dirty_tricks": "Dirty Tricks"
+    "parley": "Parley"
+    "prey_on_the_weak": "Prey on the Weak"
+    "cannonball_barrage": "Cannonball Barrage"
+    "killing_spree": "Killing Spree"
+    "slice_and_dice": "Slice and Dice"
+    
   @GetActiveSpecName = ->
     activeSpec = Shadowcraft.Data.activeSpec
     if activeSpec
@@ -195,9 +231,58 @@ class ShadowcraftTalents
     Shadowcraft.Talents.trigger("changedSpec", spec)
     return
 
+  updateTalentRanking = ->
+    buffer = ""
+    ranking = Shadowcraft.lastCalculation.talent_ranking
+    console.log ranking
+    max = 0
+    for row,row_data of ranking
+      target = $("#talentrankings .Tier"+row)
+      max = 0
+      for talent,ep of row_data
+        if ep > max
+          max = ep
+          
+      buffer = ""
+      for talent,ep of row_data
+        if ep == "not implemented" or ep == "implementation error"
+          ep = 0.0
+        val = Math.round(parseFloat(ep) * 100.0)/ 100.0
+        talent_name = TALENT_NAMES[talent]
+        pct = val / max * 100 + 0.01
+
+        # Only add the trait to the list the first time through this loop.
+        # On subsequent passes the element just gets resized below.
+        exist = target.find("#talent-weight-"+talent)
+        if exist.length == 0
+          buffer = Templates.talentContribution({
+            name: "#{talent_name}"
+            raw_name: "#{talent}"
+            val: val
+            width: pct
+          })
+          target.append(buffer)
+
+        # Resize this element in the list to not be bigger than the actual
+        # space.
+        exist = target.find("#talent-weight-"+talent)
+        $.data(exist.get(0), "val", val)
+        exist.show().find(".pct-inner").css({width:pct+"%"})
+        exist.find(".label").text("#{val}")
+
+      # sort all of the elements so the biggest ones are at the top
+      target.find(".talent_contribution").sortElements (a,b) ->
+        ad = $.data(a, "val")
+        bd = $.data(b, "val")
+        if ad > bd then -1 else 1
+
+    return
+
   boot: ->
     app = this
     this.initSidebar()
+
+    Shadowcraft.Backend.bind("recompute", updateTalentRanking)
 
     data = Shadowcraft.Data
     if not data.activeSpec
