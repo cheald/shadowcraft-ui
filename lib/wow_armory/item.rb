@@ -309,15 +309,15 @@ module WowArmory
           #     the green text next to items in the list.
           # 6 = Socket.  Take the value of column 4 and replace it with the socket type from
           #     the SOCKET_MAP array in WowArmory::Constants.
-          if entry[:type] == 2
+          if entry[:type] == ITEM_BONUS_TYPES['random_stat']
             if STAT_LOOKUP[entry[:val1]]
               entry[:val1] = STAT_LOOKUP[entry[:val1]]
             end
-          elsif entry[:type] == 5
+          elsif entry[:type] == ITEM_BONUS_TYPES['name']
             entry[:val1] = item_name_description[entry[:val1]]
-          elsif entry[:type] == 6
+          elsif entry[:type] == ITEM_BONUS_TYPES['socket']
             entry[:val2] = SOCKET_MAP[entry[:val2].to_i]
-          elsif entry[:type] == 1
+          elsif entry[:type] == ITEM_BONUS_TYPES['ilvl_increase']
             entry.delete(:val2)
           end
           hash[id_node].push entry

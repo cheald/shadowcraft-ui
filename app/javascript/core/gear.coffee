@@ -953,11 +953,14 @@ class ShadowcraftGear
   # Called when a user clicks on the name in a slot. This opens a popup with
   # a list of items.
   clickSlotName = ->
-    console.profile()
     buf = clickSlot(this, "item_id")
     $slot = buf[0]
     slot = buf[1]
-    selected_identifier = $slot.data("identifier")
+    selected_id_ilvl = $slot.data("identifier")
+    selected_id_context = $slot.data("identifier").split(":")[0]
+    selected_id_context += ":"
+    selected_context = $slot.data("context")
+    selected_id_context += selected_context
 
     equip_location = SLOT_INVTYPES[slot]
     GemList = Shadowcraft.ServerData.GEMS
@@ -974,8 +977,8 @@ class ShadowcraftGear
     # Filter the list of items down to a specific subset. There are some extra
     # criteria for hiding items as well, beyond just simple slot numbers.
     for lid in loc_all
-      l = ShadowcraftData.ITEM_LOOKUP2[lid]
-      if lid == selected_identifier # always show equipped item
+      l = ShadowcraftData.ITEM_BY_CONTEXT[lid]
+      if lid == selected_id_context # always show equipped item
         loc.push l
 
         # If the equipped item has WF/TF bonus ID on it, generate a second item
@@ -992,7 +995,7 @@ class ShadowcraftGear
           if hasUpgrade
             break
 
-        if (hasUpgrade)
+        if (hasUpgrade && equipped.upgrade_level > 0)
           clone = $.extend({}, l)
           clone.identifier = ""+clone.id+":"+equipped.item_level+":0"
           clone.ilvl = equipped.item_level
@@ -1004,7 +1007,7 @@ class ShadowcraftGear
 
           # Modify the selected identifier so that the right item will be selected
           # in the list.
-          selected_identifier = clone.identifier
+          selected_id_ilvl = clone.identifier
 
         continue
 
@@ -1095,7 +1098,7 @@ class ShadowcraftGear
       ttrand = if l.suffix? then l.suffix else ""
       ttupgd = if l.upgradable then l.upgrade_level else ""
       ttbonus = if l.bonus_tree? then l.bonus_tree.join(":") else ""
-      if l.identifier == selected_identifier
+      if l.identifier == selected_id_ilvl
         bonus_trees = gear[slot].bonuses
         ttbonus = bonus_trees.join(":")
       upgrade = []
@@ -1132,8 +1135,14 @@ class ShadowcraftGear
     )
 
     $popupbody.get(0).innerHTML = buffer
-    $popupbody.find(".slot[data-identifier='#{selected_identifier}']").addClass("active")
-    console.profileEnd()
+
+    # Hack to work around items with upgrades not getting selected correctly.
+    selected = $popupbody.find(".slot[data-identifier='#{selected_id_ilvl}']")
+    if selected.length != 1
+      selected = $popupbody.find(".slot[data-identifier='#{selected_id_ilvl}'][data-context='#{selected_context}']")
+      console.log selected.length
+
+    selected.addClass("active")
     showPopup($popup)
     false
 

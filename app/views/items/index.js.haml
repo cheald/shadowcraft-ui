@@ -148,20 +148,25 @@
             item.sockets[item.sockets.length] = "Prismatic";
           }
         }
-
-        if(item.equip_location == 21 || item.equip_location == 13) {
-          R.SLOT_CHOICES.offhand[R.SLOT_CHOICES.offhand.length] = item.identifier;   // Dual-hand items get added to offhands, too.
-        }
         item.equip_location = getRealSlot(item.equip_location, true);
-
-        if(R.SLOT_CHOICES[item.equip_location] === undefined) { R.SLOT_CHOICES[item.equip_location] = []; }
-        R.SLOT_CHOICES[item.equip_location][R.SLOT_CHOICES[item.equip_location].length] = item.identifier;
         R.ITEM_LOOKUP2[item.identifier] = item;
+
+        context_identifier = item.id + ":";
         if (item.context.length != 0) {
-          R.ITEM_BY_CONTEXT[item.id+":"+item.context] = item;
+          context_identifier += item.context;
         } else {
-          R.ITEM_BY_CONTEXT[item.id+":none"] = item;
+          context_identifier += "none";
         }
+
+        R.ITEM_BY_CONTEXT[context_identifier] = item;
+        if(item.equip_location == 21 || item.equip_location == 13) {
+          R.SLOT_CHOICES.offhand.push(context_indentifier);   // Dual-hand items get added to offhands, too.
+        }
+
+        if(R.SLOT_CHOICES[item.equip_location] === undefined) {
+          R.SLOT_CHOICES[item.equip_location] = [];
+        }
+        R.SLOT_CHOICES[item.equip_location].push(context_identifier);
       }
       delete R.ITEMS;
 

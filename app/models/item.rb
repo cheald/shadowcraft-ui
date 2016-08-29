@@ -212,7 +212,7 @@ class Item
     end
   end
 
-  # these are the only bonus IDs we care about displaying on the gear popouts.  They're
+  # These are the only bonus IDs we care about displaying on the gear popouts.  They're
   # mostly just the different difficulty levels that can be on gear.  Anything not listed
   # here is ignored and a separate item is not created in the database for it.  This is
   # how we prevent duplicates of items from showing up on the UI.  There are so many bonus
@@ -230,7 +230,7 @@ class Item
   # chanceBonusList entry.  This is the list of bonus IDs for those stages and is
   # handled slightly differently.  See below for the check for trade-skill for more
   # details.
-  TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 619, 620]
+  TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 597, 598, 599, 619, 620, 666, 667, 668, 559]
 
   KAZZAK_ITEMS = [124545, 124546, 127971, 127975, 127976, 127980, 127982]
   MIN_ILVL = 600
@@ -284,8 +284,13 @@ class Item
     # json to be processed further
     json_data = Array.new
     begin
-      json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {:bl=>0}
-      json_data.push(json)
+      base_json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {:bl=>0}
+      if base_json['itemLevel'].to_i >= MIN_ILVL
+        json_data.push(base_json)
+      else
+        puts base_json['itemLevel']
+        puts "skipped due to item level filter"
+      end
     rescue WowArmory::MissingDocument => e
       puts "import_blizzard failed fetch of #{id}: #{e.message}"
       return
@@ -295,7 +300,7 @@ class Item
     # context is the one the first document's data is valid for. For example, loading
     # a document for an item with contexts ['raid-normal','raid-heroic'] will default
     # to returning data for raid-normal.
-    contexts = json_data[0]['availableContexts'].clone
+    contexts = base_json['availableContexts'].clone
     contexts.delete_at(0)
 
     # NOTE: SPECIAL CASE HERE, REMOVE LATER
@@ -305,12 +310,25 @@ class Item
     if KAZZAK_ITEMS.include? id
       contexts.delete_if { |context| ['raid-heroic','raid-mythic'].include? context }
     end
+    
+    # NOTE: SPECIAL CASE HERE, REMOVE LATER
+    # Mythic+ items all come in with the same data, even though there are 4 different
+    # contexts for them. I'm pretty sure this is a bug in the API data, but in the meantime
+    # ignore those items so they don't clutter up the list.
+    contexts.delete_if { |context| context.start_with?('challenge-') }
+
+    # NOTE: SPECIAL CASE HERE, REMOVE LATER
+    # World quest items have the same problem as above, in that they all return the same
+    # data. Only load one of them and reset the context below to something else. This
+    # greatly reduces the amount of data we load for these items. Again, this is probably
+    # a bug in the API data.
+    contexts.delete_if { |context| context.start_with?('world-quest-') and !context.end_with?('-1') }
 
     # Next, look at the chance bonus lists that accompany the item. This bonus list is
     # the things that can be applied to an item, such as extra titles (warforged, crafting
     # stages), tertiary stats, sockets, etc.
-    itemChanceBonuses = get_valid_bonus_IDs(json_data[0]['bonusSummary']['chanceBonusLists'].clone, id, json_data[0]['context'])
-    defaultBonuses = json_data[0]['bonusLists']
+    itemChanceBonuses = get_valid_bonus_IDs(base_json['bonusSummary']['chanceBonusLists'].clone, id, base_json['context'])
+    defaultBonuses = base_json['bonusLists']
 
     # Loop through now-trimmed list of bonus IDs and load an additional item for each
     # one of those IDs from the armory, and store it in the list to be processed
@@ -338,12 +356,12 @@ class Item
         # load each item with the necessary bonus IDs attached as well as the base items.
         puts "Loading document for extra context #{context}"
         json = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id,context], {}
-        json_data.push(json)
 
         # Flush anything that isn't above the minimum ilvl down the toilet. This happens
         # because timewalking items get added to the list, and we try to load the base
         # version of the item too.
         next if json['itemLevel'] < MIN_ILVL
+        json_data.push(json)
 
         # Same thing here with the bonus IDs. Gotta load all of those here too.
         itemChanceBonuses = get_valid_bonus_IDs(json['bonusSummary']['chanceBonusLists'], id, json['context'])
@@ -378,8 +396,12 @@ class Item
 
       # check to see if this item is in the database yet. we check by ID and item level
       # since those are the two fields that generally differentiate different items.
-      db_item = Item.find_or_initialize_by(:remote_id => json['id'],
-                                           :context => json['context'])
+      if json['context'].start_with?('world-quest')
+        db_item = Item.find_or_initialize_by(:remote_id => json['id'], :context => 'world-quest')
+      else
+        db_item = Item.find_or_initialize_by(:remote_id => json['id'],
+                                             :context => json['context'])
+      end
 
       # if the item doesn't have properties yet, create a new item from the wow
       # armory library and then merge that into this record and save it.
@@ -394,6 +416,10 @@ class Item
         db_item.remote_id = item.id
         db_item.item_level = item.ilevel
         db_item.properties = item.as_json.with_indifferent_access
+        if json['context'].start_with?('world-quest')
+          db_item.properties['context'] = 'world-quest'
+          db_item.properties['tag'] = "World Quest"
+        end
         db_item.is_gem = !db_item.properties['gem_slot'].blank?
         db_item.save()
       end
@@ -410,6 +436,11 @@ class Item
     # for trade-skill items, also add the bonuses for each of the "stage" titles
     if (context == 'trade-skill')
       itemChanceBonuses = TRADESKILL_BONUS_IDS
+    end
+
+    skipped = possible_IDs-itemChanceBonuses
+    if !skipped.empty?
+      puts "skipping bonus IDs: %s" % skipped.join(",")
     end
     return itemChanceBonuses
   end

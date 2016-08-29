@@ -88,8 +88,23 @@ module WowArmory
           info['upgrade_level'] = upgrade['current'] if upgrade['current'] > 0
         end
 
+        if info['context'].start_with?('world-quest-')
+          info['context'] = 'world-quest'
+        end
+
         @gear[info['slot'].to_s] = info
       end
+      Rails.logger.debug @gear
+
+      @gear["13"] = {
+        'id' => 137367,
+        'item_level' => 820,
+        'enchant' => 0,
+        'gems' => [0,0,0],
+        'slot' => 13,
+        'bonuses' => [41],
+        'context' => 'world-quest',
+        'upgrade_level' => 0}
     end
   end
 end

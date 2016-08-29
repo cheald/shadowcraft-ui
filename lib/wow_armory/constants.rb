@@ -12,6 +12,16 @@ module WowArmory
       8 => :ADJUST_EQUIP_LEVEL,
       9 => :UNKNOWN_1,
       10 => :UNKNOWN_2,
+      14 => :SET_ITEM_LEVEL,
+    }
+
+    ITEM_BONUS_TYPES = {
+      'ilvl_increase' => 1,
+      'random_stat' => 2,
+      'change_item_quality' => 3,
+      'title' => 4,
+      'name' => 5,
+      'socket' => 6,
     }
   
     ENCHANT_SCALING = 10.0 # for lvl 90 // lvl100 = 80
@@ -19,8 +29,6 @@ module WowArmory
     CLASS_MAP = {
       4 => 'rogue'
     }
-    
-    POWER_TYPES = [:mana, :rage, :focus, :energy]
     
     RACE_MAP = {
       1 => 'Human',
@@ -60,7 +68,7 @@ module WowArmory
     }
 
     # TODO: missing some mappings in here based on data from ItemBonus.dbc. The follow
-    # types are missing: 7, 9, 10, 11, 12, 13, 17, 18
+    # types are missing: 7, 9, 10, 11, 12, 13, 17, 18 (these are probably relics).
     SOCKET_MAP = {
       1 => 'Meta',
       2 => 'Red',
@@ -127,21 +135,6 @@ module WowArmory
       'resirtng' => 'pvp_resilience',
       'multistrike' => 'multistrike',
       'versatility' => 'versatility'
-    }
-
-    # redundant to character.rb
-    PROF_MAP = {
-      164 => 'blacksmithing',
-      165 => 'leatherworking',
-      171 => 'alchemy',
-      182 => 'herbalism',
-      186 => 'mining',
-      197 => 'tailoring',
-      202 => 'engineering',
-      333 => 'enchanting',
-      393 => 'skinning',
-      755 => 'jewelcrafting',
-      773 => 'inscription',
     }
 
     ARMOR_CLASS = {
