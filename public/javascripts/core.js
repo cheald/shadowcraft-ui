@@ -2320,6 +2320,7 @@
         if (Shadowcraft.Data.activeSpec === "a") {
           if (lastSpec !== Shadowcraft.Data.activeSpec) {
             $("#opt-rotation-cp_builder").val("mutilate");
+            Shadowcraft.update();
           }
           $("#settings section.mutilate").show();
           if (Shadowcraft.Data.activeTalents.split("")[5] === "0") {
@@ -2331,6 +2332,7 @@
           $("#settings section.subtlety").show();
           if (lastSpec !== Shadowcraft.Data.activeSpec) {
             $("#opt-rotation-cp_builder").val("backstab");
+            Shadowcraft.update();
           }
         }
         return lastSpec = Shadowcraft.Data.activeSpec;
@@ -3088,40 +3090,49 @@
     };
 
     TALENT_NAMES = {
-      "gloomblade": "Gloomblade",
-      "master_of_subtlety": "Master of Subtlety",
-      "weaponmaster": "Weaponmaster",
-      "nightstalker": "Nightstalker",
-      "shadow_focus": "Shadow Focus",
-      "subterfuge": "Subterfuge",
-      "anticipation": "Anticipation",
-      "deeper_strategem": "Deeper Strategem",
-      "vigor": "Vigor",
-      "cheat_death": "Cheat Death",
-      "elusiveness": "Elusiveness",
-      "soothing_darkness": "Soothing Darkness",
-      "prey_on_the_weak": "Prey on the Weak",
-      "strike_from_the_shadows": "Strike from the Shadows",
-      "tangled_shadow": "Tangled Shadow",
+      "acrobatic_strikes": "Acrobatic Strikes",
+      "agonizing_poison": "Agonizing Poison",
       "alacrity": "Alacrity",
-      "enveloping_shadows": "Enveloping Shadows",
-      "premeditation": "Premeditation",
+      "anticipation": "Anticipation",
+      "cannonball_barrage": "Cannonball Barrage",
+      "cheat_death": "Cheat Death",
       "death_from_above": "Death from Above",
+      "deeper_strategem": "Deeper Strategem",
+      "dirty_tricks": "Dirty Tricks",
+      "elaborate_planning": "Elaborate Planning",
+      "elusiveness": "Elusiveness",
+      "enveloping_shadows": "Enveloping Shadows",
+      "exsanguinate": "Exsanguinate",
+      "ghostly_strike": "Ghostly Strike",
+      "gloomblade": "Gloomblade",
+      "grappling_hook": "Grappling Hook",
+      "hemorrhage": "Hemorrhage",
+      "hit_and_run": "Hit and Run",
+      "internal_bleeding": "Internal Bleeding",
+      "iron_stomach": "Iron Stomach",
+      "killing_spree": "Killing Spree",
+      "leeching_poison": "Leeching Poison",
       "marked_for_death": "Marked for Death",
       "master_of_shadows": "Master of Shadows",
-      "ghostly_strike": "Ghostly Strike",
-      "quick_draw": "Quick Draw",
-      "swordmaster": "Swordmaster",
-      "acrobatic_strikes": "Acrobatic Strikes",
-      "grappling_hook": "Grappling Hook",
-      "hit_and_run": "Hit and Run",
-      "iron_stomach": "Iron Stomach",
-      "dirty_tricks": "Dirty Tricks",
+      "master_of_subtlety": "Master of Subtlety",
+      "master_poisoner": "Master Poisoner",
+      "nightstalker": "Nightstalker",
       "parley": "Parley",
+      "premeditation": "Premeditation",
       "prey_on_the_weak": "Prey on the Weak",
-      "cannonball_barrage": "Cannonball Barrage",
-      "killing_spree": "Killing Spree",
-      "slice_and_dice": "Slice and Dice"
+      "quick_draw": "Quick Draw",
+      "shadow_focus": "Shadow Focus",
+      "shadow_focus": "Shadow Focus",
+      "slice_and_dice": "Slice and Dice",
+      "soothing_darkness": "Soothing Darkness",
+      "strike_from_the_shadows": "Strike from the Shadows",
+      "subterfuge": "Subterfuge",
+      "swordmaster": "Swordmaster",
+      "tangled_shadow": "Tangled Shadow",
+      "thuggee": "Thuggee",
+      "venom_rush": "Venom Rush",
+      "vigor": "Vigor",
+      "weaponmaster": "Weaponmaster"
     };
 
     ShadowcraftTalents.GetActiveSpecName = function() {

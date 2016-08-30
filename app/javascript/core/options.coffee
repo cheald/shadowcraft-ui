@@ -230,6 +230,7 @@ class ShadowcraftOptions
         # if the spec changed, reset the combopoint builder to something valid
         if lastSpec != Shadowcraft.Data.activeSpec
           $("#opt-rotation-cp_builder").val("mutilate")
+          Shadowcraft.update()
         $("#settings section.mutilate").show()
         if (Shadowcraft.Data.activeTalents.split("")[5] == "0")
 
@@ -242,6 +243,7 @@ class ShadowcraftOptions
         # if the spec changed, reset the combopoint builder to something valid
         if lastSpec != Shadowcraft.Data.activeSpec
           $("#opt-rotation-cp_builder").val("backstab")
+          Shadowcraft.update()
       lastSpec = Shadowcraft.Data.activeSpec
 
     Shadowcraft.Talents.bind "changedTalents", ->
