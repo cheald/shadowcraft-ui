@@ -226,6 +226,10 @@ class ShadowcraftTalents
       ".tt": ttlib.hide
     )
 
+    # Clear everything out of the talent ranking sections
+    for row in [15,30,45,60,75,90,100,110]
+      $("#talentrankings .Tier"+row).empty()
+
     # Post an event to listeners that the spec changed
     Shadowcraft.Data.activeSpec = spec
     Shadowcraft.Talents.trigger("changedSpec", spec)
@@ -243,6 +247,7 @@ class ShadowcraftTalents
           max = ep
           
       buffer = ""
+      
       for talent,ep of row_data
         if ep == "not implemented" or ep == "implementation error"
           ep = 0.0

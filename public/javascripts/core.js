@@ -3230,7 +3230,7 @@
     };
 
     ShadowcraftTalents.prototype.setSpec = function(spec) {
-      var TalentLookup, Talents, app, buffer, talentTiers, talentTrees, talentframe, tframe, tree;
+      var TalentLookup, Talents, app, buffer, j, len, ref, row, talentTiers, talentTrees, talentframe, tframe, tree;
       app = this;
       buffer = Templates.specActive({
         name: getSpecName(spec),
@@ -3316,6 +3316,11 @@
       })).mouseleave($.delegate({
         ".tt": ttlib.hide
       }));
+      ref = [15, 30, 45, 60, 75, 90, 100, 110];
+      for (j = 0, len = ref.length; j < len; j++) {
+        row = ref[j];
+        $("#talentrankings .Tier" + row).empty();
+      }
       Shadowcraft.Data.activeSpec = spec;
       Shadowcraft.Talents.trigger("changedSpec", spec);
     };
