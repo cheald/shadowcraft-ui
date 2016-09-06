@@ -11,4 +11,5 @@
 //= require core/gear
 //= require core/dps_graph
 //= require core/console
+
 //= require core/initialize
