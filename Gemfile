@@ -24,4 +24,8 @@ gem "coffee-rails"
 group :development do
   gem 'thin'
   gem 'capistrano'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+  gem 'capistrano-passenger'
+  gem 'capistrano-rvm'
 end
