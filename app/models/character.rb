@@ -15,7 +15,7 @@ class Character
 
   REGIONS = ['US', 'EU', 'KR', 'TW', 'CN', 'SEA']
   CLASSES = ['rogue']
-  MAX_LEVEL = 100
+  MAX_LEVEL = 110
 
   validates_inclusion_of :region, :in => REGIONS
   validates_presence_of :name, :message => '%{value} could not be found on the Armory.'
