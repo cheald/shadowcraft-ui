@@ -14,10 +14,10 @@ from app.server import *
 
 def getWebService(port = 8881):
     site = WebSocketSite(ShadowcraftSite())
-    site.addHandler("/engine", ShadowcraftSocket)
+    site.addHandler("/engine7", ShadowcraftSocket)
     return internet.TCPServer(port, site)
 
 application = service.Application("Shadowcraft Backend")
 
-service = getWebService()
+service = getWebService(8900 + int(os.environ["UPSTART_INSTANCE"])
 service.setServiceParent(application)
