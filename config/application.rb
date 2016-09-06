@@ -16,7 +16,7 @@ module Roguesim
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
-    
+
     config.autoload_paths << File.join(config.root, "lib")
 
     # Enable the asset pipeline
@@ -35,6 +35,8 @@ module Roguesim
     config.sass.line_comments = true
     config.sass.style = :expanded
 
+    # Causes Coffeescript docs to not be wrapped in closures. Necessary because old code is poorly scoped and assumes globals.
+    Tilt::CoffeeScriptTemplate.default_bare = true
   end
 end
 

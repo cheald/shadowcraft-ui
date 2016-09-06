@@ -134,7 +134,7 @@ class Item
     pos = 0
     item_ids.each do |id|
       pos = pos + 1
-      puts "item #{pos} of #{item_ids.length}" if pos % 10 == 0
+      Rails.logger.debug "item #{pos} of #{item_ids.length}" if pos % 10 == 0
       import id
     end
 
@@ -166,20 +166,20 @@ class Item
       127416, # eye of sethe (+50 mastery)
     ]
 
-    puts "importing now #{gem_ids.length} gems"
+    Rails.logger.debug "importing now #{gem_ids.length} gems"
     pos = 0
     gem_ids.each do |id|
       begin
         pos = pos + 1
-        puts "gem #{pos} of #{gem_ids.length}" if pos % 10 == 0
-        puts id
+        Rails.logger.debug "gem #{pos} of #{gem_ids.length}" if pos % 10 == 0
+        Rails.logger.debug id
 
         # TODO: theoretically we could just call Item.import here instead of duplicating
         # this code yet again.
         begin
           json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {}
         rescue WowArmory::MissingDocument => e
-          puts "import_blizzard failed fetch of #{id}: #{e.message}"
+          Rails.logger.debug "import_blizzard failed fetch of #{id}: #{e.message}"
           next
         end
 
@@ -206,8 +206,8 @@ class Item
         end
 
       rescue Exception => e
-        puts id
-        puts e.message
+        Rails.logger.debug id
+        Rails.logger.debug e.message
       end
     end
   end
@@ -272,7 +272,7 @@ class Item
   # Imports an item and all of its variants (contexts, upgrades, etc) from the
   # Blizzard armory API.
   def self.import_blizzard(id)
-    puts "importing #{id}"
+    Rails.logger.debug "importing #{id}"
 
     # Check for an existing item before loading everything for this one
     db_item = Item.find_or_initialize_by(:remote_id => id)
@@ -288,11 +288,11 @@ class Item
       if base_json['itemLevel'].to_i >= MIN_ILVL
         json_data.push(base_json)
       else
-        puts base_json['itemLevel']
-        puts "skipped due to item level filter"
+        Rails.logger.debug base_json['itemLevel']
+        Rails.logger.debug "skipped due to item level filter"
       end
     rescue WowArmory::MissingDocument => e
-      puts "import_blizzard failed fetch of #{id}: #{e.message}"
+      Rails.logger.debug "import_blizzard failed fetch of #{id}: #{e.message}"
       return
     end
 
@@ -334,7 +334,7 @@ class Item
     # one of those IDs from the armory, and store it in the list to be processed
     itemChanceBonuses.each do |bonus|
       begin
-        puts "Loading extra item for bonus ID #{bonus}"
+        Rails.logger.debug "Loading extra item for bonus ID #{bonus}"
         bonuses = defaultBonuses.clone()
         bonuses.push(bonus)
         params = {
@@ -343,7 +343,7 @@ class Item
         json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, params
         json_data.push(json)
       rescue WowArmory::MissingDocument => e
-        puts "import_blizzard failed fetch of #{id}/#{context}: #{e.message}"
+        Rails.logger.debug "import_blizzard failed fetch of #{id}/#{context}: #{e.message}"
         return
       end
     end
@@ -354,7 +354,7 @@ class Item
       begin
         # TODO: this is probably where we should deal with the bonus IDs also. We need to
         # load each item with the necessary bonus IDs attached as well as the base items.
-        puts "Loading document for extra context #{context}"
+        Rails.logger.debug "Loading document for extra context #{context}"
         json = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id,context], {}
 
         # Flush anything that isn't above the minimum ilvl down the toilet. This happens
@@ -370,7 +370,7 @@ class Item
         # Same thing here with the bonus IDs. Gotta load all of those here too.
         itemChanceBonuses.each do |bonus|
           begin
-            puts "Loading extra item for bonus ID #{bonus}"
+            Rails.logger.debug "Loading extra item for bonus ID #{bonus}"
             bonuses = defaultBonuses.clone()
             bonuses.push(bonus)
             params = {
@@ -379,17 +379,17 @@ class Item
             json = WowArmory::Document.fetch 'us', '/wow/item/%d/%s' % [id,context], params
             json_data.push(json)
           rescue WowArmory::MissingDocument => e
-            puts "import_blizzard failed fetch of #{id}/#{context}: #{e.message}"
+            Rails.logger.debug "import_blizzard failed fetch of #{id}/#{context}: #{e.message}"
             return
           end
         end
       rescue WowArmory::MissingDocument => e
-        puts "import_blizzard failed fetch of #{id}/#{context}: #{e.message}"
+        Rails.logger.debug "import_blizzard failed fetch of #{id}/#{context}: #{e.message}"
         return
       end
     end
 
-    puts "Loaded a total of #{json_data.length} json entries for this item"
+    Rails.logger.debug "Loaded a total of #{json_data.length} json entries for this item"
 
     # Loop through the json data that was retrieved and process each in turn
     json_data.each do |json|
@@ -445,7 +445,7 @@ class Item
 
     skipped = possible_IDs-itemChanceBonuses
     if !skipped.empty?
-      puts "skipping bonus IDs: %s" % skipped.join(",")
+      Rails.logger.debug "skipping bonus IDs: %s" % skipped.join(",")
     end
     return itemChanceBonuses
   end

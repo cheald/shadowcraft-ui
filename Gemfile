@@ -19,7 +19,9 @@ gem 'sass-rails'
 gem 'test-unit', '~> 3.0'
 gem 'uglifier'
 gem 'json_schema'
+gem "coffee-rails"
 
 group :development do
-  gem "coffee-script"
+  gem 'thin'
+  gem 'capistrano'
 end

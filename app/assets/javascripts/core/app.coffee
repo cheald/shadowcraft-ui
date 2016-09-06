@@ -145,3 +145,5 @@ class ShadowcraftApp
     return parseInt(t, 10)
 
 _.extend(ShadowcraftApp, Backbone.Events)
+
+window.ShadowcraftApp = ShadowcraftApp
