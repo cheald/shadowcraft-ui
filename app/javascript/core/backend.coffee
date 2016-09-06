@@ -8,9 +8,8 @@ class ShadowcraftBackend
         endpoint = "engine-6.3"
         return "http://#{window.location.hostname}:#{port}/#{endpoint}"
       else
-        port = 8881
-        endpoint = "engine-7.0"
-        return "http://#{window.location.hostname}:#{port}/#{endpoint}"
+        endpoint = "engine7"
+        return "http://#{window.location.hostname}/#{endpoint}"
 
   constructor: (@app) ->
     @app.Backend = this
