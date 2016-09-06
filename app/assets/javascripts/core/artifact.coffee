@@ -728,3 +728,5 @@ class ShadowcraftArtifact
   constructor: (@app) ->
     @app.Artifact = this
     _.extend(this, Backbone.Events)
+
+window.ShadowcraftHistory = ShadowcraftHistory

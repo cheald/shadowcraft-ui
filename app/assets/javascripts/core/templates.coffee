@@ -1,6 +1,6 @@
-Templates = null
+window.Templates = null
 ShadowcraftApp.bind "boot", ->
-  Templates =
+  window.Templates =
     itemSlot:            Handlebars.compile $("#template-itemSlot").html()
     stats:               Handlebars.compile $("#template-stats").html()
     bonuses:             Handlebars.compile $("#template-bonuses").html()

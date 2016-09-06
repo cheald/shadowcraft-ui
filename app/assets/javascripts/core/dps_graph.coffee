@@ -58,3 +58,5 @@ class ShadowcraftDpsGraph
       }
     })
     @lastDPS = data.total_dps
+
+window.ShadowcraftDpsGraph = ShadowcraftDpsGraph

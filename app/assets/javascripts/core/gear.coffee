@@ -1,5 +1,4 @@
 class ShadowcraftGear
-
   FACETS = {
     ITEM: 1
     GEMS: 2
@@ -1651,3 +1650,5 @@ class ShadowcraftGear
     this
 
   constructor: (@app) ->
+
+window.ShadowcraftGear = ShadowcraftGear

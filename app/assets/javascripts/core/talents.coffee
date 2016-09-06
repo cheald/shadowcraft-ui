@@ -319,3 +319,5 @@ class ShadowcraftTalents
   constructor: (@app) ->
     @app.Talents = this
     _.extend(this, Backbone.Events)
+
+window.ShadowcraftTalents = ShadowcraftTalents

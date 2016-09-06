@@ -1,6 +1,6 @@
-ArtifactTemplates = null
+window.ArtifactTemplates = null
 ShadowcraftApp.bind "boot", ->
-  ArtifactTemplates = 
+  window.ArtifactTemplates =
     useDreadblades: ->
       $("#artifactframe").css("background-image", "url('/images/artifacts/44-small.jpg')")
       traits = [
@@ -86,9 +86,9 @@ ShadowcraftApp.bind "boot", ->
         {width: 110, left: 46.250, top: 62.114, angle: 130.206, spell1: 197241, spell2: 197244},
         {width: 77, left: 48.194, top: 72.358, angle: 32.869, spell1: 197244, spell2: 197256},
       ]
-  
+
       return Templates.artifact(traits: traits, lines: lines, relic1: 'fel', relic2: 'shadow', relic3: 'fel')
-      
+
     useKingslayers: ->
       $("#artifactframe").css("background-image", "url('/images/artifacts/kingslayers-bg.jpg')")
       traits = [
@@ -133,6 +133,6 @@ ShadowcraftApp.bind "boot", ->
         {width: 139, left: 47.500, top: 52.195, angle: -107.526, spell1: 192376, spell2: 214368},
         {width: 67, left: 53.194, top: 37.886, angle: 140.412, spell1: 192759, spell2: 214368},
       ]
-  
+
       return Templates.artifact(traits: traits, lines: lines, relic1: 'shadow', relic2: 'iron', relic3: 'blood')
-      
+

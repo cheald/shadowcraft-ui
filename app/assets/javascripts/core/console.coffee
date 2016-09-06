@@ -50,3 +50,5 @@ class ShadowcraftConsole
       created = $this.data("created")
       if created + age < now
         $this.fadeOut 500, -> $this.remove()
+
+window.ShadowcraftConsole = ShadowcraftConsole

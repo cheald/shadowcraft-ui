@@ -250,7 +250,7 @@ class ShadowcraftOptions
 
       # Deeper strategem modifies a lot of options, so just check for it for all specs
       ds_active = (Shadowcraft.Data.activeTalents.split("")[2] == "0")
-      
+
       Shadowcraft.Console.remove(".options-poisons")
       if Shadowcraft.Data.activeSpec == "a"
         # if in assassination, check to see if agonizing poison is selected
@@ -282,3 +282,5 @@ class ShadowcraftOptions
     $("#settings,#advanced").bind "change", $.delegate({ ".optionSelect": changeSelect })
     $("#settings,#advanced").bind "change", $.delegate({ ".optionInput": changeInput })
     _.extend(this, Backbone.Events)
+
+window.ShadowcraftOptions = ShadowcraftOptions

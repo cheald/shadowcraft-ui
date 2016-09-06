@@ -165,3 +165,5 @@ class ShadowcraftBackend
         app.handleRecompute(data)
       error: (xhr, textStatus, error) ->
         app.recomputeFailed()
+
+window.ShadowcraftBackend = ShadowcraftBackend

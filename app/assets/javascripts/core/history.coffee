@@ -147,3 +147,5 @@ class ShadowcraftHistory
   loadSnapshot: (data) ->
     Shadowcraft.Data = data
     Shadowcraft.loadData()
+
+window.ShadowcraftHistory = ShadowcraftHistory

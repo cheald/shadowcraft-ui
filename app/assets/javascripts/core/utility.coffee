@@ -65,10 +65,10 @@ $.fn.sortElements = (->
       parent.appendChild shift.call(elems)
 )()
 
-modal = (dialog) ->
-  $(dialog).detach()
-  $("#wait").hide()
-  $("#modal").append(dialog).fadeIn()
+# modal = (dialog) ->
+#   $(dialog).detach()
+#   $("#wait").hide()
+#   $("#modal").append(dialog).fadeIn()
 
 Object.deepExtend = (destination, source) ->
   for property, value of source

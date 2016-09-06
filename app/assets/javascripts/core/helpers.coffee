@@ -104,7 +104,6 @@ wait = (msg) ->
   $("#wait").data('timeout', setTimeout('$("#wait").show()', 1000))
 
 showPopup = (popup) ->
-  
   # close any other visible popups and tooltips
   $(".popup").removeClass("visible")
   ttlib.hide()
@@ -158,3 +157,11 @@ showPopup = (popup) ->
     speed = ht / 1.3
     speed = 500 if speed > 500
     body.animate({scrollTop: ht}, speed, 'swing')
+
+window.titleize = titleize
+window.tooltip = tooltip
+window.hideFlash = hideFlash
+window.flash = flash
+window.showPopup = showPopup
+window.wait = wait
+window.checkForWarnings = checkForWarnings
