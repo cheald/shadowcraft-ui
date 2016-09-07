@@ -10,7 +10,7 @@ set :log_level, :info
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
-set :branch, 'modernize'
+set :branch, 'master'
 
 # namespace :deploy do
 #   after :restart, :clear_cache do
