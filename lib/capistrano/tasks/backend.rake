@@ -16,4 +16,13 @@ namespace :backend do
   end
 end
 
+namespace :nginx do
+  desc "Restart nginx"
+  task :restart do
+    on roles(:web) do
+      execute :sudo, "/usr/sbin/service", "nginx", "restart"
+    end
+  end
+end
+
 after "backend:update", "backend:restart"
