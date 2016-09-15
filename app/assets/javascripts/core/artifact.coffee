@@ -70,7 +70,7 @@ class ShadowcraftArtifact
     relic_power = trait.data("relic-power")
     level = artifact_data.traits[spell_id] + relic_power
     if isNaN(level)
-      level = 0
+      level = relic_power
     max_level = parseInt(trait.attr("max_level"))+relic_power
     trait.children(".level").text(""+level+"/"+max_level)
     trait.data("tooltip-rank", level-1)
@@ -623,7 +623,8 @@ class ShadowcraftArtifact
       local_trait = $(this).parent()
       local_spell_id = local_trait.attr("data-tooltip-id")
       payload_value = local_trait.data("relic-power")
-      payload_value += artifact_data.traits[local_spell_id]
+      if artifact_data.hasOwnProperty(local_spell_id)
+        payload_value += artifact_data.traits[local_spell_id]
       payload[local_spell_id] = payload_value
       return
     )

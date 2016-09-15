@@ -19,5 +19,5 @@ def getWebService(port = 8881):
 
 application = service.Application("Shadowcraft Backend")
 
-service = getWebService(8900 + int(os.environ["UPSTART_INSTANCE"])
+service = getWebService(8900 + int(os.environ["UPSTART_INSTANCE"]))
 service.setServiceParent(application)
