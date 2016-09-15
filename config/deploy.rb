@@ -2,7 +2,7 @@
 lock '3.4.1'
 
 set :application, 'shadowcraft'
-set :repo_url, 'git@github.com:cheald/shadowcraft-ui.git'
+set :repo_url, 'https://github.com/cheald/shadowcraft-ui'
 set :deploy_to, '/home/web/shadowcraft'
 set :linked_files, fetch(:linked_files, []).push('config/auth_key.yml')
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
