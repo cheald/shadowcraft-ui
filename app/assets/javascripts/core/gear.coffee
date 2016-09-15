@@ -1552,6 +1552,7 @@ class ShadowcraftGear
               Shadowcraft.Console.log("Changing " + item.name + " enchant to " + Shadowcraft.ServerData.ENCHANT_LOOKUP[enchant_id].name)
             else
               Shadowcraft.Console.log("Removing Enchant from " + item.name)
+            slotGear.enchant = enchant_id
         else if update == "gem"
           item_id = parseInt($this.attr("id"), 10)
           item_id = if not isNaN(item_id) then item_id else null
