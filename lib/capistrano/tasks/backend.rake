@@ -1,13 +1,17 @@
 namespace :backend do
   desc 'Restart the backend'
   task :restart do
-    execute :sudo, "/usr/sbin/service", "shadowcraft-backend-all", "restart"
+    on roles(:backend) do
+      execute "/usr/bin/sudo /usr/sbin/service shadowcraft-engine-all restart"
+    end
   end
 
   desc 'Update the backend from git'
   task :update do
-    within fetch(:engine_path) do
-      execute :git, "pull"
+    on roles(:backend) do
+      within fetch(:engine_path) do
+        execute :git, "pull"
+      end
     end
   end
 end
