@@ -4,7 +4,8 @@ namespace :backend do
     execute :sudo, "/usr/sbin/service", "shadowcraft-backend-all", "restart"
   end
 
-  desc 'Update the backend from git' do
+  desc 'Update the backend from git'
+  task :update do
     within fetch(:engine_path) do
       execute :git, "pull"
     end
