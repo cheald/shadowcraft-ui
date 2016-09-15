@@ -2,12 +2,12 @@ module WowArmory
   class Character
     unloadable
 
-    @@item_enchants = nil
+    @artifact_ids = nil
 
     include Constants
     include Document
 
-    attr_accessor :realm, :region, :name, :active, :gear, :race, :level, :player_class, :talents, :portrait
+    attr_accessor :realm, :region, :name, :active, :gear, :race, :level, :player_class, :talents, :portrait, :artifact
 
     def initialize(character, realm, region = 'US')
       @character = character
@@ -32,6 +32,7 @@ module WowArmory
     def as_json(options = {})
       {
         :gear => gear,
+        :artifact => artifact,
         :race => race,
         :level => level,
         :active => active,
@@ -94,17 +95,68 @@ module WowArmory
 
         @gear[info['slot'].to_s] = info
       end
-      Rails.logger.debug @gear
 
-      @gear["13"] = {
-        'id' => 137367,
-        'item_level' => 820,
-        'enchant' => 0,
-        'gems' => [0,0,0],
-        'slot' => 13,
-        'bonuses' => [41],
-        'context' => 'world-quest',
-        'upgrade_level' => 0}
+      # Artifact data from the API looks like this:
+      #            "artifactTraits": [{
+      #                "id": 1348,
+      #                "rank": 1
+      #            }, {
+      #                "id": 1061,
+      #                "rank": 4
+      #            }, {
+      #                "id": 1064,
+      #                "rank": 3
+      #            }, {
+      #                "id": 1066,
+      #                "rank": 3
+      #            }, {
+      #                "id": 1060,
+      #                "rank": 3
+      #            }, {
+      #                "id": 1054,
+      #                "rank": 1
+      #            }],
+      #            "relics": [{
+      #                "socket": 0,
+      #                "itemId": 133008,
+      #                "context": 11,
+      #                "bonusLists": [768, 1595, 1809]
+      #            }, {
+      #                "socket": 1,
+      #                "itemId": 133057,
+      #                "context": 11,
+      #                "bonusLists": [1793, 1595, 1809]
+      #            }],
+
+      # massage the artifact trait data a little bit
+      @artifact = {}
+      @artifact['traits'] = []
+      @json['items']['mainHand']['artifactTraits'].each do |trait|
+        trait['id'] = Character.artifact_ids[trait['id']]
+        @artifact['traits'].push trait
+      end
+
+      @artifact['relics'] = []
+      @json['items']['mainHand']['relics'].each do |relic|
+        r = {
+          'socket' => relic['socket'],
+          'id' => relic['itemId'],
+          'bonuses' => relic['bonusLists']
+        }
+        @artifact['relics'].push r
+      end
     end
+
+    def self.artifact_ids
+      # The header on the AritfactPowerRank data looks like (as of 7.0.3):
+      # id,id_spell,value,id_power,f5,index
+      # We're mapping between id_power and id_spell
+      @@artifact_ids ||= Hash.new.tap do |hash|
+        CSV.foreach(File.join(File.dirname(__FILE__), 'data', 'ArtifactPowerRank.dbc.csv')) do |row|
+          hash[row[3].to_i] = row[1].to_i
+        end
+      end
+    end
+
   end
 end

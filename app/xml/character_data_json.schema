@@ -311,30 +311,64 @@
         "id": {
           "type": "integer"
         },
-        "level": {
+        "rank": {
           "type": "integer"
         }
       },
-      "required": ["id", "level"]
+      "required": ["id", "rank"]
+    },
+    "artifact_relic": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "bonuses": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 0,
+          "maxItems": 5
+        }
+      }
     },
     "artifact": {
       "type": "object",
       "properties": {
-        "spec": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 1
-        },
-        "relic": {
+        "traits" : {
           "type": "array",
           "items": {
-            "type": "integer"
+            "$ref": "#/definitions/artifact_trait"
+          },
+          "minItems": 0,
+          "maxItems": 18
+        },
+        "relics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/artifact_relic"
           },
           "minItems": 3,
           "maxItems": 3
         }
       },
-      "required": ["spec", "relic"]
+      "required": ["traits", "relics"]
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "$ref": "#/definitions/artifact"
+        },
+        "Z": {
+          "$ref": "#/definitions/artifact"
+        },
+        "b": {
+          "$ref": "#/definitions/artifact"
+        }
+      },
+      "required": ["a", "Z", "b"]
     }
   },
 
@@ -367,7 +401,10 @@
     "activeTalents": {
       "type": "string",
       "maxLength": 7
+    },
+    "artifact": {
+      "$ref": "#/definitions/artifacts"
     }
   },
-  "required": ["gear", "talents", "active", "options", "activeSpec", "activeTalents"]
+  "required": ["gear", "talents", "active", "options", "activeSpec", "activeTalents", "artifact"]
 }

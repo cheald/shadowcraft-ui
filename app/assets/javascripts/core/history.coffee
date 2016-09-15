@@ -130,6 +130,7 @@ class ShadowcraftHistory
   # Calls to get a sha value for the current data from the rails app and calls
   # a callback when the data is retrieved.
   takeSnapshot: (callback, extras) ->
+    Shadowcraft.Artifact.updateGlobalData()
     $.post("/history/getsha", {data: $.toJSON(@app.Data)})
       .done((data) -> callback(data['sha'], extras))
       .fail((xhr, textStatus, errorThrown) ->

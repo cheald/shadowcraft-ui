@@ -68,7 +68,9 @@ class ShadowcraftArtifact
     trait.children(".level").removeClass("inactive")
 
     relic_power = trait.data("relic-power")
-    level = artifact_data.traits[spell_id]+relic_power
+    level = artifact_data.traits[spell_id] + relic_power
+    if isNaN(level)
+      level = 0
     max_level = parseInt(trait.attr("max_level"))+relic_power
     trait.children(".level").text(""+level+"/"+max_level)
     trait.data("tooltip-rank", level-1)
@@ -145,6 +147,10 @@ class ShadowcraftArtifact
       main.data("tooltip-rank", -1)
       done = [main_spell_id]
 
+      for trait,rank of artifact_data.traits
+        if (trait != main_spell_id)
+          artifact_data.traits[trait] = 0
+
     # starting at main, run a search to enable all of the icons that need
     # to be enabled based on the line endpoints. while enabling/disabling
     # icons, also set the level display based on the current level stored in
@@ -155,8 +161,8 @@ class ShadowcraftArtifact
     # guaranteed to get processed. Also update the trait's relic power so
     # it gets added to the trait's level when the display is updated.
     for i in [0...3]
-      if artifact_data.relics[i] != 0
-        relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i]]
+      unless _.isEmpty(artifact_data.relics[i])
+        relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i].id]
         spell = relic.ts[Shadowcraft.Data.activeSpec].spell
         trait = $("#artifactframe .trait[data-tooltip-id='#{spell}'")
         current = trait.data('relic-power')
@@ -213,8 +219,8 @@ class ShadowcraftArtifact
     for i in [0...3]
       button = $("#relic"+(i+1)+" .relicicon")
       relicdiv = $("#relic"+(i+1))
-      if artifact_data.relics[i] != 0
-        relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i]]
+      unless _.isEmpty(artifact_data.relics[i])
+        relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i].id]
         ilvl += relic.ii
         relicTrait = relic.ts[Shadowcraft.Data.activeSpec]
         button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relic.icon+".jpg")
@@ -300,6 +306,9 @@ class ShadowcraftArtifact
     # if this trait is inactive, ignore this event
     if trait.children(".icon").hasClass("inactive")
       return
+
+    if (!artifact_data.traits.hasOwnProperty(spell_id))
+      artifact_data.traits[spell_id] = 0
 
     # if we're already at the max for this trait, don't do anything else
     max_level = parseInt(trait.attr("max_level"))
@@ -423,14 +432,14 @@ class ShadowcraftArtifact
     )
     data = Shadowcraft.Data
 
-    # Get the stat information for the artifact weapon, potentially  without the
+    # Get the stat information for the artifact weapon, potentially without the
     # currently applied relic, if there is one.
-    currentRelicId = Shadowcraft.Data.artifact[activeSpec].relics[clicked_relic_slot]
-    if currentRelicId != 0
-      currentRelic = (i for i in RelicList when i.id == currentRelicId)[0]
-      baseIlvl = Shadowcraft.Data.gear[15].item_level-currentRelic.ii
-    else
+    currentRelic = artifact_data.relics[clicked_relic_slot]
+    if _.isEmpty(currentRelic)
       baseIlvl = Shadowcraft.Data.gear[15].item_level
+    else
+      r = (i for i in RelicList when i.id == currentRelic['id'])
+      baseIlvl = Shadowcraft.Data.gear[15].item_level-r.ii
     baseArtifactStats = getStatsForIlvl(baseIlvl)
 
     # Generate EP values for all of the relics selected and then sort
@@ -474,8 +483,10 @@ class ShadowcraftArtifact
     # Set the HTML into the popup and mark the currently active relic
     # if there is one.
     $popupbody.get(0).innerHTML = buffer
-    if artifact_data.relics[clicked_relic_slot] != -1
-      $popupbody.find(".slot[id='" + artifact_data.relics[clicked_relic_slot] + "']").addClass("active")
+    
+    if !_.isEmpty(currentRelic)
+      r = (i for i in RelicList when i.id == currentRelic['id'])
+      $popupbody.find(".slot[id='" + r.id + "']").addClass("active")
 
     showPopup($popup)
     false
@@ -492,9 +503,12 @@ class ShadowcraftArtifact
     relic_id = parseInt(clicked_relic.attr("id"))
     relic_id = if not isNaN(relic_id) then relic_id else null
     if relic_id?
-      artifact_data.relics[clicked_relic_slot] = relic_id
+      artifact_data.relics[clicked_relic_slot] = {
+        id: parseInt(relic_id)
+        bonuses: []
+      }
     else
-      artifact_data.relics[clicked_relic_slot] = 0
+      artifact_data.relics[clicked_relic_slot] = {}
 
     # Force a refresh of the display
     updateTraits()
@@ -512,16 +526,19 @@ class ShadowcraftArtifact
 
     if str == "a"
       buffer = ArtifactTemplates.useKingslayers()
-      $("#artifactframe").get(0).innerHTML = buffer
-      artifact_data = Shadowcraft.Data.artifact[str]
     else if str == "Z"
       buffer = ArtifactTemplates.useDreadblades()
-      $("#artifactframe").get(0).innerHTML = buffer
-      artifact_data = Shadowcraft.Data.artifact[str]
     else if str == "b"
       buffer = ArtifactTemplates.useFangs()
-      $("#artifactframe").get(0).innerHTML = buffer
-      artifact_data = Shadowcraft.Data.artifact[str]
+
+    $("#artifactframe").get(0).innerHTML = buffer
+
+    # Reformat the trait data into something easier to deal with.
+    artifact_data = {}
+    artifact_data['relics'] = Shadowcraft.Data.artifact[str]['relics']
+    artifact_data['traits'] = {}
+    for trait in Shadowcraft.Data.artifact[str]['traits']
+      artifact_data['traits'][trait['id']] = trait['rank']
 
     $("#relic1").attr("relic-type", SPEC_ARTIFACT[str].relic1)
     $("#relic2").attr("relic-type", SPEC_ARTIFACT[str].relic2)
@@ -556,12 +573,11 @@ class ShadowcraftArtifact
     )
 
   resetTraits: ->
-    for id of artifact_data.traits
-      artifact_data.traits[id] = 0
 
     for i in [0..2]
-      artifact_data.relics[i] = 0
+      artifact_data.relics[i] = {}
 
+    artifact_data.traits = []
     updateTraits()
 
   updateTraitRanking = ->
@@ -613,6 +629,16 @@ class ShadowcraftArtifact
     )
     return payload
 
+  updateGlobalData: ->
+    Shadowcraft.Data.artifact[Shadowcraft.Data.activeSpec].traits = []
+    for trait,rank of artifact_data.traits
+      continue if rank == 0
+      obj = {
+        id: parseInt(trait)
+        rank: parseInt(rank)
+      }
+      Shadowcraft.Data.artifact[Shadowcraft.Data.activeSpec].traits.push(obj)
+
   boot: ->
     app = this
 
@@ -621,9 +647,7 @@ class ShadowcraftArtifact
 
     # Set a default when the page loads
     Shadowcraft.bind "loadData", ->
-      data = Shadowcraft.Data
-      spec = data.activeSpec
-      app.setSpec(spec)
+      app.setSpec(Shadowcraft.Data.activeSpec)
 
     # Set the correct display when the spec changes on the talent tab
     Shadowcraft.Talents.bind "changedSpec", (spec) ->
@@ -729,4 +753,4 @@ class ShadowcraftArtifact
     @app.Artifact = this
     _.extend(this, Backbone.Events)
 
-window.ShadowcraftHistory = ShadowcraftHistory
+window.ShadowcraftArtifact = ShadowcraftArtifact

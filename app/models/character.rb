@@ -13,6 +13,7 @@ class Character
 
   index({uid: 1}, {unique: true})
 
+  DEFAULT_ARTIFACT_TRAITS = {'a' => 192759, 'Z' => 202665, 'b' => 209782}
   REGIONS = ['US', 'EU', 'KR', 'TW', 'CN', 'SEA']
   CLASSES = ['rogue']
   MAX_LEVEL = 110
@@ -70,7 +71,7 @@ class Character
 
       self.portrait = char.portrait
 
-      # iterate over the player's gear and import any items or gem that are missing
+      # iterate over the player's gear and import any items or gems that are missing
       properties['gear'].each do |slot, item|
         Item.check_item_for_import(item['id'].to_i, item['context'])
         item['gems'].each do |gemid|
@@ -79,6 +80,57 @@ class Character
           end
         end
       end
+
+      # We only get artifact data for the current spec from the armory. Null out all of the artifact
+      # data for all of the specs, and then copy the artifact data from the armory into the right
+      # spot.
+      orig_artifact_data = properties['artifact'].clone
+      properties['artifact'] = {
+        'a' => {
+          :relics => [{},{},{}],
+          :traits => []
+        },
+        'Z' => {
+          :relics => [{},{},{}],
+          :traits => []
+        },
+        'b' => {
+          :relics => [{},{},{}],
+          :traits => []
+        },
+      }
+      active_spec = properties['talents'][properties['active']][:spec]
+
+      # The trait rank values we get from the armory include the relic increases. We handle that
+      # ourselves in the javascript so remove those. This is ugly and probably slower than
+      # necessary due to having to loop over the entire trait space a few times.
+      relic_array = [{},{},{}]
+      orig_artifact_data['relics'].each do |relic|
+        relic_array[relic['socket']] = relic.clone
+        relic_array[relic['socket']].delete("socket")
+
+        # look up the relic in the db
+        r = Relic.find_by(:remote_id => relic['id'])
+        unless r.nil?
+          # get the trait increase for the current spec
+          trait_from_relic = r["traits"][active_spec]
+          orig_artifact_data["traits"].each do |orig_trait|
+            if orig_trait['id'] == trait_from_relic['spell']
+              orig_trait['rank'] -= trait_from_relic['rank']
+            end
+          end
+        end
+      end
+      orig_artifact_data['relics'] = relic_array
+
+      # Default the default trait to on. Each artifact comes with 100AP on it, and the first
+      # trait costs 100AP, so there is zero reason for it not to just be turned on.
+      default = {
+        "id" => DEFAULT_ARTIFACT_TRAITS[active_spec],
+        "rank" => 1
+      }
+      orig_artifact_data['traits'].push(default)
+      properties['artifact'][active_spec] = orig_artifact_data
     end
   end
 
@@ -100,20 +152,7 @@ class Character
           :race => properties['race']
         },
       },
-      :artifact => {
-        'a': {
-          :relics => [0,0,0],
-          :traits => {'214368':0,'192657':0,'192326':0,'192923':0,'192323':0,'192428':0,'192759':0,'192329':0,'192318':0,'192349':0,'192376':0,'192315':0,'192422':0,'192345':0,'192424':0,'192310':0,'192384':0}
-        },
-        'Z': {
-          :relics => [0,0,0],
-          :traits => {'216230':0,'202507':0,'202628':0,'202897':0,'202769':0,'202665':0,'202463':0,'202521':0,'202755':0,'202524':0,'202514':0,'202907':0,'202530':0,'202533':0,'202820':0,'202522':0,'202753':0}
-        },
-        'b': {
-          :relics => [0,0,0],
-          :traits => {'209835':0,'197241':0,'197233':0,'197604':0,'197239':0,'197256':0,'197406':0,'197369':0,'197244':0,'209782':0,'197234':0,'197235':0,'197231':0,'197610':0,'221856':0,'209781':0,'197386':0}
-        },
-      }
+      :artifact => properties['artifact']
     }
   end
 
@@ -186,7 +225,7 @@ class Character
     return false unless properties
     return false unless properties['level']
     unless properties['level'] == MAX_LEVEL
-      errors.add :character, "must be level #{MAX_LEVEL} to be supported by Shadowcraft."
+      errors.add :character, "must be level #{MAX_LEVEL} to be supported by Shadowcraft. Check the Armory for your character, since it may not have updated to level 110 yet."
       return false
     end
     true
