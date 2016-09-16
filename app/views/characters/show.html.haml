@@ -159,107 +159,39 @@
       .panel-content
 
     #docs
-      %h3 7.0 Beta Release 3
-      Fixes/Additions:
+      %h3 7.0 Release
+      Engine Status:
+      %ul 
+        %li General:
+        %li Trinkets are lightly tested, may have implementation errors
+        %li No legendaries implemented, if you get one use it, its good, if you get two, go buy lotto tickets
+        %li Set bonuses unimplemented
+        %li The outlaw model can be very slow at times, be patient if it takes a few seconds to recalculate after you make a change.
+        %br
       %ul
-        %li
-          \- OMG AN ENGINE! Fierydemise has the Subtlety model working. Outlaw and Assassination are still in progress. Make sure to try out all of the new options on the Options tab, all of the talents, and all of the artifact traits. Let us know if you find places where the numbers really don't make sense (like something giving way too much DPS). Some notes from Fiery:
-          %ul
-            %li --- Shadow Focus Value is too high
-            %li --- Not all settings/trait/talent have been tested, some may lead to anomolous results, please report weird results
-            %li --- Model currently assumes no combo point waste so anticipation has low value
-            %li --- Single rank traits are unranked once taken
-            %li --- Legionblade and second shuriken traits are not implemented
-            %li --- Legendaries, set bonuses, and legion trinket procs are not currently modeled
-        %li - Warforged/Titanforged support. This required a serious rewrite of a bunch of the item handling code. You can now select WF/TF from the same place you add sockets/tertiary stats. One thing to note is that Warforged items won't show up in the gear lists anymore.
-        %li - More squashing of item display bugs. If you load a character and you're missing something, let Tamen know.
-        %li - Added a counter to the Artifact tab that shows the amount of trait points spent (not Artifact Power)
-        %li - Fixed lots of bugs related to snapshots and resetting to last armory import.
-        
-      <br/>Known Issues:
+        %li Assassination:
+        %li T30 Talents are not implemented
+        %li Fan of Knives rotations are not implemented
+        %li Poison Knives (non-agonizing effect), From the Shadows, and Bag of Tricks are not implemented (Don't Worry about it, BotA is way better)
+        %br
       %ul
-        %li - No Assassination or Outlaw models. Don't expect those specs to work right.
-        %li - Adding a socket to an item makes the DPS go down, even if you didn't equip anything in the socket. UPDATE: still broken.
-        %li - Loads of duplicate items in the gear lists. This is a bug with the Blizzard API. It has been reported to them. There's nothing I can really do about it until they fix the API. UPDATE: Blizzard acknowledged it. No ETA on them fixing it.
-
-      <br/><br/>
-      %h3 7.0 Beta Release 2
-      
-      Fixes/Additions:
+        %li Outlaw:
+        %li Anticipation and Marked for Death are not implementedimplemented
+        %li Hidden Blade and Blurred Time are not implemented
+        %li RtB Rerolling optimizations are experimental
+        %br
       %ul
-        %li - Tons of display bugs squashed from 7.0b1. Lots of missing items were found. (Thanks Fiery, riff, Vigi, Silentstalkr, and Cruentar)
-        %li - Fixed various bugs related to relics on the artifact tab (Thanks Poneria)
-        %li - Fixed adding sockets to items. (Thanks Poneria)
-        %li - Fixed character hashing. "Get Debug URL" and "Save/Load snapshot" should work now.
-
-      <br/>Known Issues:
+        %li Subtlety:
+        %li Model is not numerically stable, large dps swings can result from small changes in haste
+        %li No combo point loss is computed, this may undervalue anticipation
+        %li Weaponmaster does not give bonus cps, may be somewhat undervalued
+        %li Flickering Shadows (sprint trait) not implemented
+        %br
+      UI Status:
       %ul
-        %li - Still no 7.0 Engine. It's making me sad.
-        %li - Loads of duplicate items in the gear lists. This is a bug with the Blizzard API. It has been reported to them and summarily ignored. There's nothing I can really do about it until they fix the API.
-        %li - Talents will display weirdly for a spec if you haven't configured that spec on your character. This will be fixed to not display any selected talents in a later release.
-        %li - Stock talent sets need to be fixed to actually mean something.
-        %li - Adding a socket to an item makes the DPS go down, even if you didn't equip anything in the socket.
-        %li - "Reset to last armory import" still not working.
-
-      <br/><br/>
-      %h3 7.0 Beta Release 1
-      
-      Fixes/Additions:
-      %ul
-        %li - Warforged/Titanforged support. This required removal of warforged items from the database, which has the potential to cause lots of problems. Warforged selection is now on the Bonuses popup like sockets and tertiary stats. One bonus of this is that it also reduced the page load size considerably (~1.5MB savings!), which should help with load times.
-        %li - Death to the gigantic URLs of Shadowcraft! History is now stored as sha256 hashes on the server side, and aren't exposed to the user unless specifically requested. If you need to share a configuration, use the "Get Debug URL" option from the Gear-Icon tab (but see the Known Bugs below).
-        %li - Massive performance improvement to "Refresh from armory". It should be nearly instant now if all of a character's gear is in the database.
-        %li - Added support for Agonizing Poison, if selected as a talent.
-        %li - Added Tier 19 and Order Hall set support to backend. These won't be available until data is loaded for Legion items.
-        %li - Added support for relic and artifact trait EP display.
-        %li - Fixed how Unique-Equipped items work. If you have a Unique-Equipped item equipped (like a trinket), it won't show up in the list of options for your other trinket slot.
-        %li - Lots of fixes around how weapons are supported in relation to Artifact weapons being the only thing a character should have equipped.
-        %li - Removed the Google+ and Facebook like buttons. They were causing tab crashes in Chrome, and no one really used them anyways.
-        %li - Fixed lots and lots of nit-picky display issues with relics and artifacts.
-
-      <br/>Known Issues:
-      %ul
-        %li - "Get Debug URL" option not working correctly. The popup with the URL never appears as it should.
-        %li - "Reset to last armory import" option not working correctly.
-
-      <br/><br/>
-      %h3 7.0 Alpha Release 2
-
-      Fixes/Additions:
-      %ul
-        %li - Relic support, plus a lot of fixes for selection behavior on the artifact panel. This required rewrites of a bunch of stuff in the artifact code (especially fixing handling loops in the tree).
-        %li - Added other two artifact panels
-        %li - Fixes for loading artifact data at startup and on page refreshes. You may have to hit 'Clear all saved data' the first time you reload the page.
-        %li - Removed remainder of reforging code and all glyph support.
-        %li - Fixed rounding error in gear loader so DPS number should be closer to live version now.
-
-      <br/>Known Issues:
-      %ul
-        %li - Removed glyphs so DPS number will not match live version due to that data not getting passed to the engine. This will not be fixed.
-        %li - URLs got even longer due to adding the artifact data to them.
-        %li - Any issues listed below not marked fixed.
-
-      <br/><br/>
-      %h3 7.0 Alpha Release 1
-      
-      Fixes:
-      %ul
-        %li - Basic artifact support. Only Dreadblades are supported at this time.
-        %li - Completely rewrote the item loader.
-        %li - Removed glyph settings/rankings as they're no longer relevant in 7.0.
-        %li - Added Documentation tab
-      
-      <br/>Known Issues:
-      %ul
-        %li - No 7.0 engine yet, which means no support for artifact traits actually changing DPS.
-        %li - Stat numbers are slightly different compared to live, which gives slightly different DPS values. (Fixed in 7.0a2)
-        %li - Artifacts other than Dreadblades not supported.
-        %li - Artifact frame too wide for smaller displays. Either the frame needs shrinking or a horizontal scrollbar will be added.
-        %li - Artifact will come up blank on initial load due to data not being initailized. Refresh from armory should fix it. (Fixed in 7.0a2)
-        %li - Artifact settings not kept from one refresh to the next due to loading dummy values in until armory data from Blizzard is available. (Fixed in 7.0a2, but still not loading from Blizzard)
-        %li - Still loading large (~2MB) javascript file with all of the item data at page load. This will hopefully be replaced by 7.0 launch.
-        %li - All of the 6.x issues from github still exist.
-        %li - Various CSS problems
+        %li Artifact data from the API is now implemented. It only supports the currently-equipped artifact, because that's all the data that Blizzard gives us. If you switch specs, your other artifact will be blank.
+        %li Most items should now be properly supported (except Mythic+ items, see below)
+        %li Selection of WF/TF levels is currently broken but is on the list to be fixed very soon.
       
     #console-footer
       %a#card{:href => "http://#{@character.region.downcase}.battle.net/wow/en/character/#{@character.normalize_realm(@character.realm)}/#{@character.normalize_character(@character.name)}/advanced", :target => "_blank", :class => @character.properties['race'].downcase.gsub(/ /, "_")}
