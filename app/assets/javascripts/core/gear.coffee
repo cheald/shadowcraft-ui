@@ -425,6 +425,9 @@ class ShadowcraftGear
     for slotIndex in SLOT_ORDER
       slotIndex = parseInt(slotIndex, 10)
 
+      # don't auto-enchant artifact weapons
+      continue if slotIndex == 15 or slotIndex == 16
+
       gear = data.gear[slotIndex]
       continue unless gear
       continue if gear.locked
