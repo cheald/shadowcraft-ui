@@ -623,7 +623,7 @@ class ShadowcraftArtifact
       local_trait = $(this).parent()
       local_spell_id = local_trait.attr("data-tooltip-id")
       payload_value = local_trait.data("relic-power")
-      if artifact_data.hasOwnProperty(local_spell_id)
+      if artifact_data.traits.hasOwnProperty(local_spell_id)
         payload_value += artifact_data.traits[local_spell_id]
       payload[local_spell_id] = payload_value
       return
