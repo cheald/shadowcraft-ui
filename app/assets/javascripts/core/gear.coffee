@@ -535,7 +535,9 @@ class ShadowcraftGear
     # Apply new bonuses, and fix the item level the piece of gear base on whether
     # a warforged/titanforged bonus ID is applied.
     gear.bonuses = newBonuses
-    gear.item_level = item.ilvl + (gear.upgrade_level * getUpgradeLevelSteps(item))
+    gear.item_level = item.ilvl;
+    if (!isNaN(gear.upgrade_level))
+      gear.item_level += gear.upgrade_level * getUpgradeLevelSteps(item)
     for bonus in newBonuses
       if bonus in ShadowcraftGear.WF_BONUS_IDS
         for entry in Shadowcraft.ServerData.ITEM_BONUSES[bonus]
@@ -1367,18 +1369,13 @@ class ShadowcraftGear
     # if the current maximum ilevel is less than the base ilevel of this item.
     if wf_base != 0 and wf_base < CURRENT_MAX_ILVL
       steps = ((CURRENT_MAX_ILVL - wf_base) / 5)
-      console.log "steps #{steps}"
-      console.log "base_ilvl #{wf_base}"
-      console.log "current_tf_value #{current_tf_value}"
       for step in [1..steps]
-        console.log "step #{step}"
         ilvl_bonus = step*5
         group = {}
         # 1472 would be the "0" point in the item upgrade bonus IDs, if it existed.
         group['bonusId'] = ilvl_bonus+1472
         group['active'] = (current_tf_id == group['bonusId'])
         temp_stats = []
-        console.log "ilvl diff #{ilvl_bonus-current_tf_value}"
         sumItem(temp_stats, item, 'stats', ilvl_bonus-current_tf_value)
         temp_ep = getEPForStatBlock(temp_stats)
         group.ep = (temp_ep-base_item_ep).toFixed(2)
