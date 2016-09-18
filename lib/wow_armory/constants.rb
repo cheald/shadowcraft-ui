@@ -12,16 +12,17 @@ module WowArmory
       8 => :ADJUST_EQUIP_LEVEL,
       9 => :UNKNOWN_1,
       10 => :UNKNOWN_2,
-      14 => :SET_ITEM_LEVEL,
+      14 => :BASE_ITEM_LEVEL,
     }
 
     ITEM_BONUS_TYPES = {
       'ilvl_increase' => 1,
       'random_stat' => 2,
-      'change_item_quality' => 3,
+      'quality' => 3,
       'title' => 4,
       'name' => 5,
       'socket' => 6,
+      'base_ilvl' => 14
     }
   
     ENCHANT_SCALING = 10.0 # for lvl 90 // lvl100 = 80

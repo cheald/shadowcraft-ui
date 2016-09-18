@@ -319,6 +319,8 @@ module WowArmory
             entry[:val2] = SOCKET_MAP[entry[:val2].to_i]
           elsif entry[:type] == ITEM_BONUS_TYPES['ilvl_increase']
             entry.delete(:val2)
+          elsif entry[:type] == ITEM_BONUS_TYPES['base_ilvl']
+            entry.delete(:val2)
           end
           hash[id_node].push entry
         end

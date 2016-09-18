@@ -221,16 +221,23 @@ class Item
   #
   # This whitelist skips any of the randomly generated bonus IDs such as any "of the"
   # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.
-  BONUS_ID_WHITELIST = [1, 15, 17, 18, 44, 171, 448, 449, 450, 451, 499, 526, 527, 545, 546, 547,
-                        553, 554, 555, 556, 557, 558, 559, 566, 567, 573, 575,
-                        576, 577, 582, 583, 591, 592, 593, 594, 602, 609, 615, 617, 618, 619, 620,
-                        645, 656, 692]
+  BASE_WHITELIST = [1, 15, 17, 18, 44, 171, 448, 449, 450, 451, 499, 526, 527, 545, 546, 547,
+                    553, 554, 555, 556, 557, 558, 559, 566, 567, 573, 575, 576, 577, 582, 583,
+                    591, 592, 593, 594, 602, 609, 615, 617, 618, 619, 620, 645, 656, 692]
+
+  # These are the bonus IDs for "base item levels". This generally means there are WF/TF
+  # versions of the item.
+  BASE_ILEVEL_WHITELIST = [1726, 1727, 1798, 1799, 1801, 1805, 1806, 1807, 1824, 1825, 1826, 
+                           3379, 3394, 3395, 3396, 3397, 3399, 3410, 3411, 3412, 3413, 3414, 
+                           3415, 3416, 3417, 3418, 3427, 3428, 3432, 3443, 3444, 3445, 3446]
+  
+  BONUS_ID_WHITELIST = BASE_WHITELIST + BASE_ILEVEL_WHITELIST
 
   # For some reason the crafted items don't come with the "stage" bonus IDs in their
   # chanceBonusList entry.  This is the list of bonus IDs for those stages and is
   # handled slightly differently.  See below for the check for trade-skill for more
   # details.
-  TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 597, 598, 599, 619, 620, 666, 667, 668, 559]
+  TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 597, 598, 599, 619, 620, 666, 667, 668, 669]
 
   KAZZAK_ITEMS = [124545, 124546, 127971, 127975, 127976, 127980, 127982]
   MIN_ILVL = 600
@@ -436,7 +443,9 @@ class Item
   # we want are white-listed earlier in this class.
   def self.get_valid_bonus_IDs(possible_IDs, item_id, context)
     itemChanceBonuses = possible_IDs.clone()
+    puts itemChanceBonuses
     itemChanceBonuses.delete_if { |bonus| !BONUS_ID_WHITELIST.include? bonus }
+    puts itemChanceBonuses
 
     # for trade-skill items, also add the bonuses for each of the "stage" titles
     if (context == 'trade-skill')

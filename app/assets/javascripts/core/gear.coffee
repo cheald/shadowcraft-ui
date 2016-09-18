@@ -83,6 +83,11 @@ class ShadowcraftGear
 
   EP_PRE_REGEM = null
   EP_TOTAL = null
+
+  # This is the current maximum ilevel of items via WF/TF. This means that the WF/TF
+  # popup will only show entries up to this maximum amount.
+  CURRENT_MAX_ILVL = 850
+
   $slots = null
   $popupbody = null
   $popup = null
@@ -1302,6 +1307,7 @@ class ShadowcraftGear
       sockets: []
       titanforged: []
     }
+    wf_base = 0
     for bonusId in item.chance_bonus_lists
       group = {}
       group['bonusId'] = bonusId
@@ -1330,26 +1336,63 @@ class ShadowcraftGear
             group['entries'].push entry
             group.ep += getStatWeight(entry.val1, entry.val2)
             subgroup = "tertiary" unless subgroup?
-          when 1 # item level increases
-            if bonusId in ShadowcraftGear.WF_BONUS_IDS
-              ilvl_bonus = entry['val1']
-              entry['val1'] = "+"+ilvl_bonus+" Item Levels "
-              if ilvl_bonus < 15
-                entry['val1'] += "(Warforged)"
-              else
-                entry['val1'] += "(Titanforged)"
-              new_ilvl = gear.item_level-current_tf_value+ilvl_bonus
-              entry['val2'] = "Item Level " + new_ilvl
-              group['entries'].push entry
-              temp_stats = []
-              sumItem(temp_stats, item, 'stats', ilvl_bonus-current_tf_value)
-              temp_ep = getEPForStatBlock(temp_stats)
-              group.ep = temp_ep-base_item_ep
-              subgroup = "titanforged"
       if subgroup?
         group.ep = group.ep.toFixed(2)
         groups[subgroup].push group
         groups[subgroup+"_active"] = true
+
+    # Check whether there are any "base item level" bonus IDs on the default list for
+    # this item. These ones don't show up in the chance bonus lists becasue they're a
+    # fixed ID for each item difficulty.
+    for bonusId in item.bonus_tree
+      for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
+        if bonus_entry.type == 14
+          wf_base = bonus_entry.val1
+
+    # BUG: special casing away a bug in the API data. if the base ilevel is the same as
+    # the ilevel of the item, and a TF bonus ID was on the gear item, ignore it.
+    if wf_base == gear.item_level
+      current_tf_id = 0
+      current_tf_value = 0
+
+    # BUG: another API problem, items with 805 base ilevels will have the wrong bonus ID
+    # in their WF/TF data (if there is one). It's one step too low, which means the
+    # pulldown menu will select the wrong one as the active level.
+    if wf_base == 805
+      current_tf_id += 5
+      current_tf_value += 5
+
+    # If we found an entry for a base item level, we need to generate a bunch of
+    # entries for upgrades and insert them into the titanforged subgroup. Only do this
+    # if the current maximum ilevel is less than the base ilevel of this item.
+    if wf_base != 0 and wf_base < CURRENT_MAX_ILVL
+      steps = ((CURRENT_MAX_ILVL - wf_base) / 5)
+      console.log "steps #{steps}"
+      console.log "base_ilvl #{wf_base}"
+      console.log "current_tf_value #{current_tf_value}"
+      for step in [1..steps]
+        console.log "step #{step}"
+        ilvl_bonus = step*5
+        group = {}
+        # 1472 would be the "0" point in the item upgrade bonus IDs, if it existed.
+        group['bonusId'] = ilvl_bonus+1472
+        group['active'] = (current_tf_id == group['bonusId'])
+        temp_stats = []
+        console.log "ilvl diff #{ilvl_bonus-current_tf_value}"
+        sumItem(temp_stats, item, 'stats', ilvl_bonus-current_tf_value)
+        temp_ep = getEPForStatBlock(temp_stats)
+        group.ep = (temp_ep-base_item_ep).toFixed(2)
+        entry = {}
+        entry['type'] = 1
+        entry['val1'] = "+"+(ilvl_bonus)+" Item Levels "
+        if step < 2
+          entry['val1'] += "(Warforged)"
+        else
+          entry['val1'] += "(Titanforged)"
+        entry['val2'] = "Item Level " + (wf_base+ilvl_bonus)
+        group['entries'] = []
+        group['entries'].push entry
+        groups['titanforged'].push group
 
     # If any wf/tf entries were added to that subgroup, add a "None" item
     # as well.
@@ -1369,10 +1412,11 @@ class ShadowcraftGear
       entry = {
         'type': 1
         'val1': "None "
-        'val2': "Item Level " + (item.ilvl + (gear.upgrade_level * getUpgradeLevelSteps(item)))
+        'val2': "Item Level " + wf_base
       }
       group['entries'].push entry
       groups['titanforged'].push group
+      groups[subgroup+"_active"] = true
 
     for key,subgroup of groups
       continue unless _.isArray(subgroup)
