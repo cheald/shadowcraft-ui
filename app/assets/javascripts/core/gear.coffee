@@ -1351,19 +1351,6 @@ class ShadowcraftGear
         if bonus_entry.type == 14
           wf_base = bonus_entry.val1
 
-    # BUG: special casing away a bug in the API data. if the base ilevel is the same as
-    # the ilevel of the item, and a TF bonus ID was on the gear item, ignore it.
-    if wf_base == gear.item_level
-      current_tf_id = 0
-      current_tf_value = 0
-
-    # BUG: another API problem, items with 805 base ilevels will have the wrong bonus ID
-    # in their WF/TF data (if there is one). It's one step too low, which means the
-    # pulldown menu will select the wrong one as the active level.
-    if wf_base == 805
-      current_tf_id += 5
-      current_tf_value += 5
-
     # If we found an entry for a base item level, we need to generate a bunch of
     # entries for upgrades and insert them into the titanforged subgroup. Only do this
     # if the current maximum ilevel is less than the base ilevel of this item.
@@ -1382,7 +1369,7 @@ class ShadowcraftGear
         entry = {}
         entry['type'] = 1
         entry['val1'] = "+"+(ilvl_bonus)+" Item Levels "
-        if step < 2
+        if step <= 2
           entry['val1'] += "(Warforged)"
         else
           entry['val1'] += "(Titanforged)"

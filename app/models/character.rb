@@ -74,17 +74,27 @@ class Character
 
       # iterate over the player's gear and import any items or gems that are missing
       properties['gear'].each do |slot, item|
-        Item.check_item_for_import(item['id'].to_i, item['context'])
+        # don't do this for artifact weapons. for some reason they come in the character data
+        # with a "scenario-normal" context, but the item data doesn't have that context on
+        # them.
+        if !Item::ARTIFACT_WEAPONS.include? item['id'].to_i
+          Item.check_item_for_import(item['id'].to_i, item['context'])
+        end
+
+        # Make sure all of the gems exist in the database though.
         item['gems'].each do |gemid|
           unless gemid.nil? or gemid == 0
             db_item = Item.check_gem_for_import(gemid.to_i)
           end
         end
 
+        # Don't do the rest of this bonus ID switching stuff for artifact weapons
+        next if Item::ARTIFACT_WEAPONS.include? item['id'].to_i
+
         # This is dumb, but we have to fix a bunch of bonus IDs on the player's gear
         # too while we're at it. This is because Blizzard's API is broken in a lot of
         # places when it comes to base ilevels and ilevel increases.
-        db_item = Item.find_by(:remote_id => item['id'].to_i, :context => item['context'])
+        db_item = Item.where(:remote_id => item['id'].to_i, :context => item['context']).first
         base_item_level = 0
         unless db_item.nil?
           # loop through the default bonus IDs on the item and find the one that means
@@ -129,8 +139,8 @@ class Character
             # Otherwise we need to find what the right ID should have been and replace it.
             # The IDs for ilvl increases go from 1372-1672 which mean (-100 to +200).
             correct_id = 1472+actual_increase
-            item['bonuses'][item['bonuses'][increase_id]] =
-              correct_id if item['bonuses'][increase_id]
+            index = item['bonuses'].index(increase_id)
+            item['bonuses'][index] = 1472+actual_increase
           end
         end
       end

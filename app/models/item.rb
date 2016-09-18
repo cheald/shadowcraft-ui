@@ -16,6 +16,37 @@ class Item
   validates_presence_of :remote_id
   validates_presence_of :properties
 
+  # These are the only bonus IDs we care about displaying on the gear popouts.  They're
+  # mostly just the different difficulty levels that can be on gear.  Anything not listed
+  # here is ignored and a separate item is not created in the database for it.  This is
+  # how we prevent duplicates of items from showing up on the UI.  There are so many bonus
+  # IDs that it's easier to whitelist the ones we want, instead of blacklisting the ones
+  # we don't.
+  #
+  # This whitelist skips any of the randomly generated bonus IDs such as any "of the"
+  # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.
+  BASE_WHITELIST = [1, 15, 17, 18, 44, 171, 448, 449, 450, 451, 499, 526, 527, 545, 546, 547,
+                    553, 554, 555, 556, 557, 558, 559, 566, 567, 573, 575, 576, 577, 582, 583,
+                    591, 592, 593, 594, 602, 609, 615, 617, 618, 619, 620, 645, 656, 692]
+
+  # These are the bonus IDs for "base item levels". This generally means there are WF/TF
+  # versions of the item.
+  BASE_ILEVEL_WHITELIST = [1726, 1727, 1798, 1799, 1801, 1805, 1806, 1807, 1824, 1825, 1826, 
+                           3379, 3394, 3395, 3396, 3397, 3399, 3410, 3411, 3412, 3413, 3414, 
+                           3415, 3416, 3417, 3418, 3427, 3428, 3432, 3443, 3444, 3445, 3446]
+  
+  BONUS_ID_WHITELIST = BASE_WHITELIST + BASE_ILEVEL_WHITELIST
+
+  # For some reason the crafted items don't come with the "stage" bonus IDs in their
+  # chanceBonusList entry.  This is the list of bonus IDs for those stages and is
+  # handled slightly differently.  See below for the check for trade-skill for more
+  # details.
+  TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 597, 598, 599, 619, 620, 666, 667, 668, 669]
+
+  KAZZAK_ITEMS = [124545, 124546, 127971, 127975, 127976, 127980, 127982]
+  ARTIFACT_WEAPONS = [128476, 128479, 128870, 128869, 128872, 134552]
+  MIN_ILVL = 600
+
   def icon
     return '' if self.properties.nil?
     return '' if self.properties['icon'] == nil
@@ -126,7 +157,7 @@ class Item
     item_ids += [124636]
 
     # Artifact weapons
-    item_ids += [128476, 128479, 128870, 128869, 128872, 134552]
+    item_ids += ARTIFACT_WEAPONS
 
     # remove duplicates.
     item_ids = item_ids.uniq
@@ -211,36 +242,6 @@ class Item
       end
     end
   end
-
-  # These are the only bonus IDs we care about displaying on the gear popouts.  They're
-  # mostly just the different difficulty levels that can be on gear.  Anything not listed
-  # here is ignored and a separate item is not created in the database for it.  This is
-  # how we prevent duplicates of items from showing up on the UI.  There are so many bonus
-  # IDs that it's easier to whitelist the ones we want, instead of blacklisting the ones
-  # we don't.
-  #
-  # This whitelist skips any of the randomly generated bonus IDs such as any "of the"
-  # bonuses and any "100%" IDs.  It also skips any bonus IDs that are sockets.
-  BASE_WHITELIST = [1, 15, 17, 18, 44, 171, 448, 449, 450, 451, 499, 526, 527, 545, 546, 547,
-                    553, 554, 555, 556, 557, 558, 559, 566, 567, 573, 575, 576, 577, 582, 583,
-                    591, 592, 593, 594, 602, 609, 615, 617, 618, 619, 620, 645, 656, 692]
-
-  # These are the bonus IDs for "base item levels". This generally means there are WF/TF
-  # versions of the item.
-  BASE_ILEVEL_WHITELIST = [1726, 1727, 1798, 1799, 1801, 1805, 1806, 1807, 1824, 1825, 1826, 
-                           3379, 3394, 3395, 3396, 3397, 3399, 3410, 3411, 3412, 3413, 3414, 
-                           3415, 3416, 3417, 3418, 3427, 3428, 3432, 3443, 3444, 3445, 3446]
-  
-  BONUS_ID_WHITELIST = BASE_WHITELIST + BASE_ILEVEL_WHITELIST
-
-  # For some reason the crafted items don't come with the "stage" bonus IDs in their
-  # chanceBonusList entry.  This is the list of bonus IDs for those stages and is
-  # handled slightly differently.  See below for the check for trade-skill for more
-  # details.
-  TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 597, 598, 599, 619, 620, 666, 667, 668, 669]
-
-  KAZZAK_ITEMS = [124545, 124546, 127971, 127975, 127976, 127980, 127982]
-  MIN_ILVL = 600
 
   # This method will directly import an item without checking for an existing
   # version before doing so.
