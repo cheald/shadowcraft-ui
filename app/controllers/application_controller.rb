@@ -1,8 +1,6 @@
 class ApplicationController < ActionController::Base
   rescue_from Mongoid::Errors::DocumentNotFound, :with => :missing
   rescue_from ActionController::InvalidAuthenticityToken, :with => :cookie_warning
-  
-  before_filter :recompile_coffeescript
 
   # Render an error page on 500 Status code
   def error
