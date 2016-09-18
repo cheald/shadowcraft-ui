@@ -2,6 +2,7 @@ class Character
   include Mongoid::Document
   include Mongoid::Timestamps
   include WowArmory::Document
+  include WowArmory::Constants
   extend WowArmory::Document
 
   field :name
@@ -79,11 +80,64 @@ class Character
             db_item = Item.check_gem_for_import(gemid.to_i)
           end
         end
+
+        # This is dumb, but we have to fix a bunch of bonus IDs on the player's gear
+        # too while we're at it. This is because Blizzard's API is broken in a lot of
+        # places when it comes to base ilevels and ilevel increases.
+        db_item = Item.find_by(:remote_id => item['id'].to_i, :context => item['context'])
+        base_item_level = 0
+        unless db_item.nil?
+          # loop through the default bonus IDs on the item and find the one that means
+          # a base item level
+          db_item['properties']['bonus_tree'].each do |bonus_id|
+            entries = WowArmory::Item.item_bonuses[bonus_id]
+            entries.each do |entry|
+              if entry[:type] == ITEM_BONUS_TYPES['base_ilvl']
+                base_item_level = entry[:val1]
+              end
+            end
+          end
+        end
+
+        # If there wasn't a base item level, just skip this next part.
+        next if base_item_level == 0
+
+        # Now loop through the bonus IDs on the gear entry and make sure that the math works
+        # between the item level increases from bonus IDs and the base item level on the
+        # database item.
+        increase_id = 0
+        increase = 0
+        item['bonuses'].each do |bonus_id|
+          entries = WowArmory::Item.item_bonuses[bonus_id]
+          entries.each do |entry|
+            if entry[:type] == ITEM_BONUS_TYPES['ilvl_increase']
+              increase_id = bonus_id
+              increase = entry[:val1]
+            end
+          end
+        end
+
+        next if increase_id == 0
+
+        if item['item_level'] != (base_item_level+increase)
+          actual_increase = item['item_level']-base_item_level
+          if actual_increase == 0
+            # This means that there shouldn't have been a item level increase here to begin
+            # with, and that one should be removed.
+            item['bonuses'] -= [increase_id]
+          else
+            # Otherwise we need to find what the right ID should have been and replace it.
+            # The IDs for ilvl increases go from 1372-1672 which mean (-100 to +200).
+            correct_id = 1472+actual_increase
+            item['bonuses'][item['bonuses'][increase_id]] =
+              correct_id if item['bonuses'][increase_id]
+          end
+        end
       end
 
-      # We only get artifact data for the current spec from the armory. Null out all of the artifact
-      # data for all of the specs, and then copy the artifact data from the armory into the right
-      # spot.
+      # We only get artifact data for the current spec from the armory. Null out all of the
+      # artifact data for all of the specs, and then copy the artifact data from the armory
+      # into the right spot.
       orig_artifact_data = properties['artifact'].clone
       properties['artifact'] = {
         'a' => {
@@ -101,9 +155,9 @@ class Character
       }
       active_spec = properties['talents'][properties['active']][:spec]
 
-      # The trait rank values we get from the armory include the relic increases. We handle that
-      # ourselves in the javascript so remove those. This is ugly and probably slower than
-      # necessary due to having to loop over the entire trait space a few times.
+      # The trait rank values we get from the armory include the relic increases. We handle
+      # that ourselves in the javascript so remove those. This is ugly and probably slower
+      # than necessary due to having to loop over the entire trait space a few times.
       relic_array = [{},{},{}]
       orig_artifact_data['relics'].each do |relic|
         relic_array[relic['socket']] = relic.clone
