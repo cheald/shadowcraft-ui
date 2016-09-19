@@ -28,4 +28,9 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-passenger'
   gem 'capistrano-rvm'
+  gem 'rspec-rails'
+  gem 'rspec-its'
+  gem 'webmock'
+  gem 'factory_girl'
+  gem 'database_cleaner'
 end

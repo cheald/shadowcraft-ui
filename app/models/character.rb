@@ -11,6 +11,7 @@ class Character
   field :properties, :type => Hash
   field :portrait
   field :uid
+  field :data_version
 
   index({uid: 1}, {unique: true})
 
@@ -18,6 +19,7 @@ class Character
   REGIONS = ['US', 'EU', 'KR', 'TW', 'CN', 'SEA']
   CLASSES = ['rogue']
   MAX_LEVEL = 110
+  CURRENT_DATA_VERSION = 2
 
   validates_inclusion_of :region, :in => REGIONS
   validates_presence_of :name, :message => '%{value} could not be found on the Armory.'
@@ -32,6 +34,10 @@ class Character
 
   before_validation :update_from_armory!
   before_validation :write_uid
+
+  def outdated?
+    self.data_version != CURRENT_DATA_VERSION
+  end
 
   def to_param
     normalize_realm(realm)
@@ -195,6 +201,7 @@ class Character
       }
       orig_artifact_data['traits'].push(default)
       properties['artifact'][active_spec] = orig_artifact_data
+      self.data_version = CURRENT_DATA_VERSION
     end
   end
 
