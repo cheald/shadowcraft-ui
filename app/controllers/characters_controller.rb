@@ -31,6 +31,11 @@ class CharactersController < ApplicationController
     @character = Character.get!(params[:region], params[:realm], params[:name])
     raise Mongoid::Errors::DocumentNotFound.new(Character, {}) if @character.nil?
 
+    if @character.outdated?
+      @character.update_from_armory!(true)
+      @character.save
+    end
+
     begin
       @character.as_json
       @character.properties['race'].downcase

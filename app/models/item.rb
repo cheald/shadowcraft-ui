@@ -444,9 +444,7 @@ class Item
   # we want are white-listed earlier in this class.
   def self.get_valid_bonus_IDs(possible_IDs, item_id, context)
     itemChanceBonuses = possible_IDs.clone()
-    puts itemChanceBonuses
     itemChanceBonuses.delete_if { |bonus| !BONUS_ID_WHITELIST.include? bonus }
-    puts itemChanceBonuses
 
     # for trade-skill items, also add the bonuses for each of the "stage" titles
     if (context == 'trade-skill')
