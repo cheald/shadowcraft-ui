@@ -552,7 +552,7 @@ class ShadowcraftGear
   # socket.
   hasSocket = (gear) ->
     # This is all of the bonus IDs that mean +socket. Ridiculous.
-    socketBonuses = [523, 572, 608]
+    socketBonuses = [523, 572, 608, 1808]
     socketBonuses = socketBonuses.concat([563..565])
     socketBonuses = socketBonuses.concat([715..719])
     socketBonuses = socketBonuses.concat([721..752])
