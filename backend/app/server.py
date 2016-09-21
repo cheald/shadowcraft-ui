@@ -21,7 +21,6 @@ from shadowcraft.objects import race
 from shadowcraft.objects import stats
 from shadowcraft.objects import procs
 from shadowcraft.objects import talents
-from shadowcraft.objects import glyphs
 from shadowcraft.objects import artifact
 from shadowcraft.objects import artifact_data
 
