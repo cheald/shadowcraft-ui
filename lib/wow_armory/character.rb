@@ -77,7 +77,8 @@ module WowArmory
           'gems' => [],
           'slot' => SLOT_MAP[k],
           'bonuses' => v['bonusLists'],
-          'context' => v['context']
+          'context' => v['context'],
+          'quality' => v['quality']
         }
         info['gems'].push(tooltip['gem0'].nil? ? 0 : tooltip['gem0'])
         info['gems'].push(tooltip['gem1'].nil? ? 0 : tooltip['gem1'])

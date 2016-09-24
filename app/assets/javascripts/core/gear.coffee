@@ -679,6 +679,7 @@ class ShadowcraftGear
         opt.identifier = item.id + ":" + item.ilvl + ":" + (item.suffix || 0) if item
         opt.ilvl = gear.item_level
         opt.ttid = item.id if item
+        opt.quality = if gear.quality then gear.quality else item.quality
         opt.ttrand = if item then item.suffix else null
         opt.ttupgd = if upgrade then upgrade['curr_level'] else null
         opt.ttbonus = if gear.bonuses then gear.bonuses.join(":") else null

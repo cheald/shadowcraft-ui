@@ -90,7 +90,11 @@ checkForWarnings = (section) ->
       enchantable = EnchantSlots[item.equip_location] != undefined && Shadowcraft.Gear.getApplicableEnchants(slotIndex, item).length > 0
 
       if !enchant and enchantable
-        Shadowcraft.Console.warn(item, "needs an enchantment", null, "warn", "items")
+        i = {
+          name: item.name,
+          quality: gear.quality
+        }
+        Shadowcraft.Console.warn(i, "needs an enchantment", null, "warn", "items")
 
     # Warn artifact/relics might not work if not wearing complete set of artifact weapons
     mh_id = data.gear[15].id
