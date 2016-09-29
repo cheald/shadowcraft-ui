@@ -139,6 +139,9 @@
       %img{:src => "/images/{{lock_class}}.png"}
     {{/lock}}
     .name.tt{:class => "quality-{{quality}}", :"data-tooltip-id" => "{{ttid}}", :"data-tooltip-rand" => "{{ttrand}}", :"data-tooltip-upgd" => "{{ttupgd}}", :"data-tooltip-bonus" => "{{ttbonus}}", :"data-tooltip-gems" => "{{ttgems}}", :"data-tooltip-spec" => "{{ttspec}}"}
+      {{#display_ilvl}}
+      %em.ilvl ({{item/ilvl}})
+      {{/display_ilvl}}
       {{item/name}}
       {{item/name_suffix}}
       %em.heroic {{tag}}
@@ -180,6 +183,9 @@
       .bonus
         Socket Bonus: +{{amount}} {{stat}}
       {{/socketbonus}}
+    {{#tags}}
+    %span.tags {{.}}
+    {{/tags}}
     {{#desc}}
     %span.desc
       {{.}}

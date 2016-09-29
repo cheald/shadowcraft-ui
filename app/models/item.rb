@@ -6,10 +6,13 @@ class Item
   field :remote_id, :type => Integer
   field :item_level, :type => Integer
   field :properties, :type => Hash
+  field :contexts, :type => Array, :default => []
+  field :context_map, :type => Hash
   field :is_gem, :type => Boolean
   field :is_glyph, :type => Boolean
 
-  index({remote_id: 1, is_gem: 1, is_glyph: 1}, {unique: true})
+  index({remote_id: 1, contexts: 1}, {unique: true})
+  index({remote_id: 1, item_level: 1, is_gem: 1, is_glyph: 1}, {unique: true})
 
   attr_accessor :item_name_override
 
@@ -43,7 +46,6 @@ class Item
   # details.
   TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 597, 598, 599, 619, 620, 666, 667, 668, 669]
 
-  KAZZAK_ITEMS = [124545, 124546, 127971, 127975, 127976, 127980, 127982]
   ARTIFACT_WEAPONS = [128476, 128479, 128870, 128869, 128872, 134552]
   MIN_ILVL = 600
 
@@ -64,6 +66,8 @@ class Item
             end,
       :q => properties['quality'],
       :stats => properties['stats'],
+      :ctxts => context_map,
+      :ilvl => item_level
     }
 
     if properties['sockets'] and !properties['sockets'].empty?
@@ -73,7 +77,6 @@ class Item
     if properties['equip_location']
       json[:e] = properties['equip_location']
     end
-    json[:ilvl] = properties['ilevel']
 
     if properties['socket_bonus']
       json[:sb] = properties['socket_bonus']
@@ -82,12 +85,6 @@ class Item
     if properties['gem_slot']
       json[:sl] = properties['gem_slot']
     end
-
-    json[:tag] = if properties['tag'] then
-                   properties['tag']
-                 else
-                   ''
-                 end
 
     unless properties['speed'].blank?
       json[:speed] = properties['speed']
@@ -101,22 +98,16 @@ class Item
     if properties['chance_bonus_lists']
       json[:chance_bonus_lists] = properties['chance_bonus_lists']
     end
-    if properties['bonus_tree']
-      json[:bonus_tree] = properties['bonus_tree']
-    end
-    if properties['context']
-      json[:context] = properties['context']
-    end
-
+    
     json
   end
 
   def self.populate(prefix = 'www', source = 'wowapi')
-    populate_gear_wod(prefix, source)
-    populate_gems_wod(prefix, source)
+    populate_gear(prefix, source)
+    populate_gems(prefix, source)
   end
 
-  def self.populate_gear_wod(prefix = 'www', source = 'wowapi')
+  def self.populate_gear(prefix = 'www', source = 'wowapi')
     @source = source
 
     item_ids = []
@@ -124,27 +115,36 @@ class Item
     # TODO: is it possible to avoid displaying items that aren't available in
     # the game anymore?
     # blue items
-    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 600, 665)
-    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 695, 705) # pvp
+    puts "Requesting rare items from wowhead..."
+    puts "Item levels 701 to 750"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 701, 750)
+    puts "Item levels 751 to 800"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 751, 800)
+    puts "Item levels 801 to 850"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 801, 850)
+    puts "Item levels 851 to 900"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 851, 900)
 
     # epic items
     # TODO: no idea why we break this up into three parts. It's probably something
     # to avoid loading too many items from wowhead at once.
-    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 630, 665)
-    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 666, 700)
+    puts "Requesting rare items from wowhead..."
+    puts "Item levels 701 to 750"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 701, 750)
+    puts "Item levels 751 to 800"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 751, 800)
+    puts "Item levels 801 to 850"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 801, 850)
+    puts "Item levels 851 to 900"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 851, 900)
 
     # Rings, necks, trinkets
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/rings/min-level:630/class:4"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/amulets/min-level:630/class:4"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/trinkets/min-level:630/class:4"
+    puts "Requesting list of rings from wowhead"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/rings/min-level:700/class:4"
+    puts "Requesting list of necks from wowhead"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/amulets/min-level:700/class:4"
+    puts "Requesting list of trinkets from wowhead"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/trinkets/min-level:700/class:4"
 
     # 6.1 alchemy trinkets
     item_ids += [122601, 122602, 122603, 122604]
@@ -172,7 +172,7 @@ class Item
     true
   end
 
-  def self.populate_gems_wod(prefix = 'www', source = 'wowapi')
+  def self.populate_gems(prefix = 'www', source = 'wowapi')
     gem_ids = get_ids_from_wowhead("http://www.wowhead.com/items/gems/prismatic?filter=166;6;0")
     gem_ids += get_ids_from_wowhead("http://www.wowhead.com/items/gems/prismatic?filter=166;7;0")
 
@@ -208,10 +208,12 @@ class Item
           # done through a function since Ruby doesn't do pass-by-value, so we have to
           # repeat this hunk of code.
           db_item.properties = item.as_json.with_indifferent_access
+          puts db_item.properties
           db_item.is_gem = !db_item.properties['gem_slot'].blank?
           db_item.item_level = item.ilevel
           if db_item.new_record?
-            db_item.save()
+            puts "new record, saving"
+            db_item.save!
           end
         end
 
@@ -235,7 +237,7 @@ class Item
   # database. If that combination doesn't exist, reload the whole item. Loading single
   # items doesn't take very long, so we're safe to just load the whole thing.
   def self.check_item_for_import(id, context, source='wowapi')
-    count = Item.where(:remote_id => id, :"properties.context" => context).count()
+    count = Item.where(:remote_id => id, :contexts => context).count()
     if (count == 0)
       case source
         when 'wowapi'
@@ -291,25 +293,11 @@ class Item
     contexts.delete_at(0)
 
     # NOTE: SPECIAL CASE HERE, REMOVE LATER
-    # Because of a bug in the Blizzard API, Kazzak items return all of the raid contexts
-    # even though only the raid-normal version of the item is available in-game. Remove
-    # the other contexts and only load the raid-normal version for those items.
-    if KAZZAK_ITEMS.include? id
-      contexts.delete_if { |context| ['raid-heroic','raid-mythic'].include? context }
-    end
-    
-    # NOTE: SPECIAL CASE HERE, REMOVE LATER
-    # Mythic+ items all come in with the same data, even though there are 4 different
-    # contexts for them. I'm pretty sure this is a bug in the API data, but in the meantime
-    # ignore those items so they don't clutter up the list.
-    contexts.delete_if { |context| context.start_with?('challenge-') }
-
-    # NOTE: SPECIAL CASE HERE, REMOVE LATER
     # World quest items have the same problem as above, in that they all return the same
     # data. Only load one of them and reset the context below to something else. This
     # greatly reduces the amount of data we load for these items. Again, this is probably
     # a bug in the API data.
-    contexts.delete_if { |context| context.start_with?('world-quest-') and !context.end_with?('-1') }
+    contexts.delete_if { |context| context.start_with?('world-quest-') and !context.end_with?('-7') }
 
     # Next, look at the chance bonus lists that accompany the item. This bonus list is
     # the things that can be applied to an item, such as extra titles (warforged, crafting
@@ -381,23 +369,23 @@ class Item
     # Loop through the json data that was retrieved and process each in turn
     json_data.each do |json|
 
-      # check to see if this item is in the database yet. we check by ID and item level
-      # since those are the two fields that generally differentiate different items.
-      if json['context'].start_with?('world-quest')
-        db_item = Item.find_or_initialize_by(:remote_id => json['id'], :context => 'world-quest')
-      elsif json['context'].start_with?('dungeon-level-up')
-        db_item = Item.find_or_initialize_by(:remote_id => json['id'], :context => 'dungeon-level-up')
-      else
-        db_item = Item.find_or_initialize_by(:remote_id => json['id'],
-                                             :context => json['context'])
-      end
+      # check to see if there is an item in the database with this ID and base item level yet. We
+      # combine duplicate items together based on these two values.
+      db_item = Item.find_or_initialize_by(:remote_id => json['id'], :item_level => json['itemLevel'])
 
+      # create an item from the json data that we've retrieved so that we can use it
+      # to build a database item. some parts of this will be used whether or not the
+      # we haven't found a database item, so might as well go ahead and make it.
+      item = WowArmory::Item.new(json, 'wowapi')
+
+      if db_item.contexts.nil?
+        db_item.contexts = []
+        db_item.context_map = {}
+      end
+      
       # if the item doesn't have properties yet, create a new item from the wow
       # armory library and then merge that into this record and save it.
       if db_item.properties.nil?
-        # create an item from the json data that we've retrieved and store it in the
-        # database. the initializer routine will deal with the upgrade level for us.
-        item = WowArmory::Item.new(json, 'wowapi')
 
         # Merge the data from the armory item into the local db_item. This can't be
         # done through a function since Ruby doesn't do pass-by-value, so we have to
@@ -405,16 +393,25 @@ class Item
         db_item.remote_id = item.id
         db_item.item_level = item.ilevel
         db_item.properties = item.as_json.with_indifferent_access
-        if json['context'].start_with?('world-quest')
-          db_item.properties['context'] = 'world-quest'
-          db_item.properties['tag'] = "World Quest"
-        elsif json['context'].start_with?('dungeon-level-up')
-          db_item.properties['context'] = 'dungeon-level-up'
-          db_item.properties['tag'] = "Level-up Dungeon"
-        end
         db_item.is_gem = !db_item.properties['gem_slot'].blank?
-        db_item.save()
       end
+
+      name = json['context']
+      context = {}
+      context['tag'] = item.tag
+      if json['context'].start_with?('world-quest')
+        name = 'world-quest'
+        context['tag'] = "World Quest"
+      elsif json['context'].start_with?('dungeon-level-up')
+        name = 'dungeon-level-up'
+        context['tag'] = "Level-up Dungeon"
+      end
+      context['defaultBonuses'] = item.bonus_tree
+
+      db_item.context_map[name] = context
+      db_item.contexts.push(name)
+      db_item.save!
+      
     end
   end
 

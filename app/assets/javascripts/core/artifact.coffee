@@ -82,13 +82,13 @@ class ShadowcraftArtifact
     if id not in ShadowcraftGear.ARTIFACTS
       return
 
-    ident = id+":750:0"
+    ident = id+":750"
     baseItem = Shadowcraft.ServerData.ITEM_LOOKUP2[ident]
 
     updatedItem = $.extend({}, baseItem)
     updatedItem.ilvl = newIlvl
     updatedItem.id = id
-    updatedItem.identifier = ""+id+":"+newIlvl+":0"
+    updatedItem.identifier = ""+id+":"+newIlvl
 
     newStats = getStatsForIlvl(newIlvl)
     updatedItem.stats = $.extend({}, newStats["stats"])
@@ -366,8 +366,8 @@ class ShadowcraftArtifact
     if !(ilvl of artifact_ilvl_stats)
       # get the stats for the base artifact item
       itemid = Shadowcraft.Data.gear[15].id
-      stats = $.extend({}, Shadowcraft.ServerData.ITEM_LOOKUP2[""+itemid+":750:0"].stats)
-      dps = Shadowcraft.ServerData.ITEM_LOOKUP2[""+itemid+":750:0"].dps
+      stats = $.extend({}, Shadowcraft.ServerData.ITEM_LOOKUP2[""+itemid+":750"].stats)
+      dps = Shadowcraft.ServerData.ITEM_LOOKUP2[""+itemid+":750"].dps
 
       # recalcuate and store
       multiplier =  1.0 / Math.pow(1.15, ((ilvl-750) / 15.0 * -1))

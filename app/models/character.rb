@@ -19,7 +19,7 @@ class Character
   REGIONS = ['US', 'EU', 'KR', 'TW', 'CN', 'SEA']
   CLASSES = ['rogue']
   MAX_LEVEL = 110
-  CURRENT_DATA_VERSION = 3
+  CURRENT_DATA_VERSION = 4
 
   validates_inclusion_of :region, :in => REGIONS
   validates_presence_of :name, :message => '%{value} could not be found on the Armory.'
@@ -80,6 +80,7 @@ class Character
 
       # iterate over the player's gear and import any items or gems that are missing
       properties['gear'].each do |slot, item|
+
         # don't do this for artifact weapons. for some reason they come in the character data
         # with a "scenario-normal" context, but the item data doesn't have that context on
         # them.
@@ -100,23 +101,10 @@ class Character
         # This is dumb, but we have to fix a bunch of bonus IDs on the player's gear
         # too while we're at it. This is because Blizzard's API is broken in a lot of
         # places when it comes to base ilevels and ilevel increases.
-        db_item = Item.where(:remote_id => item['id'].to_i, :context => item['context']).first
-        base_item_level = 0
-        unless db_item.nil?
-          # loop through the default bonus IDs on the item and find the one that means
-          # a base item level
-          db_item['properties']['bonus_tree'].each do |bonus_id|
-            entries = WowArmory::Item.item_bonuses[bonus_id]
-            entries.each do |entry|
-              if entry[:type] == ITEM_BONUS_TYPES['base_ilvl']
-                base_item_level = entry[:val1]
-              end
-            end
-          end
-        end
-
-        # If there wasn't a base item level, just skip this next part.
-        next if base_item_level == 0
+        db_context='contexts.'+item['context']
+        db_item = Item.where(:remote_id => item['id'].to_i, :contexts => item['context']).first
+        base_item_level = db_item.item_level
+        item['base_ilvl'] = base_item_level
 
         # Now loop through the bonus IDs on the gear entry and make sure that the math works
         # between the item level increases from bonus IDs and the base item level on the

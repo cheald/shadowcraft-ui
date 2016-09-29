@@ -136,37 +136,22 @@
       delete R.ENCHANTS;
 
       R.ITEM_LOOKUP2 = {};
-      R.ITEM_BY_CONTEXT = {}
       for(i = 0; i < R.ITEMS.length; i++) {
         var item = R.ITEMS[i];
         expandItem(item, iStatMap);
 
-        item.identifier = item.id + ":" + item.ilvl + ":" + (item.suffix || 0);
-        if(item.equip_location == 6) {    // Add sockets to belts
-          if(600 >= getBaseItemLevel(item)) {
-            if(item.sockets === undefined) { item.sockets = []; }
-            item.sockets[item.sockets.length] = "Prismatic";
-          }
-        }
+        item.identifier = item.id + ":" + item.ilvl;
         item.equip_location = getRealSlot(item.equip_location, true);
         R.ITEM_LOOKUP2[item.identifier] = item;
 
-        context_identifier = item.id + ":";
-        if (item.context.length != 0) {
-          context_identifier += item.context;
-        } else {
-          context_identifier += "none";
-        }
-
-        R.ITEM_BY_CONTEXT[context_identifier] = item;
         if(item.equip_location == 21 || item.equip_location == 13) {
-          R.SLOT_CHOICES.offhand.push(context_indentifier);   // Dual-hand items get added to offhands, too.
+          R.SLOT_CHOICES.offhand.push(item.identifier);   // Dual-hand items get added to offhands, too.
         }
 
         if(R.SLOT_CHOICES[item.equip_location] === undefined) {
           R.SLOT_CHOICES[item.equip_location] = [];
         }
-        R.SLOT_CHOICES[item.equip_location].push(context_identifier);
+        R.SLOT_CHOICES[item.equip_location].push(item.identifier);
       }
       delete R.ITEMS;
 

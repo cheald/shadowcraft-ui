@@ -32,9 +32,13 @@ module WowArmory
       end
     end
 
+    # These fields shouldn't come across in the json data because they end up
+    # as duplicates in the mongo records.
+    IGNORE_FIELDS = %i{id context ilevel bonus_tree tag}
+
     def as_json(options = {})
       {}.tap do |r|
-        ACCESSORS.map {|key| r[key] = self.send(key) }
+        ACCESSORS.map {|key| r[key] = self.send(key) if !IGNORE_FIELDS.include?(key) }
       end
     end
 
@@ -84,7 +88,6 @@ module WowArmory
       # Special case legendary rings, since they don't come with a context in
       # the item data (but do when you get them with character data!)
       if (@id == 124636)
-        puts "legendary ring"
         self.context = "quest-reward"
       else
         self.context = json['context']
@@ -108,6 +111,20 @@ module WowArmory
       # 'warforged' or 'heroic'. This field is used in the display of items.
       unless json['nameDescription'].nil?
         self.tag = json['nameDescription']
+      end
+
+      # For some reason tags aren't getting set from the armory data for certain
+      # contexts. Make sure that they're set.
+      if self.tag.nil?
+        if json['context'].end_with? '-mythic'
+          self.tag = 'Mythic'
+        elsif json['context'].end_with? '-heroic'
+          self.tag = 'Heroic'
+        elsif json['context'].end_with? '-normal'
+          self.tag = ''
+        elsif json['context'] == 'raid-finder'
+          self.tag = 'Raid Finder'
+        end
       end
 
       if json['itemClass'] == 3 # gem
