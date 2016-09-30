@@ -37,7 +37,10 @@ class ShadowcraftSite(resource.Resource):
         else:
             start = clock()
             log.msg("Request: %s" % input)
-            response = engine.get_all(input)
+            try
+                response = engine.get_all(input)
+            except (KeyError) as e:
+                response = {'error': "%s: %s" % (e.__class__, e.message)}
             log.msg("Request time: %s sec" % (clock() - start))
             log.msg("Response: %s" % response)
             return json.dumps(response)

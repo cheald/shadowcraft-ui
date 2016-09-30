@@ -535,8 +535,3 @@ class ShadowcraftComputation:
         except (InputNotModeledException, exceptions.InvalidInputException) as e:
             out["error"] = e.error_msg
             return out
-        # except (KeyError) as e:
-        #     import traceback
-        #     traceback.print_exc()
-        #     out["error"] = "Key Error in data sent to backend: " + ':'.join(map(str,e.message))
-        #     return out
