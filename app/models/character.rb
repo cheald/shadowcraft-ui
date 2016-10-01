@@ -100,11 +100,12 @@ class Character
 
         # This is dumb, but we have to fix a bunch of bonus IDs on the player's gear
         # too while we're at it. This is because Blizzard's API is broken in a lot of
-        # places when it comes to base ilevels and ilevel increases.
-        db_context='contexts.'+item['context']
+        # places when it comes to base ilevels and ilevel increases. Unfortunately,
+        # we also have to save the original set because otherwise tooltips break.
         db_item = Item.where(:remote_id => item['id'].to_i, :contexts => item['context']).first
         base_item_level = db_item.item_level
         item['base_ilvl'] = base_item_level
+        item['ttBonuses'] = item['bonuses'].clone
 
         # Now loop through the bonus IDs on the gear entry and make sure that the math works
         # between the item level increases from bonus IDs and the base item level on the

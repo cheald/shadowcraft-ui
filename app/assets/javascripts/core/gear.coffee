@@ -513,6 +513,18 @@ class ShadowcraftGear
     if gear.bonuses?
       currentBonuses = gear.bonuses
 
+    # We have to store these because we have to do some trickery with replacing
+    # the one in the ttBonus list at the end.
+    oldWF = 1472
+    oldTTWF = 1472
+    newWF = 1472
+    for bonus in currentBonuses
+      if bonus in ShadowcraftGear.WF_BONUS_IDS
+        oldWF = bonus
+    for bonus in gear.ttBonuses
+      if bonus in ShadowcraftGear.WF_BONUS_IDS
+        oldTTWF = bonus
+
     checkedBonuses = []
     uncheckedBonuses = []
     $("#bonuses input:checkbox").each ->
@@ -542,7 +554,16 @@ class ShadowcraftGear
       if bonus in ShadowcraftGear.WF_BONUS_IDS
         for entry in Shadowcraft.ServerData.ITEM_BONUSES[bonus]
           if entry.type == 1
+            newWF = bonus
             gear.item_level += entry.val1
+
+    # This is the trickery mentioned earlier. Take the difference between the old
+    # WF value and the new WF value and adjust the ttBonus version of it by the
+    # same amount.
+    diff = newWF-oldWF
+    if diff != 0 and oldTTWF != 1472
+      index = gear.ttBonuses.indexOf(oldTTWF)
+      gear.ttBonuses[index] = oldTTWF + diff
 
     $("#bonuses").removeClass("visible")
     Shadowcraft.update()
@@ -638,9 +659,16 @@ class ShadowcraftGear
                   when 6 # cool extra sockets
                     bonusable = true
                     break
-                  when 2
+                  when 2 # tertiary stats
                     bonusable = true
                     break
+                  when 14 # base item level (can be warforged)
+                    bonusable = true
+                    break
+
+              # Hack for warforged
+              if bonusId == -1
+                bonusable = true
 
           # If there's an enchant already on this item, grab the description of it so that
           # it can be displayed correctly.
@@ -682,7 +710,7 @@ class ShadowcraftGear
         opt.quality = if gear.quality then gear.quality else item.quality
         opt.ttrand = if item then item.suffix else null
         opt.ttupgd = if upgrade then upgrade['curr_level'] else null
-        opt.ttbonus = if gear.bonuses then gear.bonuses.join(":") else null
+        opt.ttbonus = if gear.ttBonuses then gear.ttBonuses.join(":") else null
         opt.ttgems = if ttgems != "0:0:0" then ttgems else null
         opt.ep = if item then getEP(item, i).toFixed(1) else 0
         opt.slot = i + ''
@@ -1304,6 +1332,7 @@ class ShadowcraftGear
     }
     wf_base = 0
     for bonusId in item.chance_bonus_lists
+      continue if bonusId == -1
       group = {}
       group['bonusId'] = bonusId
       group['active'] = true if _.contains(currentBonuses, bonusId)
@@ -1340,9 +1369,13 @@ class ShadowcraftGear
     # this item. These ones don't show up in the chance bonus lists becasue they're a
     # fixed ID for each item difficulty.
     for bonusId in item.ctxts[gear.context].defaultBonuses
-      for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
-        if bonus_entry.type == 14
-          wf_base = bonus_entry.val1
+      break if wf_base != 0
+      if bonusId == -1
+        wf_base = gear.base_ilvl
+      else
+        for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
+          if bonus_entry.type == 14
+            wf_base = gear.base_ilvl
 
     # If we found an entry for a base item level, we need to generate a bunch of
     # entries for upgrades and insert them into the titanforged subgroup. Only do this
