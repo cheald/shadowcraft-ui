@@ -47,7 +47,11 @@ class Item
   TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 597, 598, 599, 619, 620, 666, 667, 668, 669]
 
   ARTIFACT_WEAPONS = [128476, 128479, 128870, 128869, 128872, 134552]
-  MIN_ILVL = 600
+  MIN_ILVL = 800
+
+  # This is the set of bonus IDs that should be on basically every legion item, but the API
+  # neglects to actually add. These are the four tertiary stats and a legion socket.
+  CHANCE_BONUSES = [40, 41, 42, 43, 1808, -1]
 
   def icon
     return '' if self.properties.nil?
@@ -116,10 +120,6 @@ class Item
     # the game anymore?
     # blue items
     puts "Requesting rare items from wowhead..."
-    puts "Item levels 701 to 750"
-    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 701, 750)
-    puts "Item levels 751 to 800"
-    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 751, 800)
     puts "Item levels 801 to 850"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 801, 850)
     puts "Item levels 851 to 900"
@@ -129,10 +129,6 @@ class Item
     # TODO: no idea why we break this up into three parts. It's probably something
     # to avoid loading too many items from wowhead at once.
     puts "Requesting rare items from wowhead..."
-    puts "Item levels 701 to 750"
-    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 701, 750)
-    puts "Item levels 751 to 800"
-    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 751, 800)
     puts "Item levels 801 to 850"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 801, 850)
     puts "Item levels 851 to 900"
@@ -140,21 +136,11 @@ class Item
 
     # Rings, necks, trinkets
     puts "Requesting list of rings from wowhead"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/rings/min-level:700/class:4"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/rings/min-level:800/class:4"
     puts "Requesting list of necks from wowhead"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/amulets/min-level:700/class:4"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/amulets/min-level:800/class:4"
     puts "Requesting list of trinkets from wowhead"
-    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/trinkets/min-level:700/class:4"
-
-    # 6.1 alchemy trinkets
-    item_ids += [122601, 122602, 122603, 122604]
-    # 6.2 alchemy trinkets
-    item_ids += [128023, 128024]
-    # 6.2.3 heirloom trinket
-    item_ids += [133597]
-
-    # legendary ring
-    item_ids += [124636]
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/trinkets/min-level:800/class:4"
 
     # Artifact weapons
     item_ids += ARTIFACT_WEAPONS
@@ -274,7 +260,7 @@ class Item
     json_data = Array.new
     begin
       base_json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {:bl=>0}
-      if base_json['itemLevel'].to_i >= MIN_ILVL
+      if base_json['itemLevel'].to_i >= MIN_ILVL or ARTIFACT_WEAPONS.include? id
         json_data.push(base_json)
       else
         Rails.logger.debug base_json['itemLevel']
@@ -302,7 +288,7 @@ class Item
     # Next, look at the chance bonus lists that accompany the item. This bonus list is
     # the things that can be applied to an item, such as extra titles (warforged, crafting
     # stages), tertiary stats, sockets, etc.
-    itemChanceBonuses = get_valid_bonus_IDs(base_json['bonusSummary']['chanceBonusLists'].clone, id, base_json['context'])
+    itemChanceBonuses = get_bonus_IDs_to_load(base_json['bonusSummary']['chanceBonusLists'].clone, id, base_json['context'])
     defaultBonuses = base_json['bonusLists']
 
     # Loop through now-trimmed list of bonus IDs and load an additional item for each
@@ -335,11 +321,11 @@ class Item
         # Flush anything that isn't above the minimum ilvl down the toilet. This happens
         # because timewalking items get added to the list, and we try to load the base
         # version of the item too.
-        next if json['itemLevel'] < MIN_ILVL
+        next if json['itemLevel'] < MIN_ILVL and not ARTIFACT_WEAPONS.include? id
         json_data.push(json)
 
         # Same thing here with the bonus IDs. Gotta load all of those here too.
-        itemChanceBonuses = get_valid_bonus_IDs(json['bonusSummary']['chanceBonusLists'], id, json['context'])
+        itemChanceBonuses = get_bonus_IDs_to_load(json['bonusSummary']['chanceBonusLists'], id, json['context'])
         defaultBonuses = json['bonusLists']
 
         # Same thing here with the bonus IDs. Gotta load all of those here too.
@@ -380,6 +366,9 @@ class Item
 
       if db_item.contexts.nil?
         db_item.contexts = []
+      end
+
+      if db_item.context_map.nil?
         db_item.context_map = {}
       end
       
@@ -408,6 +397,14 @@ class Item
       end
       context['defaultBonuses'] = item.bonus_tree
 
+      # NOTE: this is a massive hack because of Blizzard. The API isn't returning chance
+      # bonuses for lots and lots of items, which means we have no way to know whether
+      # an item can have sockets or be warforged, etc. For non-trade-skill items, just
+      # stick a set of bonuses on the item and be done with it.
+      if json['context'] != 'trade-skill'
+        db_item.properties['chance_bonus_lists'] |= CHANCE_BONUSES
+      end
+
       db_item.context_map[name] = context
       db_item.contexts.push(name)
       db_item.save!
@@ -417,8 +414,9 @@ class Item
 
   # Trims a list of bonus IDs down to the set of IDs that we actually care about, like
   # titles, since we load an additional item for each one of those. The bonus IDs that
-  # we want are white-listed earlier in this class.
-  def self.get_valid_bonus_IDs(possible_IDs, item_id, context)
+  # we want are white-listed earlier in this class. Extra items will be loaded for
+  # these bonus IDs.
+  def self.get_bonus_IDs_to_load(possible_IDs, item_id, context)
     itemChanceBonuses = possible_IDs.clone()
     itemChanceBonuses.delete_if { |bonus| !BONUS_ID_WHITELIST.include? bonus }
 
@@ -427,9 +425,8 @@ class Item
       itemChanceBonuses = TRADESKILL_BONUS_IDS
     end
 
-    skipped = possible_IDs-itemChanceBonuses
-    if !skipped.empty?
-      Rails.logger.debug "skipping bonus IDs: %s" % skipped.join(",")
+    if !itemChanceBonuses.empty?
+      Rails.logger.debug "Loading extra items for these bonus IDs: %s" % itemChanceBonuses.join(",")
     end
     return itemChanceBonuses
   end
