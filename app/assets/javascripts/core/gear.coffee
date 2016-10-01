@@ -561,9 +561,12 @@ class ShadowcraftGear
     # WF value and the new WF value and adjust the ttBonus version of it by the
     # same amount.
     diff = newWF-oldWF
-    if diff != 0 and oldTTWF != 1472
-      index = gear.ttBonuses.indexOf(oldTTWF)
-      gear.ttBonuses[index] = oldTTWF + diff
+    if diff != 0
+      if (oldTTWF == 1472)
+        gear.ttBonuses.push(newWF)
+      else
+        index = gear.ttBonuses.indexOf(oldTTWF)
+        gear.ttBonuses[index] = oldTTWF + diff
 
     $("#bonuses").removeClass("visible")
     Shadowcraft.update()
