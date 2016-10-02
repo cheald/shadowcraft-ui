@@ -103,7 +103,12 @@ class Character
         # places when it comes to base ilevels and ilevel increases. Unfortunately,
         # we also have to save the original set because otherwise tooltips break.
         db_item = Item.where(:remote_id => item['id'].to_i, :contexts => item['context']).first
-        base_item_level = db_item.item_level
+        if not db_item.nil?
+          base_item_level = db_item.item_level
+          Rails.logger.debug "Can't find item %d/%s in database" % [item['id'].to_i,item['context']]
+        else
+          base_item_level = 0
+        end
         item['base_ilvl'] = base_item_level
         item['ttBonuses'] = item['bonuses'].clone
 
