@@ -84,7 +84,7 @@ class Character
         # don't do this for artifact weapons. for some reason they come in the character data
         # with a "scenario-normal" context, but the item data doesn't have that context on
         # them.
-        if !Item::ARTIFACT_WEAPONS.include? item['id'].to_i
+        if not Item::ARTIFACT_WEAPONS.include? item['id'].to_i
           Item.check_item_for_import(item['id'].to_i, item['context'])
         end
 
@@ -102,7 +102,12 @@ class Character
         # too while we're at it. This is because Blizzard's API is broken in a lot of
         # places when it comes to base ilevels and ilevel increases. Unfortunately,
         # we also have to save the original set because otherwise tooltips break.
-        db_item = Item.where(:remote_id => item['id'].to_i, :contexts => item['context']).first
+        if not Item::ORDER_HALL_SET.include? item['id'].to_i
+          db_item = Item.where(:remote_id => item['id'].to_i, :contexts => item['context']).first
+        else
+          db_item = Item.where(:remote_id => item['id'].to_i).first
+        end
+
         if not db_item.nil?
           base_item_level = db_item.item_level
           Rails.logger.debug "Can't find item %d/%s in database" % [item['id'].to_i,item['context']]
