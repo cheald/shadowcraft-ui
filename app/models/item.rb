@@ -47,6 +47,7 @@ class Item
   TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 597, 598, 599, 619, 620, 666, 667, 668, 669]
 
   ARTIFACT_WEAPONS = [128476, 128479, 128870, 128869, 128872, 134552]
+  ORDER_HALL_SET = [139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746]
   MIN_ILVL = 800
 
   # This is the set of bonus IDs that should be on basically every legion item, but the API
@@ -144,6 +145,7 @@ class Item
 
     # Artifact weapons
     item_ids += ARTIFACT_WEAPONS
+    item_ids += ORDER_HALL_SET
 
     # remove duplicates.
     item_ids = item_ids.uniq
@@ -260,7 +262,7 @@ class Item
     json_data = Array.new
     begin
       base_json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {:bl=>0}
-      if base_json['itemLevel'].to_i >= MIN_ILVL or ARTIFACT_WEAPONS.include? id
+      if base_json['itemLevel'].to_i >= MIN_ILVL or ARTIFACT_WEAPONS.include? id or ORDER_HALL_SET.include? id
         json_data.push(base_json)
       else
         Rails.logger.debug base_json['itemLevel']
@@ -321,7 +323,7 @@ class Item
         # Flush anything that isn't above the minimum ilvl down the toilet. This happens
         # because timewalking items get added to the list, and we try to load the base
         # version of the item too.
-        next if json['itemLevel'] < MIN_ILVL and not ARTIFACT_WEAPONS.include? id
+        next if json['itemLevel'] < MIN_ILVL and not ARTIFACT_WEAPONS.include? id and not ORDER_HALL_SET.include? id
         json_data.push(json)
 
         # Same thing here with the bonus IDs. Gotta load all of those here too.
