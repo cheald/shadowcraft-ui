@@ -416,7 +416,6 @@ class ShadowcraftComputation:
             s[1] + agi_bonus, # AGI
             0,
             0,
-            0,
             s[2], # AP
             s[3], # Crit
             s[4], # Haste
