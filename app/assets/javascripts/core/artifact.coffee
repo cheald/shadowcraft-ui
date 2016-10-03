@@ -344,15 +344,24 @@ class ShadowcraftArtifact
     if trait.children(".icon").hasClass("inactive")
       return
 
+    # don't do anything if the artifact_data doesn't have an entry for this trait
+    # because it means that the value for it is already zero.
+    if !artifact_data.traits.hasOwnProperty(spell_id)
+      return
+
     # don't allow the user to decrease the value of a trait past the levels
     # contributed by any attached relics.
-    if trait.attr("relic_power")?
-      min_level = parseInt(trait.attr("relic_power"))
+    relic_power = 0
+    if trait.data("relic-power")?
+      relic_power = parseInt(trait.data("relic-power"))
+
+    if (relic_power > 0)
+      min_level = relic_power
     else
       min_level = 0
 
     # if we're already at the minimum for this trait, don't do anything else
-    if (artifact_data.traits[spell_id] == min_level)
+    if (artifact_data.traits[spell_id]+relic_power == min_level)
       return
 
     # Decrease the level on this trait and update the display
