@@ -11,6 +11,7 @@ namespace :backend do
     on roles(:backend) do
       within fetch(:engine_path) do
         execute :git, "pull"
+        execute :git, "rev-parse HEAD > REVISION"
       end
     end
   end
