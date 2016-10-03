@@ -44,7 +44,8 @@ class ShadowcraftApp
       if confirm("An unrecoverable error has occurred. Reset data and reload?")
         $.jStorage.flush()
         window.location.hash = ""
-        location.reload(true)
+        newpath = window.location.href + "/refresh"
+        location.assign(newpath)
       else
         throw error
 
