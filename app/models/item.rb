@@ -285,7 +285,13 @@ class Item
     # data. Only load one of them and reset the context below to something else. This
     # greatly reduces the amount of data we load for these items. Again, this is probably
     # a bug in the API data.
-    contexts.delete_if { |context| context.start_with?('world-quest-') and !context.end_with?('-7') }
+    if (contexts.find { |context| context.start_with?('world-quest-') })
+      wq_contexts = contexts.clone()
+      wq_contexts.keep_if { |context| context.start_with?('world-quest-') }
+      wq_contexts.sort!
+      contexts.delete_if { |context| context.start_with?('world-quest-') }
+      contexts.push wq_contexts[-1]
+    end
 
     # Next, look at the chance bonus lists that accompany the item. This bonus list is
     # the things that can be applied to an item, such as extra titles (warforged, crafting
