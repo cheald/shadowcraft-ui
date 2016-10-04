@@ -164,7 +164,7 @@ class ShadowcraftArtifact
       unless _.isEmpty(artifact_data.relics[i])
         relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i].id]
         spell = relic.ts[Shadowcraft.Data.activeSpec].spell
-        trait = $("#artifactframe .trait[data-tooltip-id='#{spell}'")
+        trait = $("#artifactframe .trait[data-tooltip-id='#{spell}']")
         current = trait.data('relic-power')
         current += relic.ts[Shadowcraft.Data.activeSpec].rank
         trait.data('relic-power', current)
@@ -233,7 +233,7 @@ class ShadowcraftArtifact
             break
         # TODO: should this apply multiple relic outlines to a single trait
         # or just the last one that it encounters?
-        trait = $("#artifactframe .trait[data-tooltip-id='#{relicTrait.spell}'")
+        trait = $("#artifactframe .trait[data-tooltip-id='#{relicTrait.spell}']")
         trait.children(".relic").attr("src", "/images/artifacts/relic-"+type+".png")
         trait.children(".relic").removeClass("inactive")
 
