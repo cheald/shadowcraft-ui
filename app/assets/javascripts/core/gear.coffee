@@ -94,6 +94,8 @@ class ShadowcraftGear
 
   @initialized = false
 
+  # Determines which value in a row of the rand prop points table to pull for a certain
+  # slot.
   getRandPropRow = (slotIndex) ->
     slotIndex = parseInt(slotIndex, 10)
     switch slotIndex
@@ -114,20 +116,6 @@ class ShadowcraftGear
       Shadowcraft.Gear.sumSlot(gear, offsets, facet)
     return offsets
 
-  # Generates a map of all of the stats for an item, summing each of the sources
-  # together.
-  sumItem = (s, i, key='stats', ilvl_difference=0) ->
-    key ||= 'stats'
-    if (ilvl_difference != 0)
-      newstats = recalculateStatsDiff(i[key], ilvl_difference)
-    else
-      newstats = i[key]
-
-    for stat of newstats
-      s[stat] ||= 0
-      s[stat] += Math.round(newstats[stat])
-    null
-
   # Gets the total EP for a block of stats
   getEPForStatBlock = (stats, ignore) ->
     total = 0
@@ -139,7 +127,7 @@ class ShadowcraftGear
   getEP = (item, slot=-1, ignore=[]) ->
 
     stats = {}
-    sumItem(stats, item)
+    sumItem(stats, item['stats'])
 
     # Add all of the EP for all of the stats
     total = getEPForStatBlock(stats, ignore)
@@ -188,6 +176,36 @@ class ShadowcraftGear
 
     total
 
+  sumGearItem = (output, gear, ilvl_diff=0) ->
+    item = getItem(gear.id, gear.base_ilvl)
+    if (ilvl_diff == 0)
+      sumItem(output, item['stats'], gear.item_level-item.ilvl)
+    else
+      sumItem
+
+    if gear.bonuses
+      for id in gear.bonuses
+        rand_val = 0
+        rand_stat = ""
+        for entry in Shadowcraft.ServerData.ITEM_BONUSES[id]
+          if entry.type == 2
+            rand_val = Math.round(entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][1+getRandPropRow(gear.slot)])
+            rand_stat = entry.val1
+
+  # Sums all of the stats passed in into a second map of stats, recalculating for
+  # item level difference if needed.
+  sumItem = (output, input_stats, ilvl_difference=0) ->
+
+    if (ilvl_difference != 0)
+      newstats = recalculateStatsDiff(input_stats, ilvl_difference)
+    else
+      newstats = input_stats
+
+    for stat of newstats
+      output[stat] ||= 0
+      output[stat] += Math.round(newstats[stat])
+    null
+
   # Generates a stat block for a slot. This method can be used to limit the stats to
   # a specific type of data by passing a facet to the method, or to return all of the
   # stats for the item including normal stats, gems, and enchants.
@@ -201,19 +219,19 @@ class ShadowcraftGear
     if (facets & FACETS.ITEM) == FACETS.ITEM
       # if the item level is different between the gear and the item, we need to pass
       # the difference so the stats are adjusted accordingly.
-      sumItem(out, item, 'stats', gear.item_level-item.ilvl)
+      sumGearItem(out, gear)
 
     if (facets & FACETS.GEMS) == FACETS.GEMS
       for gid in gear.gems
         if gid and gid > 0
           gem = Shadowcraft.ServerData.GEM_LOOKUP[gid]
-          sumItem(out, gem) if(gem)
+          sumItem(out, gem['stats']) if(gem)
 
     if (facets & FACETS.ENCHANT) == FACETS.ENCHANT
       enchant_id = gear.enchant
       if enchant_id and enchant_id > 0
         enchant = Shadowcraft.ServerData.ENCHANT_LOOKUP[enchant_id]
-        sumItem(out, enchant) if enchant
+        sumItem(out, enchant['stats']) if enchant
 
   # Returns the complete stats for all of the items added together for a character.
   # Facets can be used to limit the data to the item, gems, or enchants.
@@ -223,6 +241,10 @@ class ShadowcraftGear
 
     for si, i in SLOT_ORDER
       Shadowcraft.Gear.sumSlot(data.gear[si], stats, null)
+
+    # Add the base character agility and multiply by the bonus we get for wearing
+    # all leather gear. Finally, round to an even number.
+    stats['agility'] = Math.round((stats['agility'] + 9030) * 1.05)
 
     @statSum = stats
     return stats
@@ -965,10 +987,13 @@ class ShadowcraftGear
     Shadowcraft.Data.activeSpec == "a"
 
   recalculateStatsDiff = (original, ilvl_difference) ->
-    multiplier =  1.0 / Math.pow(1.15, (ilvl_difference / -15.0))
+    multiplier =  1.0 / Math.pow(1.15, (ilvl_difference.toFixed(2) / -15.0))
+    secondary_mult = Math.pow(1.0037444020662509239443726693104, ilvl_difference.toFixed(2))
     stats = {}
     for k,v of original
       stats[k] = v * multiplier
+      if k != 'agility'
+        stats[k] = v * secondary_mult
     return stats
 
   recalculateStats = (original, old_ilvl, new_ilvl) ->
@@ -1313,7 +1338,7 @@ class ShadowcraftGear
     # Calculate this here so that if the item supports WF/TF we can use
     # the value to display the upgrade difference.
     gear_stats = []
-    sumItem(gear_stats, item)
+    sumGearItem(gear_stats, gear)
     base_item_ep = getEPForStatBlock(gear_stats)
 
     # Check if one of the bonus IDs currently on the gear is a WF/TF
@@ -1392,7 +1417,7 @@ class ShadowcraftGear
         group['bonusId'] = ilvl_bonus+1472
         group['active'] = (current_tf_id == group['bonusId'])
         temp_stats = []
-        sumItem(temp_stats, item, 'stats', ilvl_bonus-current_tf_value)
+        sumItem(temp_stats, item['stats'], ilvl_bonus-current_tf_value)
         temp_ep = getEPForStatBlock(temp_stats)
         group.ep = (temp_ep-base_item_ep).toFixed(2)
         entry = {}
@@ -1418,7 +1443,7 @@ class ShadowcraftGear
         group['ep'] = "0.00"
       else
         temp_stats = []
-        sumItem(temp_stats, item, 'stats', -current_tf_value)
+        sumItem(temp_stats, item['stats'], -current_tf_value)
         temp_ep = getEPForStatBlock(temp_stats)
         group['ep'] = (temp_ep-base_item_ep).toFixed(2)
       group['entries'] = []

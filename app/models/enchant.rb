@@ -41,7 +41,7 @@ class Enchant
     # Cloak
     Enchant.create({
                      :spell_id => 5432,
-                     :stats => {'agility' => 350},
+                     :stats => {'agility' => 150},
                      :icon => 'inv_enchant_formulagood_01',
                      :item_name => 'Enchant Cloak - Word of Agility',
                      :equip_location => 16,
@@ -50,7 +50,7 @@ class Enchant
 
     Enchant.create({
                      :spell_id => 5435,
-                     :stats => {'agility' => 700},
+                     :stats => {'agility' => 200},
                      :icon => 'inv_enchant_formulasuperior_01',
                      :item_name => 'Enchant Cloak - Binding of Agility',
                      :equip_location => 16,
@@ -60,7 +60,7 @@ class Enchant
     # Ring
     Enchant.create({
                      :spell_id => 5423,
-                     :stats => {'crit' => 350},
+                     :stats => {'crit' => 150},
                      :icon => 'inv_enchant_formulagood_01',
                      :item_name => 'Enchant Ring - Word of Critical Strike',
                      :equip_location => 11,
@@ -69,7 +69,7 @@ class Enchant
 
     Enchant.create({
                      :spell_id => 5424,
-                     :stats => {'haste' => 350},
+                     :stats => {'haste' => 150},
                      :icon => 'inv_enchant_formulagood_01',
                      :item_name => 'Enchant Ring - Word of Haste',
                      :equip_location => 11,
@@ -78,7 +78,7 @@ class Enchant
 
     Enchant.create({
                      :spell_id => 5425,
-                     :stats => {'mastery' => 350},
+                     :stats => {'mastery' => 150},
                      :icon => 'inv_enchant_formulagood_01',
                      :item_name => 'Enchant Ring - Word of Mastery',
                      :equip_location => 11,
@@ -87,7 +87,7 @@ class Enchant
 
     Enchant.create({
                      :spell_id => 5426,
-                     :stats => {'versatility' => 350},
+                     :stats => {'versatility' => 150},
                      :icon => 'inv_enchant_formulagood_01',
                      :item_name => 'Enchant Ring - Word of Versatility',
                      :equip_location => 11,
@@ -96,7 +96,7 @@ class Enchant
 
     Enchant.create({
                      :spell_id => 5427,
-                     :stats => {'crit' => 700},
+                     :stats => {'crit' => 200},
                      :icon => 'inv_enchant_formulasuperior_01',
                      :item_name => 'Enchant Ring - Binding of Critical Strike',
                      :equip_location => 11,
@@ -105,7 +105,7 @@ class Enchant
 
     Enchant.create({
                      :spell_id => 5428,
-                     :stats => {'haste' => 700},
+                     :stats => {'haste' => 200},
                      :icon => 'inv_enchant_formulasuperior_01',
                      :item_name => 'Enchant Ring - Binding of Haste',
                      :equip_location => 11,
@@ -114,7 +114,7 @@ class Enchant
 
     Enchant.create({
                      :spell_id => 5429,
-                     :stats => {'mastery' => 700},
+                     :stats => {'mastery' => 200},
                      :icon => 'inv_enchant_formulasuperior_01',
                      :item_name => 'Enchant Ring - Binding of Mastery',
                      :equip_location => 11,
@@ -123,7 +123,7 @@ class Enchant
 
     Enchant.create({
                      :spell_id => 5430,
-                     :stats => {'versatility' => 700},
+                     :stats => {'versatility' => 200},
                      :icon => 'inv_enchant_formulasuperior_01',
                      :item_name => 'Enchant Ring - Binding of Versatility',
                      :equip_location => 128544,
