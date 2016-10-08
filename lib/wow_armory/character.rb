@@ -133,7 +133,12 @@ module WowArmory
       @artifact = {}
       @artifact['traits'] = []
       @json['items']['mainHand']['artifactTraits'].each do |trait|
-        trait['id'] = Character.artifact_ids[trait['id']]
+        # special casing my way around problems in the DBC data
+        if trait['id'] != 859
+          trait['id'] = Character.artifact_ids[trait['id']]
+        else
+          trait['id'] = 197241
+        end
         @artifact['traits'].push trait
       end
 
@@ -149,7 +154,7 @@ module WowArmory
     end
 
     def self.artifact_ids
-      # The header on the AritfactPowerRank data looks like (as of 7.0.3):
+      # The header on the ArtifactPowerRank data looks like (as of 7.0.3):
       # id,id_spell,value,id_power,f5,index
       # We're mapping between id_power and id_spell
       @@artifact_ids ||= Hash.new.tap do |hash|
