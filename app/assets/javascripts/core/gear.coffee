@@ -654,18 +654,15 @@ class ShadowcraftGear
       for i, slotIndex in slotSet
         data.gear[i] ||= {}
         gear = data.gear[i]
-        if gear.bonuses == undefined
-          continue
         item = getItem(gear.id, gear.base_ilvl)
-        if not item?
-          continue
         gems = []
         sockets = []
         bonuses = null
         enchant = EnchantLookup[gear.enchant]
         enchantable = null
         bonusable = null
-        if item
+        opt = {}
+        if item?
           enchantable = gear.id not in ShadowcraftGear.ARTIFACTS && EnchantSlots[item.equip_location]? && getApplicableEnchants(i, item).length > 0
 
           bonus_keys = _.keys(Shadowcraft.ServerData.ITEM_BONUSES)
@@ -720,49 +717,48 @@ class ShadowcraftGear
             if gem != 0 and gem != null
               gems[gems.length] = {gem: Gems[gem]}
 
-        if hasSocket(gear) and gems.length == 0
-          gem = {gem: {slot: "Prismatic"}}
-          gems.push gem
+          if hasSocket(gear) and gems.length == 0
+            gem = {gem: {slot: "Prismatic"}}
+            gems.push gem
 
-        # If there wasn't a description for the enchant just use the name instead.
-        if enchant and enchant.desc == ""
-          enchant.desc = enchant.name
+          # If there wasn't a description for the enchant just use the name instead.
+          if enchant and enchant.desc == ""
+            enchant.desc = enchant.name
 
-        # Join the list of gems together so they all display correctly.
-        ttgems = gear.gems.join(":")
+          # Join the list of gems together so they all display correctly.
+          ttgems = gear.gems.join(":")
 
-        opt = {}
-        opt.item = item
-        opt.tag = tag
-        opt.identifier = item.id + ":" + item.ilvl + ":" + (item.suffix || 0) if item
-        opt.ilvl = gear.item_level
-        opt.ttid = item.id if item
-        opt.quality = if gear.quality then gear.quality else item.quality
-        opt.ttrand = if item then item.suffix else null
-        opt.ttupgd = if upgrade then upgrade['curr_level'] else null
-        opt.ttbonus = if gear.ttBonuses then gear.ttBonuses.join(":") else null
-        opt.ttgems = if ttgems != "0:0:0" then ttgems else null
-        opt.ep = if item then getEP(item, i).toFixed(1) else 0
-        opt.slot = i + ''
-        opt.bonusable = bonusable
-        opt.socketbonus = bonuses
-        opt.enchantable = enchantable
-        opt.enchant = enchant
-        opt.upgradable = if item then item.upgradable else false
-        opt.upgrade = upgrade
-        opt.display_ilvl = false
+          opt.item = item
+          opt.tag = tag
+          opt.identifier = item.id + ":" + item.ilvl + ":" + (item.suffix || 0) if item
+          opt.ilvl = gear.item_level
+          opt.ttid = item.id if item
+          opt.quality = if gear.quality then gear.quality else item.quality
+          opt.ttrand = if item then item.suffix else null
+          opt.ttupgd = if upgrade then upgrade['curr_level'] else null
+          opt.ttbonus = if gear.ttBonuses then gear.ttBonuses.join(":") else null
+          opt.ttgems = if ttgems != "0:0:0" then ttgems else null
+          opt.ep = if item then getEP(item, i).toFixed(1) else 0
+          opt.bonusable = bonusable
+          opt.socketbonus = bonuses
+          opt.enchantable = enchantable
+          opt.enchant = enchant
+          opt.upgradable = if item then item.upgradable else false
+          opt.upgrade = upgrade
+          opt.display_ilvl = false
 
-        if gear.id not in ShadowcraftGear.ARTIFACTS
-          opt.gems = gems
-        else
-          opt.gems = null
+          if gear.id not in ShadowcraftGear.ARTIFACTS
+            opt.gems = gems
+          else
+            opt.gems = null
 
-        if item
           opt.lock = true
           if gear.locked
             opt.lock_class = "lock_on"
           else
             opt.lock_class = "lock_off"
+
+        opt.slot = i + ''
         buffer += Templates.itemSlot(opt)
 
       $slots.get(ssi).innerHTML = buffer
@@ -1166,7 +1162,7 @@ class ShadowcraftGear
           tags.push ctx.tag
       tags.sort()
       tags = _.uniq(tags, true)
-      
+
       buffer += Templates.itemSlot(
         item: l
         tag: l.tag
