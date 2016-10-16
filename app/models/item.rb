@@ -8,11 +8,10 @@ class Item
   field :properties, :type => Hash
   field :contexts, :type => Array, :default => []
   field :context_map, :type => Hash
-  field :is_gem, :type => Boolean
-  field :is_glyph, :type => Boolean
+  field :is_gem, :type => Boolean, :default => false
 
   index({remote_id: 1, contexts: 1}, {unique: true})
-  index({remote_id: 1, item_level: 1, is_gem: 1, is_glyph: 1}, {unique: true})
+  index({remote_id: 1, item_level: 1, is_gem: 1}, {unique: true})
 
   attr_accessor :item_name_override
 
@@ -110,6 +109,7 @@ class Item
   def self.populate(prefix = 'www', source = 'wowapi')
     populate_gear(prefix, source)
     populate_gems(prefix, source)
+    populate_relics()
   end
 
   def self.populate_gear(prefix = 'www', source = 'wowapi')
@@ -204,6 +204,35 @@ class Item
             db_item.save!
           end
         end
+
+      rescue Exception => e
+        Rails.logger.debug id
+        Rails.logger.debug e.message
+      end
+    end
+  end
+
+  def self.populate_relics
+    item_ids = []
+
+    # In this order: Iron, Blood, Shadow, Fel, Storm
+    item_ids += get_ids_from_wowhead_by_type(-8)
+    item_ids += get_ids_from_wowhead_by_type(-9)
+    item_ids += get_ids_from_wowhead_by_type(-10)
+    item_ids += get_ids_from_wowhead_by_type(-11)
+    item_ids += get_ids_from_wowhead_by_type(-17)
+    item_ids = item_ids.uniq
+
+    Rails.logger.debug "importing now #{item_ids.length} relics"
+    pos = 0
+    item_ids.each do |id|
+      begin
+        pos = pos + 1
+        Rails.logger.debug "relic #{pos} of #{item_ids.length}" if pos % 10 == 0
+        Rails.logger.debug id
+
+        # Use the normal item importer to import the base data for the item
+        import id
 
       rescue Exception => e
         Rails.logger.debug id
@@ -447,6 +476,14 @@ class Item
 
   # Retrieves a set of item IDs from wowhead based on an explicit URL
   def self.get_ids_from_wowhead(url)
+    doc = open(url, 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36').read
+    ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i
+    ids
+  end
+
+  # Retrieves a set of item IDs from wowhead based on type. Used for loading relic IDs.
+  def self.get_ids_from_wowhead_by_type(type)
+    url = "http://legion.wowhead.com/items=3?filter=ty=#{type};cr=166;crs=7;crv=0"
     doc = open(url, 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36').read
     ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i
     ids

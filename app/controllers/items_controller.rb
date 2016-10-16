@@ -73,6 +73,8 @@ class ItemsController < ApplicationController
     @relics = Relic.all
     @artifacts = Artifact.all
 
+    @relic_items = Item.where(:is_gem => true, :item_level.gt => 87, :"properties.gem_slot".ne => "Prismatic").all
+
     @item_bonuses = WowArmory::Item.item_bonuses
     @item_descriptions = WowArmory::Item.item_name_description
     @rand_prop_points = rand_prop_points

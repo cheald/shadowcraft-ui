@@ -176,7 +176,7 @@ class Character
       relic_array = [{},{},{}]
       orig_artifact_data['relics'].each do |relic|
         relic_array[relic['socket']] = relic.clone
-        relic_array[relic['socket']].delete("socket")
+        relic_array[relic['socket']].delete('socket')
 
         # look up the relic in the db
         r = Relic.find_by(:remote_id => relic['id'])

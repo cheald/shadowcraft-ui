@@ -308,6 +308,7 @@ class ShadowcraftGear
     gem.requires?.profession? and gem.requires.profession == profession
 
   canUseGem = (gem) ->
+    return false if gem.slot != "Prismatic"
     if gem.requires?.profession?
       return false if isProfessionalGem(gem, 'jewelcrafting')
     true
@@ -653,7 +654,11 @@ class ShadowcraftGear
       for i, slotIndex in slotSet
         data.gear[i] ||= {}
         gear = data.gear[i]
+        if gear.bonuses == undefined
+          continue
         item = getItem(gear.id, gear.base_ilvl)
+        if not item?
+          continue
         gems = []
         sockets = []
         bonuses = null
@@ -1289,7 +1294,7 @@ class ShadowcraftGear
 
       usedNames[gem.name] = gem.id
       continue if gem.name.indexOf("Perfect") == 0 and selected_gem_id != gem.id
-      continue unless canUseGem(gem, "Prismatic")
+      continue unless canUseGem(gem)
       max ||= gem.__ep
       gEP = gem.__ep
       desc = statsToDesc(gem)

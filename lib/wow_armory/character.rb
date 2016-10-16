@@ -149,6 +149,20 @@ module WowArmory
           'id' => relic['itemId'],
           'bonuses' => relic['bonusLists']
         }
+        
+        # Make another request to blizzard to get the item level for this relic, since the
+        # character data doesn't include enough information.
+        begin
+          params = {
+            :bl => relic['bonusLists'].join(',')
+          }
+          json = WowArmory::Document.fetch 'us', '/wow/item/%d' % relic['itemId'], params
+        rescue WowArmory::MissingDocument => e
+          Rails.logger.debug "import_blizzard failed fetch of #{id}: #{e.message}"
+          next
+        end
+        
+        r['ilvl'] = json['itemLevel']
         @artifact['relics'].push r
       end
     end

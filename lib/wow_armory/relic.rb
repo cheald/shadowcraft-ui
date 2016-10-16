@@ -58,7 +58,7 @@ module WowArmory
       type = tooltip_data.scan(/#E6CC80">(.*?) Artifact Relic/)[0]
       ilvl = tooltip_data.scan(/(\d*?) Item Levels/)[0]
 
-      @type = RELIC_TYPE_MAP[type[0]]
+      @type = type[0]
 
       if !ilvl.nil?
         @ilvl_increase = ilvl[0].to_i

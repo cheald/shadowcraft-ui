@@ -4,6 +4,7 @@
 - relic_json = @relics.as_json
 - talent_json = @talents.as_json
 - artifact_json = @artifacts.as_json
+- relic_item_json = @relic_items.as_json
 - cache_to File.join(Rails.root, "public", @filename) do
   :plain
     window.ShadowcraftData = {};
@@ -40,6 +41,7 @@
       R.ITEMS = #{raw item_json.to_json};
       R.ENCHANTS = #{raw enchant_json.to_json};
       R.RELICS = #{raw relic_json.to_json};
+      R.RELIC_ITEMS = #{raw relic_item_json.to_json};
       R.ARTIFACTS = #{raw artifact_json.to_json};
       R.TALENTS = #{raw @talents.to_json};
       R.SOCKET_BONUS_IDS = #{raw @socket_bonus_ids.to_json};
@@ -88,30 +90,6 @@
       for(var i = 0; i < R.GEMS.length; i++) {
         var g = R.GEMS[i];
         expandItem(g, gStatMap);
-        if(g.slot != "Meta" && g.slot != "Hydraulic" && g.slot != "Cogwheel")
-            g.Prismatic = true;
-        switch(g.slot) {
-          case "Blue":
-            g.Blue = true; break;
-          case "Purple":
-            g.Blue = true; g.Red = true; break;
-          case "Green":
-            g.Blue = true; g.Yellow = true; break;
-          case "Orange":
-            g.Red = true; g.Yellow = true; break;
-          case "Red":
-            g.Red = true; break;
-          case "Yellow":
-            g.Yellow = true; break;
-          case "Prismatic":
-            g.Red = true; g.Blue = true; g.Yellow = true; break;
-          case "Cogwheel":
-            g.Cogwheel = true; break;
-          case "Hydraulic":
-            g.Hydraulic = true; break;
-          case "Meta":
-            g.Meta = true; break;
-        }
         R.GEM_LOOKUP[g.id] = g;
       }
 
@@ -154,6 +132,17 @@
         R.SLOT_CHOICES[item.equip_location].push(item.identifier);
       }
       delete R.ITEMS;
+
+      R.RELIC_ITEM_LOOKUP = {}
+      for(var i = 0; i < R.RELIC_ITEMS.length; i++) {
+        var item = R.RELIC_ITEMS[i];
+        expandItem(item, null);
+        if (!(item.slot in R.RELIC_ITEM_LOOKUP)) {
+          R.RELIC_ITEM_LOOKUP[item.slot] = {}
+        }
+        item.identifier = item.id + ":" + item.ilvl;
+        R.RELIC_ITEM_LOOKUP[item.slot][item.identifier] = item;
+      }
 
       R.TALENT_LOOKUP = {};
       for(var talent = 0; talent < R.TALENTS.length; talent++) {

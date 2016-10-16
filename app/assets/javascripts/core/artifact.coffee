@@ -13,41 +13,49 @@ class ShadowcraftArtifact
       icon: "inv_knife_1h_artifactgarona_d_01"
       text: "The Kingslayers"
       main: 192759
-      relic1: "shadow"
-      relic2: "iron"
-      relic3: "blood"
+      relic1: "Shadow"
+      relic2: "Iron"
+      relic3: "Blood"
     "Z":
       icon: "inv_sword_1h_artifactskywall_d_01"
       text: "The Dreadblades"
       main: 202665
-      relic1: "blood"
-      relic2: "iron"
-      relic3: "storm"
+      relic1: "Blood"
+      relic2: "Iron"
+      relic3: "Storm"
     "b":
       icon: "inv_knife_1h_artifactfangs_d_01"
       text: "Fangs of the Devourer"
       main: 209782
-      relic1: "fel"
-      relic2: "shadow"
-      relic3: "fel"
+      relic1: "Fel"
+      relic2: "Shadow"
+      relic3: "Fel"
 
   WOWHEAD_SPEC_IDS =
     "a": 259
     "Z": 260
     "b": 261
 
-  RELIC_TYPE_MAP =
-    "iron": 0
-    "blood": 1
-    "shadow": 2
-    "fel": 3
-    "arcane": 4
-    "frost": 5
-    "fire": 6
-    "water": 7
-    "life": 8
-    "storm": 9
-    "holy": 10
+  RELIC_ILVL_MAPPING = {
+    805: 31,
+    810: 32,
+    815: 33,
+    820: 35,
+    825: 36,
+    830: 37,
+    835: 39,
+    840: 40,
+    845: 42,
+    850: 43,
+    855: 45,
+    860: 46,
+    865: 48,
+    870: 49,
+    875: 51,
+    880: 52,
+    885: 53,
+    890: 55
+  }
 
   # Stores which of the relic icons was clicked on. This is 0-2, but defaults
   # back to -1 after the click has been processed.
@@ -221,20 +229,18 @@ class ShadowcraftArtifact
       relicdiv = $("#relic"+(i+1))
       unless _.isEmpty(artifact_data.relics[i])
         relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i].id]
-        ilvl += relic.ii
+        relicItem = Shadowcraft.ServerData.GEM_LOOKUP[relic.id]
+        ilvl += RELIC_ILVL_MAPPING[artifact_data.relics[i].ilvl]
         relicTrait = relic.ts[Shadowcraft.Data.activeSpec]
-        button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relic.icon+".jpg")
+        button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relicItem.icon+".jpg")
         button.removeClass("inactive")
         relicdiv.data("tooltip-id", relic.id)
         relicdiv.data("tooltip-spec", WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec])
-        for key,val of RELIC_TYPE_MAP
-          if (val == relic.type)
-            type = key
-            break
+
         # TODO: should this apply multiple relic outlines to a single trait
         # or just the last one that it encounters?
         trait = $("#artifactframe .trait[data-tooltip-id='#{relicTrait.spell}']")
-        trait.children(".relic").attr("src", "/images/artifacts/relic-"+type+".png")
+        trait.children(".relic").attr("src", "/images/artifacts/relic-"+relic.type.toLowerCase()+".png")
         trait.children(".relic").removeClass("inactive")
 
         # Setting the gems in the items causes wowhead tooltips to automatically
@@ -400,15 +406,19 @@ class ShadowcraftArtifact
     if (!Shadowcraft.lastCalculation)
       return 0
 
-    activeSpec = Shadowcraft.Data.activeSpec
-    trait = relic.ts[activeSpec]
-    ep = trait.rank * Shadowcraft.lastCalculation.artifact_ranking[trait.spell]
+    # Look up this relic in the other list of relics that contains the trait data so
+    # we can calculate the EP associated with increasing that trait.
+    relic2 = (ShadowcraftData.RELICS.filter (r) -> r.id == relic.id)[0]
+    ep = 0
+    if relic2
+      trait = relic2.ts[Shadowcraft.Data.activeSpec]
+      ep = trait.rank * Shadowcraft.lastCalculation.artifact_ranking[trait.spell]
 
     # Calculate the difference for each stat and the EP gain/loss for those differences
     # TODO: really should make all of these consistent everywhere
     # TODO: also, multistrike doesn't exist in legion
     # TODO: this needs to take both weapons into account, not just one of them
-    newStats = getStatsForIlvl(baseIlvl+relic.ii)
+    newStats = getStatsForIlvl(baseIlvl+RELIC_ILVL_MAPPING[relic.ilvl])
     for stat of baseStats["stats"]
       diff = newStats["stats"][stat] - baseStats["stats"][stat]
       if (stat == "agility")
@@ -434,42 +444,34 @@ class ShadowcraftArtifact
     clicked_relic_slot = parseInt(/relic(\d+)/.exec(e.delegateTarget.id)[1])-1
     activeSpec = Shadowcraft.Data.activeSpec
 
-    # Grab the list of relics and filter them based on the type that
-    # was clicked.
-    RelicList = Shadowcraft.ServerData.RELICS.filter((relic) ->
-      return relic.type == RELIC_TYPE_MAP[relic_type]
-    )
-    data = Shadowcraft.Data
-
     # Get the stat information for the artifact weapon, potentially without the
     # currently applied relic, if there is one.
     currentRelic = artifact_data.relics[clicked_relic_slot]
     if _.isEmpty(currentRelic)
       baseIlvl = Shadowcraft.Data.gear[15].item_level
     else
-      r = (i for i in RelicList when i.id == currentRelic['id'])
-      baseIlvl = Shadowcraft.Data.gear[15].item_level-r.ii
+      baseIlvl = Shadowcraft.Data.gear[15].item_level-RELIC_ILVL_MAPPING[currentRelic.ilvl]
     baseArtifactStats = getStatsForIlvl(baseIlvl)
 
     # Generate EP values for all of the relics selected and then sort
     # them based on the EP values, highest EP first.
     max = 0
-    for relic in RelicList
+    relics = []
+    for k,relic of Shadowcraft.ServerData.RELIC_ITEM_LOOKUP[relic_type]
       relic.__ep = getRelicEP(relic, baseIlvl, baseArtifactStats)
       if relic.__ep > max
         max = relic.__ep
-    RelicList.sort((relic1, relic2) -> return (relic2.__ep - relic1.__ep))
+      relics.push relic
+    relics.sort((relic1, relic2) -> return (relic2.__ep - relic1.__ep))
 
     # Loop through and build up the HTML for the popup window
     buffer = ""
-    for relic in RelicList
-      desc = ""
-      if (relic.ii != -1)
-        desc += "+"+relic.ii+" Item Levels"
-      if (relic.ii != -1 && relic.ts[activeSpec].rank != -1)
+    for relic in relics
+      desc = "+" + RELIC_ILVL_MAPPING[relic.ilvl] + " Item Levels"
+      relic2 = (ShadowcraftData.RELICS.filter (r) -> r.id == relic.id)[0]
+      if relic2
         desc += " / "
-      if (relic.ts[activeSpec].rank != -1)
-        desc += "+"+relic.ts[activeSpec].rank+" Rank: "+relic.ts[activeSpec].name
+        desc += "+"+relic2.ts[activeSpec].rank+" Rank: "+relic2.ts[activeSpec].name
 
       buffer += Templates.itemSlot(
         item: relic
@@ -480,6 +482,7 @@ class ShadowcraftArtifact
         desc: desc
         percent: relic.__ep / max * 100
         ep: relic.__ep
+        display_ilvl: true
       )
 
     buffer += Templates.itemSlot(
@@ -493,9 +496,9 @@ class ShadowcraftArtifact
     # if there is one.
     $popupbody.get(0).innerHTML = buffer
     
-    if !_.isEmpty(currentRelic)
-      r = (i for i in RelicList when i.id == currentRelic['id'])
-      $popupbody.find(".slot[id='" + r.id + "']").addClass("active")
+#    if !_.isEmpty(currentRelic)
+#      r = (i for i in RelicList when i.id == currentRelic['id'])
+#      $popupbody.find(".slot[id='" + r.id + "']").addClass("active")
 
     showPopup($popup)
     false
