@@ -265,6 +265,8 @@ class ShadowcraftArtifact
 
     # Update the stored item level of the artifact weapons so that a
     # recalculation takes the relics into account.
+    # TODO: i'm not entirely sure we should do this anymore. I think we should be updating the
+    # ilvl on the gear item and letting gear.coffee sort out the stats when it recalculates.
     updateArtifactItem(Shadowcraft.Data.gear[15].id, oldIlvl, ilvl)
     updateArtifactItem(Shadowcraft.Data.gear[16].id, oldIlvl, ilvl)
 
@@ -362,7 +364,10 @@ class ShadowcraftArtifact
       # recalcuate and store
       multiplier =  1.0 / Math.pow(1.15, ((ilvl-750) / 15.0 * -1))
       for stat,value of stats
-        stats[stat] = Math.round(value * multiplier)
+        if stat == 'agility' || stat == 'stamina'
+          stats[stat] = Math.round(value * multiplier)
+        else
+          stats[stat] = Math.round(value * multiplier * ShadowcraftConstants.COMBAT_RATINGS_MULT_BY_ILVL[ilvl])
 
       artifact_ilvl_stats[ilvl] = {}
       artifact_ilvl_stats[ilvl]["stats"] = stats

@@ -59,7 +59,7 @@ class ShadowcraftGear
 
   # Determines which value in a row of the rand prop points table to pull for a certain
   # slot.
-  getRandPropRow = (slotIndex) ->
+  getRandPropEntry = (slotIndex) ->
     slotIndex = parseInt(slotIndex, 10)
     switch slotIndex
       when 0, 4, 6
@@ -141,19 +141,20 @@ class ShadowcraftGear
 
   sumGearItem = (output, gear, ilvl_diff=0) ->
     item = getItem(gear.id, gear.base_ilvl)
-    if (ilvl_diff == 0)
-      sumItem(output, item['stats'], gear.item_level-item.ilvl)
-    else
-      sumItem
+    item_stats = $.extend({}, item['stats'])
 
     if gear.bonuses
       for id in gear.bonuses
-        rand_val = 0
-        rand_stat = ""
         for entry in Shadowcraft.ServerData.ITEM_BONUSES[id]
           if entry.type == 2
-            rand_val = Math.round(entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][1+getRandPropRow(gear.slot)])
-            rand_stat = entry.val1
+            rand_val = Math.round(entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][1+getRandPropEntry(gear.slot)])
+            if (!(entry.val1 in item_stats))
+              item_stats[entry.val1] = 0
+            item_stats[entry.val1] += rand_val
+
+    if (ilvl_diff == 0)
+      ilvl_diff = gear.item_level-item.ilvl
+    sumItem(output, item_stats, ilvl_diff)
 
   # Sums all of the stats passed in into a second map of stats, recalculating for
   # item level difference if needed.
@@ -1353,7 +1354,7 @@ class ShadowcraftGear
             group['entries'].push entry
             subgroup = "suffixes"
           when 2 # tertiary stats
-            entry['val2'] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[item.ilvl][1 + getRandPropRow(slot)])
+            entry['val2'] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[item.ilvl][1 + getRandPropEntry(slot)])
             entry['val1'] = bonus_entry.val1
             group['entries'].push entry
             group.ep += getStatWeight(entry.val1, entry.val2)
