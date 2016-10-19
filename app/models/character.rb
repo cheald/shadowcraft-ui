@@ -95,57 +95,58 @@ class Character
           end
         end
 
-        # Don't do the rest of this bonus ID switching stuff for artifact weapons
-        next if Item::ARTIFACT_WEAPONS.include? item['id'].to_i
-
-        # This is dumb, but we have to fix a bunch of bonus IDs on the player's gear
-        # too while we're at it. This is because Blizzard's API is broken in a lot of
-        # places when it comes to base ilevels and ilevel increases. Unfortunately,
-        # we also have to save the original set because otherwise tooltips break.
-        if not Item::ORDER_HALL_SET.include? item['id'].to_i
-          db_item = Item.where(:remote_id => item['id'].to_i, :contexts => item['context']).first
+        if Item::ARTIFACT_WEAPONS.include? item['id'].to_i
+          item['base_ilvl'] = 750
         else
-          db_item = Item.where(:remote_id => item['id'].to_i).first
-        end
+          # This is dumb, but we have to fix a bunch of bonus IDs on the player's gear
+          # too while we're at it. This is because Blizzard's API is broken in a lot of
+          # places when it comes to base ilevels and ilevel increases. Unfortunately,
+          # we also have to save the original set because otherwise tooltips break.
+          if not Item::ORDER_HALL_SET.include? item['id'].to_i
+            db_item = Item.where(:remote_id => item['id'].to_i, :contexts => item['context']).first
+          else
+            db_item = Item.where(:remote_id => item['id'].to_i).first
+          end
 
-        if not db_item.nil?
-          base_item_level = db_item.item_level
-          Rails.logger.debug "Can't find item %d/%s in database" % [item['id'].to_i,item['context']]
-        else
-          base_item_level = 0
-        end
-        item['base_ilvl'] = base_item_level
-        item['ttBonuses'] = item['bonuses'].clone
+          if not db_item.nil?
+            base_item_level = db_item.item_level
+            Rails.logger.debug "Can't find item %d/%s in database" % [item['id'].to_i,item['context']]
+          else
+            base_item_level = 0
+          end
+          item['base_ilvl'] = base_item_level
+          item['ttBonuses'] = item['bonuses'].clone
 
-        # Now loop through the bonus IDs on the gear entry and make sure that the math works
-        # between the item level increases from bonus IDs and the base item level on the
-        # database item.
-        increase_id = 0
-        increase = 0
-        item['bonuses'].each do |bonus_id|
-          entries = WowArmory::Item.item_bonuses[bonus_id]
-          entries.each do |entry|
-            if entry[:type] == ITEM_BONUS_TYPES['ilvl_increase']
-              increase_id = bonus_id
-              increase = entry[:val1]
+          # Now loop through the bonus IDs on the gear entry and make sure that the math works
+          # between the item level increases from bonus IDs and the base item level on the
+          # database item.
+          increase_id = 0
+          increase = 0
+          item['bonuses'].each do |bonus_id|
+            entries = WowArmory::Item.item_bonuses[bonus_id]
+            entries.each do |entry|
+              if entry[:type] == ITEM_BONUS_TYPES['ilvl_increase']
+                increase_id = bonus_id
+                increase = entry[:val1]
+              end
             end
           end
-        end
 
-        next if increase_id == 0
+          next if increase_id == 0
 
-        if item['item_level'] != (base_item_level+increase)
-          actual_increase = item['item_level']-base_item_level
-          if actual_increase == 0
-            # This means that there shouldn't have been a item level increase here to begin
-            # with, and that one should be removed.
-            item['bonuses'] -= [increase_id]
-          else
-            # Otherwise we need to find what the right ID should have been and replace it.
-            # The IDs for ilvl increases go from 1372-1672 which mean (-100 to +200).
-            correct_id = 1472+actual_increase
-            index = item['bonuses'].index(increase_id)
-            item['bonuses'][index] = 1472+actual_increase
+          if item['item_level'] != (base_item_level+increase)
+            actual_increase = item['item_level']-base_item_level
+            if actual_increase == 0
+              # This means that there shouldn't have been a item level increase here to begin
+              # with, and that one should be removed.
+              item['bonuses'] -= [increase_id]
+            else
+              # Otherwise we need to find what the right ID should have been and replace it.
+              # The IDs for ilvl increases go from 1372-1672 which mean (-100 to +200).
+              correct_id = 1472+actual_increase
+              index = item['bonuses'].index(increase_id)
+              item['bonuses'][index] = 1472+actual_increase
+            end
           end
         end
       end

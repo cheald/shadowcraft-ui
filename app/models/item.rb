@@ -33,10 +33,10 @@ class Item
 
   # These are the bonus IDs for "base item levels". This generally means there are WF/TF
   # versions of the item.
-  BASE_ILEVEL_WHITELIST = [1726, 1727, 1798, 1799, 1801, 1805, 1806, 1807, 1824, 1825, 1826, 
-                           3379, 3394, 3395, 3396, 3397, 3399, 3410, 3411, 3412, 3413, 3414, 
+  BASE_ILEVEL_WHITELIST = [1726, 1727, 1798, 1799, 1801, 1805, 1806, 1807, 1824, 1825, 1826,
+                           3379, 3394, 3395, 3396, 3397, 3399, 3410, 3411, 3412, 3413, 3414,
                            3415, 3416, 3417, 3418, 3427, 3428, 3432, 3443, 3444, 3445, 3446]
-  
+
   BONUS_ID_WHITELIST = BASE_WHITELIST + BASE_ILEVEL_WHITELIST
 
   # For some reason the crafted items don't come with the "stage" bonus IDs in their
@@ -102,7 +102,7 @@ class Item
     if properties['chance_bonus_lists']
       json[:chance_bonus_lists] = properties['chance_bonus_lists']
     end
-    
+
     json
   end
 
@@ -196,11 +196,23 @@ class Item
           # done through a function since Ruby doesn't do pass-by-value, so we have to
           # repeat this hunk of code.
           db_item.properties = item.as_json.with_indifferent_access
-          puts db_item.properties
           db_item.is_gem = !db_item.properties['gem_slot'].blank?
           db_item.item_level = item.ilevel
+
+          # Gems from the armory are coming with incorrect stats. +375 gems should be +100
+          # and +700 gems should be +200.
+          db_item.properties['stats'].each do |key,value|
+            if value == 375
+              db_item.properties['stats'][key] = 100
+            elsif value == 625
+              db_item.properties['stats'][key] = 150
+            elsif value == 500
+              db_item.properties['stats'][key] = 200
+            end
+          end
+
           if db_item.new_record?
-            puts "new record, saving"
+            puts db_item.properties['name']
             db_item.save!
           end
         end
@@ -210,6 +222,7 @@ class Item
         Rails.logger.debug e.message
       end
     end
+    true
   end
 
   def self.populate_relics
@@ -239,6 +252,7 @@ class Item
         Rails.logger.debug e.message
       end
     end
+    true
   end
 
   # This method will directly import an item without checking for an existing
@@ -408,7 +422,7 @@ class Item
       if db_item.context_map.nil?
         db_item.context_map = {}
       end
-      
+
       # if the item doesn't have properties yet, create a new item from the wow
       # armory library and then merge that into this record and save it.
       if db_item.properties.nil?
@@ -445,7 +459,7 @@ class Item
       db_item.context_map[name] = context
       db_item.contexts.push(name)
       db_item.save!
-      
+
     end
   end
 
