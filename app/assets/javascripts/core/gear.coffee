@@ -459,7 +459,7 @@ class ShadowcraftGear
     for gem in copy
       continue if gem.requires? or gem.requires?.profession?
       gem.__color_ep = gem.__color_ep || getEP(gem)
-      if (gem["Red"] or gem["Yellow"] or gem["Blue"]) and gem.__color_ep and gem.__color_ep > 1
+      if (gem.slot == "Prismatic") and gem.__color_ep and gem.__color_ep > 1
         list.push gem
 
     list.sort (a, b) ->
