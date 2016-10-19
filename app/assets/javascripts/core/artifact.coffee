@@ -249,7 +249,8 @@ class ShadowcraftArtifact
           local_trait.children(".level").text(""+level+"/"+max_level)
           local_trait.data("tooltip-rank", level-1)
 
-      total_artifact_points += artifact_data.traits[local_spell_id]
+      if artifact_data.traits[local_spell_id]
+        total_artifact_points += artifact_data.traits[local_spell_id]
       return
     )
 
