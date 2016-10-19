@@ -17,39 +17,6 @@ class ShadowcraftGear
     5384: "mark_of_the_bleeding_hollow"
 
   LEGENDARY_RINGS=[118302, 118307, 124636]
-  @ARTIFACTS = [128476, 128479, 128872, 134552, 128869, 128870]
-  @ARTIFACT_SETS =
-    a:
-      mh: 128870
-      oh: 128869
-    Z:
-      mh: 128872
-      oh: 134552
-    b:
-      mh: 128476
-      oh: 128479
-
-  Sets =
-    T18:
-      ids: [124248, 124257, 124263, 124269, 124274]
-      bonuses: {4: "rogue_t18_4pc", 2: "rogue_t18_2pc"}
-    T18_LFR:
-      ids: [128130, 128121, 128125, 128054, 128131, 128137]
-      bonuses: {4: "rogue_t18_4pc_lfr"}
-    T19:
-      ids: [138326, 138329, 138332, 138335, 138338, 138371]
-      bonuses: {4: "rogue_t19_4pc", 2: "rogue_t19_2pc"}
-    ORDERHALL:
-      ids: [139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746]
-      bonuses: {8: "rogue_orderhall_8pc"}
-
-  # This is a list of the bonus IDs that mean "item level upgrade" for
-  # the warforged/titanforged support.
-  @WF_BONUS_IDS = [546..547]
-  Array::push.apply @WF_BONUS_IDS, [560..562]
-  Array::push.apply @WF_BONUS_IDS, [644,646,651,656]
-  Array::push.apply @WF_BONUS_IDS, [754..766]
-  Array::push.apply @WF_BONUS_IDS, [1477..1672]
 
   # Default weights for the DPS calculations. These get reset by calculation
   # passes through the engine.
@@ -64,29 +31,25 @@ class ShadowcraftGear
     strength: 1.05
 
   SLOT_INVTYPES =
-      0: 1 # head
-      1: 2 # neck
-      2: 3 # shoulder
-      14: 16 # back
-      4: 5 # chest
-      8: 9 # wrist
-      9: 10 # gloves
-      5: 6 # belt
-      6: 7 # legs
-      7: 8 # boots
-      10: 11 # ring1
-      11: 11 # ring2
-      12: 12 # trinket1
-      13: 12 # trinket2
-      15: "mainhand" # mainhand
-      16: "offhand" # offhand
+    0: 1 # head
+    1: 2 # neck
+    2: 3 # shoulder
+    14: 16 # back
+    4: 5 # chest
+    8: 9 # wrist
+    9: 10 # gloves
+    5: 6 # belt
+    6: 7 # legs
+    7: 8 # boots
+    10: 11 # ring1
+    11: 11 # ring2
+    12: 12 # trinket1
+    13: 12 # trinket2
+    15: "mainhand" # mainhand
+    16: "offhand" # offhand
 
   EP_PRE_REGEM = null
   EP_TOTAL = null
-
-  # This is the current maximum ilevel of items via WF/TF. This means that the WF/TF
-  # popup will only show entries up to this maximum amount.
-  CURRENT_MAX_ILVL = 895
 
   $slots = null
   $popupbody = null
@@ -376,7 +339,7 @@ class ShadowcraftGear
       gear = data.gear[slotIndex]
       continue unless gear
       continue if gear.locked
-      continue if gear.id in ShadowcraftGear.ARTIFACTS
+      continue if gear.id in ShadowcraftConstants.ARTIFACTS
 
       gem_offset = statOffset(gear, FACETS.GEMS)
 
@@ -542,10 +505,10 @@ class ShadowcraftGear
     oldTTWF = 1472
     newWF = 1472
     for bonus in currentBonuses
-      if bonus in ShadowcraftGear.WF_BONUS_IDS
+      if bonus in ShadowcraftConstants.WF_BONUS_IDS
         oldWF = bonus
     for bonus in gear.ttBonuses
-      if bonus in ShadowcraftGear.WF_BONUS_IDS
+      if bonus in ShadowcraftConstants.WF_BONUS_IDS
         oldTTWF = bonus
 
     checkedBonuses = []
@@ -574,7 +537,7 @@ class ShadowcraftGear
     if (!isNaN(gear.upgrade_level))
       gear.item_level += gear.upgrade_level * getUpgradeLevelSteps(item)
     for bonus in newBonuses
-      if bonus in ShadowcraftGear.WF_BONUS_IDS
+      if bonus in ShadowcraftConstants.WF_BONUS_IDS
         for entry in Shadowcraft.ServerData.ITEM_BONUSES[bonus]
           if entry.type == 1
             newWF = bonus
@@ -663,7 +626,7 @@ class ShadowcraftGear
         bonusable = null
         opt = {}
         if item?
-          enchantable = gear.id not in ShadowcraftGear.ARTIFACTS && EnchantSlots[item.equip_location]? && getApplicableEnchants(i, item).length > 0
+          enchantable = gear.id not in ShadowcraftConstants.ARTIFACTS && EnchantSlots[item.equip_location]? && getApplicableEnchants(i, item).length > 0
 
           bonus_keys = _.keys(Shadowcraft.ServerData.ITEM_BONUSES)
           tag = ""
@@ -747,7 +710,7 @@ class ShadowcraftGear
           opt.upgrade = upgrade
           opt.display_ilvl = false
 
-          if gear.id not in ShadowcraftGear.ARTIFACTS
+          if gear.id not in ShadowcraftConstants.ARTIFACTS
             opt.gems = gems
           else
             opt.gems = null
@@ -963,7 +926,7 @@ class ShadowcraftGear
 
   # Gets an item from the item lookup table based on item ID and base item level
   getItem = (itemId, base_ilvl) ->
-    if (itemId in ShadowcraftGear.ARTIFACTS)
+    if (itemId in ShadowcraftConstants.ARTIFACTS)
       item = Shadowcraft.Data.artifact_items[itemId]
     else
       arm = [itemId, base_ilvl]
@@ -1107,7 +1070,7 @@ class ShadowcraftGear
     epSort(GemList) # Needed for gemming recommendations
 
     setBonEP = {}
-    for set_name, set of Sets
+    for set_name, set of ShadowcraftConstants.SETS
       setCount = getEquippedSetCount(set.ids, equip_location)
       setBonEP[set_name] ||= 0
       setBonEP[set_name] += setBonusEP(set, setCount)
@@ -1115,7 +1078,7 @@ class ShadowcraftGear
     for l in loc
       # TODO variable might not be necessary anymore
       l.__setBonusEP = 0
-      for set_name, set of Sets
+      for set_name, set of ShadowcraftConstants.SETS
         if set.ids.indexOf(l.id) >= 0
           l.__setBonusEP += setBonEP[set_name]
 
@@ -1346,7 +1309,7 @@ class ShadowcraftGear
     current_tf_id = 0
     current_tf_value = 0
     for bonusId in currentBonuses
-      if bonusId in ShadowcraftGear.WF_BONUS_IDS
+      if bonusId in ShadowcraftConstants.WF_BONUS_IDS
         current_tf_id = bonusId
         for val in Shadowcraft.ServerData.ITEM_BONUSES[current_tf_id]
           if val.type == 1
@@ -1409,8 +1372,8 @@ class ShadowcraftGear
     # If we found an entry for a base item level, we need to generate a bunch of
     # entries for upgrades and insert them into the titanforged subgroup. Only do this
     # if the current maximum ilevel is less than the base ilevel of this item.
-    if wf_base != 0 and wf_base < CURRENT_MAX_ILVL
-      steps = ((CURRENT_MAX_ILVL - wf_base) / 5)
+    if wf_base != 0 and wf_base < ShadowcraftConstants.CURRENT_MAX_ILVL
+      steps = (ShadowcraftConstants.CURRENT_MAX_ILVL - wf_base) / 5
       for step in [1..steps]
         ilvl_bonus = step*5
         group = {}
@@ -1607,14 +1570,14 @@ class ShadowcraftGear
             item_id = parseInt(idparts[0])
             base_ilvl = parseInt(idparts[1])
 
-            if (slot == 15 or slot == 16) and item_id in ShadowcraftGear.ARTIFACTS
-              data.gear[15].id = ShadowcraftGear.ARTIFACT_SETS[Shadowcraft.Data.activeSpec].mh
+            if (slot == 15 or slot == 16) and item_id in ShadowcraftConstants.ARTIFACTS
+              data.gear[15].id = ShadowcraftConstants.ARTIFACT_SETS[Shadowcraft.Data.activeSpec].mh
               data.gear[15].item_level = parseInt(idparts[1])
               data.gear[15].context = ""
               data.gear[15].upgrade_level = 0
               data.gear[15].bonuses = []
               data.gear[15].enchant = 0
-              data.gear[16].id = ShadowcraftGear.ARTIFACT_SETS[Shadowcraft.Data.activeSpec].oh
+              data.gear[16].id = ShadowcraftConstants.ARTIFACT_SETS[Shadowcraft.Data.activeSpec].oh
               data.gear[16].item_level = parseInt(idparts[1])
               data.gear[16].context = ""
               data.gear[16].upgrade_level = 0

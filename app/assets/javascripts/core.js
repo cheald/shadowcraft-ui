@@ -1,5 +1,6 @@
 //= require core/app
 //= require core/utility
+//= require core/constants
 //= require core/templates
 //= require core/artifact_templates
 //= require core/backend

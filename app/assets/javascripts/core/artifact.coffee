@@ -31,32 +31,6 @@ class ShadowcraftArtifact
       relic2: "Shadow"
       relic3: "Fel"
 
-  WOWHEAD_SPEC_IDS =
-    "a": 259
-    "Z": 260
-    "b": 261
-
-  RELIC_ILVL_MAPPING = {
-    805: 31,
-    810: 32,
-    815: 33,
-    820: 35,
-    825: 36,
-    830: 37,
-    835: 39,
-    840: 40,
-    845: 42,
-    850: 43,
-    855: 45,
-    860: 46,
-    865: 48,
-    870: 49,
-    875: 51,
-    880: 52,
-    885: 53,
-    890: 55
-  }
-
   # Stores which of the relic icons was clicked on. This is 0-2, but defaults
   # back to -1 after the click has been processed.
   clicked_relic_slot = 0
@@ -87,7 +61,7 @@ class ShadowcraftArtifact
   updateArtifactItem = (id, oldIlvl, newIlvl) ->
     # if the item isn't an artifact weapon, just return here and don't do
     # anything. getStatsForIlvl would have thrown an exception anyways.
-    if id not in ShadowcraftGear.ARTIFACTS
+    if id not in ShadowcraftConstants.ARTIFACTS
       return
 
     ident = id+":750"
@@ -230,12 +204,12 @@ class ShadowcraftArtifact
       unless _.isEmpty(artifact_data.relics[i])
         relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i].id]
         relicItem = Shadowcraft.ServerData.GEM_LOOKUP[relic.id]
-        ilvl += RELIC_ILVL_MAPPING[artifact_data.relics[i].ilvl]
+        ilvl += ShadowcraftConstants.RELIC_ILVL_MAPPING[artifact_data.relics[i].ilvl]
         relicTrait = relic.ts[Shadowcraft.Data.activeSpec]
         button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relicItem.icon+".jpg")
         button.removeClass("inactive")
         relicdiv.data("tooltip-id", relic.id)
-        relicdiv.data("tooltip-spec", WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec])
+        relicdiv.data("tooltip-spec", ShadowcraftConstants.WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec])
 
         # TODO: should this apply multiple relic outlines to a single trait
         # or just the last one that it encounters?
@@ -418,7 +392,7 @@ class ShadowcraftArtifact
     # TODO: really should make all of these consistent everywhere
     # TODO: also, multistrike doesn't exist in legion
     # TODO: this needs to take both weapons into account, not just one of them
-    newStats = getStatsForIlvl(baseIlvl+RELIC_ILVL_MAPPING[relic.ilvl])
+    newStats = getStatsForIlvl(baseIlvl+ShadowcraftConstants.RELIC_ILVL_MAPPING[relic.ilvl])
     for stat of baseStats["stats"]
       diff = newStats["stats"][stat] - baseStats["stats"][stat]
       if (stat == "agility")
@@ -450,7 +424,7 @@ class ShadowcraftArtifact
     if _.isEmpty(currentRelic)
       baseIlvl = Shadowcraft.Data.gear[15].item_level
     else
-      baseIlvl = Shadowcraft.Data.gear[15].item_level-RELIC_ILVL_MAPPING[currentRelic.ilvl]
+      baseIlvl = Shadowcraft.Data.gear[15].item_level-ShadowcraftConstants.RELIC_ILVL_MAPPING[currentRelic.ilvl]
     baseArtifactStats = getStatsForIlvl(baseIlvl)
 
     # Generate EP values for all of the relics selected and then sort
@@ -467,7 +441,7 @@ class ShadowcraftArtifact
     # Loop through and build up the HTML for the popup window
     buffer = ""
     for relic in relics
-      desc = "+" + RELIC_ILVL_MAPPING[relic.ilvl] + " Item Levels"
+      desc = "+" + ShadowcraftConstants.RELIC_ILVL_MAPPING[relic.ilvl] + " Item Levels"
       relic2 = (ShadowcraftData.RELICS.filter (r) -> r.id == relic.id)[0]
       if relic2
         desc += " / "
@@ -477,7 +451,7 @@ class ShadowcraftArtifact
         item: relic
         gear: {}
         ttid: relic.id
-        ttspec: WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec]
+        ttspec: ShadowcraftConstants.WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec]
         search: escape(relic.name)
         desc: desc
         percent: relic.__ep / max * 100

@@ -1,5 +1,4 @@
 class ShadowcraftBackend
-  # WS_ENGINE   = "ws://#{window.location.hostname}:#{port}/engine"
 
   get_engine = ->
     switch Shadowcraft.Data.options.general.patch
@@ -72,7 +71,7 @@ class ShadowcraftBackend
     # Don't send artifact information if the character isn't holding two the artifact weapons
     # for their current spec.
     payload.art = {}
-    if (mh and oh and mh.id == ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].mh and oh.id == ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].oh)
+    if (mh and oh and mh.id == ShadowcraftConstants.ARTIFACT_SETS[data.activeSpec].mh and oh.id == ShadowcraftConstants.ARTIFACT_SETS[data.activeSpec].oh)
       payload.art = Shadowcraft.Artifact.getPayload()
 
     if mh?

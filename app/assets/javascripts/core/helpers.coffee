@@ -83,7 +83,7 @@ checkForWarnings = (section) ->
     # Warn items
     Shadowcraft.Console.remove(".items")
     for slotIndex, gear of data.gear
-      continue if !gear or _.isEmpty(gear) or gear.id in ShadowcraftGear.ARTIFACTS
+      continue if !gear or _.isEmpty(gear) or gear.id in ShadowcraftConstants.ARTIFACTS
       item = Shadowcraft.Gear.getItem(gear.id, gear.base_ilvl)
       continue unless item
       enchant = EnchantLookup[gear.enchant]
@@ -99,7 +99,7 @@ checkForWarnings = (section) ->
     # Warn artifact/relics might not work if not wearing complete set of artifact weapons
     mh_id = data.gear[15].id
     oh_id = data.gear[16].id
-    if mh_id != ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].mh or oh_id != ShadowcraftGear.ARTIFACT_SETS[data.activeSpec].oh
+    if mh_id != ShadowcraftConstants.ARTIFACT_SETS[data.activeSpec].mh or oh_id != ShadowcraftConstants.ARTIFACT_SETS[data.activeSpec].oh
       Shadowcraft.Console.warn({}, "One or more weapons do not match Artifact set for current spec.", "Relic selection may not function correctly.", "warn", "items")
 
 wait = (msg) ->
