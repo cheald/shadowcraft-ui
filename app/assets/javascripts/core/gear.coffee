@@ -1107,7 +1107,13 @@ class ShadowcraftGear
       ttid = l.id
       ttrand = if l.suffix? then l.suffix else ""
       ttupgd = if l.upgradable then l.upgrade_level else ""
-      ttbonus = if l.bonus_tree? then l.bonus_tree.join(":") else ""
+
+      ttbonus = ""
+      if l.ctxts
+        keys = Object.keys(l.ctxts)
+        if keys.length > 0
+          ttbonus = l.ctxts[keys[0]].defaultBonuses.join(":")
+
       if l.identifier == selected_id_ilvl
         bonus_trees = gear[slot].bonuses
         ttbonus = bonus_trees.join(":")

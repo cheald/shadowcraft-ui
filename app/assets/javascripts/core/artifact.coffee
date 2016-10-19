@@ -448,11 +448,18 @@ class ShadowcraftArtifact
         desc += " / "
         desc += "+"+relic2.ts[activeSpec].rank+" Rank: "+relic2.ts[activeSpec].name
 
+      ttbonus = ""
+      if relic.ctxts
+        keys = Object.keys(relic.ctxts)
+        if keys.length > 0
+          ttbonus = relic.ctxts[keys[0]].defaultBonuses.join(":")
+
       buffer += Templates.itemSlot(
         item: relic
         gear: {}
         ttid: relic.id
         ttspec: ShadowcraftConstants.WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec]
+        ttbonus: ttbonus
         search: escape(relic.name)
         desc: desc
         percent: relic.__ep / max * 100
