@@ -33,12 +33,20 @@ module WowArmory
     end
 
     # These fields shouldn't come across in the json data because they end up
-    # as duplicates in the mongo records.
+    # as duplicates in the mongo records. Also remove a bunch of fields that are
+    # meaningless for gems and relics.
     IGNORE_FIELDS = %i{id context ilevel bonus_tree tag}
+    IGNORE_FOR_GEMS = %i{socket_bonus sockets speed dps subclass armor_class upgradable chance_bonus_lists equip_location}
 
     def as_json(options = {})
-      {}.tap do |r|
-        ACCESSORS.map {|key| r[key] = self.send(key) if !IGNORE_FIELDS.include?(key) }
+      if gem_slot
+        {}.tap do |r|
+          ACCESSORS.map {|key| r[key] = self.send(key) if !IGNORE_FIELDS.include?(key) and !IGNORE_FOR_GEMS.include?(key) }
+        end
+      else
+        {}.tap do |r|
+          ACCESSORS.map {|key| r[key] = self.send(key) if !IGNORE_FIELDS.include?(key)}
+        end
       end
     end
 

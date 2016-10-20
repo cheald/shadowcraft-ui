@@ -129,7 +129,7 @@ class Item
     # epic items
     # TODO: no idea why we break this up into three parts. It's probably something
     # to avoid loading too many items from wowhead at once.
-    puts "Requesting rare items from wowhead..."
+    puts "Requesting epic items from wowhead..."
     puts "Item levels 801 to 850"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 801, 850)
     puts "Item levels 851 to 900"
@@ -305,12 +305,7 @@ class Item
     json_data = Array.new
     begin
       base_json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {:bl=>0}
-      if base_json['itemLevel'].to_i >= MIN_ILVL or ARTIFACT_WEAPONS.include? id or ORDER_HALL_SET.include? id
-        json_data.push(base_json)
-      else
-        Rails.logger.debug base_json['itemLevel']
-        Rails.logger.debug "skipped due to item level filter"
-      end
+      json_data.push(base_json)
     rescue WowArmory::MissingDocument => e
       Rails.logger.debug "import_blizzard failed fetch of #{id}: #{e.message}"
       return
@@ -372,7 +367,6 @@ class Item
         # Flush anything that isn't above the minimum ilvl down the toilet. This happens
         # because timewalking items get added to the list, and we try to load the base
         # version of the item too.
-        next if json['itemLevel'] < MIN_ILVL and not ARTIFACT_WEAPONS.include? id and not ORDER_HALL_SET.include? id
         json_data.push(json)
 
         # Same thing here with the bonus IDs. Gotta load all of those here too.
@@ -401,7 +395,11 @@ class Item
       end
     end
 
-    Rails.logger.debug "Loaded a total of #{json_data.length} json entries for this item"
+    current_total = json_data.length
+    json_data.delete_if {|x| x['itemLevel'] < MIN_ILVL and not ARTIFACT_WEAPONS.include? id and not ORDER_HALL_SET.include? id}
+    Rails.logger.debug "Rejected #{current_total-json_data.length} json entries due to item level filter"
+
+    Rails.logger.debug "Loading data from a total of #{json_data.length} json entries for this item"
 
     # Loop through the json data that was retrieved and process each in turn
     json_data.each do |json|
@@ -452,7 +450,7 @@ class Item
       # bonuses for lots and lots of items, which means we have no way to know whether
       # an item can have sockets or be warforged, etc. For non-trade-skill items, just
       # stick a set of bonuses on the item and be done with it.
-      if json['context'] != 'trade-skill'
+      if json['context'] != 'trade-skill' and !db_item.is_gem?
         db_item.properties['chance_bonus_lists'] |= CHANCE_BONUSES
       end
 
@@ -461,6 +459,7 @@ class Item
       db_item.save!
 
     end
+    true
   end
 
   # Trims a list of bonus IDs down to the set of IDs that we actually care about, like
