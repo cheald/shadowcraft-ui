@@ -278,6 +278,9 @@ class Character
     end
   rescue BSON::InvalidStringEncoding
     nil
+  rescue Exception => e
+    Rails.logger.debug e.message
+    nil
   end
 
   # Checks if the class loaded from armory is supported
