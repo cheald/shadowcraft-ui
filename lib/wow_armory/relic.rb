@@ -54,7 +54,7 @@ module WowArmory
         @icon = nil
       end
 
-      tooltip_data = doc.scan(/_\[#{id}\]\.tooltip_enus.*?;/)[0]
+      tooltip_data = doc.scan(/_\[#{id}\]\.tooltip_enus.*?$/)[0]
       type = tooltip_data.scan(/#E6CC80">(.*?) Artifact Relic/)[0]
       ilvl = tooltip_data.scan(/(\d*?) Item Levels/)[0]
 
