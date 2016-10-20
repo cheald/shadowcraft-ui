@@ -694,7 +694,7 @@ class ShadowcraftGear
 
           opt.item = item
           opt.tag = tag
-          opt.identifier = item.id + ":" + item.ilvl + ":" + (item.suffix || 0) if item
+          opt.identifier = item.id + ":" + item.ilvl if item
           opt.ilvl = gear.item_level
           opt.ttid = item.id if item
           opt.quality = if gear.quality then gear.quality else item.quality
@@ -1008,7 +1008,7 @@ class ShadowcraftGear
 
         if (hasUpgrade && equipped.upgrade_level > 0)
           clone = $.extend({}, l)
-          clone.identifier = ""+clone.id+":"+equipped.item_level+":0"
+          clone.identifier = ""+clone.id+":"+equipped.item_level
           clone.ilvl = equipped.item_level
           clone.bonus_tree = equipped.bonuses
           clone.tag = makeTag(equipped.bonuses)
@@ -1136,7 +1136,7 @@ class ShadowcraftGear
       buffer += Templates.itemSlot(
         item: l
         tag: l.tag
-        identifier: l.id + ":" + l.ilvl + ":" + (l.suffix || 0)
+        identifier: l.id + ":" + l.ilvl
         gear: {}
         gems: []
         upgradable: l.upgradable
@@ -1162,7 +1162,7 @@ class ShadowcraftGear
 
     $popupbody.get(0).innerHTML = buffer
 
-    selected = $popupbody.find(".slot[data-identifier='#{selected_id_ilvl}']")
+    selected = $popupbody.find(".slot[data-identifier='#{selected_id}']")
     selected.addClass("active")
     showPopup($popup)
     false

@@ -23,7 +23,8 @@ class ShadowcraftConstants
     875: 51,
     880: 52,
     885: 53,
-    890: 55
+    890: 55,
+    905: 58
   }
 
   # Taken from https://github.com/simulationcraft/simc/blob/legion-dev/engine/dbc/generated/sc_scale_data.inc

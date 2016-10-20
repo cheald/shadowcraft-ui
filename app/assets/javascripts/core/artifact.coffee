@@ -210,6 +210,7 @@ class ShadowcraftArtifact
         button.removeClass("inactive")
         relicdiv.data("tooltip-id", relic.id)
         relicdiv.data("tooltip-spec", ShadowcraftConstants.WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec])
+        relicdiv.data("tooltip-bonus", artifact_data.relics[i].bonuses.join(":"))
 
         # TODO: should this apply multiple relic outlines to a single trait
         # or just the last one that it encounters?
@@ -442,6 +443,24 @@ class ShadowcraftArtifact
       if relic.__ep > max
         max = relic.__ep
       relics.push relic
+
+    # Double check that the currently selected relic is in the list of relics. If not, create a new one so it
+    # shows up in the list (and can be selected).
+    r = (i for i in relics when i.id == currentRelic.id and i.ilvl == currentRelic.ilvl)
+    if r.length == 0
+      # Get the list of relics with the same ID and find the one with the closest item level. Sort them in reverse
+      # order so that we can grab the closest one from the beginning of the list.
+      r = (i for i in relics when i.id == currentRelic.id and i.ilvl <= currentRelic.ilvl)
+      r.sort((r1, r2) -> return (r2.ilvl-r1.ilvl))
+      r = r[0]
+      clone = $.extend({},r)
+      clone.ilvl = currentRelic.ilvl
+      clone.identifier = "#{currentRelic.id}:#{currentRelic.ilvl}"
+      clone.__ep = getRelicEP(clone, baseIlvl, baseArtifactStats)
+      if clone.__ep > max
+        max == clone.__ep
+      relics.push clone
+
     relics.sort((relic1, relic2) -> return (relic2.__ep - relic1.__ep))
 
     # Loop through and build up the HTML for the popup window
@@ -462,6 +481,7 @@ class ShadowcraftArtifact
       buffer += Templates.itemSlot(
         item: relic
         gear: {}
+        identifier: "#{relic.id}:#{relic.ilvl}"
         ttid: relic.id
         ttspec: ShadowcraftConstants.WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec]
         ttbonus: ttbonus
@@ -483,9 +503,10 @@ class ShadowcraftArtifact
     # if there is one.
     $popupbody.get(0).innerHTML = buffer
     
-#    if !_.isEmpty(currentRelic)
-#      r = (i for i in RelicList when i.id == currentRelic['id'])
-#      $popupbody.find(".slot[id='" + r.id + "']").addClass("active")
+    if !_.isEmpty(currentRelic)
+      r = (i for i in relics when i.id == currentRelic.id and i.ilvl == currentRelic.ilvl)
+      if r.length == 1
+        $popupbody.find(".slot[data-identifier='#{r[0].id}:#{r[0].ilvl}']").addClass("active")
 
     showPopup($popup)
     false
