@@ -153,6 +153,7 @@ class ShadowcraftOptions
       symbols_policy: {type: "select", name: "SoD Policy", options: {'always':"Use on cooldown", 'just':"Only use SoD when needed to refresh"}, default: "just", datatype: "string"}
       dance_finishers_allowed: {type: "check", name: "Use Finishers during Dance", default: true, datatype: "bool"}
       positional_uptime: {type: "input", name: "Backstab uptime", desc: "Percentage of the fight you are behind the target (0-100). This has no effect if Gloomblade is selected as a talent.", datatype: "integer", default: 100, min: 0, max: 100}
+      compute_cp_waste: {type: "check", name: "Compute CP Waste", desc: "EXPERIMENTAL FEATURE: Compute combo point waste", default: true, datatype: "bool"}
     })
 
     @setup("#settings #advancedSettings", "advanced", {
