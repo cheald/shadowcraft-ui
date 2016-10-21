@@ -129,7 +129,7 @@ class ShadowcraftOptions
     @setup("#settings section.mutilate .settings", "rotation", {
       kingsbane: {type: "select", name: "Kingsbane w/ Vendetta", options: {"just": "Use cooldown if it aligns, but don't delay usage", "only": "Only use cooldown with Vendetta"}, default: "just"}
       exsang: {type: "select", name: "Exsang w/ Vendetta", options: {"just": "Use cooldown if it aligns, but don't delay usage", "only": "Only use cooldown with Vendetta"}, default: "just"}
-      cp_builder: {type: "select", name: "CP Builder", options: {'mutilate':'Mutilate','fan_of_knives':'Fan of Knives'}, default: 'mutilate', datatype: 'string'}
+      assn_cp_builder: {type: "select", name: "CP Builder", options: {'mutilate':'Mutilate','fan_of_knives':'Fan of Knives'}, default: 'mutilate', datatype: 'string'}
       lethal_poison: {name: "Lethal Poison", type: 'select', options: {'dp': 'Deadly Poison', 'wp': 'Wound Poison'}, default: 'dp'}
     })
 
@@ -149,7 +149,7 @@ class ShadowcraftOptions
     })
 
     @setup("#settings section.subtlety .settings", "rotation", {
-      cp_builder: {type: "select", name: "CP Builder", options: {'backstab':'Backstab','shuriken_storm':'Shuriken Storm'}, default: 'backstab', datatype: 'string'}
+      sub_cp_builder: {type: "select", name: "CP Builder", options: {'backstab':'Backstab','shuriken_storm':'Shuriken Storm'}, default: 'backstab', datatype: 'string'}
       symbols_policy: {type: "select", name: "SoD Policy", options: {'always':"Use on cooldown", 'just':"Only use SoD when needed to refresh"}, default: "just", datatype: "string"}
       dance_finishers_allowed: {type: "check", name: "Use Finishers during Dance", default: true, datatype: "bool"}
       positional_uptime: {type: "input", name: "Backstab uptime", desc: "Percentage of the fight you are behind the target (0-100). This has no effect if Gloomblade is selected as a talent.", datatype: "integer", default: 100, min: 0, max: 100}
@@ -204,26 +204,28 @@ class ShadowcraftOptions
       $("#settings,#advanced select").change()
 
     Shadowcraft.Talents.bind "changedSpec", (spec) ->
+      # Hide all of the spec-specific sections from the options panel
       $("#settings section.mutilate, #settings section.combat, #settings section.subtlety").hide()
+
+      # "a" is for assassination
       if Shadowcraft.Data.activeSpec == "a"
-        # if the spec changed, reset the combopoint builder to something valid
-        if lastSpec != Shadowcraft.Data.activeSpec
-          $("#opt-rotation-cp_builder").val("mutilate")
-          Shadowcraft.update()
+        # Show the mutilate section (otherwise known as the assassination section)
         $("#settings section.mutilate").show()
+
+        # If the user has the agonizing poison talent selected, add that to the
+        # menu for poisons.
         if (Shadowcraft.Data.activeTalents.split("")[5] == "0")
-
           $("#opt-rotation-lethal_poison").append($("<option></option>").attr("value","ap").text("Agonizing Poison"))
+        else
+          $("#opt-rotation-lethal_poison option[value='ap']").remove()
 
+      # "Z" is for outlaw
       else if Shadowcraft.Data.activeSpec == "Z"
         $("#settings section.combat").show()
+
+      # "b" is for subtlety
       else if Shadowcraft.Data.activeSpec == "b"
         $("#settings section.subtlety").show()
-        # if the spec changed, reset the combopoint builder to something valid
-        if lastSpec != Shadowcraft.Data.activeSpec
-          $("#opt-rotation-cp_builder").val("backstab")
-          Shadowcraft.update()
-      lastSpec = Shadowcraft.Data.activeSpec
 
     Shadowcraft.Talents.bind "changedTalents", ->
 

@@ -68,6 +68,12 @@ class ShadowcraftBackend
         statSummary.versatility || 0
       ],
 
+    # Change the combo point builder to be a single entry depending on which spec is active
+    if data.activeSpec == "a"
+      payload.ro.cp_builder = payload.ro.assn_cp_builder
+    else if data.activeSpec == "b"
+      payload.ro.cp_builder = payload.ro.sub_cp_builder
+
     # Don't send artifact information if the character isn't holding two the artifact weapons
     # for their current spec.
     payload.art = {}
