@@ -1,25 +1,4 @@
 class ShadowcraftOptions
-  @buffMap = [
-    'short_term_haste_buff',
-    'flask_legion_agi'
-  ]
-
-  @buffFoodMap = [
-    'food_legion_375_crit',
-    'food_legion_375_haste',
-    'food_legion_375_mastery',
-    'food_legion_375_versatility',
-    'food_legion_feast_200',
-    'food_legion_damage_3'
-  ]
-
-  @buffPotions = [
-    'potion_old_war',
-    'potion_deadly_grace',
-    'potion_none'
-  ]
-
-  lastSpec = ""
 
   cast = (val, dtype) ->
     switch dtype

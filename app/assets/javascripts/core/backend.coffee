@@ -29,7 +29,7 @@ class ShadowcraftBackend
     buffList = []
     for key, val of data.options.buffs
       if val
-        buffList.push ShadowcraftOptions.buffMap.indexOf(key)
+        buffList.push ShadowcraftConstants.buffMap.indexOf(key)
 
     talentArray = data.activeTalents.split ""
     for val, key in talentArray
@@ -40,10 +40,10 @@ class ShadowcraftBackend
     payload =
       r: data.options.general.race
       l: data.options.general.level
-      pot: ShadowcraftOptions.buffPotions.indexOf(data.options.general.potion)
-      prepot: ShadowcraftOptions.buffPotions.indexOf(data.options.general.prepot)
+      pot: ShadowcraftConstants.buffPotions.indexOf(data.options.general.potion)
+      prepot: ShadowcraftConstants.buffPotions.indexOf(data.options.general.prepot)
       b: buffList
-      bf: ShadowcraftOptions.buffFoodMap.indexOf(data.options.buffs.food_buff)
+      bf: ShadowcraftConstants.buffFoodMap.indexOf(data.options.buffs.food_buff)
       ro: data.options.rotation
       settings: {
         duration: data.options.general.duration
