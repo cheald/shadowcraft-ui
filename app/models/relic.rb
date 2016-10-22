@@ -31,25 +31,29 @@ class Relic
 
     pos = 0
     item_ids.each do |id|
-      begin
-        pos = pos + 1
-        puts "item #{pos} of #{item_ids.length}" if pos % 10 == 0
-        db_item = Relic.find_or_initialize_by(:remote_id => id)
-        if db_item.type.nil?
-          relic = WowArmory::Relic.new(id)
-          db_item.type = relic.type
-          db_item.traits = relic.traits
-          if db_item.new_record? and !db_item.traits.empty?
-            db_item.save()
-          elsif db_item.traits.empty?
-            puts "Failed to load relic #{id}"
-          end
-        end
-      rescue Exception => e
-        puts id
-        puts e.message
-      end
+      pos = pos + 1
+      puts "item #{pos} of #{item_ids.length}" if pos % 10 == 0
+      import(id)
     end
     true
+  end
+
+  def self.import(id)
+    begin
+      db_item = Relic.find_or_initialize_by(:remote_id => id)
+      if db_item.type.nil?
+        relic = WowArmory::Relic.new(id)
+        db_item.type = relic.type
+        db_item.traits = relic.traits
+        if db_item.new_record? and !db_item.traits.empty?
+          db_item.save()
+        elsif db_item.traits.empty?
+          puts "Failed to load relic #{id}"
+        end
+      end
+    rescue Exception => e
+      puts id
+      puts e.message
+    end
   end
 end
