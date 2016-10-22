@@ -204,6 +204,9 @@ class ShadowcraftArtifact
       unless _.isEmpty(artifact_data.relics[i])
         relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i].id]
         relicItem = Shadowcraft.ServerData.GEM_LOOKUP[relic.id]
+        if !relicItem
+          console.log "Unable to find relic #{relic.id} in database. Not equipping."
+          continue
         ilvl += ShadowcraftConstants.RELIC_ILVL_MAPPING[artifact_data.relics[i].ilvl]
         relicTrait = relic.ts[Shadowcraft.Data.activeSpec]
         button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relicItem.icon+".jpg")
