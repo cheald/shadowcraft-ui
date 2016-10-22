@@ -485,6 +485,7 @@ class ShadowcraftArtifact
         item: relic
         gear: {}
         identifier: "#{relic.id}:#{relic.ilvl}"
+        slot: relic.slot
         ttid: relic.id
         ttspec: ShadowcraftConstants.WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec]
         ttbonus: ttbonus
@@ -505,7 +506,7 @@ class ShadowcraftArtifact
     # Set the HTML into the popup and mark the currently active relic
     # if there is one.
     $popupbody.get(0).innerHTML = buffer
-    
+
     if !_.isEmpty(currentRelic)
       r = (i for i in relics when i.id == currentRelic.id and i.ilvl == currentRelic.ilvl)
       if r.length == 1
@@ -519,19 +520,21 @@ class ShadowcraftArtifact
   # the display.
   selectRelic = (clicked_relic) ->
 
-    # get the relic ID from the item that was clicked. if there wasn't
-    # an id attribute, this will return a NaN which we then check for.
-    # that NaN indicates that the user clicked on the "None" item and
-    # that we need to disable the currently selected relic.
-    relic_id = parseInt(clicked_relic.attr("id"))
-    relic_id = if not isNaN(relic_id) then relic_id else null
-    if relic_id?
-      artifact_data.relics[clicked_relic_slot] = {
-        id: parseInt(relic_id)
-        bonuses: []
-      }
+    identifier = clicked_relic.data("identifier")
+    slot = clicked_relic.data("slot")
+    relicItem = ShadowcraftData.RELIC_ITEM_LOOKUP[slot][identifier]
+
+    keys = Object.keys(relicItem.ctxts)
+    if keys.length > 0
+      bonuses = relicItem.ctxts[keys[0]].defaultBonuses
     else
-      artifact_data.relics[clicked_relic_slot] = {}
+      bonuses = []
+
+    artifact_data.relics[clicked_relic_slot] = {
+      id: parseInt(identifier.split(":")[0])
+      ilvl: parseInt(identifier.split(":")[1])
+      bonuses: bonuses
+    }
 
     # Force a refresh of the display
     updateTraits()
