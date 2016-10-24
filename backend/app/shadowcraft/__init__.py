@@ -25,20 +25,6 @@ class ShadowcraftComputation:
 
     trinkets = {
 
-        # 6.1
-        122601: 'alchemy_stone', # 'stone_of_wind'
-        122602: 'alchemy_stone', # 'stone_of_the_earth',
-        122603: 'alchemy_stone', # 'stone_of_the_waters',
-        122604: 'alchemy_stone', # 'stone_of_fire',
-
-        # 6.2
-        128023: 'alchemy_stone', # 'stone_of_the_wilds',
-        128024: 'alchemy_stone', # 'stone_of_the_elements',
-        124520: 'bleeding_hollow_toxin_vessel',
-        124226: 'malicious_censer',
-        124225: 'soul_capacitor',
-        124224: 'mirror_of_the_blademaster',
-
         # 6.2.3
         133597: 'infallible_tracking_charm',
 
@@ -71,10 +57,6 @@ class ShadowcraftComputation:
     }
 
     otherProcs = {
-        # 6.1
-        118302: 'archmages_incandescence',
-        118307: 'archmages_greater_incandescence',
-        124636: 'maalus',
     }
 
     artifactTraits = {
@@ -166,16 +148,6 @@ class ShadowcraftComputation:
 
     # used for rankings
     trinketGroups = {
-        # legendary rings
-        'archmages_greater_incandescence': [715],
-        'archmages_incandescence': [690],
-        'maalus': createGroup([735], 20, 3),
-        'alchemy_stone': createGroup([640,655,670,685,700,715], 2, 5),
-        # 6.2 trinkets
-        'bleeding_hollow_toxin_vessel': createGroup(createGroup([705,720,735], 1, 6), 2, 5),
-        'malicious_censer': createGroup(createGroup([700,715,730], 1, 6), 2, 5),
-        'soul_capacitor': createGroup(createGroup([695,710,725], 1, 6), 2, 5),
-        'mirror_of_the_blademaster': createGroup(createGroup([690,705,720], 1, 6), 2, 5),
         # 7.0 trinkets
         'arcanogolem_digit': xrange(875, 955, 5),
         'bloodthirsty_instinct': xrange(850, 930, 5),
@@ -205,15 +177,34 @@ class ShadowcraftComputation:
     }
 
     gearBoosts = {
+        137049: 'insignia_of_ravenholdt',
+        137069: 'will_of_valeera',
+        137030: 'duskwalkers_footpads',
+        137098: 'zoldyk_family_training_shackles',
+        137021: 'the_dreadlords_deceit',
+        137031: 'thraxis_tricksy_treads',
+        137099: 'greenskins_waterlogged_wristcuffs',
+        141321: 'shivarran_symmetry',
+        137032: 'shadow_satyrs_walk',
+        137100: 'denial_of_the_half_giants',
+        133976: 'cinidaria_the_symbiote',
+        132452: 'sephuzs_secret',
+        132444: 'prydaz_xavarics_magnum_opus'
     }
 
     # combines gearProcs and gearBoosts
     trinketMap = dict(gearProcs, **gearBoosts)
 
-    tier18IDS = frozenset([124248, 124257, 124263, 124269, 124274])
-    tier18LFRIDS = frozenset([128130, 128121, 128125, 128054, 128131, 128137])
-    tier19IDS = frozenset([138326, 138329, 138332, 138335, 138338, 138371])
-    orderhallIDS = frozenset([139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746])
+    # Tier + Order Hall sets
+    tier18IDs = frozenset([124248, 124257, 124263, 124269, 124274])
+    tier18LFRIDs = frozenset([128130, 128121, 128125, 128054, 128131, 128137])
+    tier19IDs = frozenset([138326, 138329, 138332, 138335, 138338, 138371])
+    orderhallIDs = frozenset([139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746])
+
+    # Legion Dungeon sets
+    marchOfTheLegionIDs = frozenset([134529, 134533])
+    journeyThroughTimeIDs = frozenset([137419, 137487])
+    jacinsRuseIDs = frozenset([137480, 137397])
 
     subclassMap = {
     -1: None,
@@ -328,33 +319,42 @@ class ShadowcraftComputation:
         # Set up gear buffs.
         buff_list = []
 
-        if len(self.tier18IDS & gear) >= 2:
+        if len(self.tier18IDs & gear) >= 2:
             buff_list.append('rogue_t18_2pc')
 
-        if len(self.tier18IDS & gear) >= 4:
+        if len(self.tier18IDs & gear) >= 4:
             buff_list.append('rogue_t18_4pc')
 
-        if len(self.tier18LFRIDS & gear) >= 4:
+        if len(self.tier18LFRIDs & gear) >= 4:
             buff_list.append('rogue_t18_4pc_lfr')
 
-        if len(self.tier19IDS & gear) >= 2:
+        if len(self.tier19IDs & gear) >= 2:
             buff_list.append('rogue_t19_2pc')
 
-        if len(self.tier19IDS & gear) >= 4:
+        if len(self.tier19IDs & gear) >= 4:
             buff_list.append('rogue_t19_4pc')
 
-        if len(self.orderhallIDS & gear) == 8:
+        if len(self.orderhallIDs & gear) == 8:
             buff_list.append('rogue_orderhall_8pc')
 
+        if len(self.marchOfTheLegionIDs & gear) == 2:
+            buff_list.append('march_of_the_legion_2pc')
+
+        if len(self.journeyThroughTimeIDs & gear) == 2:
+            buff_list.append('journey_through_time_2pc')
+
+        if len(self.jacinsRuseIDs & gear) == 2:
+            buff_list.append('jacins_ruse_2pc')
+
         agi_bonus = 0
-        if len(self.tier18LFRIDS & gear) >= 2:
+        if len(self.tier18LFRIDs & gear) >= 2:
             agi_bonus += 115
-        if len(self.orderhallIDS & gear) >= 6:
+        if len(self.orderhallIDs & gear) >= 6:
             agi_bonus += 1000
 
-        for k in self.gearBoosts:
+        for k,v in self.gearBoosts.iteritems():
             if k in gear:
-                buff_list.append(self.gearBoosts[k])
+                buff_list.append(v)
 
         # Add enchant procs to the list of gear buffs
         for k in gear_data:
@@ -500,13 +500,22 @@ class ShadowcraftComputation:
             _opt = input.get("settings", {})
             out["ep"] = calculator.get_ep(ep_stats=default_ep_stats)
 
-            out["other_ep"] = calculator.get_other_ep(['rogue_t19_2pc','rogue_t19_4pc','rogue_orderhall_8pc','rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr'])
+            other_buffs = ['rogue_t19_2pc','rogue_t19_4pc','rogue_orderhall_8pc',
+                           'rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr',
+                           'mark_of_the_hidden_satyr','mark_of_the_distant_army',
+                           'mark_of_the_claw','march_of_the_legion_2pc',
+                           'journey_through_time_2pc','jacins_ruse_2pc']
+
+            for k,v in self.gearBoosts.iteritems():
+                other_buffs.append(v)
+
+            out["other_ep"] = calculator.get_other_ep(other_buffs)
 
             exclude_items = [item for item in gear if item in self.trinkets]
             exclude_procs = [self.gearProcs[x] for x in exclude_items]
-            trinket_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
+            gear_rankings = calculator.get_upgrades_ep_fast(self.trinketGroups)
 
-            out["proc_ep"] = trinket_rankings
+            out["proc_ep"] = gear_rankings
             out["trinket_map"] = self.trinketMap
 
             # Compute weapon ep
