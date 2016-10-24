@@ -178,7 +178,6 @@ class ShadowcraftComputation:
 
     gearBoosts = {
         137049: 'insignia_of_ravenholdt',
-        137069: 'will_of_valeera',
         137030: 'duskwalkers_footpads',
         137098: 'zoldyk_family_training_shackles',
         137021: 'the_dreadlords_deceit',
@@ -188,8 +187,6 @@ class ShadowcraftComputation:
         137032: 'shadow_satyrs_walk',
         137100: 'denial_of_the_half_giants',
         133976: 'cinidaria_the_symbiote',
-        132452: 'sephuzs_secret',
-        132444: 'prydaz_xavarics_magnum_opus'
     }
 
     # combines gearProcs and gearBoosts

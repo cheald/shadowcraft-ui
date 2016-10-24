@@ -10,11 +10,9 @@ class ShadowcraftGear
   SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"]
   SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13"]]
   PROC_ENCHANTS =
-    5330: "mark_of_the_thunderlord"
-    5331: "mark_of_the_shattered_hand"
-    5334: "mark_of_the_frostwolf"
-    5337: "mark_of_warsong"
-    5384: "mark_of_the_bleeding_hollow"
+    5437: "mark_of_the_claw"
+    5438: "mark_of_the_distant_army"
+    5439: "mark_of_the_hidden_satyr"
 
   LEGENDARY_RINGS=[118302, 118307, 124636]
 
@@ -116,8 +114,6 @@ class ShadowcraftGear
               total += c.oh_type_ep["oh_type_one-hander"]
       else if PROC_ENCHANTS[item.id]
         switch slot
-          when 14
-            pre = ""
           when 15
             pre = "mh_"
           when 16
@@ -1077,7 +1073,6 @@ class ShadowcraftGear
       setBonEP[set_name] += setBonusEP(set, setCount)
 
     for l in loc
-      # TODO variable might not be necessary anymore
       l.__setBonusEP = 0
       for set_name, set of ShadowcraftConstants.SETS
         if set.ids.indexOf(l.id) >= 0
