@@ -487,6 +487,7 @@ class ShadowcraftArtifact
         identifier: "#{relic.id}:#{relic.ilvl}"
         slot: relic.slot
         ttid: relic.id
+        quality: relic.quality
         ttspec: ShadowcraftConstants.WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec]
         ttbonus: ttbonus
         search: escape(relic.name)

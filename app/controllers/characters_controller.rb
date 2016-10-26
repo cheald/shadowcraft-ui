@@ -68,7 +68,7 @@ class CharactersController < ApplicationController
   def refresh
     # Call the Character model get method with the given params from the route
     @character = Character.get!(params[:region], params[:realm], params[:name])
-    @character ||= Character.new(params[:region], params[:realm], params[:name])
+    @character ||= Character.new({:region => params[:region], :realm => params[:realm], :name => params[:name]})
     # force the page to reload the new data from the update
     flash[:reload] = Time.now.to_i
     # Initiate an armory update

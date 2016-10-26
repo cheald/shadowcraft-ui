@@ -141,6 +141,8 @@ class ShadowcraftGear
 
     if gear.bonuses
       for id in gear.bonuses
+        if !Shadowcraft.ServerData.ITEM_BONUSES[id]
+          continue
         for entry in Shadowcraft.ServerData.ITEM_BONUSES[id]
           if entry.type == 2
             rand_val = Math.round(entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][1+getRandPropEntry(gear.slot)])
@@ -1049,8 +1051,6 @@ class ShadowcraftGear
       # and pvp rings (slots 10 and 11)
       continue if slot == 12 && l.id == gear[13].id
       continue if slot == 13 && l.id == gear[12].id
-      continue if slot == 10 && gear[11].id in LEGENDARY_RINGS && l.id in LEGENDARY_RINGS
-      continue if slot == 11 && gear[10].id in LEGENDARY_RINGS && l.id in LEGENDARY_RINGS
 
       # For pvp rings, it's if a ring has a tag and the tag either ends with
       # Tournament or "Season #", and the tag matches the currently equipped one
@@ -1140,6 +1140,7 @@ class ShadowcraftGear
         ttrand: ttrand
         ttupgd: ttupgd
         ttbonus: ttbonus
+        quality: l.quality
         desc: "#{l.__gearEP.toFixed(1)} base #{if l.__setBonusEP > 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
         search: escape(l.name + " " + l.tag)
         percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01

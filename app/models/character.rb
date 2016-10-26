@@ -124,6 +124,7 @@ class Character
           increase = 0
           item['bonuses'].each do |bonus_id|
             entries = WowArmory::Item.item_bonuses[bonus_id]
+            next if entries.nil?
             entries.each do |entry|
               if entry[:type] == ITEM_BONUS_TYPES['ilvl_increase']
                 increase_id = bonus_id
