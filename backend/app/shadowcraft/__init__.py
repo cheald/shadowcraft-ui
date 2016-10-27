@@ -169,7 +169,7 @@ class ShadowcraftComputation:
         'ravaged_seed_pod': xrange(850, 930, 5),
         'spiked_counterweight': xrange(820, 900, 5),
         'spontaneous_appendages': xrange(850, 930, 5),
-        'tempered_egg_of_serpentrix': xrange(820, 900, 5),
+        'tempered_egg_of_serpentrix': [820],
         'terrorbound_nexus': xrange(820, 900, 5),
         'tiny_oozeling_in_a_jar': xrange(820, 900, 5),
         'tirathons_betrayal': xrange(820, 900, 5),
