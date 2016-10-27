@@ -207,7 +207,10 @@ class ShadowcraftArtifact
         if !relicItem
           console.log "Unable to find relic #{relic.id} in database. Not equipping."
           continue
-        ilvl += ShadowcraftConstants.RELIC_ILVL_MAPPING[artifact_data.relics[i].ilvl]
+        ilvl_increase = ShadowcraftConstants.RELIC_ILVL_MAPPING[artifact_data.relics[i].ilvl]
+        if !ilvl_increase
+          console.log "Failed to find ilvl mapping for relic with ilvl #{artifact_data.relics[i].ilvl}"
+        ilvl += ilvl_increase
         relicTrait = relic.ts[Shadowcraft.Data.activeSpec]
         button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relicItem.icon+".jpg")
         button.removeClass("inactive")
