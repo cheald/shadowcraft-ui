@@ -277,6 +277,8 @@ class ShadowcraftConstants
       mh: 128476
       oh: 128479
 
+  # This is a list of the set bonuses that are available and the item IDs for those
+  # sets. Legendaries are considered sets due to how they're implemented.
   @SETS =
     T18:
       ids: [124248, 124257, 124263, 124269, 124274]
@@ -299,7 +301,36 @@ class ShadowcraftConstants
     JACINS_RUSE:
       ids: [137480, 137397]
       bonuses: {2: "jacins_ruse_2pc"}
-
+    INSIGNIA_OF_RAVENHOLDT:
+      ids: [137049]
+      bonuses: {1: "insignia_of_ravenholdt"}
+    DUSKWALKERS_FOOTPADS:
+      ids: [137030]
+      bonuses: {1: 'duskwalkers_footpads'}
+    ZOLDYK_FAMILY_TRAINING_SHACKLES:
+      ids: [137098]
+      bonuses: {1: 'zoldyk_family_training_shackles'}
+    THE_DREADLORDS_DECEIT:
+      ids: [137021]
+      bonuses: {1: 'the_dreadlords_deceit'}
+    THRAXIS_TRICKSY_TREADS:
+      ids: [137031]
+      bonuses: {1: 'thraxis_tricksy_treads'}
+    GREENSKINS_WATERLOGGED_WRISTCUFFS:
+      ids: [137099]
+      bonuses: {1: 'greenskins_waterlogged_wristcuffs'}
+    SHIVARRAN_SYMMETRY:
+      ids: [141321]
+      bonuses: {1: 'shivarran_symmetry'}
+    SHADOW_SATYRS_WALK:
+      ids: [137032]
+      bonuses: {1: 'shadow_satyrs_walk'}
+    DENIAL_OF_THE_HALF_GIANTS:
+      ids: [137100]
+      bonuses: {1: 'denial_of_the_half_giants'}
+    CINIDARIA_THE_SYMBIOTE:
+      ids: [133976]
+      bonuses: {1: 'cinidaria_the_symbiote'}
 
   # This is a list of the bonus IDs that mean "item level upgrade" for
   # the warforged/titanforged support.
@@ -330,5 +361,10 @@ class ShadowcraftConstants
     'potion_deadly_grace',
     'potion_none'
   ]
+
+  @PROC_ENCHANTS =
+    5437: "mark_of_the_claw"
+    5438: "mark_of_the_distant_army"
+    5439: "mark_of_the_hidden_satyr"
 
 window.ShadowcraftConstants = ShadowcraftConstants

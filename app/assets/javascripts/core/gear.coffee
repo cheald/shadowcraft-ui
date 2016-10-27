@@ -9,12 +9,6 @@ class ShadowcraftGear
 
   SLOT_ORDER = ["0", "1", "2", "14", "4", "8", "9", "5", "6", "7", "10", "11", "12", "13", "15", "16"]
   SLOT_DISPLAY_ORDER = [["0", "1", "2", "14", "4", "8", "15", "16"], ["9", "5", "6", "7", "10", "11", "12", "13"]]
-  PROC_ENCHANTS =
-    5437: "mark_of_the_claw"
-    5438: "mark_of_the_distant_army"
-    5439: "mark_of_the_hidden_satyr"
-
-  LEGENDARY_RINGS=[118302, 118307, 124636]
 
   # Default weights for the DPS calculations. These get reset by calculation
   # passes through the engine.
@@ -112,13 +106,13 @@ class ShadowcraftGear
               total += c.oh_type_ep["oh_type_dagger"]
             else
               total += c.oh_type_ep["oh_type_one-hander"]
-      else if PROC_ENCHANTS[item.id]
+      else if ShadowcraftConstants.PROC_ENCHANTS[item.id]
         switch slot
           when 15
             pre = "mh_"
           when 16
             pre = "oh_"
-        enchant = PROC_ENCHANTS[item.id]
+        enchant = ShadowcraftConstants.PROC_ENCHANTS[item.id]
         if !pre and enchant
           total += c["other_ep"][enchant]
         else if pre and enchant

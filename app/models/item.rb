@@ -147,6 +147,10 @@ class Item
     item_ids += ARTIFACT_WEAPONS
     item_ids += ORDER_HALL_SET
 
+    # Legendaries
+    puts "Requesting list of legendaries from wowhead"
+    item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/armor/min-level:895/class:4/quality:5"
+
     # remove duplicates.
     item_ids = item_ids.uniq
 
