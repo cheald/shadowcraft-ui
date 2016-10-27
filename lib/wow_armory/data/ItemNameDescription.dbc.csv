@@ -154,14 +154,14 @@ id,desc,flags
 13252,"'Fortune'",4293315712
 13253,"'Gorefang'",4293315712
 13254,""Akaari's Will"",4293315712
-13256,"'Obliterum: 0/7'",65280
-13257,"'Obliterum: 1/7'",65280
-13258,"'Obliterum: 2/7'",65280
-13259,"'Obliterum: 3/7'",65280
-13260,"'Obliterum: 4/7'",65280
-13261,"'Obliterum: 5/7'",65280
-13262,"'Obliterum: 6/7'",65280
-13263,"'Obliterum: 7/7'",65280
+13256,"'Obliterum: 0/8'",65280
+13257,"'Obliterum: 1/8'",65280
+13258,"'Obliterum: 2/8'",65280
+13259,"'Obliterum: 3/8'",65280
+13260,"'Obliterum: 4/8'",65280
+13261,"'Obliterum: 5/8'",65280
+13262,"'Obliterum: 6/8'",65280
+13263,"'Obliterum: 7/8'",65280
 13264,"'Obliteratable'",4287146751
 13265,"'Mythic 2'",4278255360
 13266,"'Mythic 3'",4278255360
@@ -180,3 +180,7 @@ id,desc,flags
 13279,"'Mythic 7 Jackpot'",4278255360
 13280,"'Mythic 8 Jackpot'",4278255360
 13281,"'Mythic 9 Jackpot'",4278255360
+13282,"'Obliterum: 8/8'",65280
+13284,"'Veteran'",4278255360
+13287,"'Legion Season 2'",65280
+13288,"'Legion Season 2 Elite'",65280
