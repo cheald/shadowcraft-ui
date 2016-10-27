@@ -331,6 +331,15 @@ class ShadowcraftConstants
     CINIDARIA_THE_SYMBIOTE:
       ids: [133976]
       bonuses: {1: 'cinidaria_the_symbiote'}
+    TOES_KNEES:
+      ids: [142164, 142203]
+      bonuses: {2: 'kara_empowered_2pc'}
+    BLOODSTAINED:
+      ids: [142159, 142203]
+      bonuses: {2: 'kara_empowered_2pc'}
+    EYE_OF_COMMAND:
+      ids: [142167, 142203]
+      bonuses: {2: 'kara_empowered_2pc'}
 
   # This is a list of the bonus IDs that mean "item level upgrade" for
   # the warforged/titanforged support.

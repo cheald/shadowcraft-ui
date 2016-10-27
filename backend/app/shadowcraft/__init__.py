@@ -203,6 +203,11 @@ class ShadowcraftComputation:
     journeyThroughTimeIDs = frozenset([137419, 137487])
     jacinsRuseIDs = frozenset([137480, 137397])
 
+    # Kara trinket/chest sets
+    toeKneesIDs = frozenset([142164, 142203])
+    bloodstainedIDs = frozenset([142159, 142203])
+    eyeOfCommandIDs = frozenset([142167, 142203])
+
     subclassMap = {
     -1: None,
         0: '1h_axe',
@@ -342,6 +347,9 @@ class ShadowcraftComputation:
 
         if len(self.jacinsRuseIDs & gear) == 2:
             buff_list.append('jacins_ruse_2pc')
+
+        if len(self.toeKneesIDs & gear) == 2 or len(self.bloodstainedIDs & gear) == 2 or len(self.eyeOfCommandIDs) == 2:
+            buff_list.append('kara_empowered_2pc')
 
         agi_bonus = 0
         if len(self.tier18LFRIDs & gear) >= 2:
@@ -501,7 +509,8 @@ class ShadowcraftComputation:
                            'rogue_t18_2pc','rogue_t18_4pc','rogue_t18_4pc_lfr',
                            'mark_of_the_hidden_satyr','mark_of_the_distant_army',
                            'mark_of_the_claw','march_of_the_legion_2pc',
-                           'journey_through_time_2pc','jacins_ruse_2pc']
+                           'journey_through_time_2pc','jacins_ruse_2pc',
+                           'kara_empowered_2pc']
 
             for k,v in self.gearBoosts.iteritems():
                 other_buffs.append(v)
