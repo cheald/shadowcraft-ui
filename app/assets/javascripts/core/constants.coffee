@@ -376,4 +376,10 @@ class ShadowcraftConstants
     5438: "mark_of_the_distant_army"
     5439: "mark_of_the_hidden_satyr"
 
+  # This is all of the bonus IDs that mean +socket. Ridiculous.
+  @SOCKET_BONUS_IDS = [523, 572, 608, 1808]
+  @SOCKET_BONUS_IDS = @SOCKET_BONUS_IDS.concat([563..565])
+  @SOCKET_BONUS_IDS = @SOCKET_BONUS_IDS.concat([715..719])
+  @SOCKET_BONUS_IDS = @SOCKET_BONUS_IDS.concat([721..752])
+
 window.ShadowcraftConstants = ShadowcraftConstants

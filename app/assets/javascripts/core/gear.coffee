@@ -522,6 +522,7 @@ class ShadowcraftGear
 
     union = _.union(currentBonuses, checkedBonuses)
     newBonuses = _.difference(union, uncheckedBonuses)
+    removedBonuses = _.difference(union, newBonuses)
 
     # Apply new bonuses, and fix the item level the piece of gear base on whether
     # a warforged/titanforged bonus ID is applied.
@@ -547,6 +548,12 @@ class ShadowcraftGear
         index = gear.ttBonuses.indexOf(oldTTWF)
         gear.ttBonuses[index] = oldTTWF + diff
 
+    # If we removed a socket, we need to remove the gem that corresponds to that
+    # socket as well.
+    for bonus in removedBonuses
+      if bonus in ShadowcraftConstants.SOCKET_BONUS_IDS
+        gear.gems[0] = 0
+
     $("#bonuses").removeClass("visible")
     Shadowcraft.update()
     Shadowcraft.Gear.updateDisplay()
@@ -554,13 +561,8 @@ class ShadowcraftGear
   # Returns true if a piece of gear has a bonus on it that means an added
   # socket.
   hasSocket = (gear) ->
-    # This is all of the bonus IDs that mean +socket. Ridiculous.
-    socketBonuses = [523, 572, 608, 1808]
-    socketBonuses = socketBonuses.concat([563..565])
-    socketBonuses = socketBonuses.concat([715..719])
-    socketBonuses = socketBonuses.concat([721..752])
     for bonus in gear.bonuses
-      if bonus in socketBonuses
+      if bonus in ShadowcraftConstants.SOCKET_BONUS_IDS
         return true
     return false
 
