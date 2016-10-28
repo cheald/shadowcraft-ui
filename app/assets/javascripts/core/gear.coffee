@@ -1590,6 +1590,7 @@ class ShadowcraftGear
               slotGear.base_ilvl = base_ilvl
               upgd_level = parseInt($this.data("upgrade"))
               slotGear.upgrade_level = if not isNaN(upgd_level) then upgd_level else 0
+              slotGear.gems = [0,0,0]
 
               # Get the first key from the set of contexts for this item
               context = Object.keys(item.ctxts)[0]
