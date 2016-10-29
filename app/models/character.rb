@@ -152,6 +152,16 @@ class Character
         end
       end
 
+      # Copy the bonus ID list from the main hand to the offhand. Blizzard sends a blank one
+      # for the offhand, which causes issues displaying tooltips. Reset the mainhand one to
+      # something smaller since the tooltips for the mainhand are based on the equipped 
+      # relics. Bonus ID 743 here means "third relic slot".
+      properties['gear']['16']['bonuses'] = properties['gear']['15']['bonuses'].clone
+      properties['gear']['16']['bonuses'] -= [743]
+      properties['gear']['16']['ttBonuses'] = properties['gear']['16']['bonuses'].clone
+      properties['gear']['15']['bonuses'] = [743]
+      properties['gear']['15']['ttBonuses'] = [743]
+
       # We only get artifact data for the current spec from the armory. Null out all of the
       # artifact data for all of the specs, and then copy the artifact data from the armory
       # into the right spot.

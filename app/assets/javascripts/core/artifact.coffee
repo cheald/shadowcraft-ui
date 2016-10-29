@@ -6,31 +6,6 @@ class ShadowcraftArtifact
   $popupbody = null
   $popup = null
 
-  # TODO: I'm really hoping that some of this data is available from the API
-  # in the future so we don't have to store it here in the javascript.
-  SPEC_ARTIFACT =
-    "a":
-      icon: "inv_knife_1h_artifactgarona_d_01"
-      text: "The Kingslayers"
-      main: 192759
-      relic1: "Shadow"
-      relic2: "Iron"
-      relic3: "Blood"
-    "Z":
-      icon: "inv_sword_1h_artifactskywall_d_01"
-      text: "The Dreadblades"
-      main: 202665
-      relic1: "Blood"
-      relic2: "Iron"
-      relic3: "Storm"
-    "b":
-      icon: "inv_knife_1h_artifactfangs_d_01"
-      text: "Fangs of the Devourer"
-      main: 209782
-      relic1: "Fel"
-      relic2: "Shadow"
-      relic3: "Fel"
-
   # Stores which of the relic icons was clicked on. This is 0-2, but defaults
   # back to -1 after the click has been processed.
   clicked_relic_slot = 0
@@ -89,8 +64,8 @@ class ShadowcraftArtifact
   updateTraits = ->
 
     # Get the main spell ID for this artifact based on the active spec
-    active = SPEC_ARTIFACT[Shadowcraft.Data.activeSpec]
-    main_spell_id = SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].main
+    active = ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec]
+    main_spell_id = ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].main
 
     # Disable everything.
     $("#artifactframe .trait").each(->
@@ -197,6 +172,13 @@ class ShadowcraftArtifact
     # the data map.
     # TODO: make this item level a constant somewhere
     oldIlvl = Shadowcraft.Data.gear[15].item_level
+#    Shadowcraft.Data.gear[15].gems = []
+#    Shadowcraft.Data.gear[15].bonuses = [743]
+#    Shadowcraft.Data.gear[15].ttBonuses = [743]
+#    Shadowcraft.Data.gear[16].gems = []
+#    Shadowcraft.Data.gear[16].bonuses = []
+#    Shadowcraft.Data.gear[16].ttBonuses = []
+    
     ilvl = 750
     for i in [0...3]
       button = $("#relic"+(i+1)+" .relicicon")
@@ -224,10 +206,11 @@ class ShadowcraftArtifact
         trait.children(".relic").attr("src", "/images/artifacts/relic-"+relic.type.toLowerCase()+".png")
         trait.children(".relic").removeClass("inactive")
 
-        # Setting the gems in the items causes wowhead tooltips to automatically
-        # update the weapon item levels.
+        # Setting the gem in the mainhand weapon causes wowhead to update the item level
+        # for that item.
         Shadowcraft.Data.gear[15].gems[i] = relic.id
-        Shadowcraft.Data.gear[16].gems[i] = relic.id
+
+        # For the offhand weapon we have to figure out what the bonus IDs are supposed to be
       else
         button.addClass("inactive")
 
@@ -264,8 +247,8 @@ class ShadowcraftArtifact
     trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
 
     buffer = Templates.artifactActive({
-      name: SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].text
-      icon: SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].icon
+      name: ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].text
+      icon: ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].icon
       points: "#{total_artifact_points}"
     })
     $("#artifactactive").get(0).innerHTML = buffer
@@ -548,8 +531,8 @@ class ShadowcraftArtifact
 
   setSpec: (str) ->
     buffer = Templates.artifactActive({
-      name: SPEC_ARTIFACT[str].text
-      icon: SPEC_ARTIFACT[str].icon
+      name: ShadowcraftConstants.SPEC_ARTIFACT[str].text
+      icon: ShadowcraftConstants.SPEC_ARTIFACT[str].icon
       points: "0"
     })
     $("#artifactactive").get(0).innerHTML = buffer
@@ -570,9 +553,9 @@ class ShadowcraftArtifact
     for trait in Shadowcraft.Data.artifact[str]['traits']
       artifact_data['traits'][trait['id']] = trait['rank']
 
-    $("#relic1").attr("relic-type", SPEC_ARTIFACT[str].relic1)
-    $("#relic2").attr("relic-type", SPEC_ARTIFACT[str].relic2)
-    $("#relic3").attr("relic-type", SPEC_ARTIFACT[str].relic3)
+    $("#relic1").attr("relic-type", ShadowcraftConstants.SPEC_ARTIFACT[str].relic1)
+    $("#relic2").attr("relic-type", ShadowcraftConstants.SPEC_ARTIFACT[str].relic2)
+    $("#relic3").attr("relic-type", ShadowcraftConstants.SPEC_ARTIFACT[str].relic3)
 
     updateTraits()
 

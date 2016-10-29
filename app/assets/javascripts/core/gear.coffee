@@ -716,7 +716,7 @@ class ShadowcraftGear
           else
             opt.lock_class = "lock_off"
 
-        opt.slot = i + ''
+        opt.slot = i
         buffer += Templates.itemSlot(opt)
 
       $slots.get(ssi).innerHTML = buffer

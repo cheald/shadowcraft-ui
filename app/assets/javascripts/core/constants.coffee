@@ -279,6 +279,31 @@ class ShadowcraftConstants
       mh: 128476
       oh: 128479
 
+  # TODO: I'm really hoping that some of this data is available from the API
+  # in the future so we don't have to store it here in the javascript.
+  @SPEC_ARTIFACT =
+    "a":
+      icon: "inv_knife_1h_artifactgarona_d_01"
+      text: "The Kingslayers"
+      main: 192759
+      relic1: "Shadow"
+      relic2: "Iron"
+      relic3: "Blood"
+    "Z":
+      icon: "inv_sword_1h_artifactskywall_d_01"
+      text: "The Dreadblades"
+      main: 202665
+      relic1: "Blood"
+      relic2: "Iron"
+      relic3: "Storm"
+    "b":
+      icon: "inv_knife_1h_artifactfangs_d_01"
+      text: "Fangs of the Devourer"
+      main: 209782
+      relic1: "Fel"
+      relic2: "Shadow"
+      relic3: "Fel"
+
   # This is a list of the set bonuses that are available and the item IDs for those
   # sets. Legendaries are considered sets due to how they're implemented.
   @SETS =
