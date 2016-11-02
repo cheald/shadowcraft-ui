@@ -20,6 +20,7 @@ gem 'test-unit', '~> 3.0'
 gem 'uglifier'
 gem 'json_schema'
 gem "coffee-rails"
+gem "mongoid_rails_migrations", "1.0.0"
 
 group :development do
   gem 'thin'

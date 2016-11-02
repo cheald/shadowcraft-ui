@@ -44,7 +44,6 @@
       R.RELIC_ITEMS = #{raw relic_item_json.to_json};
       R.ARTIFACTS = #{raw artifact_json.to_json};
       R.TALENTS = #{raw @talents.to_json};
-      R.SOCKET_BONUS_IDS = #{raw @socket_bonus_ids.to_json};
       R.ITEM_BONUSES = #{raw @item_bonuses.to_json};
       R.RAND_PROP_POINTS = #{raw @rand_prop_points.to_json};
 
@@ -58,8 +57,6 @@
         item.name = item.n;
         item.icon = item.i;
         item.id = item.id;
-        item.sockets = item.so;
-        item.socketbonus = item.sb;
         item.equip_location = item.e;
         item.requires = item.rq;
         item.slot = item.sl;

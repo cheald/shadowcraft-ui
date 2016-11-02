@@ -12,7 +12,7 @@ module WowArmory
     include Constants
     include Document
     # TODO: document these with some description of what each one is used for
-    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :socket_bonus, :sockets, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :chance_bonus_lists, :bonus_tree, :tag, :context
+    ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :chance_bonus_lists, :bonus_tree, :tag, :context
     attr_accessor *ACCESSORS
 
     def initialize(json, json_source='wowapi')
@@ -36,7 +36,7 @@ module WowArmory
     # as duplicates in the mongo records. Also remove a bunch of fields that are
     # meaningless for gems and relics.
     IGNORE_FIELDS = %i{id context ilevel bonus_tree tag}
-    IGNORE_FOR_GEMS = %i{socket_bonus sockets speed dps subclass armor_class upgradable chance_bonus_lists equip_location}
+    IGNORE_FOR_GEMS = %i{speed dps subclass armor_class upgradable chance_bonus_lists equip_location}
 
     def as_json(options = {})
       if gem_slot
@@ -99,20 +99,6 @@ module WowArmory
         self.context = "quest-reward"
       else
         self.context = json['context']
-      end
-
-      # If the item has sockets, store a bunch of information about the sockets
-      # on the item. This includes a list of the colors of each of the sockets
-      # as well as information about socket bonus the item has.
-      if json['hasSockets']
-        self.sockets = []
-        sockets = json['socketInfo']['sockets']
-        sockets.each do |socket|
-          self.sockets.push socket['type'].capitalize
-        end
-        unless json['socketInfo']['socketBonus'].nil?
-          self.socket_bonus = scan_str(json['socketInfo']['socketBonus'])
-        end
       end
 
       # Tag is the header text on an item that has a description, such as

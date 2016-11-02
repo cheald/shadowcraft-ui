@@ -74,16 +74,8 @@ class Item
       :ilvl => item_level
     }
 
-    if properties['sockets'] and !properties['sockets'].empty?
-      json[:so] = properties['sockets']
-    end
-
     if properties['equip_location']
       json[:e] = properties['equip_location']
-    end
-
-    if properties['socket_bonus']
-      json[:sb] = properties['socket_bonus']
     end
 
     if properties['gem_slot']
