@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.22'
+gem 'rails', '~> 3.2.0'
 gem 'nokogiri', '>= 1.6.0'
 gem "formtastic"
 gem 'dynamic_form'
