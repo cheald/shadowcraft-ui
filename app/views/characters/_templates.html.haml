@@ -125,7 +125,7 @@
     -#%input.ui-button.ui-widget.ui-state-default.ui-corner-all.clearBonuses{:role => "button", :value => "Reset"}
 
 - mustache("itemSlot") do
-  .slot{:id => "{{item/id}}", :"data-identifier" => "{{identifier}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}", :"data-upgrade" => "{{ttupgd}}", :"data-name" => "{{item/name}}", :"data-tag" => "{{tag}}", :"data-context" => "{{item/context}}", :"data-bonus" => "{{ttbonus}}"}<
+  .slot{:id => "{{item/id}}", :"data-identifier" => "{{identifier}}", :"data-slot" => "{{slot}}", :"data-search" => "{{search}}", :"data-upgrade" => "{{ttupgd}}", :"data-name" => "{{item/name}}", :"data-tag" => "{{tag}}", :"data-context" => "{{item/context}}", :"data-bonus" => "{{ttbonus}}", :"data-quality" => "{{quality}}"}<
     .image<
       {{#item}}
       {{#icon}}
