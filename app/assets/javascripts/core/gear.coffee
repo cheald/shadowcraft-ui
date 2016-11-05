@@ -965,7 +965,7 @@ class ShadowcraftGear
     $slot = buf[0]
     slot = buf[1]
     selected_id = $slot.data("identifier")
-    selected_id_ilvl = selected_id.split(":")[1]
+    selected_ilvl = selected_id.split(":")[1]
 
     equip_location = SLOT_INVTYPES[slot]
     GemList = Shadowcraft.ServerData.GEMS
@@ -1000,7 +1000,7 @@ class ShadowcraftGear
           if hasUpgrade
             break
 
-        if (hasUpgrade && equipped.upgrade_level > 0)
+        if (hasUpgrade)
           clone = $.extend({}, l)
           clone.identifier = ""+clone.id+":"+equipped.item_level
           clone.ilvl = equipped.item_level
@@ -1012,7 +1012,7 @@ class ShadowcraftGear
 
           # Modify the selected identifier so that the right item will be selected
           # in the list.
-          selected_id_ilvl = clone.identifier
+          selected_id = clone.identifier
 
         continue
 
@@ -1106,7 +1106,7 @@ class ShadowcraftGear
         if keys.length > 0
           ttbonus = l.ctxts[keys[0]].defaultBonuses.join(":")
 
-      if l.identifier == selected_id_ilvl
+      if l.identifier == selected_ilvl
         bonus_trees = gear[slot].bonuses
         ttbonus = bonus_trees.join(":")
       upgrade = []
