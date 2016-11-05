@@ -1032,8 +1032,9 @@ class ShadowcraftGear
 
       # Filter out items that are outside the min and max ilvls set on the options
       # panel. Only do this for non-weapons though, so someone can always select their
-      # artifact weapon.
-      if (Shadowcraft.Data.options.general.dynamic_ilvl and equipped and slot != 15 and slot != 16)
+      # artifact weapon. Also only do this if there's something actually equipped or
+      # it will filter out everything.
+      if (Shadowcraft.Data.options.general.dynamic_ilvl and equipped and slot != 15 and slot != 16 and equipped.id != 0)
         continue if l.ilvl < equipped.item_level-50 or l.ilvl > equipped.item_level+50
       else
         continue if l.ilvl > Shadowcraft.Data.options.general.max_ilvl
@@ -1584,20 +1585,29 @@ class ShadowcraftGear
               data.gear[16].enchant = 0
               Shadowcraft.Artifact.updateArtifactItem(data.gear[15].id, data.gear[15].item_level, data.gear[15].item_level)
             else
-              item = getItem(item_id, base_ilvl)
-              slotGear.id = item_id
-              slotGear.item_level = base_ilvl
-              slotGear.base_ilvl = base_ilvl
-              upgd_level = parseInt($this.data("upgrade"))
-              slotGear.upgrade_level = if not isNaN(upgd_level) then upgd_level else 0
-              slotGear.gems = [0,0,0]
-              slotGear.quality = parseInt($this.data("quality"))
+              if (item_id)
+                item = getItem(item_id, base_ilvl)
+                slotGear.id = item_id
+                slotGear.item_level = base_ilvl
+                slotGear.base_ilvl = base_ilvl
+                slotGear.quality = parseInt($this.data("quality"))
+                upgd_level = parseInt($this.data("upgrade"))
+                slotGear.upgrade_level = if not isNaN(upgd_level) then upgd_level else 0
 
-              # Get the first key from the set of contexts for this item
-              context = Object.keys(item.ctxts)[0]
-              if (context)
-                slotGear.context = context
-                slotGear.bonuses = item.ctxts[context].defaultBonuses
+                # Get the first key from the set of contexts for this item
+                context = Object.keys(item.ctxts)[0]
+                if (context)
+                  slotGear.context = context
+                  slotGear.bonuses = item.ctxts[context].defaultBonuses
+              else
+                slotGear.id = 0
+                slotGear.item_level = 0
+                slotGear.base_ilvl = 0
+                slotGear.enchant = 0
+                slotGear.upgrade_level = 0
+                slotGear.context = ""
+                slotGear.bonuses = []
+              slotGear.gems = [0,0,0]
           else
             enchant_id = if not isNaN(val) then val else null
             item = getItem(slotGear.id, slotGear.base_ilvl)
