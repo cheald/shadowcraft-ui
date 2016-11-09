@@ -188,7 +188,11 @@ class ShadowcraftArtifact
             if bonus_entry.type == 1
               base_item_level -= bonus_entry.val1
 
-        relicItem = Shadowcraft.ServerData.RELIC_ITEM_LOOKUP[relic.type]["#{relic.id}:#{base_item_level}"]
+        # TODO: fix this in the actual data
+        relic_type = relic.type
+        if relic_type == "Storm"
+          relic_type = "Wind"
+        relicItem = Shadowcraft.ServerData.RELIC_ITEM_LOOKUP[relic_type]["#{relic.id}:#{base_item_level}"]
         if !relicItem
           console.log "Unable to find relic #{relic.id} in database. Not equipping."
           continue
