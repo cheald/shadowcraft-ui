@@ -247,10 +247,13 @@
 - mustache("artifact") do
   #relic1.relicframe.tt{:style => "left:calc(50% - 130px);background-image: url(/images/artifacts/relic-{{relic1}}.png)"}
     %img.relicicon.inactive
+  %select.relicilvl{:id => "relic1_ilvls", :style => "left:calc(50% - 120px)"}
   #relic2.relicframe.tt{:style => "left:calc(50% - 40px);background-image: url(/images/artifacts/relic-{{relic2}}.png)"}
     %img.relicicon.inactive
+  %select.relicilvl{:id => "relic2_ilvls", :style => "left:calc(50% - 30px)"}
   #relic3.relicframe.tt{:style => "left:calc(50% + 50px);background-image: url(/images/artifacts/relic-{{relic3}}.png)"}
     %img.relicicon.inactive
+  %select.relicilvl{:id => "relic3_ilvls", :style => "left:calc(50% + 60px)"}
   {{#traits}}
   .trait.tt{:style => "left:{{left}}%;top:{{top}}%;", :id => "{{id}}", "data-tooltip-type" => "spell", "data-tooltip-id" => "{{spell_id}}", "data-tooltip-rank" => "0", "max_level" => "{{max_level}}"}
     =image_tag "/images/artifacts/relic-blood.png", :class => "relic inactive"
@@ -261,3 +264,6 @@
   {{#lines}}
   .line{:style => "width:{{width}}px;left:{{left}}%;top:{{top}}%;transform:rotate({{angle}}deg);", :spell1 => "{{spell1}}", :spell2 => "{{spell2}}"}
   {{/lines}}
+
+- mustache("relicOption") do
+  <option value="{{bonusId}}" {{#active}}selected="selected"{{/active}}>{{ilvl}}</option>

@@ -172,20 +172,23 @@ class ShadowcraftArtifact
     # the data map.
     # TODO: make this item level a constant somewhere
     oldIlvl = Shadowcraft.Data.gear[15].item_level
-#    Shadowcraft.Data.gear[15].gems = []
-#    Shadowcraft.Data.gear[15].bonuses = [743]
-#    Shadowcraft.Data.gear[15].ttBonuses = [743]
-#    Shadowcraft.Data.gear[16].gems = []
-#    Shadowcraft.Data.gear[16].bonuses = []
-#    Shadowcraft.Data.gear[16].ttBonuses = []
-    
+
     ilvl = 750
     for i in [0...3]
       button = $("#relic"+(i+1)+" .relicicon")
       relicdiv = $("#relic"+(i+1))
       unless _.isEmpty(artifact_data.relics[i])
         relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i].id]
-        relicItem = Shadowcraft.ServerData.GEM_LOOKUP[relic.id]
+
+        # Find the base item level for the equipped relic so we can find the proper base
+        # relic from the RELIC_ITEM_LOOKUP table.
+        base_item_level = artifact_data.relics[i].ilvl
+        for bonusId in artifact_data.relics[i].bonuses
+          for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
+            if bonus_entry.type == 1
+              base_item_level -= bonus_entry.val1
+
+        relicItem = Shadowcraft.ServerData.RELIC_ITEM_LOOKUP[relic.type]["#{relic.id}:#{base_item_level}"]
         if !relicItem
           console.log "Unable to find relic #{relic.id} in database. Not equipping."
           continue
@@ -210,7 +213,19 @@ class ShadowcraftArtifact
         # for that item.
         Shadowcraft.Data.gear[15].gems[i] = relic.id
 
-        # For the offhand weapon we have to figure out what the bonus IDs are supposed to be
+        # Set up the item level increase dropdown
+        # TODO: this could theoretically display more information like the EP of each step, but
+        # it's a shitload of work and I don't think it's worth it.
+        buffer = ""
+        for relic_ilvl in [base_item_level..ShadowcraftConstants.CURRENT_MAX_ILVL] by 5
+          buffer += Templates.relicOption(
+            ilvl: relic_ilvl
+            bonusId: 1472 + (relic_ilvl - base_item_level)
+            active: relic_ilvl == artifact_data.relics[i].ilvl
+          )
+        $("#relic#{i+1}_ilvls").find("option").remove()
+        $("#relic#{i+1}_ilvls").append(buffer)
+
       else
         button.addClass("inactive")
 
@@ -255,8 +270,9 @@ class ShadowcraftArtifact
 
     # Update the stored item level of the artifact weapons so that a
     # recalculation takes the relics into account.
-    # TODO: i'm not entirely sure we should do this anymore. I think we should be updating the
-    # ilvl on the gear item and letting gear.coffee sort out the stats when it recalculates.
+    # TODO: i'm not entirely sure we should do this anymore. I think we should
+    # be updating the ilvl on the gear item and letting gear.coffee sort out the
+    # stats when it recalculates.
     updateArtifactItem(Shadowcraft.Data.gear[15].id, oldIlvl, ilvl)
     updateArtifactItem(Shadowcraft.Data.gear[16].id, oldIlvl, ilvl)
 
@@ -585,6 +601,13 @@ class ShadowcraftArtifact
       ".tt": ttlib.hide
     )
 
+    $("#relic1_ilvls").change ->
+      relicIlvlChanged(0, this)
+    $("#relic2_ilvls").change ->
+      relicIlvlChanged(1, this)
+    $("#relic3_ilvls").change ->
+      relicIlvlChanged(2, this)
+
   resetTraits: ->
 
     for i in [0..2]
@@ -652,6 +675,25 @@ class ShadowcraftArtifact
         rank: parseInt(rank)
       }
       Shadowcraft.Data.artifact[Shadowcraft.Data.activeSpec].traits.push(obj)
+
+  relicIlvlChanged = (relic, target) ->
+    ilvl = parseInt(target.selectedOptions[0].text)
+    bonus = parseInt(target.selectedOptions[0].value)
+
+    # Find the base item level for the equipped relic so we can find the proper base
+    # relic from the RELIC_ITEM_LOOKUP table.
+    existing_bonus = 0
+    for bonusId in artifact_data.relics[relic].bonuses
+      for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
+        if bonus_entry.type == 1
+          existing_bonus = bonusId
+
+    index = artifact_data.relics[relic].bonuses.indexOf(existing_bonus)
+    artifact_data.relics[relic].bonuses.splice(index, 1)
+
+    artifact_data.relics[relic].bonuses.push bonus
+    artifact_data.relics[relic].ilvl = ilvl
+    updateTraits()
 
   boot: ->
     app = this
