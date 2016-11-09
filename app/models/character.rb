@@ -238,25 +238,6 @@ class Character
     }
   end
 
-  # encode player items to a unique identifier for the frontend
-  # TODO subject to change, item handling will definitely change in the future
-  def self.encode_items(items)
-    items.clone.tap do |copy|
-      copy.each do |key, item|
-        suffix = item.include?('suffix')
-        upgrade_level = item.include?('upgrade_level')
-        if suffix
-          item['item_id'] = item['item_id'] * 1000 + item['suffix'].to_i.abs
-          if upgrade_level and item['upgrade_level'] > 0
-            item['item_id'] = item['item_id'] * 1000 + item['upgrade_level'].to_i.abs
-          end
-        elsif upgrade_level and item['upgrade_level'] > 0
-          item['item_id'] = item['item_id'] * 1000000 + item['upgrade_level'].to_i.abs
-        end
-      end
-    end
-  end
-
   # Returns the full name of the Character with realm and region
   def fullname
     '%s @ %s-%s' % [name.titleize, realm.titleize, region.upcase]

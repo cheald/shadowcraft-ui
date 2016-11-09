@@ -633,7 +633,6 @@ class ShadowcraftGear
 
           # Check if there are any bonus traits like sockets or tertiary stats that can
           # be applied to this item.
-          # TODO: WF/TF add support here.
           # TODO: add suffix support here.
           if item.chance_bonus_lists?
             for bonusId in item.chance_bonus_lists
@@ -692,7 +691,6 @@ class ShadowcraftGear
           opt.ilvl = gear.item_level
           opt.ttid = item.id if item
           opt.quality = if gear.quality then gear.quality else item.quality
-          opt.ttrand = if item then item.suffix else null
           opt.ttupgd = if upgrade then upgrade['curr_level'] else null
           opt.ttbonus = if gear.ttBonuses then gear.ttBonuses.join(":") else null
           opt.ttgems = if ttgems != "0:0:0" then ttgems else null
@@ -1133,15 +1131,14 @@ class ShadowcraftGear
         gems: []
         upgradable: l.upgradable
         upgrade: upgrade
-        ttid: ttid
-        ttrand: ttrand
-        ttupgd: ttupgd
+        ttid: l.id
+        ttupgd: if l.upgradable then l.upgrade_level else ""
         ttbonus: ttbonus
         quality: l.quality
         desc: "#{l.__gearEP.toFixed(1)} base #{if l.__setBonusEP > 0 then "/ "+ l.__setBonusEP.toFixed(1) + " set" else ""} "
         search: escape(l.name + " " + l.tag)
-        percent: Math.max (iEP - minIEP) / maxIEP * 100, 0.01
-        ep: iEP.toFixed(1)
+        percent: Math.max (l.__ep - minIEP) / maxIEP * 100, 0.01
+        ep: l.__ep.toFixed(1)
         display_ilvl: true
         tags: tags.join(" / ")
       )
