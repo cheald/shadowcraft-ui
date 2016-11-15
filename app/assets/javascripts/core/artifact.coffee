@@ -184,9 +184,10 @@ class ShadowcraftArtifact
         # relic from the RELIC_ITEM_LOOKUP table.
         base_item_level = artifact_data.relics[i].ilvl
         for bonusId in artifact_data.relics[i].bonuses
-          for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
-            if bonus_entry.type == 1
-              base_item_level -= bonus_entry.val1
+          if bonusId in Shadowcraft.ServerData.ITEM_BONUSES
+            for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
+              if bonus_entry.type == 1
+                base_item_level -= bonus_entry.val1
 
         # TODO: fix this in the actual data
         relic_type = relic.type
