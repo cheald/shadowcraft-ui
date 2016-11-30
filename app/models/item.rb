@@ -43,7 +43,8 @@ class Item
   # chanceBonusList entry.  This is the list of bonus IDs for those stages and is
   # handled slightly differently.  See below for the check for trade-skill for more
   # details.
-  TRADESKILL_BONUS_IDS = [525, 558, 559, 594, 597, 598, 599, 619, 620, 666, 667, 668, 669]
+  WOD_TRADESKILL_BONUS_IDS = [525, 526, 527, 558, 559, 593, 594, 617, 619, 618, 620]
+  TRADESKILL_BONUS_IDS = [596, 597, 598, 599, 666, 667, 668, 669, 670, 671, 672]
 
   ARTIFACT_WEAPONS = [128476, 128479, 128870, 128869, 128872, 134552]
   ORDER_HALL_SET = [139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746]
@@ -330,7 +331,7 @@ class Item
     # Next, look at the chance bonus lists that accompany the item. This bonus list is
     # the things that can be applied to an item, such as extra titles (warforged, crafting
     # stages), tertiary stats, sockets, etc.
-    itemChanceBonuses = get_bonus_IDs_to_load(base_json['bonusSummary']['chanceBonusLists'].clone, id, base_json['context'])
+    itemChanceBonuses = get_bonus_IDs_to_load(base_json['bonusSummary']['chanceBonusLists'].clone, id, base_json['context'], base_json['itemLevel'])
     defaultBonuses = base_json['bonusLists']
 
     # Loop through now-trimmed list of bonus IDs and load an additional item for each
@@ -366,7 +367,7 @@ class Item
         json_data.push(json)
 
         # Same thing here with the bonus IDs. Gotta load all of those here too.
-        itemChanceBonuses = get_bonus_IDs_to_load(json['bonusSummary']['chanceBonusLists'], id, json['context'])
+        itemChanceBonuses = get_bonus_IDs_to_load(json['bonusSummary']['chanceBonusLists'], id, json['context'], json['itemLevel'])
         defaultBonuses = json['bonusLists']
 
         # Same thing here with the bonus IDs. Gotta load all of those here too.
@@ -450,6 +451,8 @@ class Item
         db_item.properties['chance_bonus_lists'] |= CHANCE_BONUSES
       end
 
+      Rails.logger.debug context
+
       db_item.context_map[name] = context
       db_item.contexts.push(name)
       db_item.save!
@@ -462,13 +465,17 @@ class Item
   # titles, since we load an additional item for each one of those. The bonus IDs that
   # we want are white-listed earlier in this class. Extra items will be loaded for
   # these bonus IDs.
-  def self.get_bonus_IDs_to_load(possible_IDs, item_id, context)
+  def self.get_bonus_IDs_to_load(possible_IDs, item_id, context, item_level)
     itemChanceBonuses = possible_IDs.clone()
     itemChanceBonuses.delete_if { |bonus| !BONUS_ID_WHITELIST.include? bonus }
 
     # for trade-skill items, also add the bonuses for each of the "stage" titles
     if (context == 'trade-skill')
-      itemChanceBonuses = TRADESKILL_BONUS_IDS
+      if (item_level > 750)
+        itemChanceBonuses = TRADESKILL_BONUS_IDS
+      else
+        itemChanceBonuses = WOD_TRADESKILL_BONUS_IDS
+      end
     end
 
     if !itemChanceBonuses.empty?
