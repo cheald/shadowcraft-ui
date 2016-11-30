@@ -226,7 +226,15 @@ class ShadowcraftGear
 
   # Sort comparator that sorts items in reverse order (highest first)
   sortComparator = (a, b) ->
-    b.__ep - a.__ep
+    diff = b.__ep - a.__ep
+    if diff == 0
+      diff = b.id - a.id
+      if diff == 0
+        return b.ilvl - a.ilvl
+      else
+        return diff
+    else
+      return diff
 
   # Sorts a list of item IDs based on their EP value. This requires repeatedly calling
   # getEP for every item, then sorting the resulting list.
@@ -1092,7 +1100,12 @@ class ShadowcraftGear
     maxIEP -= minIEP
 
     for l in loc
-      continue if l.__ep < 1
+
+      ctxtKeys = []
+      if l.ctxts
+        ctxtKeys = Object.keys(l.ctxts)
+
+      continue if l.__ep < 1 and !("trade-skill" in ctxtKeys)
       iEP = l.__ep
 
       ttid = l.id
@@ -1100,10 +1113,8 @@ class ShadowcraftGear
       ttupgd = if l.upgradable then l.upgrade_level else ""
 
       ttbonus = ""
-      if l.ctxts
-        keys = Object.keys(l.ctxts)
-        if keys.length > 0
-          ttbonus = l.ctxts[keys[0]].defaultBonuses.join(":")
+      if ctxtKeys.length > 0
+        ttbonus = l.ctxts[ctxtKeys[0]].defaultBonuses.join(":")
 
       if l.identifier == selected_ilvl
         bonus_trees = gear[slot].bonuses
