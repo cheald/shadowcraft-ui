@@ -486,7 +486,7 @@ class Item
 
   # Retrieves a set of item IDs from wowhead using a filter on ilvl and quality
   def self.get_ids_from_wowhead_by_ilvl(prefix, quality, min_ilvl, max_ilvl)
-    url = "http://#{prefix}.wowhead.com/items?filter=qu=#{quality};minle=#{min_ilvl};maxle=#{max_ilvl};ub=4;cr=21;crs=1;crv=0;eb=1"
+    url = "http://#{prefix}.wowhead.com/items/min-level:#{min_ilvl}/max-level:#{max_ilvl}/class:4/quality:#{quality}/live-only:on?filter=21;1;0"
     get_ids_from_wowhead(url)
   end
 
@@ -499,7 +499,7 @@ class Item
 
   # Retrieves a set of item IDs from wowhead based on type. Used for loading relic IDs.
   def self.get_ids_from_wowhead_by_type(type)
-    url = "http://legion.wowhead.com/items=3?filter=ty=#{type};cr=166;crs=7;crv=0"
+    url = "http://www.wowhead.com/gems/type:#{type}?filter=166;7;0"
     doc = open(url, 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36').read
     ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i
     ids
