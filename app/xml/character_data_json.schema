@@ -33,12 +33,25 @@
           },
           "minItems": 0
         },
+        "ttBonuses": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 0
+        },
         "context": {
           "type": "string",
           "maxLength": 50
+        },
+        "quality": {
+          "type": "integer"
+        },
+        "base_ilvl": {
+          "type": "integer"
         }
       },
-      "required": ["id", "item_level", "enchant", "gems", "slot", "bonuses", "context"],
+      "required": ["id", "item_level", "enchant", "gems", "slot", "bonuses", "ttBonuses", "context", "quality", "base_ilvl"],
       "additionalProperties": false
     },
     "gear": {
@@ -216,6 +229,14 @@
           "type": "string",
           "maxLength": 20
         },
+        "assn_cp_builder": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "sub_cp_builder": {
+          "type": "string",
+          "maxLength": 20
+        },
         "lethal_poison": {
           "type": "string",
           "maxLength": 2
@@ -266,9 +287,12 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 100
+        },
+        "compute_cp_waste": {
+          "type": "boolean"
         }
       },
-      "required": ["kingsbane", "exsang", "cp_builder", "lethal_poison", "blade_flurry", "between_the_eyes_policy", "reroll_policy", "jolly_roger_reroll", "grand_melee_reroll", "shark_reroll", "true_bearing_reroll", "buried_treasure_reroll", "broadsides_reroll", "symbols_policy", "dance_finishers_allowed", "positional_uptime"],
+      "required": ["kingsbane", "exsang", "lethal_poison", "blade_flurry", "between_the_eyes_policy", "reroll_policy", "jolly_roger_reroll", "grand_melee_reroll", "shark_reroll", "true_bearing_reroll", "buried_treasure_reroll", "broadsides_reroll", "symbols_policy", "dance_finishers_allowed", "positional_uptime"],
       "additionalProperties": false
     },
     "options_advanced": {
