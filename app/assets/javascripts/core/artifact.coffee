@@ -180,20 +180,11 @@ class ShadowcraftArtifact
       unless _.isEmpty(artifact_data.relics[i])
         relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i].id]
 
-        # Find the base item level for the equipped relic so we can find the proper base
-        # relic from the RELIC_ITEM_LOOKUP table.
-        base_item_level = artifact_data.relics[i].ilvl
-        for bonusId in artifact_data.relics[i].bonuses
-          if bonusId in Shadowcraft.ServerData.ITEM_BONUSES
-            for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
-              if bonus_entry.type == 1
-                base_item_level -= bonus_entry.val1
-
         # TODO: fix this in the actual data
         relic_type = relic.type
         if relic_type == "Storm"
           relic_type = "Wind"
-        relicItem = Shadowcraft.ServerData.RELIC_ITEM_LOOKUP[relic_type]["#{relic.id}:#{base_item_level}"]
+        relicItem = Shadowcraft.ServerData.RELIC_ITEM_LOOKUP[relic_type]["#{relic.id}:#{artifact_data.relics[i].base_ilvl}"]
         if !relicItem
           console.log "Unable to find relic #{relic.id} in database. Not equipping."
           continue
@@ -222,10 +213,10 @@ class ShadowcraftArtifact
         # TODO: this could theoretically display more information like the EP of each step, but
         # it's a shitload of work and I don't think it's worth it.
         buffer = ""
-        for relic_ilvl in [base_item_level..ShadowcraftConstants.CURRENT_MAX_ILVL] by 5
+        for relic_ilvl in [artifact_data.relics[i].base_ilvl..ShadowcraftConstants.CURRENT_MAX_ILVL] by 5
           buffer += Templates.relicOption(
             ilvl: relic_ilvl
-            bonusId: 1472 + (relic_ilvl - base_item_level)
+            bonusId: 1472 + (relic_ilvl - artifact_data.relics[i].base_ilvl)
             active: relic_ilvl == artifact_data.relics[i].ilvl
           )
         $("#relic#{i+1}_ilvls").find("option").remove()

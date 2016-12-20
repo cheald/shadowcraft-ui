@@ -110,8 +110,8 @@ class Character
 
           if not db_item.nil?
             base_item_level = db_item.item_level
-            Rails.logger.debug "Can't find item %d/%s in database" % [item['id'].to_i,item['context']]
           else
+            Rails.logger.debug "Can't find item %d/%s in database" % [item['id'].to_i,item['context']]
             base_item_level = 0
           end
           item['base_ilvl'] = base_item_level
@@ -200,6 +200,19 @@ class Character
               orig_trait['rank'] -= trait_from_relic['rank']
             end
           end
+        end
+
+        # Lookup the full relic data in the database from the item table so that we can fake
+        # a base ilvl in the relic data.
+        begin
+          r = Item.where(:remote_id => relic['id'], :item_level => {'$lte' => relic['ilvl']}).order_by(:item_level.desc)
+          unless r.nil? or r.empty?
+            relic_array[relic['socket']]['base_ilvl'] = r[0].item_level
+          else
+            relic_array[relic['socket']]['base_ilvl'] = 0
+          end
+        rescue Exception => e
+          Rails.logger.debug e.message
         end
       end
       orig_artifact_data['relics'] = relic_array
