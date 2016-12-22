@@ -79,6 +79,7 @@ class ShadowcraftComputation:
             192424: 'surge_of_toxins',
             192310: 'toxic_blades',
             192384: 'urge_to_kill',
+            214928: 'slayers_precision',
         },
 
         # Outlaw/Dreadblades traits
@@ -100,6 +101,7 @@ class ShadowcraftComputation:
             202820: 'greed',
             202522: 'gunslinger',
             202753: 'hidden_blade',
+            214929: 'cursed_steel',
         },
 
         # Subtlety/Fangs traits
@@ -121,6 +123,7 @@ class ShadowcraftComputation:
             221856: 'shadow_fangs',
             209781: 'shadow_nova',
             197386: 'soul_shadows',
+            214930: 'legionblade',
         },
     }
 
@@ -472,7 +475,7 @@ class ShadowcraftComputation:
             # if no artifact data was passed (probably because the user had the wrong
             # weapons equipped), pass a string of zeros as the trait data.
             _traits = artifact.Artifact(spec, "rogue", "0"*len(artifact_data.traits[("rogue",spec)]))
-        elif len(input['art']) == len(artifact_data.traits[("rogue",spec)])-1:
+        elif len(input['art']) == len(artifact_data.traits[("rogue",spec)]):
             traitstr = ""
             remap = {}
             for k,v in input['art'].iteritems():

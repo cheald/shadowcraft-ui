@@ -12,6 +12,7 @@ ShadowcraftApp.bind "boot", ->
         {id: "db_curse", spell_id: 202665, max_level: 1, icon: "inv_sword_1h_artifactskywall_d_01dual", ring: "thick", left: 48.293, top: 47.429},
         {id: "db_cursededges", spell_id: 202463, max_level: 1, icon: "inv_sword_33", ring: "thin", left: 32.195, top: 62.000, is_thin: true},
         {id: "db_cursedleather", spell_id: 202521, max_level: 3, icon: "spell_rogue_deathfromabove", ring: "thin", left: 76.463, top: 33.286, is_thin: true},
+        {id: "db_cursedsteel", spell_id: 214929, max_level: 20, icon: "inv_sword_1h_artifactskywall_d_02dual", ring: "dragon", left: 11.220, top: 25.000},
         {id: "db_deception", spell_id: 202755, max_level: 1, icon: "ability_rogue_disguise", ring: "thin", left: 62.927, top: 27.143, is_thin: true},
         {id: "db_fatebringer", spell_id: 202524, max_level: 3, icon: "ability_rogue_cuttothechase", ring: "thin", left: 19.268, top: 60.286, is_thin: true},
         {id: "db_fatesthirst", spell_id: 202514, max_level: 3, icon: "ability_rogue_waylay", ring: "thin", left: 37.805, top: 46.000, is_thin: true},
@@ -49,16 +50,17 @@ ShadowcraftApp.bind "boot", ->
       $("#artifactframe").css("background-image", "url('/images/artifacts/fangs-bg.jpg')")
       traits = [
         {id: "fangs_akaarissoul", spell_id: 209835, max_level: 1, icon: "ability_warlock_soullink", ring: "dragon", left: 74.306, top: 43.252},
-        {id: "fangs_catwalk", spell_id: 197241, max_level: 3, icon: "inv_pet_cats_calicocat", ring: "thin", left: 52.639, top: 48.455, is_thin: true},
+        {id: "fangs_catlike", spell_id: 197241, max_level: 3, icon: "inv_pet_cats_calicocat", ring: "thin", left: 52.639, top: 48.455, is_thin: true},
         {id: "fangs_demonskiss", spell_id: 197233, max_level: 3, icon: "ability_priest_voidentropy", ring: "thin", left: 35.278, top: 86.829, is_thin: true},
         {id: "fangs_embrace", spell_id: 197604, max_level: 1, icon: "ability_stealth", ring: "thin", left: 68.611, top: 68.130, is_thin: true},
         {id: "fangs_energetic", spell_id: 197239, max_level: 3, icon: "inv_knife_1h_pvppandarias3_c_02", ring: "thin", left: 32.917, top: 72.033, is_thin: true},
-        {id: "fangs_faster", spell_id: 197256, max_level: 1, icon: "ability_rogue_sprint_blue", ring: "thin", left: 51.806, top: 68.943, is_thin: true},
         {id: "fangs_finality", spell_id: 197406, max_level: 1, icon: "ability_rogue_eviscerate", ring: "dragon", left: 16.250, top: 78.699},
+        {id: "fangs_flickering", spell_id: 197256, max_level: 1, icon: "ability_rogue_sprint_blue", ring: "thin", left: 51.806, top: 68.943, is_thin: true},
         {id: "fangs_fortunesbite", spell_id: 197369, max_level: 3, icon: "ability_rogue_masterofsubtlety", ring: "thin", left: 80.972, top: 56.911, is_thin: true},
         {id: "fangs_ghostarmor", spell_id: 197244, max_level: 3, icon: "achievement_halloween_ghost_01", ring: "thin", left: 42.778, top: 62.114, is_thin: true},
         {id: "fangs_goremawsbite", spell_id: 209782, max_level: 1, icon: "inv_knife_1h_artifactfangs_d_01", ring: "thick", left: 83.472, top: 21.463},
         {id: "fangs_gutripper", spell_id: 197234, max_level: 3, icon: "ability_rogue_eviscerate", ring: "thin", left: 75.000, top: 31.707, is_thin: true},
+        {id: "fangs_legionblade", spell_id: 214930, max_level: 20, icon: "inv_knife_1h_artifactfangs_d_02dual", ring: "dragon", left: 25.694, top: 51.382},
         {id: "fangs_precision", spell_id: 197235, max_level: 3, icon: "ability_rogue_unfairadvantage", ring: "thin", left: 53.750, top: 82.114, is_thin: true},
         {id: "fangs_quietknife", spell_id: 197231, max_level: 3, icon: "ability_backstab", ring: "thin", left: 64.306, top: 58.374, is_thin: true},
         {id: "fangs_second", spell_id: 197610, max_level: 1, icon: "inv_throwingknife_07", ring: "thin", left: 42.778, top: 76.585, is_thin: true},
@@ -95,17 +97,18 @@ ShadowcraftApp.bind "boot", ->
         {id: "ks_assassinsblades", spell_id: 214368, max_level: 1, icon: "ability_rogue_shadowstrikes", ring: "thin", left: 47.917, top: 34.634, is_thin: true},
         {id: "ks_bagoftricks", spell_id: 192657, max_level: 1, icon: "rogue_paralytic_poison", ring: "dragon", left: 8.472, top: 34.146},
         {id: "ks_balancedblades", spell_id: 192326, max_level: 3, icon: "ability_rogue_restlessblades", ring: "thin", left: 40.556, top: 54.472, is_thin: true},
-        {id: "ks_blood", spell_id: 192923, max_level: 1, icon: "inv_artifact_bloodoftheassassinated", ring: "dragon", left: 8.472, top: 82.439},
         {id: "ks_embrace", spell_id: 192323, max_level: 3, icon: "spell_shadow_nethercloak", ring: "thin", left: 16.944, top: 69.106, is_thin: true},
+        {id: "ks_fadeintoshadows", spell_id: 192923, max_level: 1, icon: "inv_artifact_bloodoftheassassinated", ring: "dragon", left: 8.472, top: 82.439},
         {id: "ks_fromtheshadows", spell_id: 192428, max_level: 1, icon: "ability_rogue_deadlybrew", ring: "dragon", left: 69.861, top: 24.553},
-        {id: "ks_graspofguldan", spell_id: 192759, max_level: 1, icon: "ability_rogue_focusedattacks", ring: "thick", left: 55.139, top: 27.642},
         {id: "ks_gushingwound", spell_id: 192329, max_level: 3, icon: "ability_rogue_bloodsplatter", ring: "thin", left: 0.694, top: 69.593, is_thin: true},
+        {id: "ks_kingsbane", spell_id: 192759, max_level: 1, icon: "inv_knife_1h_artifactgarona_d_01", ring: "thick", left: 55.139, top: 27.642},
         {id: "ks_masteralchemist", spell_id: 192318, max_level: 3, icon: "trade_brewpoison", ring: "thin", left: 2.917, top: 51.057, is_thin: true},
         {id: "ks_masterassassin", spell_id: 192349, max_level: 3, icon: "ability_rogue_deadliness", ring: "thin", left: 18.889, top: 51.707, is_thin: true},
         {id: "ks_poisonknives", spell_id: 192376, max_level: 3, icon: "ability_rogue_dualweild", ring: "thin", left: 53.750, top: 56.260, is_thin: true},
         {id: "ks_serratededge", spell_id: 192315, max_level: 3, icon: "ability_warrior_bloodbath", ring: "thin", left: 70.417, top: 41.951, is_thin: true},
         {id: "ks_shadowswift", spell_id: 192422, max_level: 1, icon: "rogue_burstofspeed", ring: "thin", left: 27.639, top: 57.561, is_thin: true},
         {id: "ks_shadowwalker", spell_id: 192345, max_level: 3, icon: "ability_rogue_sprint", ring: "thin", left: 20.833, top: 40.000, is_thin: true},
+        {id: "ks_slayersprecision", spell_id: 214928, max_level: 20, icon: "inv_knife_1h_artifactgarona_d_02dual", ring: "dragon", left: 83.056, top: 19.350},
         {id: "ks_surgeoftoxins", spell_id: 192424, max_level: 1, icon: "ability_rogue_deviouspoisons", ring: "thin", left: 60.556, top: 47.805, is_thin: true},
         {id: "ks_toxicblades", spell_id: 192310, max_level: 3, icon: "ability_rogue_disembowel", ring: "thin", left: 39.444, top: 38.374, is_thin: true},
         {id: "ks_urgetokill", spell_id: 192384, max_level: 1, icon: "ability_rogue_improvedrecuperate", ring: "thin", left: 30.278, top: 40.976, is_thin: true},
@@ -135,4 +138,3 @@ ShadowcraftApp.bind "boot", ->
       ]
 
       return Templates.artifact(traits: traits, lines: lines, relic1: 'shadow', relic2: 'iron', relic3: 'blood')
-

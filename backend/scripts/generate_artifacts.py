@@ -132,8 +132,8 @@ if sys.argv[1] == '--db':
   ICONS = {}
   LINES = []
   BG_IMAGE = '/images/artifacts/dreadblades-bg-icons.png'
-  IMAGE_HEIGHT=700
-  IMAGE_WIDTH=820
+  IMAGE_HEIGHT=615
+  IMAGE_WIDTH=720
   datafile = "dreadblades_data.txt"
 
   spell_id_map = {
@@ -157,7 +157,7 @@ if sys.argv[1] == '--db':
     "214929": "db_cursedsteel",
   }
   
-  exclude = ['214929']
+  exclude = []
 
   generateData('dreadblades_data.txt', ICONS, LINES, spell_id_map, IMAGE_HEIGHT, IMAGE_WIDTH, exclude)
 
@@ -190,7 +190,7 @@ elif sys.argv[1] == '--ks':
     "214368": "ks_assassinsblades",
   }
 
-  exclude = ['214928']
+  exclude = []
 
   generateData('kingslayers_data.txt', ICONS, LINES, spell_id_map, IMAGE_HEIGHT, IMAGE_WIDTH, exclude)
 
@@ -223,7 +223,7 @@ elif sys.argv[1] == '--fangs':
     "221856": "fangs_shadowfangs",
   }
 
-  exclude = ['214930']
+  exclude = []
 
   generateData('fangs_data.txt', ICONS, LINES, spell_id_map, IMAGE_HEIGHT, IMAGE_WIDTH, exclude)
 
