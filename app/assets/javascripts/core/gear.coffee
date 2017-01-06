@@ -998,7 +998,7 @@ class ShadowcraftGear
         hasUpgrade = false
         bonuses = $(equipped.bonuses).not(l.bonus_tree).get()
         for bonus in bonuses
-          continue if bonus == ""
+          continue if bonus == "" or bonus not in ShadowcraftData.ITEM_BONUSES
           for entry in ShadowcraftData.ITEM_BONUSES[bonus]
             if entry.type == 1
               hasUpgrade = true
