@@ -265,7 +265,7 @@ class ShadowcraftConstants
 
   # This is the current maximum ilevel of items via WF/TF. This means that the WF/TF
   # popup will only show entries up to this maximum amount.
-  @CURRENT_MAX_ILVL = 895
+  @CURRENT_MAX_ILVL = 955
 
   @ARTIFACTS = [128476, 128479, 128872, 134552, 128869, 128870]
   @ARTIFACT_SETS =
