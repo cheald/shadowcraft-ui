@@ -12,11 +12,11 @@ git checkout legion-dev
 popd
 
 mv simc/dbc_extract3 simc/casc_extract .
-#rm -rf simc
+rm -rf simc
 
 mkdir -p casc_data
 cd casc_extract
-./casc_extract.py -m batch --cdn --ptr -o ../casc_data | tee ../casc_data/extract.log
+./casc_extract.py -m batch --cdn -o ../casc_data | tee ../casc_data/extract.log
 cd ..
 
 CDN_VERSION=`awk -F": " '/^Current build version/ {print $2}' casc_data/extract.log | awk '{print $1}'`
@@ -32,7 +32,7 @@ done
 
 cd $SCRIPT_DIR
 mv csv_temp/csvs/*.csv .
-#rm -rf csv_temp
+rm -rf csv_temp
 
 echo "Regenerate these files with the 'generate_csv.sh' script" > README.txt
 echo >> README.txt
