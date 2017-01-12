@@ -435,13 +435,13 @@ class Item
         db_item.is_gem = !db_item.properties['gem_slot'].blank?
       end
 
-      name = json['context']
+      name = item.context
       context = {}
       context['tag'] = item.tag
-      if json['context'].start_with?('world-quest')
+      if item.context.start_with?('world-quest')
         name = 'world-quest'
         context['tag'] = "World Quest"
-      elsif json['context'].start_with?('dungeon-level-up')
+      elsif item.context.start_with?('dungeon-level-up')
         name = 'dungeon-level-up'
         context['tag'] = "Level-up Dungeon"
       end
@@ -451,7 +451,7 @@ class Item
       # bonuses for lots and lots of items, which means we have no way to know whether
       # an item can have sockets or be warforged, etc. For non-trade-skill items, just
       # stick a set of bonuses on the item and be done with it.
-      if json['context'] != 'trade-skill' and !db_item.is_gem?
+      if item.context != 'trade-skill' and !db_item.is_gem?
         db_item.properties['chance_bonus_lists'] |= CHANCE_BONUSES
       end
 

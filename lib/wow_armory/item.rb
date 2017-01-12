@@ -95,7 +95,7 @@ module WowArmory
 
       # Special case legendary rings, since they don't come with a context in
       # the item data (but do when you get them with character data!)
-      if (@id == 124636)
+      if ([124636, 142469, 139933, 139958].include? json['id'].to_i)
         self.context = "quest-reward"
       else
         self.context = json['context']
