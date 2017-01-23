@@ -358,6 +358,9 @@ class ShadowcraftConstants
     CINIDARIA_THE_SYMBIOTE:
       ids: [133976]
       bonuses: {1: 'cinidaria_the_symbiote'}
+    MANTLE_OF_THE_MASTER_ASSASSIN:
+      ids: [144236]
+      bonuses: {1: 'mantle_of_the_master_assassin'}
     TOES_KNEES:
       ids: [142164, 142203]
       bonuses: {2: 'kara_empowered_2pc'}

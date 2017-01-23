@@ -190,6 +190,7 @@ class ShadowcraftComputation:
         137032: 'shadow_satyrs_walk',
         137100: 'denial_of_the_half_giants',
         133976: 'cinidaria_the_symbiote',
+        144236: 'mantle_of_the_master_assassin',
     }
 
     # combines gearProcs and gearBoosts
