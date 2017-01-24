@@ -286,6 +286,7 @@ class ShadowcraftConstants
       icon: "inv_knife_1h_artifactgarona_d_01"
       text: "The Kingslayers"
       main: 192759
+      thirtyfive: 214928
       relic1: "Shadow"
       relic2: "Iron"
       relic3: "Blood"
@@ -293,6 +294,7 @@ class ShadowcraftConstants
       icon: "inv_sword_1h_artifactskywall_d_01"
       text: "The Dreadblades"
       main: 202665
+      thirtyfive: 214929
       relic1: "Blood"
       relic2: "Iron"
       relic3: "Storm"
@@ -300,6 +302,7 @@ class ShadowcraftConstants
       icon: "inv_knife_1h_artifactfangs_d_01"
       text: "Fangs of the Devourer"
       main: 209782
+      thirtyfive: 214930
       relic1: "Fel"
       relic2: "Shadow"
       relic3: "Fel"
