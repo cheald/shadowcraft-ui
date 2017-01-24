@@ -66,6 +66,7 @@ class ShadowcraftArtifact
     # Get the main spell ID for this artifact based on the active spec
     active = ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec]
     main_spell_id = ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].main
+    thirty_fiv = ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].35th
 
     # Disable everything.
     $("#artifactframe .trait").each(->
@@ -126,6 +127,10 @@ class ShadowcraftArtifact
         current += relic.ts[Shadowcraft.Data.activeSpec].rank
         trait.data('relic-power', current)
         stack.push(relic.ts[Shadowcraft.Data.activeSpec].spell)
+
+    # If the user has points put in to their 35th trait, add it to the stack
+    if artifact_data.traits[thirty_five] > 0
+      activeTrait(thirty_five)
 
     while (stack.length > 0)
       spell_id = stack.pop()
@@ -254,6 +259,10 @@ class ShadowcraftArtifact
         total_artifact_points += artifact_data.traits[local_spell_id]
       return
     )
+
+    if total_artifact_points == 34 and !artifact_data.traits[thirty_five]
+      artifact_data.traits[thirty_five] = 0
+      activeTrait(thirty_five)
 
     trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
 
