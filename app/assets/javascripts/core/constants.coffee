@@ -337,9 +337,9 @@ class ShadowcraftConstants
     DUSKWALKERS_FOOTPADS:
       ids: [137030]
       bonuses: {1: 'duskwalkers_footpads'}
-    ZOLDYK_FAMILY_TRAINING_SHACKLES:
+    ZOLDYCK_FAMILY_TRAINING_SHACKLES:
       ids: [137098]
-      bonuses: {1: 'zoldyk_family_training_shackles'}
+      bonuses: {1: 'zoldyck_family_training_shackles'}
     THE_DREADLORDS_DECEIT:
       ids: [137021]
       bonuses: {1: 'the_dreadlords_deceit'}

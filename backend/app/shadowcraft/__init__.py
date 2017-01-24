@@ -182,7 +182,7 @@ class ShadowcraftComputation:
     gearBoosts = {
         137049: 'insignia_of_ravenholdt',
         137030: 'duskwalkers_footpads',
-        137098: 'zoldyk_family_training_shackles',
+        137098: 'zoldyck_family_training_shackles',
         137021: 'the_dreadlords_deceit',
         137031: 'thraxis_tricksy_treads',
         137099: 'greenskins_waterlogged_wristcuffs',
