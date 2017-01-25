@@ -352,7 +352,7 @@ class ShadowcraftComputation:
         if len(self.jacinsRuseIDs & gear) == 2:
             buff_list.append('jacins_ruse_2pc')
 
-        if len(self.toeKneesIDs & gear) == 2 or len(self.bloodstainedIDs & gear) == 2 or len(self.eyeOfCommandIDs) == 2:
+        if len(self.toeKneesIDs & gear) == 2 or len(self.bloodstainedIDs & gear) == 2 or len(self.eyeOfCommandIDs & gear) == 2:
             buff_list.append('kara_empowered_2pc')
 
         agi_bonus = 0
