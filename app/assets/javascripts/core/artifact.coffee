@@ -6,10 +6,6 @@ class ShadowcraftArtifact
   $popupbody = null
   $popup = null
 
-  # Stores which of the relic icons was clicked on. This is 0-2, but defaults
-  # back to -1 after the click has been processed.
-  clicked_relic_slot = 0
-
   # Stores a mapping of ilvl increase to the EP increase for that ilvl. These
   # get reset whenever a calculation happens (because the EP for each stat
   # changes). Some may get recalculated if the user goes to select a relic.
@@ -120,13 +116,11 @@ class ShadowcraftArtifact
     # it gets added to the trait's level when the display is updated.
     for i in [0...3]
       unless _.isEmpty(artifact_data.relics[i])
-        relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i].id]
-        spell = relic.ts[Shadowcraft.Data.activeSpec].spell
-        trait = $("#artifactframe .trait[data-tooltip-id='#{spell}']")
-        current = trait.data('relic-power')
-        current += relic.ts[Shadowcraft.Data.activeSpec].rank
+        relic_trait = artifact_data.relics[i].trait
+        trait = $("#artifactframe .trait[data-tooltip-id='#{relic_trait.spell}']")
+        current = trait.data('relic-power') + relic_trait.rank
         trait.data('relic-power', current)
-        stack.push(relic.ts[Shadowcraft.Data.activeSpec].spell)
+        stack.push(relic_trait.spell)
 
     # If the user has points put in to their 35th trait, add it to the stack
     if artifact_data.traits[thirty_five] > 0
@@ -176,60 +170,30 @@ class ShadowcraftArtifact
     # icons that are currently disabled, but doesn't increase their value in
     # the data map.
     # TODO: make this item level a constant somewhere
-    oldIlvl = Shadowcraft.Data.gear[15].item_level
+    old_ilvl = Shadowcraft.Data.gear[15].item_level
 
-    ilvl = 750
+    new_ilvl = 750
     for i in [0...3]
-      button = $("#relic"+(i+1)+" .relicicon")
-      relicdiv = $("#relic"+(i+1))
       unless _.isEmpty(artifact_data.relics[i])
-        relic = Shadowcraft.ServerData.RELIC_LOOKUP[artifact_data.relics[i].id]
+        trait_id = artifact_data.relics[i].trait.spell
+        relic_ilvl = artifact_data.relics[i].ilvl
+        $("#relic-#{i}-#{trait_id}").prop('selected', true)
+        $("#relicilvl-#{i}-#{relic_ilvl}").prop('selected', true)
 
-        # TODO: fix this in the actual data
-        relic_type = relic.type
-        if relic_type == "Storm"
-          relic_type = "Wind"
-        relicItem = Shadowcraft.ServerData.RELIC_ITEM_LOOKUP[relic_type]["#{relic.id}:#{artifact_data.relics[i].base_ilvl}"]
-        if !relicItem
-          console.log "Unable to find relic #{relic.id} in database. Not equipping."
-          continue
-        ilvl_increase = ShadowcraftConstants.RELIC_ILVL_MAPPING[artifact_data.relics[i].ilvl]
-        if !ilvl_increase
-          console.log "Failed to find ilvl mapping for relic with ilvl #{artifact_data.relics[i].ilvl}"
-        ilvl += ilvl_increase
-        relicTrait = relic.ts[Shadowcraft.Data.activeSpec]
-        button.attr("src", "http://wow.zamimg.com/images/wow/icons/large/"+relicItem.icon+".jpg")
-        button.removeClass("inactive")
-        relicdiv.data("tooltip-id", relic.id)
-        relicdiv.data("tooltip-spec", ShadowcraftConstants.WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec])
-        relicdiv.data("tooltip-bonus", artifact_data.relics[i].bonuses.join(":"))
+        new_ilvl += ShadowcraftConstants.RELIC_ILVL_MAPPING[relic_ilvl]
+
+        relic_type = ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec]["relic#{i+1}"]
 
         # TODO: should this apply multiple relic outlines to a single trait
         # or just the last one that it encounters?
-        trait = $("#artifactframe .trait[data-tooltip-id='#{relicTrait.spell}']")
-        trait.children(".relic").attr("src", "/images/artifacts/relic-"+relic.type.toLowerCase()+".png")
+        trait = $("#artifactframe .trait[data-tooltip-id='#{trait_id}']")
+        trait.children(".relic").attr("src", "/images/artifacts/relic-#{relic_type.toLowerCase()}.png")
         trait.children(".relic").removeClass("inactive")
 
-        # Setting the gem in the mainhand weapon causes wowhead to update the item level
-        # for that item.
-        Shadowcraft.Data.gear[15].gems[i] = relic.id
-
-        # Set up the item level increase dropdown
-        # TODO: this could theoretically display more information like the EP of each step, but
-        # it's a shitload of work and I don't think it's worth it.
-        buffer = ""
-        for relic_ilvl in [artifact_data.relics[i].base_ilvl..ShadowcraftConstants.CURRENT_MAX_ILVL] by 5
-          buffer += Templates.relicOption(
-            ilvl: relic_ilvl
-            bonusId: 1472 + (relic_ilvl - artifact_data.relics[i].base_ilvl)
-            active: relic_ilvl == artifact_data.relics[i].ilvl
-          )
-        $("#relic#{i+1}_ilvls").find("option").remove()
-        $("#relic#{i+1}_ilvls").append(buffer)
-
       else
-        button.addClass("inactive")
-
+        $("#relic-#{i}-none").prop("selected", true)
+        $("#relicilvl-#{i}-none").prop("selected", true)
+        
     # One last check. Make sure that any activated trait that has relic power
     # but no active connections only has the relic power as the level. This may
     # happen when a user increases the level of a trait that has a relic attach
@@ -278,8 +242,8 @@ class ShadowcraftArtifact
     # TODO: i'm not entirely sure we should do this anymore. I think we should
     # be updating the ilvl on the gear item and letting gear.coffee sort out the
     # stats when it recalculates.
-    updateArtifactItem(Shadowcraft.Data.gear[15].id, oldIlvl, ilvl)
-    updateArtifactItem(Shadowcraft.Data.gear[16].id, oldIlvl, ilvl)
+    updateArtifactItem(Shadowcraft.Data.gear[15].id, old_ilvl, new_ilvl)
+    updateArtifactItem(Shadowcraft.Data.gear[16].id, old_ilvl, new_ilvl)
 
     # Update the DPS based on the latest information
     Shadowcraft.update()
@@ -427,128 +391,31 @@ class ShadowcraftArtifact
 
     return Math.round(ep * 100.0) / 100.0;
 
-  # Called when the user clicks on a relic slot in the UI. This will create
-  # a popup containing all of the relics for that type and allow the user
-  # to select a relic to attach.
-  clickRelicSlot = (e) ->
-    relic_type = e.delegateTarget.attributes['relic-type'].value
-    clicked_relic_slot = parseInt(/relic(\d+)/.exec(e.delegateTarget.id)[1])-1
-    activeSpec = Shadowcraft.Data.activeSpec
-
-    # Get the stat information for the artifact weapon, potentially without the
-    # currently applied relic, if there is one.
-    currentRelic = artifact_data.relics[clicked_relic_slot]
-    if _.isEmpty(currentRelic)
-      baseIlvl = Shadowcraft.Data.gear[15].item_level
-    else
-      baseIlvl = Shadowcraft.Data.gear[15].item_level-ShadowcraftConstants.RELIC_ILVL_MAPPING[currentRelic.ilvl]
-    baseArtifactStats = getStatsForIlvl(baseIlvl)
-
-    # Generate EP values for all of the relics selected and then sort
-    # them based on the EP values, highest EP first.
-    max = 0
-    relics = []
-    for k,relic of Shadowcraft.ServerData.RELIC_ITEM_LOOKUP[relic_type]
-      relic.__ep = getRelicEP(relic, baseIlvl, baseArtifactStats)
-      if relic.__ep > max
-        max = relic.__ep
-      relics.push relic
-
-    # Double check that the currently selected relic is in the list of relics. If not, create a new one so it
-    # shows up in the list (and can be selected).
-    r = (i for i in relics when i.id == currentRelic.id and i.ilvl == currentRelic.ilvl)
-    if r.length == 0
-      # Get the list of relics with the same ID and find the one with the closest item level. Sort them in reverse
-      # order so that we can grab the closest one from the beginning of the list.
-      r = (i for i in relics when i.id == currentRelic.id and i.ilvl <= currentRelic.ilvl)
-      r.sort((r1, r2) -> return (r2.ilvl-r1.ilvl))
-      r = r[0]
-      clone = $.extend({},r)
-      clone.ilvl = currentRelic.ilvl
-      clone.identifier = "#{currentRelic.id}:#{currentRelic.ilvl}"
-      clone.__ep = getRelicEP(clone, baseIlvl, baseArtifactStats)
-      if clone.__ep > max
-        max == clone.__ep
-      relics.push clone
-
-    relics.sort((relic1, relic2) -> return (relic2.__ep - relic1.__ep))
-
-    # Loop through and build up the HTML for the popup window
-    buffer = ""
-    for relic in relics
-      desc = "+" + ShadowcraftConstants.RELIC_ILVL_MAPPING[relic.ilvl] + " Item Levels"
-      relic2 = (ShadowcraftData.RELICS.filter (r) -> r.id == relic.id)[0]
-      if relic2
-        desc += " / "
-        desc += "+"+relic2.ts[activeSpec].rank+" Rank: "+relic2.ts[activeSpec].name
-
-      ttbonus = ""
-      if relic.ctxts
-        keys = Object.keys(relic.ctxts)
-        if keys.length > 0
-          ttbonus = relic.ctxts[keys[0]].defaultBonuses.join(":")
-
-      buffer += Templates.itemSlot(
-        item: relic
-        gear: {}
-        identifier: "#{relic.id}:#{relic.ilvl}"
-        slot: relic.slot
-        ttid: relic.id
-        quality: relic.quality
-        ttspec: ShadowcraftConstants.WOWHEAD_SPEC_IDS[Shadowcraft.Data.activeSpec]
-        ttbonus: ttbonus
-        search: escape(relic.name)
-        desc: desc
-        percent: relic.__ep / max * 100
-        ep: relic.__ep
-        display_ilvl: true
-      )
-
-    buffer += Templates.itemSlot(
-      item: {name: "[No relic]"}
-      desc: "Clear this relic"
-      percent: 0
-      ep: 0
-    )
-
-    # Set the HTML into the popup and mark the currently active relic
-    # if there is one.
-    $popupbody.get(0).innerHTML = buffer
-
-    if !_.isEmpty(currentRelic)
-      r = (i for i in relics when i.id == currentRelic.id and i.ilvl == currentRelic.ilvl)
-      if r.length == 1
-        $popupbody.find(".slot[data-identifier='#{r[0].id}:#{r[0].ilvl}']").addClass("active")
-
-    showPopup($popup)
-    false
-
-  # Called when the user selects a relic from the popup list opened by
-  # clickRelicSlot. This updates a trait with the selected relic and updates
-  # the display.
-  selectRelic = (clicked_relic) ->
-
-    identifier = clicked_relic.data("identifier")
-    slot = clicked_relic.data("slot")
-    relicItem = ShadowcraftData.RELIC_ITEM_LOOKUP[slot][identifier]
-
-    keys = Object.keys(relicItem.ctxts)
-    if keys.length > 0
-      bonuses = relicItem.ctxts[keys[0]].defaultBonuses
-    else
-      bonuses = []
-
-    artifact_data.relics[clicked_relic_slot] = {
-      id: parseInt(identifier.split(":")[0])
-      ilvl: parseInt(identifier.split(":")[1])
-      bonuses: bonuses
-    }
+  # Called when the user selects a new relic from the drop downs on the UI
+  clickRelicSlot = (target) ->
+    index = target.getAttribute("data-index")
+    spell_id = parseInt(target.selectedOptions[0].value) || 0
+    artifact_data.relics[index].trait = {}
+    if spell_id != 0
+      trait_data = Shadowcraft.ServerData.ARTIFACT_LOOKUP[spell_id]
+      artifact_data.relics[index].trait['name'] = trait_data.n
+      artifact_data.relics[index].trait['spell'] = trait_data.id
+      
+      # TODO: hardcode this for now since we only have single-point relics right now. this
+      # will have to be fixed later, probably with a third dropdown menu on the UI for each
+      # relic.
+      artifact_data.relics[index].trait['rank'] = 1
 
     # Force a refresh of the display
     updateTraits()
 
-    clicked_relic_slot = 0
-    return true
+  # Called when the user selects a new relic ilvl from the drop downs on the UI
+  clickRelicSlotIlvl = (target) ->
+    index = target.getAttribute("data-index")
+    artifact_data.relics[index].ilvl = parseInt(target.selectedOptions[0].value)
+
+    # Force a refresh of the display
+    updateTraits()
 
   setSpec: (str) ->
     buffer = Templates.artifactActive({
@@ -560,12 +427,39 @@ class ShadowcraftArtifact
 
     if str == "a"
       buffer = ArtifactTemplates.useKingslayers()
+      traits = ArtifactTemplates.getKingslayersTraits()
     else if str == "Z"
       buffer = ArtifactTemplates.useDreadblades()
+      traits = ArtifactTemplates.getDreadbladesTraits()
     else if str == "b"
       buffer = ArtifactTemplates.useFangs()
+      traits = ArtifactTemplates.getFangsTraits()
 
     $("#artifactframe").get(0).innerHTML = buffer
+
+    relic_options = []
+    for trait in traits
+      if not trait.is_thin
+        continue
+
+      relic_options.push {
+        id: trait.spell_id
+        name: ShadowcraftData.ARTIFACT_LOOKUP[trait.spell_id].n
+      }
+
+    relic_ilvls = []
+    for ilvl in [830..ShadowcraftConstants.CURRENT_MAX_ILVL]
+      if ilvl % 5 != 0
+        continue
+      relic_ilvls.push {ilvl: ilvl}
+
+    buffer = ""
+    for i in [0...3]
+      relic_type = ShadowcraftConstants.SPEC_ARTIFACT[str]['relic'+(i+1)]
+      buffer += Templates.relicPicker(name: "Relic #{i+1} (#{relic_type}): ", traits: relic_options, ilvls: relic_ilvls, index: "#{i}")
+      buffer += "<br/>"
+
+    $("#relicframe").get(0).innerHTML = buffer
 
     # Reformat the trait data into something easier to deal with.
     artifact_data = {}
@@ -574,12 +468,9 @@ class ShadowcraftArtifact
     for trait in Shadowcraft.Data.artifact[str]['traits']
       artifact_data['traits'][trait['id']] = trait['rank']
 
-    $("#relic1").attr("relic-type", ShadowcraftConstants.SPEC_ARTIFACT[str].relic1)
-    $("#relic2").attr("relic-type", ShadowcraftConstants.SPEC_ARTIFACT[str].relic2)
-    $("#relic3").attr("relic-type", ShadowcraftConstants.SPEC_ARTIFACT[str].relic3)
-
     updateTraits()
 
+    # Set up a click handler for each trait to handle both left and right clicks
     $("#artifactframe .trait").each(->
     ).mousedown((e) ->
       switch(e.button)
@@ -595,27 +486,16 @@ class ShadowcraftArtifact
       ".tt": ttlib.hide
     )
 
-    $("#artifactframe .relicframe").each(->
-    ).click((e) ->
-      clickRelicSlot(e)
-    ).bind("contextmenu", -> false
-    ).mouseover($.delegate
-      ".tt": ttlib.requestTooltip
-    )
-    .mouseout($.delegate
-      ".tt": ttlib.hide
-    )
-
-    $("#relic1_ilvls").change ->
-      relicIlvlChanged(0, this)
-    $("#relic2_ilvls").change ->
-      relicIlvlChanged(1, this)
-    $("#relic3_ilvls").change ->
-      relicIlvlChanged(2, this)
+    # Set up some change handlers for the relics
+    for i in [0...3]
+      $("#relic-#{i}-select").change ->
+        clickRelicSlot(this)
+      $("#relicilvl-#{i}-select").change ->
+        clickRelicSlotIlvl(this)
 
   resetTraits: ->
 
-    for i in [0..2]
+    for i in [0...3]
       artifact_data.relics[i] = {}
 
     artifact_data.traits = []
@@ -680,25 +560,6 @@ class ShadowcraftArtifact
         rank: parseInt(rank)
       }
       Shadowcraft.Data.artifact[Shadowcraft.Data.activeSpec].traits.push(obj)
-
-  relicIlvlChanged = (relic, target) ->
-    ilvl = parseInt(target.selectedOptions[0].text)
-    bonus = parseInt(target.selectedOptions[0].value)
-
-    # Find the base item level for the equipped relic so we can find the proper base
-    # relic from the RELIC_ITEM_LOOKUP table.
-    existing_bonus = 0
-    for bonusId in artifact_data.relics[relic].bonuses
-      for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
-        if bonus_entry.type == 1
-          existing_bonus = bonusId
-
-    index = artifact_data.relics[relic].bonuses.indexOf(existing_bonus)
-    artifact_data.relics[relic].bonuses.splice(index, 1)
-
-    artifact_data.relics[relic].bonuses.push bonus
-    artifact_data.relics[relic].ilvl = ilvl
-    updateTraits()
 
   boot: ->
     app = this

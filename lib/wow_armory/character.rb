@@ -80,9 +80,14 @@ module WowArmory
           'context' => v['context'],
           'quality' => v['quality']
         }
-        info['gems'].push(tooltip['gem0'].nil? ? 0 : tooltip['gem0'])
-        info['gems'].push(tooltip['gem1'].nil? ? 0 : tooltip['gem1'])
-        info['gems'].push(tooltip['gem2'].nil? ? 0 : tooltip['gem2'])
+
+        # Nuke the gems off the mainhand weapon since we're not displaying them and they just
+        # cause the tooltips to be wrong anyways (yay wowhead).
+        if k != 'mainHand'
+          info['gems'].push(tooltip['gem0'].nil? ? 0 : tooltip['gem0'])
+          info['gems'].push(tooltip['gem1'].nil? ? 0 : tooltip['gem1'])
+          info['gems'].push(tooltip['gem2'].nil? ? 0 : tooltip['gem2'])
+        end
 
         info['suffix'] = tooltip['suffix'].to_i unless tooltip['suffix'].blank?
         unless tooltip['upgrade'].nil?
@@ -142,14 +147,9 @@ module WowArmory
         @artifact['traits'].push trait
       end
 
-      @artifact['relics'] = []
+      @artifact['relics'] = {}
       @json['items']['mainHand']['relics'].each do |relic|
-        r = {
-          'socket' => relic['socket'],
-          'id' => relic['itemId'],
-          'bonuses' => relic['bonusLists']
-        }
-        
+
         # Make another request to blizzard to get the item level for this relic, since the
         # character data doesn't include enough information.
         begin
@@ -157,13 +157,15 @@ module WowArmory
             :bl => relic['bonusLists'].join(',')
           }
           json = WowArmory::Document.fetch 'us', '/wow/item/%d' % relic['itemId'], params
+
+          @artifact['relics'][relic['socket']] = {
+            :id => json['id'],
+            :ilvl => json['itemLevel']
+          }
         rescue WowArmory::MissingDocument => e
           Rails.logger.debug "import_blizzard failed fetch of #{id}: #{e.message}"
           next
         end
-        
-        r['ilvl'] = json['itemLevel']
-        @artifact['relics'].push r
       end
     end
 

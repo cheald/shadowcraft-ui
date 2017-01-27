@@ -1,9 +1,9 @@
 window.ArtifactTemplates = null
+
 ShadowcraftApp.bind "boot", ->
   window.ArtifactTemplates =
-    useDreadblades: ->
-      $("#artifactframe").css("background-image", "url('/images/artifacts/44-small.jpg')")
-      traits = [
+    getDreadbladeTraits: ->
+      return [
         {id: "db_blackpowder", spell_id: 216230, max_level: 3, icon: "inv_weapon_rifle_01", ring: "thin", left: 82.317, top: 57.571, is_thin: true},
         {id: "db_bladedancer", spell_id: 202507, max_level: 3, icon: "ability_warrior_bladestorm", ring: "thin", left: 43.659, top: 67.143, is_thin: true},
         {id: "db_blademaster", spell_id: 202628, max_level: 1, icon: "ability_warrior_challange", ring: "thin", left: 74.268, top: 45.714, is_thin: true},
@@ -23,6 +23,9 @@ ShadowcraftApp.bind "boot", ->
         {id: "db_gunslinger", spell_id: 202522, max_level: 3, icon: "inv_weapon_rifle_07", ring: "thin", left: 49.878, top: 29.714, is_thin: true},
         {id: "db_hiddenblade", spell_id: 202753, max_level: 1, icon: "ability_ironmaidens_bladerush", ring: "thin", left: 19.390, top: 84.429, is_thin: true},
       ]
+
+    useDreadblades: ->
+      $("#artifactframe").css("background-image", "url('/images/artifacts/44-small.jpg')")
       lines = [
         {width: 167, left: 35.610, top: 60.714, angle: 142.306, spell1: 202665, spell2: 202463},
         {width: 101, left: 79.878, top: 33.857, angle: 130.972, spell1: 202897, spell2: 202521},
@@ -44,11 +47,10 @@ ShadowcraftApp.bind "boot", ->
         {width: 130, left: 9.634, top: 70.286, angle: 154.423, spell1: 202524, spell2: 202533},
       ]
 
-      return Templates.artifact(traits: traits, lines: lines, relic1: 'blood', relic2: 'iron', relic3: 'storm')
+      return Templates.artifact(traits: ArtifactTemplates.getDreadbladeTraits(), lines: lines)
 
-    useFangs: ->
-      $("#artifactframe").css("background-image", "url('/images/artifacts/fangs-bg.jpg')")
-      traits = [
+    getFangsTraits: ->
+      return [
         {id: "fangs_akaarissoul", spell_id: 209835, max_level: 1, icon: "ability_warlock_soullink", ring: "dragon", left: 74.306, top: 43.252},
         {id: "fangs_catlike", spell_id: 197241, max_level: 3, icon: "inv_pet_cats_calicocat", ring: "thin", left: 52.639, top: 48.455, is_thin: true},
         {id: "fangs_demonskiss", spell_id: 197233, max_level: 3, icon: "ability_priest_voidentropy", ring: "thin", left: 35.278, top: 86.829, is_thin: true},
@@ -68,6 +70,9 @@ ShadowcraftApp.bind "boot", ->
         {id: "fangs_shadownova", spell_id: 209781, max_level: 1, icon: "spell_fire_twilightnova", ring: "dragon", left: 63.611, top: 20.000},
         {id: "fangs_soulshadows", spell_id: 197386, max_level: 3, icon: "inv_knife_1h_grimbatolraid_d_03", ring: "thin", left: 61.944, top: 33.821, is_thin: true},
       ]
+
+    useFangs: ->
+      $("#artifactframe").css("background-image", "url('/images/artifacts/fangs-bg.jpg')")
       lines = [
         {width: 143, left: 83.889, top: 38.862, angle: 65.589, spell1: 209782, spell2: 221856},
         {width: 118, left: 67.361, top: 57.561, angle: -52.253, spell1: 197231, spell2: 209835},
@@ -89,11 +94,10 @@ ShadowcraftApp.bind "boot", ->
         {width: 77, left: 48.194, top: 72.358, angle: 32.869, spell1: 197244, spell2: 197256},
       ]
 
-      return Templates.artifact(traits: traits, lines: lines, relic1: 'fel', relic2: 'shadow', relic3: 'fel')
+      return Templates.artifact(traits: ArtifactTemplates.getFangsTraits(), lines: lines)
 
-    useKingslayers: ->
-      $("#artifactframe").css("background-image", "url('/images/artifacts/kingslayers-bg.jpg')")
-      traits = [
+    getKingslayersTraits: ->
+      return [
         {id: "ks_assassinsblades", spell_id: 214368, max_level: 1, icon: "ability_rogue_shadowstrikes", ring: "thin", left: 47.917, top: 34.634, is_thin: true},
         {id: "ks_bagoftricks", spell_id: 192657, max_level: 1, icon: "rogue_paralytic_poison", ring: "dragon", left: 8.472, top: 34.146},
         {id: "ks_balancedblades", spell_id: 192326, max_level: 3, icon: "ability_rogue_restlessblades", ring: "thin", left: 40.556, top: 54.472, is_thin: true},
@@ -113,6 +117,9 @@ ShadowcraftApp.bind "boot", ->
         {id: "ks_toxicblades", spell_id: 192310, max_level: 3, icon: "ability_rogue_disembowel", ring: "thin", left: 39.444, top: 38.374, is_thin: true},
         {id: "ks_urgetokill", spell_id: 192384, max_level: 1, icon: "ability_rogue_improvedrecuperate", ring: "thin", left: 30.278, top: 40.976, is_thin: true},
       ]
+
+    useKingslayers: ->
+      $("#artifactframe").css("background-image", "url('/images/artifacts/kingslayers-bg.jpg')")
       lines = [
         {width: 68, left: 36.389, top: 46.504, angle: 166.373, spell1: 192310, spell2: 192384},
         {width: 99, left: 39.444, top: 53.171, angle: 85.380, spell1: 192310, spell2: 192326},
@@ -137,4 +144,4 @@ ShadowcraftApp.bind "boot", ->
         {width: 67, left: 53.194, top: 37.886, angle: 140.412, spell1: 192759, spell2: 214368},
       ]
 
-      return Templates.artifact(traits: traits, lines: lines, relic1: 'shadow', relic2: 'iron', relic3: 'blood')
+      return Templates.artifact(traits: ArtifactTemplates.getKingslayersTraits(), lines: lines)

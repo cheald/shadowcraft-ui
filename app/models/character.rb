@@ -159,8 +159,7 @@ class Character
       properties['gear']['16']['bonuses'] = properties['gear']['15']['bonuses'].clone
       properties['gear']['16']['bonuses'] -= [743]
       properties['gear']['16']['ttBonuses'] = properties['gear']['16']['bonuses'].clone
-      properties['gear']['15']['bonuses'] = [743]
-      properties['gear']['15']['ttBonuses'] = [743]
+      properties['gear']['15']['ttBonuses'] = properties['gear']['15']['bonuses'].clone
 
       # We only get artifact data for the current spec from the armory. Null out all of the
       # artifact data for all of the specs, and then copy the artifact data from the armory
@@ -182,16 +181,16 @@ class Character
       }
       active_spec = properties['talents'][properties['active']][:spec]
 
+      Rails.logger.debug "building artifact data"
       # The trait rank values we get from the armory include the relic increases. We handle
       # that ourselves in the javascript so remove those. This is ugly and probably slower
       # than necessary due to having to loop over the entire trait space a few times.
       relic_array = [{},{},{}]
-      orig_artifact_data['relics'].each do |relic|
-        relic_array[relic['socket']] = relic.clone
-        relic_array[relic['socket']].delete('socket')
+      orig_artifact_data['relics'].each do |socket, relic|
+        relic_array[socket] = relic.clone
 
         # look up the relic in the db
-        r = Relic.find_by(:remote_id => relic['id'])
+        r = Relic.find_by(:remote_id => relic[:id])
         unless r.nil?
           # get the trait increase for the current spec
           trait_from_relic = r["traits"][active_spec]
@@ -200,19 +199,7 @@ class Character
               orig_trait['rank'] -= trait_from_relic['rank']
             end
           end
-        end
-
-        # Lookup the full relic data in the database from the item table so that we can fake
-        # a base ilvl in the relic data.
-        begin
-          r = Item.where(:remote_id => relic['id'], :item_level => {'$lte' => relic['ilvl']}).order_by(:item_level.desc)
-          unless r.nil? or r.empty?
-            relic_array[relic['socket']]['base_ilvl'] = r[0].item_level
-          else
-            relic_array[relic['socket']]['base_ilvl'] = 0
-          end
-        rescue Exception => e
-          Rails.logger.debug e.message
+          relic_array[socket]['trait'] = trait_from_relic
         end
       end
       orig_artifact_data['relics'] = relic_array

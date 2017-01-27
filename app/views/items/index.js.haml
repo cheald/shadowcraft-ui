@@ -90,13 +90,6 @@
         R.GEM_LOOKUP[g.id] = g;
       }
 
-      R.RELIC_LOOKUP = {}
-      for(var i = 0; i < R.RELICS.length; i++) {
-        var g = R.RELICS[i];
-        expandItem(g, null);
-        R.RELIC_LOOKUP[g.id] = g;
-      }
-
       R.SLOT_CHOICES = {mainhand: [], offhand: [], ranged: []};
       R.ENCHANT_SLOTS = {mainhand: []}; R.ENCHANT_SLOTS.offhand = R.ENCHANT_SLOTS.mainhand;
       R.ENCHANT_LOOKUP = {};
@@ -129,17 +122,6 @@
         R.SLOT_CHOICES[item.equip_location].push(item.identifier);
       }
       delete R.ITEMS;
-
-      R.RELIC_ITEM_LOOKUP = {}
-      for(var i = 0; i < R.RELIC_ITEMS.length; i++) {
-        var item = R.RELIC_ITEMS[i];
-        expandItem(item, null);
-        if (!(item.slot in R.RELIC_ITEM_LOOKUP)) {
-          R.RELIC_ITEM_LOOKUP[item.slot] = {}
-        }
-        item.identifier = item.id + ":" + item.ilvl;
-        R.RELIC_ITEM_LOOKUP[item.slot][item.identifier] = item;
-      }
 
       R.TALENT_LOOKUP = {};
       for(var talent = 0; talent < R.TALENTS.length; talent++) {

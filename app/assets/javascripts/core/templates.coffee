@@ -19,3 +19,4 @@ ShadowcraftApp.bind "boot", ->
     loadSnapshots:       Handlebars.compile $("#template-loadSnapshots").html()
     artifact:            Handlebars.compile $("#template-artifact").html()
     relicOption:         Handlebars.compile $("#template-relicOption").html()
+    relicPicker:         Handlebars.compile $("#template-relicPicker").html()
