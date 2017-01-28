@@ -2,7 +2,7 @@ window.ArtifactTemplates = null
 
 ShadowcraftApp.bind "boot", ->
   window.ArtifactTemplates =
-    getDreadbladeTraits: ->
+    getDreadbladesTraits: ->
       return [
         {id: "db_blackpowder", spell_id: 216230, max_level: 3, icon: "inv_weapon_rifle_01", ring: "thin", left: 82.317, top: 57.571, is_thin: true},
         {id: "db_bladedancer", spell_id: 202507, max_level: 3, icon: "ability_warrior_bladestorm", ring: "thin", left: 43.659, top: 67.143, is_thin: true},
@@ -47,7 +47,7 @@ ShadowcraftApp.bind "boot", ->
         {width: 130, left: 9.634, top: 70.286, angle: 154.423, spell1: 202524, spell2: 202533},
       ]
 
-      return Templates.artifact(traits: ArtifactTemplates.getDreadbladeTraits(), lines: lines)
+      return Templates.artifact(traits: ArtifactTemplates.getDreadbladesTraits(), lines: lines)
 
     getFangsTraits: ->
       return [
