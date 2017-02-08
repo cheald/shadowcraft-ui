@@ -249,7 +249,7 @@ elif sys.argv[1] == '--fetchdata':
   # the javascript on the page.
   browser = webdriver.PhantomJS(desired_capabilities=dcap)
 
-  browser.get('http://legion.wowhead.com/artifact-calc#AgXiIsA')
+  browser.get('http://www.wowhead.com/artifact-calc/rogue/outlaw/AgXiIsA')
   time.sleep(2)
   source = browser.page_source
   soup = BeautifulSoup(source, 'html.parser')
@@ -259,7 +259,7 @@ elif sys.argv[1] == '--fetchdata':
   f.write(str(core))
   f.close()
 
-  browser.get('http://legion.wowhead.com/artifact-calc#AvTSIrA')
+  browser.get('http://www.wowhead.com/artifact-calc/rogue/assassination/AvTSIrA')
   time.sleep(2)
   source = browser.page_source
   soup = BeautifulSoup(source, 'html.parser')
@@ -269,7 +269,7 @@ elif sys.argv[1] == '--fetchdata':
   f.write(str(core))
   f.close()
 
-  browser.get('http://legion.wowhead.com/artifact-calc#AlIxIRA')
+  browser.get('http://www.wowhead.com/artifact-calc/rogue/subtlety/AlIxIRA')
   time.sleep(2)
   source = browser.page_source
   soup = BeautifulSoup(source, 'html.parser')
@@ -460,3 +460,51 @@ elif sys.argv[2] == '--rails':
   for key,value in iter(sorted(ICONS.iteritems())):
     sys.stdout.write('\'{}\':0,'.format(value['spell_id']))
   sys.stdout.write('}')
+
+elif sys.argv[2] == '--reacttags':
+  for key,value in iter(sorted(ICONS.iteritems())):
+    left = (value['xpos']/float(IMAGE_WIDTH))*100.0
+    top = (value['ypos']/float(IMAGE_HEIGHT))*100.0
+    sys.stdout.write('<ArtifactTrait id="{}" tooltip_id="{}" left="{:.3f}%" top="{:.3f}%" max_rank="{}" icon="{}" ring="{}" cur_rank="0" />\n'.format(key, value['spell_id'], left, top, value['max_level'], value['icon'], value['style']))
+
+  sys.stdout.write('\n')
+  for line in LINES:
+    icon1=ICONS[line['icon1']]
+    icon2=ICONS[line['icon2']]
+    x1 = (icon1['xpos']/float(IMAGE_WIDTH))*100.0
+    y1 = (icon1['ypos']/float(IMAGE_HEIGHT))*100.0
+    x2 = (icon2['xpos']/float(IMAGE_WIDTH))*100.0
+    y2 = (icon2['ypos']/float(IMAGE_HEIGHT))*100.0
+    sys.stdout.write('<line x1="{:.3f}%" y1="{:.3f}%" x2="{:.3f}%" y2="{:.3f}%" strokeWidth="6" stroke="yellow"/>\n'.format(x1, y1, x2, y2))
+
+elif sys.argv[2] == '--react':
+  print 'traits: {'
+  for key,value in iter(sorted(ICONS.iteritems())):
+    x = int(value['xpos'])
+    y = int(value['ypos'])
+    if value['style'] == 'thin':
+      x += 30
+      y += 30
+    else:
+      x += 45
+      y += 45
+
+    print '"%s": {' % key
+    print 'id: %d,' % int(value['spell_id'])
+    print 'x: %d,' % x
+    print 'y: %d,' % y
+    print 'icon: "%s",' % value['icon']
+    print 'ring: "%s",' % value['style']
+    print 'max_rank: %s' % value['max_level']
+    print '},'
+  print '},'
+
+  print 'lines: ['
+  for line in LINES:
+    icon1=ICONS[line['icon1']]
+    icon2=ICONS[line['icon2']]
+    print '{'
+    print 'trait1: "%s",' % line['icon1']
+    print 'trait2: "%s"' % line['icon2']
+    print '},'
+  print ']'
