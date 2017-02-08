@@ -1330,7 +1330,7 @@ class ShadowcraftGear
       sockets: []
       titanforged: []
     }
-    wf_base = 0
+
     for bonusId in item.chance_bonus_lists
       continue if bonusId == -1
       group = {}
@@ -1368,21 +1368,27 @@ class ShadowcraftGear
     # Check whether there are any "base item level" bonus IDs on the default list for
     # this item. These ones don't show up in the chance bonus lists becasue they're a
     # fixed ID for each item difficulty.
-    for bonusId in item.ctxts[gear.context].defaultBonuses
-      break if wf_base != 0
-      if bonusId == -1
-        wf_base = gear.base_ilvl
-      else
-        for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
-          if bonus_entry.type == 14
-            wf_base = gear.base_ilvl
+    wf_base = 0
+    steps = []
+    if item.quality == 5
+      wf_base = 910
+      steps = [6]
+    else
+      for bonusId in item.ctxts[gear.context].defaultBonuses
+        break if wf_base != 0
+        if bonusId == -1
+          wf_base = gear.base_ilvl
+        else
+          for bonus_entry in Shadowcraft.ServerData.ITEM_BONUSES[bonusId]
+            if bonus_entry.type == 14
+              wf_base = gear.base_ilvl
+      steps = [1..(ShadowcraftConstants.CURRENT_MAX_ILVL - wf_base) / 5]
 
     # If we found an entry for a base item level, we need to generate a bunch of
     # entries for upgrades and insert them into the titanforged subgroup. Only do this
     # if the current maximum ilevel is less than the base ilevel of this item.
     if wf_base != 0 and wf_base < ShadowcraftConstants.CURRENT_MAX_ILVL
-      steps = (ShadowcraftConstants.CURRENT_MAX_ILVL - wf_base) / 5
-      for step in [1..steps]
+      for step in steps
         ilvl_bonus = step*5
         group = {}
         # 1472 would be the "0" point in the item upgrade bonus IDs, if it existed.
@@ -1395,10 +1401,11 @@ class ShadowcraftGear
         entry = {}
         entry['type'] = 1
         entry['val1'] = "+"+(ilvl_bonus)+" Item Levels "
-        if step <= 2
-          entry['val1'] += "(Warforged)"
-        else
-          entry['val1'] += "(Titanforged)"
+        if item.quality != 5
+          if step <= 2
+            entry['val1'] += "(Warforged)"
+          else
+            entry['val1'] += "(Titanforged)"
         entry['val2'] = "Item Level " + (wf_base+ilvl_bonus)
         group['entries'] = []
         group['entries'].push entry
