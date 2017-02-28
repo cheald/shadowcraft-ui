@@ -305,7 +305,7 @@ class Item
     # json to be processed further
     json_data = Array.new
     begin
-      base_json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {:bl=>0}
+      base_json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, {}
       json_data.push(base_json)
     rescue WowArmory::MissingDocument => e
       Rails.logger.debug "import_blizzard failed fetch of #{id}: #{e.message}"
@@ -455,6 +455,7 @@ class Item
         db_item.properties['chance_bonus_lists'] |= CHANCE_BONUSES
       end
 
+      Rails.logger.debug json
       Rails.logger.debug context
 
       db_item.context_map[name] = context

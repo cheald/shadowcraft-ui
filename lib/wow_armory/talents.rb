@@ -46,9 +46,23 @@ module WowArmory
             end
           end
 
-          talents[:a] << (if a.nil? nospec else a end)
-          talents[:Z] << (if z.nil? nospec else z end)
-          talents[:b] << (if b.nil? nospec else b end)
+          if (a.nil?)
+            talents[:a] << nospec
+          else
+            talents[:a] << a
+          end
+
+          if (z.nil?)
+            talents[:Z] << nospec
+          else
+            talents[:Z] << z
+          end
+
+          if (b.nil?)
+            talents[:b] << nospec
+          else
+            talents[:b] << b
+          end
         end
       end
     end
