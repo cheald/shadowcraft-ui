@@ -130,6 +130,11 @@ class ShadowcraftGear
     total
 
   sumGearItem = (output, gear, ilvl_diff=0) ->
+
+    # if gear.id in ShadowcraftConstants.ARTIFACTS
+    #   item = Shadowcraft.Data.artifact_items[gear.id]
+    #   ilvl_diff = item.ilvl-750
+    # else
     item = getItem(gear.id, gear.base_ilvl)
     item_stats = $.extend({}, item['stats'])
 
@@ -958,13 +963,14 @@ class ShadowcraftGear
     Shadowcraft.Data.activeSpec == "a"
 
   recalculateStatsDiff = (original, ilvl_difference) ->
-    multiplier =  1.0 / Math.pow(1.15, (ilvl_difference.toFixed(2) / -15.0))
-    secondary_mult = Math.pow(1.0037444020662509239443726693104, ilvl_difference.toFixed(2))
     stats = {}
     for k,v of original
-      stats[k] = v * multiplier
-      if k != 'agility'
-        stats[k] = v * secondary_mult
+      if k != 'agility' and k != 'stamina'
+        multiplier = Math.pow(1.0037444020662509239443726693104, ilvl_difference.toFixed(2))
+        stats[k] = v * multiplier
+      else
+        multiplier =  1.0 / Math.pow(1.15, (ilvl_difference.toFixed(2) / -15.0))
+        stats[k] = v * multiplier
     return stats
 
   recalculateStats = (original, old_ilvl, new_ilvl) ->
