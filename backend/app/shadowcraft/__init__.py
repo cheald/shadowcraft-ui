@@ -19,7 +19,6 @@ class ShadowcraftComputation:
         5437: "mark_of_the_claw",
         5438: "mark_of_the_distant_army",
         5439: "mark_of_the_hidden_satyr",
-        5890: "mark_of_the_trained_soldier",
         0: None
     }
 
@@ -54,6 +53,7 @@ class ShadowcraftComputation:
         137439: 'tiny_oozeling_in_a_jar',
         137537: 'tirathons_betrayal',
         137486: 'windscar_whetstone',
+        144259: 'kiljaedens_burning_wish',
     }
 
     otherProcs = {
@@ -151,32 +151,41 @@ class ShadowcraftComputation:
 
     # used for rankings
     trinketGroups = {
-        # 7.0 trinkets
-        'arcanogolem_digit': xrange(875, 955, 5),
-        'bloodthirsty_instinct': xrange(850, 930, 5),
-        'chaos_talisman': xrange(820, 900, 5),
-        'chrono_shard': xrange(820, 900, 5),
-        'convergence_of_fates': xrange(875, 955, 5),
-        'darkmoon_deck_dominion': xrange(815, 930, 5),
-        'draught_of_souls': xrange(875, 955, 5),
-        'entwined_elemental_foci': xrange(875, 955, 5),
-        'faulty_countermeasure': xrange(820, 900, 5),
-        'giant_ornamental_pearl': xrange(820, 900, 5),
-        'horn_of_valor': xrange(820, 900, 5),
-        'infernal_alchemist_stone': xrange(815, 930, 5),
-        'mark_of_dargrul': xrange(820, 900, 5),
-        'memento_of_angerboda': xrange(820, 900, 5),
-        'natures_call': xrange(850, 930, 5),
-        'nightblooming_frond': xrange(875, 955, 5),
-        'nightmare_egg_shell': xrange(820, 900, 5),
-        'ravaged_seed_pod': xrange(850, 930, 5),
-        'spiked_counterweight': xrange(820, 900, 5),
-        'spontaneous_appendages': xrange(850, 930, 5),
-        'tempered_egg_of_serpentrix': [820],
-        'terrorbound_nexus': xrange(820, 900, 5),
-        'tiny_oozeling_in_a_jar': xrange(820, 900, 5),
-        'tirathons_betrayal': xrange(820, 900, 5),
-        'windscar_whetstone': xrange(820, 900, 5),
+        # Alchemist trinket
+        'infernal_alchemist_stone': xrange(815, 865, 5),
+
+        # Dungeon trinkets
+        'chaos_talisman': xrange(820, 955, 5),
+        'chrono_shard': xrange(820, 955, 5),
+        'darkmoon_deck_dominion': xrange(815, 955, 5),
+        'faulty_countermeasure': xrange(820, 955, 5),
+        'giant_ornamental_pearl': xrange(820, 955, 5),
+        'horn_of_valor': xrange(820, 955, 5),
+        'mark_of_dargrul': xrange(820, 955, 5),
+        'memento_of_angerboda': xrange(820, 955, 5),
+        'nightmare_egg_shell': xrange(820, 955, 5),
+        'spiked_counterweight': xrange(820, 955, 5),
+        'tempered_egg_of_serpentrix': xrange(820, 955, 5),
+        'terrorbound_nexus': xrange(820, 955, 5),
+        'tiny_oozeling_in_a_jar': xrange(820, 955, 5),
+        'tirathons_betrayal': xrange(820, 955, 5),
+        'windscar_whetstone': xrange(820, 955, 5),
+
+        # Emerald Nightmare
+        'ravaged_seed_pod': xrange(850, 955, 5),
+        'spontaneous_appendages': xrange(850, 955, 5),
+        'natures_call': xrange(850, 955, 5),
+        'bloodthirsty_instinct': xrange(850, 955, 5),
+
+        # Nighthold trinkets
+        'arcanogolem_digit': xrange(860, 955, 5),
+        'convergence_of_fates': xrange(860, 955, 5),
+        'entwined_elemental_foci': xrange(860, 955, 5),
+        'nightblooming_frond': xrange(860, 955, 5),
+        'draught_of_souls': xrange(860, 955, 5),
+
+        # Legendary trinkets
+        'kiljaedens_burning_wish': [910],
     }
 
     gearBoosts = {
@@ -359,16 +368,11 @@ class ShadowcraftComputation:
         if len(self.tier18LFRIDs & gear) >= 2:
             agi_bonus += 115
         if len(self.orderhallIDs & gear) >= 6:
-            agi_bonus += 1000
+            agi_bonus += 500
 
         for k,v in self.gearBoosts.iteritems():
             if k in gear:
                 buff_list.append(v)
-
-        # Add enchant procs to the list of gear buffs
-        for k in gear_data:
-            if k[2] != 0 and k[2] in self.enchantMap:
-                buff_list.append(self.enchantMap[k[2]])
 
         _gear_buffs = stats.GearBuffs(*buff_list)
 
@@ -389,6 +393,11 @@ class ShadowcraftComputation:
                 proclist.append('draenic_agi_prepot')
             if input.get("pot", 0) == 1:
                 proclist.append('draenic_agi_pot')
+
+        # Add enchant procs to the list of gear buffs
+        for k in gear_data:
+            if k[2] != 0 and k[2] in self.enchantMap:
+                proclist.append(self.enchantMap[k[2]])
 
         _procs = procs.ProcsList(*proclist)
 
