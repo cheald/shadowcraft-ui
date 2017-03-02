@@ -337,12 +337,13 @@ class ShadowcraftArtifact
       dps = Shadowcraft.ServerData.ITEM_LOOKUP2[""+itemid+":750"].dps
 
       # recalcuate and store
-      multiplier =  1.0 / Math.pow(1.15, ((ilvl-750) / 15.0 * -1))
+      multiplier = Math.pow(1.15, ((ilvl - 750.0) / 15.0)) * 1.05
       for stat,value of stats
+        v = value * multiplier
         if stat == 'agility' || stat == 'stamina'
-          stats[stat] = Math.round(value * multiplier)
+          stats[stat] = Math.round(v)
         else
-          stats[stat] = Math.round(value * multiplier * ShadowcraftConstants.COMBAT_RATINGS_MULT_BY_ILVL[ilvl])
+          stats[stat] = Math.round(v * ShadowcraftConstants.COMBAT_RATINGS_MULT_BY_ILVL[ilvl])
 
       artifact_ilvl_stats[ilvl] = {}
       artifact_ilvl_stats[ilvl]["stats"] = stats

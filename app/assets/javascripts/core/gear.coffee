@@ -151,8 +151,6 @@ class ShadowcraftGear
 
     if (ilvl_diff == 0)
       ilvl_diff = gear.item_level-item.ilvl
-    console.log("summing gear item: #{gear.id} - #{gear.base_ilvl} - #{ilvl_diff}")
-    console.log(item_stats)
     
     sumItem(output, item_stats, ilvl_diff)
 
@@ -164,9 +162,6 @@ class ShadowcraftGear
       newstats = recalculateStatsDiff(input_stats, ilvl_difference)
     else
       newstats = input_stats
-
-    if (Object.keys(newstats).length != 0)
-      console.log(newstats)
 
     for stat of newstats
       output[stat] ||= 0
