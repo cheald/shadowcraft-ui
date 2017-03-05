@@ -15,11 +15,18 @@ module WowArmory
     ACCESSORS = :stats, :icon, :id, :name, :equip_location, :ilevel, :quality, :gem_slot, :speed, :dps, :subclass, :armor_class, :upgradable, :chance_bonus_lists, :bonus_tree, :tag, :context
     attr_accessor *ACCESSORS
 
+    TIER_19_ITEMS = [138326, 138329, 138332, 138335, 138338, 138371]
+
     def initialize(json, json_source='wowapi')
       self.name = json['name']
       self.ilevel = json['itemLevel'].to_i
       @id = json['id'].to_i
-      self.upgradable = WowArmory::Item.check_upgradable(@id)
+
+      if TIER_19_ITEMS.include? @id
+        self.upgradable = false
+      else
+        self.upgradable = WowArmory::Item.check_upgradable(@id)
+      end
 
       case json_source
         when 'wowapi'
