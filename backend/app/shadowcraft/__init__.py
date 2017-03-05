@@ -520,6 +520,14 @@ class ShadowcraftComputation:
             out["breakdown"] = calculator.get_dps_breakdown()
             out["total_dps"] = sum(entry[1] for entry in out["breakdown"].items())
 
+            # Get character stats used for calculation (should equal armory)
+            out["stats"] = calculator.stats.get_character_stats(calculator.race)
+            # Filter interesting stats
+            out["stats"]["agility"] = out["stats"]["agi"]
+            for key in out["stats"].keys():
+                if key not in ['agility', 'crit', 'versatility', 'mastery', 'haste']:
+                    del out["stats"][key]
+
             # Get EP Values
             default_ep_stats = ['agi', 'haste', 'crit', 'mastery', 'versatility', 'ap']
             _opt = input.get("settings", {})
