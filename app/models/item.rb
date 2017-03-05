@@ -132,6 +132,9 @@ class Item
     puts "Item levels 901 to 905"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 901, 905)
 
+    # Brinewashed items that don't show up in the wowhead searches
+    item_ids += [134241, 134238, 134239, 134240, 134237, 134243, 134242]
+
     # Rings, necks, trinkets
     puts "Requesting list of rings from wowhead"
     item_ids += get_ids_from_wowhead "http://#{prefix}.wowhead.com/items/armor/rings/min-level:800/class:4"
