@@ -151,7 +151,7 @@ class ShadowcraftGear
 
     if (ilvl_diff == 0)
       ilvl_diff = gear.item_level-item.ilvl
-    
+
     sumItem(output, item_stats, ilvl_diff)
 
   # Sums all of the stats passed in into a second map of stats, recalculating for
@@ -203,10 +203,6 @@ class ShadowcraftGear
 
     for si, i in SLOT_ORDER
       Shadowcraft.Gear.sumSlot(data.gear[si], stats, null)
-
-    # Add the base character agility and multiply by the bonus we get for wearing
-    # all leather gear. Finally, round to an even number.
-    stats['agility'] = Math.round((stats['agility'] + 9030) * 1.05)
 
     @statSum = stats
     return stats
@@ -732,7 +728,6 @@ class ShadowcraftGear
         buffer += Templates.itemSlot(opt)
 
       $slots.get(ssi).innerHTML = buffer
-    this.updateStatsWindow()
     this.updateSummaryWindow()
     checkForWarnings('gear')
 
@@ -789,18 +784,19 @@ class ShadowcraftGear
     $summary.get(0).innerHTML = Templates.stats {stats: a_stats}
 
   # Updates the display of the Gear Stats section of the Gear tab.
-  updateStatsWindow: ->
-    this.sumStats()
+  updateStatsWindow = (source) ->
     $stats = $("#stats .inner")
     a_stats = []
-    keys = _.keys(@statSum).sort()
+    keys = _.keys(source.stats).sort()
     total = 0
     for idx, stat of keys
-      weight = getStatWeight(stat, @statSum[stat], null, true)
+      if source.stats[stat] == 0
+        continue
+      weight = getStatWeight(stat, source.stats[stat], null, true)
       total += weight
       a_stats.push {
         name: titleize(stat),
-        val: @statSum[stat],
+        val: Math.round(source.stats[stat]),
         # ep: Math.floor(weight)
       }
 
@@ -1514,9 +1510,9 @@ class ShadowcraftGear
     Shadowcraft.Backend.bind("recompute", -> Shadowcraft.Gear )
     Shadowcraft.Backend.bind("recompute", updateDpsBreakdown)
     Shadowcraft.Backend.bind("recompute", updateEngineInfoWindow)
+    Shadowcraft.Backend.bind("recompute", updateStatsWindow)
 
     Shadowcraft.Talents.bind "changed", ->
-      app.updateStatsWindow()
       app.updateSummaryWindow()
 
     Shadowcraft.bind "loadData", ->
