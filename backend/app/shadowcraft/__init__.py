@@ -342,7 +342,7 @@ class ShadowcraftComputation:
 
         # ##################################################################################
         # Set up gear buffs.
-        buff_list = []
+        buff_list = ['gear_specialization']
 
         if len(self.tier18IDs & gear) >= 2:
             buff_list.append('rogue_t18_2pc')
@@ -359,6 +359,9 @@ class ShadowcraftComputation:
         if len(self.tier19IDs & gear) >= 4:
             buff_list.append('rogue_t19_4pc')
 
+        if len(self.orderhallIDs & gear) >= 6:
+            buff_list.append('rogue_orderhall_6pc')
+
         if len(self.orderhallIDs & gear) == 8:
             buff_list.append('rogue_orderhall_8pc')
 
@@ -373,12 +376,6 @@ class ShadowcraftComputation:
 
         if len(self.toeKneesIDs & gear) == 2 or len(self.bloodstainedIDs & gear) == 2 or len(self.eyeOfCommandIDs & gear) == 2:
             buff_list.append('kara_empowered_2pc')
-
-        agi_bonus = 0
-        if len(self.tier18LFRIDs & gear) >= 2:
-            agi_bonus += 115
-        if len(self.orderhallIDs & gear) >= 6:
-            agi_bonus += 500
 
         for k,v in self.gearBoosts.iteritems():
             if k in gear:
@@ -425,7 +422,7 @@ class ShadowcraftComputation:
         _stats = stats.Stats(
             mh=_mh, oh=_oh, procs=_procs, gear_buffs=_gear_buffs,
             str=s[0],             # Str
-            agi=s[1] + agi_bonus, # AGI
+            agi=s[1],             # AGI
             int=0,
             stam=0,
             ap=s[2],              # AP
