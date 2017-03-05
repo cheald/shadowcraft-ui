@@ -54,6 +54,11 @@ class ShadowcraftComputation:
         137537: 'tirathons_betrayal',
         137486: 'windscar_whetstone',
         144259: 'kiljaedens_burning_wish',
+
+        # Return to Karazhan
+        142159: 'bloodstained_handkerchief',
+        142167: 'eye_of_command',
+        142164: 'toe_knees_promise',
     }
 
     otherProcs = {
@@ -177,6 +182,11 @@ class ShadowcraftComputation:
         'natures_call': xrange(850, 955, 5),
         'bloodthirsty_instinct': xrange(850, 955, 5),
 
+        # Return to Karazhan
+        'bloodstained_handkerchief': xrange(855, 955, 5),
+        'eye_of_command': xrange(860, 955, 5),
+        'toe_knees_promise': xrange(855, 955, 5),
+
         # Nighthold trinkets
         'arcanogolem_digit': xrange(860, 955, 5),
         'convergence_of_fates': xrange(860, 955, 5),
@@ -185,7 +195,7 @@ class ShadowcraftComputation:
         'draught_of_souls': xrange(860, 955, 5),
 
         # Legendary trinkets
-        'kiljaedens_burning_wish': [910],
+        'kiljaedens_burning_wish': [910, 940],
     }
 
     gearBoosts = {
