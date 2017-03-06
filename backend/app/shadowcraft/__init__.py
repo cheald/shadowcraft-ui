@@ -188,11 +188,11 @@ class ShadowcraftComputation:
         'toe_knees_promise': xrange(855, 955, 5),
 
         # Nighthold trinkets
-        'arcanogolem_digit': xrange(860, 955, 5),
+        'arcanogolem_digit': xrange(855, 955, 5),
         'convergence_of_fates': xrange(860, 955, 5),
         'entwined_elemental_foci': xrange(860, 955, 5),
         'nightblooming_frond': xrange(860, 955, 5),
-        'draught_of_souls': xrange(860, 955, 5),
+        'draught_of_souls': xrange(865, 955, 5),
 
         # Legendary trinkets
         'kiljaedens_burning_wish': [910, 940],
