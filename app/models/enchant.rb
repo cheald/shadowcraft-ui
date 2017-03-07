@@ -126,7 +126,8 @@ class Enchant
                      :stats => {'versatility' => 200},
                      :icon => 'inv_enchant_formulasuperior_01',
                      :item_name => 'Enchant Ring - Binding of Versatility',
-                     :equip_location => 128544,
+                     :equip_location => 11,
+                     :tooltip_spell => 128544,
                    })
 
     # Neck
