@@ -57,7 +57,7 @@ module WowArmory
       # field.
       self.talents = @json['talents'].reject{|x| x['calcSpec'] == ""}
 
-      self.portrait = 'http://%s.battle.net/static-render/%s/%s' % [ @region.downcase, @region.downcase, @json['thumbnail'] ]
+      self.portrait = 'http://render-%s.worldofwarcraft.com/character/%s' % [ @region.downcase, @json['thumbnail'] ]
 
       populate_gear
     end
