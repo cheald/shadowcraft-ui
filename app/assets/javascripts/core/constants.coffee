@@ -401,7 +401,7 @@ class ShadowcraftConstants
 
   @buffPotions = [
     'potion_old_war',
-    'potion_deadly_grace',
+    'potion_prolonged_power',
     'potion_none'
   ]
 

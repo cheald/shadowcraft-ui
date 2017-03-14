@@ -395,11 +395,15 @@ class ShadowcraftComputation:
                             proclist.append(('infallible_tracking_charm_mod', gd[1]))
                         break
 
-        if input.get("l", 0) > 90:
+        if input.get("l", 0) == 110:
+            if input.get("prepot", 0) == 0:
+                proclist.append('old_war_prepot')
+            if input.get("pot", 0) == 0:
+                proclist.append('old_war_pot')
             if input.get("prepot", 0) == 1:
-                proclist.append('draenic_agi_prepot')
+                proclist.append('prolonged_power_prepot')
             if input.get("pot", 0) == 1:
-                proclist.append('draenic_agi_pot')
+                proclist.append('prolonged_power_pot')
 
         # Add enchant procs to the list of gear buffs
         for k in gear_data:

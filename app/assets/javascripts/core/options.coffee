@@ -122,8 +122,8 @@ class ShadowcraftOptions
     })
 
     @setup("#settings #raidOther", "general", {
-      prepot: {name: 'Pre-pot', type: 'select', datatype: 'string', default: 'potion_old_war', options: {'potion_old_war': 'Potion of the Old War', 'potion_deadly_grace': 'Potion of Deadly Grace', 'potion_none': 'None'} },
-      potion: {name: 'Combat Potion', type: 'select', datatype: 'string', default: 'potion_old_war', options: {'potion_old_war': 'Potion of the Old War', 'potion_deadly_grace': 'Potion of Deadly Grace', 'potion_none': 'None'} }
+      prepot: {name: 'Pre-pot', type: 'select', datatype: 'string', default: 'potion_old_war', options: {'potion_old_war': 'Potion of the Old War', 'potion_prolonged_power': 'Potion of Prolonged Power', 'potion_none': 'None'} },
+      potion: {name: 'Combat Potion', type: 'select', datatype: 'string', default: 'potion_old_war', options: {'potion_old_war': 'Potion of the Old War', 'potion_prolonged_power': 'Potion of Prolonged Power', 'potion_none': 'None'} }
     })
 
     @setup("#settings section.mutilate .settings", "rotation", {
