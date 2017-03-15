@@ -203,15 +203,22 @@ class Item
           db_item.is_gem = !db_item.properties['gem_slot'].blank?
           db_item.item_level = item.ilevel
 
-          # Gems from the armory are coming with incorrect stats. +375 gems should be +100
-          # and +700 gems should be +200.
+          # Gems from the armory are coming with incorrect stats.
           db_item.properties['stats'].each do |key,value|
-            if value == 375
+            # Legion Gems
+            if value == 250
               db_item.properties['stats'][key] = 100
-            elsif value == 625
+            elsif value == 375
               db_item.properties['stats'][key] = 150
             elsif value == 500
               db_item.properties['stats'][key] = 200
+            # WoD Gems
+            elsif value == 200
+              db_item.properties['stats'][key] = 75
+            elsif value == 160
+              db_item.properties['stats'][key] = 50
+            elsif value == 120
+              db_item.properties['stats'][key] = 35
             end
           end
 
