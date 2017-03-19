@@ -193,7 +193,7 @@ class ShadowcraftArtifact
       else
         $("#relic-#{i}-none").prop("selected", true)
         $("#relicilvl-#{i}-none").prop("selected", true)
-        
+
     # One last check. Make sure that any activated trait that has relic power
     # but no active connections only has the relic power as the level. This may
     # happen when a user increases the level of a trait that has a relic attach
@@ -223,6 +223,10 @@ class ShadowcraftArtifact
         total_artifact_points += artifact_data.traits[local_spell_id]
       return
     )
+
+    #Do not count first trait
+    if total_artifact_points > 0
+      total_artifact_points -= 1
 
     if total_artifact_points >= 34 and (!artifact_data.traits[thirty_five] || artifact_data.traits[thirty_five] == 0)
       artifact_data.traits[thirty_five] = 0
@@ -401,7 +405,7 @@ class ShadowcraftArtifact
       trait_data = Shadowcraft.ServerData.ARTIFACT_LOOKUP[spell_id]
       artifact_data.relics[index].trait['name'] = trait_data.n
       artifact_data.relics[index].trait['spell'] = trait_data.id
-      
+
       # TODO: hardcode this for now since we only have single-point relics right now. this
       # will have to be fixed later, probably with a third dropdown menu on the UI for each
       # relic.
