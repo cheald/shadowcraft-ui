@@ -98,6 +98,11 @@ module WowArmory
     def populate_base_data_blizzard(json)
       self.quality = json['quality']
       self.equip_location = json['inventoryType']
+      # For some reason we're getting some chest items from the API with bad equip
+      # locations. fix these as we go.
+      if self.equip_location == 20
+        self.equip_location = 5
+      end
       self.icon = json['icon']
 
       # Special case legendary rings, since they don't come with a context in
