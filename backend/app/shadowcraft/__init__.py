@@ -85,6 +85,12 @@ class ShadowcraftComputation:
             192310: 'toxic_blades',
             192384: 'urge_to_kill',
             214928: 'slayers_precision',
+            241152: 'silence_of_the_uncrowned',
+            238066: 'strangler',
+            238102: 'dense_concoction',
+            238138: 'sinister_circulation',
+            239042: 'concordance_of_the_legionfall',
+            
         },
 
         # Outlaw/Dreadblades traits
@@ -107,6 +113,11 @@ class ShadowcraftComputation:
             202522: 'gunslinger',
             202753: 'hidden_blade',
             214929: 'cursed_steel',
+            241153: 'bravado_of_the_uncrowned',
+            238067: 'sabermetrics',
+            238103: 'dreadblades_vigor',
+            238139: 'loaded_dice',
+            239042: 'concordance_of_the_legionfall',
         },
 
         # Subtlety/Fangs traits
@@ -129,6 +140,11 @@ class ShadowcraftComputation:
             209781: 'shadow_nova',
             197386: 'soul_shadows',
             214930: 'legionblade',
+            241154: 'shadows_of_the_uncrowned',
+            238068: 'etched_in_shadow',
+            242707: 'shadows_whipser',
+            238140: 'feeding_frenzy',
+            239042: 'concordance_of_the_legionfall',
         },
     }
 

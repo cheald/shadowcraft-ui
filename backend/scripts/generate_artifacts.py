@@ -66,10 +66,10 @@ def generateData(datafile, iconmap, linemap, idmap, height, width, excluded_icon
   core = BeautifulSoup(f.read(), 'html.parser')
   f.close()
   traits = core.find_all(lambda tag: tag.name == 'a' and tag.get('data-artifact-id'))
-  
+
   power_to_id = {}
   for t in traits:
-    
+
     styles = {}
     for style in t['style'].split(';'):
       style = style.strip()
@@ -79,7 +79,7 @@ def generateData(datafile, iconmap, linemap, idmap, height, width, excluded_icon
       k = s[0].strip()
       v = float(s[1].strip()[:-1])
       styles[k] = v
-    
+
     spell_id = t['href'].split('=')[1].split('&')[0]
     icondiv = t.find_all(lambda tag: tag.name == 'div' and tag.get('class') and
                          tag.get('class') == ['artifactcalc-sprite-icon'])
@@ -95,7 +95,7 @@ def generateData(datafile, iconmap, linemap, idmap, height, width, excluded_icon
           ring = 'dragon'
         elif 'Small' in c:
           ring = 'thin'
-          
+
     iconmap[idmap[spell_id]] = {
       'icon': icon,
       'xpos': int(round((styles['left'] / 100.0) * float(width))),
@@ -155,8 +155,13 @@ if sys.argv[1] == '--db':
     "202753": "db_hiddenblade",
     "216230": "db_blackpowder",
     "214929": "db_cursedsteel",
+    "241153": "db_bravado",
+    "238067": "db_sabermetrics",
+    "238103": "db_dreadbladesvigor",
+    "238139": "db_loadeddice",
+    "239042": "db_concordance"
   }
-  
+
   exclude = []
 
   generateData('dreadblades_data.txt', ICONS, LINES, spell_id_map, IMAGE_HEIGHT, IMAGE_WIDTH, exclude)
@@ -188,6 +193,11 @@ elif sys.argv[1] == '--ks':
     "192376": "ks_poisonknives",
     "214928": "ks_slayersprecision",
     "214368": "ks_assassinsblades",
+    "241152": "ks_silence",
+    "238066": "ks_strangler",
+    "238102": "ks_denseconcoction",
+    "238138": "ks_sinistercirculation",
+    "239042": "ks_concordance"
   }
 
   exclude = []
@@ -221,6 +231,11 @@ elif sys.argv[1] == '--fangs':
     "197369": "fangs_fortunesbite",
     "214930": "fangs_legionblade",
     "221856": "fangs_shadowfangs",
+    "241154": "fangs_shadows",
+    "238068": "fangs_etchedinshadow",
+    "242707": "fangs_shadowswhipser",
+    "238140": "fangs_feedingfrenzy",
+    "239042": "fangs_concordance"
   }
 
   exclude = []
@@ -244,12 +259,12 @@ elif sys.argv[1] == '--fetchdata':
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 "
     "(KHTML, like Gecko) Chrome/15.0.87"
   )
-  
+
   # Create a PhantomJS web driver to load the pages including executing all of
   # the javascript on the page.
   browser = webdriver.PhantomJS(desired_capabilities=dcap)
 
-  browser.get('http://www.wowhead.com/artifact-calc/rogue/outlaw/AgXiIsA')
+  browser.get('http://ptr.wowhead.com/artifact-calc/rogue/outlaw/AgXiIsA')
   time.sleep(2)
   source = browser.page_source
   soup = BeautifulSoup(source, 'html.parser')
@@ -259,7 +274,7 @@ elif sys.argv[1] == '--fetchdata':
   f.write(str(core))
   f.close()
 
-  browser.get('http://www.wowhead.com/artifact-calc/rogue/assassination/AvTSIrA')
+  browser.get('http://ptr.wowhead.com/artifact-calc/rogue/assassination/AvTSIrA')
   time.sleep(2)
   source = browser.page_source
   soup = BeautifulSoup(source, 'html.parser')
@@ -269,7 +284,7 @@ elif sys.argv[1] == '--fetchdata':
   f.write(str(core))
   f.close()
 
-  browser.get('http://www.wowhead.com/artifact-calc/rogue/subtlety/AlIxIRA')
+  browser.get('http://ptr.wowhead.com/artifact-calc/rogue/subtlety/AlIxIRA')
   time.sleep(2)
   source = browser.page_source
   soup = BeautifulSoup(source, 'html.parser')

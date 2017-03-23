@@ -40,7 +40,7 @@ class Artifact
   end
 
   def self.get_ids_from_wowhead
-    url = "http://legion.wowhead.com/spells/artifact-traits/class:4"
+    url = "http://ptr.wowhead.com/spells/artifact-traits/class:4"
     doc = open(url, 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36').read
     ids = doc.scan(/_\[(\d+)\]=\{.*?\}/).flatten.map &:to_i
     ids
