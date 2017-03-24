@@ -43,8 +43,8 @@ FRAME_WIDTH = 720
 def getLineInfo(icon1, icon2, height, width):
     # adjust the corner points of each icon down and to the right 40 pixels since the outer div
     # of each icon is 80 pixels wide and tall.
-    pos1 = (icon1['x']+40, icon1['y']+40)
-    pos2 = (icon2['x']+40, icon2['y']+40)
+    pos1 = (icon1['x']-5, icon1['y']-5)
+    pos2 = (icon2['x']-5, icon2['y']-5)
 
     (dx, dy) = (pos2[0]-pos1[0], pos2[1]-pos1[1])
     length = int(round(math.sqrt(float(math.pow(math.fabs(dx), 2)+(math.pow(math.fabs(dy), 2))))))
@@ -301,8 +301,8 @@ def dump_output(data):
     print '    get%sTraits: ->' % data['name']
     print '      return ['
     for key, value in iter(sorted(data['traits'].iteritems())):
-        left = (value['x'] / float(FRAME_WIDTH)) * 100.0
-        top = (value['y'] / float(FRAME_HEIGHT)) * 100.0
+        left = ((value['x']-45) / float(FRAME_WIDTH)) * 100.0
+        top = ((value['y']-45) / float(FRAME_HEIGHT)) * 100.0
         sys.stdout.write('        {')
         sys.stdout.write('id: "{}", spell_id: {}, max_level: {}, icon: "{}", ring: "{}", '.format(key,value['spell_id'], value['max_level'], value['icon'], value['style']))
         sys.stdout.write('left: {:.3f}, top: {:.3f}'.format(left, top))
