@@ -37,11 +37,14 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from bs4 import BeautifulSoup
 
+FRAME_HEIGHT = 615
+FRAME_WIDTH = 720
+
 def getLineInfo(icon1, icon2, height, width):
   # adjust the corner points of each icon down and to the right 40 pixels since the outer div
   # of each icon is 80 pixels wide and tall.
-  pos1=(icon1['xpos']+40, icon1['ypos']+40)
-  pos2=(icon2['xpos']+40, icon2['ypos']+40)
+  pos1=(icon1['x']+40, icon1['y']+40)
+  pos2=(icon2['x']+40, icon2['y']+40)
 
   (dx,dy) = (pos2[0]-pos1[0],pos2[1]-pos1[1])
   length = int(round(math.sqrt(float(math.pow(math.fabs(dx),2)+(math.pow(math.fabs(dy), 2))))))
@@ -55,7 +58,7 @@ def getLineInfo(icon1, icon2, height, width):
 
   return [length, left, top, angle]
 
-def generateData(datafile, iconmap, linemap, idmap, height, width, excluded_icons = []):
+def generateData(datafile, iconmap, linemap, idmap):
   try:
     f = open(datafile, "r")
   except (IOError):
@@ -98,24 +101,26 @@ def generateData(datafile, iconmap, linemap, idmap, height, width, excluded_icon
 
     iconmap[idmap[spell_id]] = {
       'icon': icon,
-      'xpos': int(round((styles['left'] / 100.0) * float(width))),
-      'ypos': int(round((styles['top'] / 100.0) * float(height))),
+      'x': int(round((styles['left'] / 100.0) * float(FRAME_WIDTH))) + 45,
+      'y': int(round((styles['top'] / 100.0) * float(FRAME_HEIGHT))) + 45,
       'spell_id': spell_id,
       'max_level': maxlevel,
       'style': ring,
     }
 
+    # If this is a thin-ring icon, we need to move it up and to the left slightly so that
+    # it matches the layout on wowhead a bit better.
+    if ring == 'thin':
+      iconmap[idmap[spell_id]]['x'] -= 15
+      iconmap[idmap[spell_id]]['y'] -= 15
+      iconmap[idmap[spell_id]]['relic'] = True
+    else:
+      iconmap[idmap[spell_id]]['relic'] = False
+
     # Generate a map of spell ID to wowhead power ID to use when building lines
     spell_id = t['href'].split('=')[1].split('&')[0]
     power_id = t['data-power-id']
     power_to_id[power_id] = idmap[spell_id]
-
-  # If there are any excluded items, remove them from the map. Usually an excluded
-  # item has been datamined, but there's not an actual connection to the tree yet,
-  # so there's just an icon sitting out off by itself. Remove these from the map
-  # so that it doesn't look funny.
-  for e in excluded_icons:
-    del iconmap[idmap[e]]
 
   lines = core.find_all(lambda tag: tag.name == 'div' and tag.get('data-power-from-to'))
   for l in lines:
@@ -124,17 +129,15 @@ def generateData(datafile, iconmap, linemap, idmap, height, width, excluded_icon
              'icon2': power_to_id[from_to[1]] }
     linemap.append(line)
 
-def scale(y, old_min, old_max, new_min, new_max):
-  return (((float(new_max)-float(new_min))*(float(y)-float(old_min))) / (float(old_max)-float(old_min))) + float(new_min)
+def get_db_data():
 
-if sys.argv[1] == '--db':
+  DATA = {
+    'name': 'Dreadblades',
+    'bg': '/images/artifacts/44-small.jpg'
+  }
 
   ICONS = {}
   LINES = []
-  BG_IMAGE = '/images/artifacts/dreadblades-bg-icons.png'
-  IMAGE_HEIGHT=615
-  IMAGE_WIDTH=720
-  datafile = "dreadblades_data.txt"
 
   spell_id_map = {
     "202665": "db_curse",
@@ -162,17 +165,20 @@ if sys.argv[1] == '--db':
     "239042": "db_concordance"
   }
 
-  exclude = []
+  generateData('dreadblades_data.txt', ICONS, LINES, spell_id_map)
+  DATA['traits'] = ICONS
+  DATA['lines'] = LINES
+  return DATA
 
-  generateData('dreadblades_data.txt', ICONS, LINES, spell_id_map, IMAGE_HEIGHT, IMAGE_WIDTH, exclude)
+def get_ks_data():
 
-elif sys.argv[1] == '--ks':
+  DATA = {
+    'name': 'Kingslayers',
+    'bg': '/images/artifacts/kingslayers-bg.jpg'
+  }
 
   ICONS = {}
   LINES = []
-  BG_IMAGE = '/images/artifacts/kingslayers-bg-icons.png'
-  IMAGE_HEIGHT=615
-  IMAGE_WIDTH=720
 
   spell_id_map = {
     "192759": "ks_kingsbane",
@@ -200,17 +206,20 @@ elif sys.argv[1] == '--ks':
     "239042": "ks_concordance"
   }
 
-  exclude = []
+  generateData('kingslayers_data.txt', ICONS, LINES, spell_id_map)
+  DATA['traits'] = ICONS
+  DATA['lines'] = LINES
+  return DATA
 
-  generateData('kingslayers_data.txt', ICONS, LINES, spell_id_map, IMAGE_HEIGHT, IMAGE_WIDTH, exclude)
+def get_fangs_data():
 
-elif sys.argv[1] == '--fangs':
+  DATA = {
+    'name': 'Fangs',
+    'bg': '/images/artifacts/fangs-bg.jpg'
+  }
 
   ICONS = {}
   LINES = []
-  BG_IMAGE = '/images/artifacts/fangs-bg-icons.png'
-  IMAGE_HEIGHT=615
-  IMAGE_WIDTH=720
 
   spell_id_map = {
     "209782": "fangs_goremawsbite",
@@ -238,22 +247,12 @@ elif sys.argv[1] == '--fangs':
     "239042": "fangs_concordance"
   }
 
-  exclude = []
+  generateData('fangs_data.txt', ICONS, LINES, spell_id_map)
+  DATA['traits'] = ICONS
+  DATA['lines'] = LINES
+  return DATA
 
-  generateData('fangs_data.txt', ICONS, LINES, spell_id_map, IMAGE_HEIGHT, IMAGE_WIDTH, exclude)
-
-  # For Fangs, the default positions make the icons at the top of the tree run into
-  # the right most relic icon (namely shadow nova). Scale all of them downwards so
-  # shadow nova is 45px lower and everything scales from there.
-  for key,value in ICONS.iteritems():
-    # demon's kiss is the bottom, shadow nova is the top
-    # at 520 pixels, movement should be 45 * 0%
-    # at 68 pixels, movement should be 45 * 100%
-    newval = int(round(scale(value['ypos'], 68, 520, 68+45, 520)))
-    value['ypos'] = newval
-
-elif sys.argv[1] == '--fetchdata':
-
+def fetch_data():
   dcap = dict(DesiredCapabilities.PHANTOMJS)
   dcap["phantomjs.page.settings.userAgent"] = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 "
@@ -297,229 +296,48 @@ elif sys.argv[1] == '--fetchdata':
   browser.quit()
   sys.exit(0)
 
-if sys.argv[2] == '--html':
-  print '<html>'
-  print '  <head>'
-  print '    <title>test</title>'
-  print '    <style>'
-  print '      .trait {'
-  print '        position: absolute;'
-  print '        height: 90px;'
-  print '        width: 90px;'
-  print '        cursor: pointer;'
-  print '      }'
-  print '      '
-  print '      .relic {'
-  print '        z-index: 0;'
-  print '        visibility: hidden;'
-  print '        height: 90px;'
-  print '        width: 90px;'
-  print '        cursor: pointer;'
-  print '      }'
-  print '      '
-  print '      .icon {'
-  print '        position: absolute;'
-  print '        z-index: 1;'
-  print '        border-radius: 50%;'
-  print '        left: 22px;'
-  print '        top: 22px;'
-  print '        height: 46px;'
-  print '        width: 46px;'
-  print '        background: black;'
-  print '      }'
-  print '      '
-  print '      .icon.inactive {'
-  print '        opacity: 0.6;'
-  print '      }'
-  print '      '
-  print '      .ring {'
-  print '        position: absolute;'
-  print '        z-index: 2;'
-  print '        left: 5px;'
-  print '        top: 5px;'
-  print '      }'
-  print '      '
-  print '      .ring-thin {'
-  print '        left: 17px;'
-  print '        top: 17px;'
-  print '      }'
-  print '      '
-  print '      .line {'
-  print '        position: absolute;'
-  print '        background-image: url(/images/artifacts/artifact-line-active.png);'
-  print '        background-repeat: repeat-x;'
-  print '        height: 16px;'
-  print '        transform-origin: 50% 50%;'
-  print '      }'
-  print '      '
-  print '      .line.inactive {'
-  print '        background-image: url(/images/artifacts/artifact-line-inactive.png);'
-  print '      }'
-  print '      '
-  print '      .level {'
-  print '        background-color: black;'
-  print '        border: 1px solid #666666;'
-  print '        border-radius: 20%;'
-  print '        color: #ffd100;'
-  print '        display: block;'
-  print '        font-family: "Open Sans", Arial;'
-  print '        position: absolute;'
-  print '        text-align: center;'
-  print '        left: calc((100% - 2em - 2px) / 2);'
-  print '        top: 65%;'
-  print '        width: 2em;'
-  print '        z-index: 3;'
-  print '      }'
-  print '      '
-  print '      .level.inactive {'
-  print '        display: none;'
-  print '      }'
-  print '    </style>'
-  print '  </head>'
-  print '  <body>'
-  print '    <div style="background-image:url(\'{}\');height:{}px;width:{}px;position:relative">'.format(BG_IMAGE, IMAGE_HEIGHT, IMAGE_WIDTH)
+def dump_output(data):
 
-  for key,value in ICONS.iteritems():
-    left = (value['xpos']/float(IMAGE_WIDTH))*100.0
-    top = (value['ypos']/float(IMAGE_HEIGHT))*100.0
-    print '      <div class="trait" style="left:{:.3f}%;top:{:.3f}%" id="{}" data-tooltip-type="spell" data-tooltip-id={} data-tooltip-rank=0 max-level={}>'.format(left,top,key,value['spell_id'],value['max_level'])
-
-    if value['style'] is 'thin':
-      print '        <img class="relic" src="/images/artifacts/relic-blood.png" style="visibility:hidden"/>'
-
-    print '        <img class="icon" src="http://wow.zamimg.com/images/wow/icons/large/{0}.jpg"/>'.format(value['icon'])
-
-    if value['style'] is 'thin':
-      print '        <img class="ring ring-{0}" src="/images/artifacts/ring-{0}.png"/>'.format(value['style'])
-      print '        <div class="level">0/3</div>'
-    else:
-      print '        <img class="ring" src="/images/artifacts/ring-{0}.png"/>'.format(value['style'])
-      print '        <div class="level">0/{}</div>'.format(value['max_level'])
-
-    print '      </div>'
-
-  for line in LINES:
-    icon1=ICONS[line['icon1']]
-    icon2=ICONS[line['icon2']]
-    length, left, top, angle = getLineInfo(icon1, icon2, IMAGE_HEIGHT, IMAGE_WIDTH)
-
-    print '      <div class="line" style="width:{}px;left:{:.3f}%;top:{:.3f}%;transform:rotate({:.3f}deg)"></div>'.format(length,left,top,angle)
-
-  print '    </div>'
-  print '  </body>'
-  print '</html>'
-
-elif sys.argv[2] == '--haml':
-
-  print '  #artifactframe{:style => "background-image:url(\'%s\');"}' % BG_IMAGE
-
-  for key,value in ICONS.iteritems():
-    left = (value['xpos']/float(IMAGE_WIDTH))*100.0
-    top = (value['ypos']/float(IMAGE_HEIGHT))*100.0
-    sys.stdout.write('    .trait.tt{:style => ')
-    sys.stdout.write('"left:{:.3f}%;top:{:.3f}%;", :id => "{}"'.format(left,top,key))
-    sys.stdout.write(', "data-tooltip-type" => "spell", "data-tooltip-id" => "{}", "data-tooltip-rank" => "0", "max_level" => "{}"'.format(value['spell_id'], value['max_level']))
-    sys.stdout.write('}\n')
-    sys.stdout.flush()
-
-    if value['style'] is 'thin':
-      print '      =image_tag "/images/artifacts/relic-blood.png", :style => "visibility:hidden;", :class => "relic"'
-
-    print '      =image_tag "http://wow.zamimg.com/images/wow/icons/large/{0}.jpg", :class => "icon"'.format(value['icon'])
-
-    if value['style'] is 'thin':
-      print '      =image_tag "/images/artifacts/ring-{0}.png", :class => "ring ring-{0}"'.format(value['style'])
-      print '      .level 0/3'
-    else:
-      print '      =image_tag "/images/artifacts/ring-{0}.png", :class => "ring"'.format(value['style'])
-      print '      .level 0/1'
-
-  for line in LINES:
-    icon1=ICONS[line['icon1']]
-    icon2=ICONS[line['icon2']]
-    length, left, top, angle = getLineInfo(icon1, icon2, IMAGE_HEIGHT, IMAGE_WIDTH)
-
-    sys.stdout.write('    .line{:style => ')
-    sys.stdout.write('"width:{}px;left:{:.3f}%;top:{:.3f}%;transform:rotate({:.3f}deg);"'.format(length,left,top,angle))
-    sys.stdout.write(', :spell1 => "{}", :spell2 => "{}"'.format(icon1['spell_id'], icon2['spell_id']))
-    sys.stdout.write('}\n')
-    sys.stdout.flush()
-
-elif sys.argv[2] == '--js':
-
-  print '      traits = ['
-  for key,value in iter(sorted(ICONS.iteritems())):
-    left = (value['xpos']/float(IMAGE_WIDTH))*100.0
-    top = (value['ypos']/float(IMAGE_HEIGHT))*100.0
+  print('    get%sTraits: ->' % data['name'])
+  print('      return [')
+  for key,value in iter(sorted(data['traits'].iteritems())):
+    left = (value['x']/float(FRAME_WIDTH))*100.0
+    top = (value['y']/float(FRAME_HEIGHT))*100.0
     sys.stdout.write('        {')
     sys.stdout.write('id: "{}", spell_id: {}, max_level: {}, icon: "{}", ring: "{}", '.format(key,value['spell_id'], value['max_level'], value['icon'], value['style']))
     sys.stdout.write('left: {:.3f}, top: {:.3f}'.format(left, top))
     if value['style'] == 'thin':
       sys.stdout.write(', is_thin: true')
     sys.stdout.write('},\n')
-  print '      ]'
-
-  print '      lines = ['
-  for line in LINES:
-
-    icon1=ICONS[line['icon1']]
-    icon2=ICONS[line['icon2']]
-    length, left, top, angle = getLineInfo(icon1, icon2, IMAGE_HEIGHT, IMAGE_WIDTH)
+  print('      ]')
+  print
+    
+  print('    use%s: ->' % data['name'])
+  print('      $("#artifactframe").css("background-image", "url(\'%s\')")' % data['bg'])
+  print('      lines = [')
+  for line in data['lines']:
+  
+    icon1=data['traits'][line['icon1']]
+    icon2=data['traits'][line['icon2']]
+    length, left, top, angle = getLineInfo(icon1, icon2, FRAME_HEIGHT, FRAME_WIDTH)
     sys.stdout.write('        {')
     sys.stdout.write('width: {}, left: {:.3f}, top: {:.3f}, angle: {:.3f}, spell1: {}, spell2: {}'.format(length, left, top, angle, icon1['spell_id'], icon2['spell_id']))
     sys.stdout.write('},\n')
+
   print '      ]'
+  print
+  print '      return Templates.artifact(traits: ArtifactTemplates.get%sTraits(), lines: lines)' % data['name']
+  print
 
-elif sys.argv[2] == '--rails':
-  sys.stdout.write(':traits => {')
-  for key,value in iter(sorted(ICONS.iteritems())):
-    sys.stdout.write('\'{}\':0,'.format(value['spell_id']))
-  sys.stdout.write('}')
-
-elif sys.argv[2] == '--reacttags':
-  for key,value in iter(sorted(ICONS.iteritems())):
-    left = (value['xpos']/float(IMAGE_WIDTH))*100.0
-    top = (value['ypos']/float(IMAGE_HEIGHT))*100.0
-    sys.stdout.write('<ArtifactTrait id="{}" tooltip_id="{}" left="{:.3f}%" top="{:.3f}%" max_rank="{}" icon="{}" ring="{}" cur_rank="0" />\n'.format(key, value['spell_id'], left, top, value['max_level'], value['icon'], value['style']))
-
-  sys.stdout.write('\n')
-  for line in LINES:
-    icon1=ICONS[line['icon1']]
-    icon2=ICONS[line['icon2']]
-    x1 = (icon1['xpos']/float(IMAGE_WIDTH))*100.0
-    y1 = (icon1['ypos']/float(IMAGE_HEIGHT))*100.0
-    x2 = (icon2['xpos']/float(IMAGE_WIDTH))*100.0
-    y2 = (icon2['ypos']/float(IMAGE_HEIGHT))*100.0
-    sys.stdout.write('<line x1="{:.3f}%" y1="{:.3f}%" x2="{:.3f}%" y2="{:.3f}%" strokeWidth="6" stroke="yellow"/>\n'.format(x1, y1, x2, y2))
-
-elif sys.argv[2] == '--react':
-  print 'traits: {'
-  for key,value in iter(sorted(ICONS.iteritems())):
-    x = int(value['xpos'])
-    y = int(value['ypos'])
-    if value['style'] == 'thin':
-      x += 30
-      y += 30
-    else:
-      x += 45
-      y += 45
-
-    print '"%s": {' % key
-    print 'id: %d,' % int(value['spell_id'])
-    print 'x: %d,' % x
-    print 'y: %d,' % y
-    print 'icon: "%s",' % value['icon']
-    print 'ring: "%s",' % value['style']
-    print 'max_rank: %s' % value['max_level']
-    print '},'
-  print '},'
-
-  print 'lines: ['
-  for line in LINES:
-    icon1=ICONS[line['icon1']]
-    icon2=ICONS[line['icon2']]
-    print '{'
-    print 'trait1: "%s",' % line['icon1']
-    print 'trait2: "%s"' % line['icon2']
-    print '},'
-  print ']'
+if len(sys.argv) == 1:
+    dump_output(get_db_data())
+    dump_output(get_fangs_data())
+    dump_output(get_ks_data())
+elif sys.argv[1] == '--db':
+    dump_output(get_db_data())
+elif sys.argv[1] == '--ks':
+    dump_output(get_ks_data())
+elif sys.argv[1] == '--fangs':
+    dump_output(get_fangs_data())
+elif sys.argv[1] == '--fetchdata':
+    fetch_data()
