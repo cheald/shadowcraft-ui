@@ -63,6 +63,7 @@ class ShadowcraftArtifact
     active = ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec]
     main_spell_id = ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].main
     thirty_five = ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].thirtyfive
+    second_major = ShadowcraftConstants.SPEC_ARTIFACT[Shadowcraft.Data.activeSpec].secondmajor
 
     # Disable everything.
     $("#artifactframe .trait").each(->
@@ -122,9 +123,11 @@ class ShadowcraftArtifact
         trait.data('relic-power', current)
         stack.push(relic_trait.spell)
 
-    # If the user has points put in to their 35th trait, add it to the stack
-    if artifact_data.traits[thirty_five] > 0
+    # If the user has points put in to their 35th trait, add the second major to the
+    # stack so that tree gets processed as well.
+    if artifact_data.traits[thirty_five] && artifact_data.traits[thirty_five] > 0
       activateTrait(thirty_five)
+      stack.push(second_major)
 
     while (stack.length > 0)
       spell_id = stack.pop()
@@ -162,7 +165,7 @@ class ShadowcraftArtifact
     # enabled.
     $("#artifactframe .trait").each(->
       check_id = parseInt($(this).attr('data-tooltip-id'))
-      if (check_id != thirty_five and jQuery.inArray(check_id, done) == -1)
+      if (check_id != thirty_five and check_id != second_major and jQuery.inArray(check_id, done) == -1)
         artifact_data.traits[check_id] = 0
     )
 
@@ -211,7 +214,7 @@ class ShadowcraftArtifact
         if ($("#artifactframe .line[spell2='#{local_spell_id}']").not(".inactive").length > 0)
           has_active_attachment = true
 
-        if (!has_active_attachment && local_spell_id != thirty_five)
+        if (!has_active_attachment && local_spell_id != thirty_five && local_spell_id != second_major)
           artifact_data.traits[local_spell_id] = 0
           relic_power = local_trait.data("relic-power")
           level = relic_power
@@ -231,6 +234,10 @@ class ShadowcraftArtifact
     if total_artifact_points >= 34 and (!artifact_data.traits[thirty_five] || artifact_data.traits[thirty_five] == 0)
       artifact_data.traits[thirty_five] = 0
       activateTrait(thirty_five)
+
+    if total_artifact_points >= 35 and (!artifact_data.traits[second_major] || artifact_data.traits[second_major] == 0)
+      artifact_data.traits[second_major] = 0
+      activateTrait(second_major)
 
     trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
 
@@ -387,8 +394,6 @@ class ShadowcraftArtifact
         ep += diff * Shadowcraft.lastCalculation.ep["mastery"]
       else if (stat == "crit")
         ep += diff * Shadowcraft.lastCalculation.ep["crit"]
-      else if (stat == "multistrike")
-        ep += diff * Shadowcraft.lastCalculation.ep["multistrike"]
       else if (stat == "haste")
         ep += diff * Shadowcraft.lastCalculation.ep["haste"]
 

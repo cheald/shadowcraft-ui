@@ -288,6 +288,7 @@ class ShadowcraftConstants
       text: "The Kingslayers"
       main: 192759
       thirtyfive: 214928
+      secondmajor: 241152
       relic1: "Shadow"
       relic2: "Iron"
       relic3: "Blood"
@@ -296,6 +297,7 @@ class ShadowcraftConstants
       text: "The Dreadblades"
       main: 202665
       thirtyfive: 214929
+      secondmajor: 241153
       relic1: "Blood"
       relic2: "Iron"
       relic3: "Storm"
@@ -304,6 +306,7 @@ class ShadowcraftConstants
       text: "Fangs of the Devourer"
       main: 209782
       thirtyfive: 214930
+      secondmajor: 241154
       relic1: "Fel"
       relic2: "Shadow"
       relic3: "Fel"
