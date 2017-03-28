@@ -746,7 +746,7 @@ class ShadowcraftGear
     data = Shadowcraft.Data
     $summary = $("#summary .inner")
     a_stats = []
-    valengine = "7.1.5"
+    valengine = "7.2"
     a_stats.push {
       name: "Engine"
       val: valengine
