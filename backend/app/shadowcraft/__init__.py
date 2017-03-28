@@ -59,6 +59,9 @@ class ShadowcraftComputation:
         142159: 'bloodstained_handkerchief',
         142167: 'eye_of_command',
         142164: 'toe_knees_promise',
+
+        # 7.2/Tomb of Sargeras
+        144477: 'splinters_of_agronax',
     }
 
     otherProcs = {
@@ -212,6 +215,9 @@ class ShadowcraftComputation:
 
         # Legendary trinkets
         'kiljaedens_burning_wish': [910, 940],
+
+        # 7.2/Tomb of Sargeras
+        'splinters_of_agronax': xrange(845, 955, 5),
     }
 
     gearBoosts = {
@@ -226,6 +232,7 @@ class ShadowcraftComputation:
         137100: 'denial_of_the_half_giants',
         133976: 'cinidaria_the_symbiote',
         144236: 'mantle_of_the_master_assassin',
+        132452: 'sephuzs_secret',
     }
 
     # combines gearProcs and gearBoosts
@@ -276,7 +283,7 @@ class ShadowcraftComputation:
         'food_legion_haste_375',
         'food_legion_mastery_375',
         'food_legion_versatility_375',
-        'food_legion_feast_200',
+        'food_legion_feast_500',
         'food_legion_damage_3'
     ]
 

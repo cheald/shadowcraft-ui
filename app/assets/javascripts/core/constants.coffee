@@ -377,6 +377,9 @@ class ShadowcraftConstants
     EYE_OF_COMMAND:
       ids: [142167, 142203]
       bonuses: {2: 'kara_empowered_2pc'}
+    SEPHUZS_SECRET:
+      ids: [132452]
+      bonuses: {1: 'sephuzs_secret'}
 
   # This is a list of the bonus IDs that mean "item level upgrade" for
   # the warforged/titanforged support.
@@ -398,7 +401,7 @@ class ShadowcraftConstants
     'food_legion_375_haste',
     'food_legion_375_mastery',
     'food_legion_375_versatility',
-    'food_legion_feast_200',
+    'food_legion_feast_500',
     'food_legion_damage_3'
   ]
 
