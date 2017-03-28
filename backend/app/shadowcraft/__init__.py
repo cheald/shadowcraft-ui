@@ -145,7 +145,7 @@ class ShadowcraftComputation:
             214930: 'legionblade',
             241154: 'shadows_of_the_uncrowned',
             238068: 'etched_in_shadow',
-            242707: 'shadows_whipser',
+            242707: 'shadows_whisper',
             238140: 'feeding_frenzy',
             239042: 'concordance_of_the_legionfall',
         },
