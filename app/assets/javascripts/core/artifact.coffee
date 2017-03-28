@@ -29,6 +29,14 @@ class ShadowcraftArtifact
     trait.data("tooltip-rank", level-1)
     return {current: level, max: max_level}
 
+  deactivateTrait = (spell_id) ->
+    trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
+    trait.children(".level").addClass("inactive")
+    trait.children(".icon").addClass("inactive")
+    trait.children(".relic").addClass("inactive")
+    trait.data("tooltip-rank", -1)
+    trait.data("relic-power", 0)
+
   updateArtifactItem = (id, oldIlvl, newIlvl) ->
     # if the item isn't an artifact weapon, just return here and don't do
     # anything. getStatsForIlvl would have thrown an exception anyways.
@@ -154,13 +162,11 @@ class ShadowcraftArtifact
 
       levels = activateTrait(spell_id)
 
-      # TODO: don't enable concordance until after you've spent 51 traits.
-
       # if the level is equal to the max level, then enable the lines
       # attached to this icon and insert the spell IDs for the icons
       # at the other ends to the stack so they'll get processed too.
       if (levels.current == levels.max ||
-          (artifact_data.traits[thirty_five] > 0 && levels.current == levels.max-1 && levels.current != 0))
+          (artifact_data.traits[thirty_five] > 0 && levels.current == levels.max-1 && levels.current > 0))
         $("#artifactframe .line[spell1='"+spell_id+"']").each(->
           $(this).removeClass("inactive")
           other_end = $(this).attr("spell2")
@@ -249,17 +255,21 @@ class ShadowcraftArtifact
     if total_artifact_points > 0
       total_artifact_points -= 1
 
-    if total_artifact_points >= 34 and (artifact_data.traits[thirty_five] == 0)
-      artifact_data.traits[thirty_five] = 0
+    if total_artifact_points >= 34
       activateTrait(thirty_five)
 
-    if total_artifact_points >= 35 and (artifact_data.traits[second_major] == 0)
-      artifact_data.traits[second_major] = 0
+    if total_artifact_points >= 35
       activateTrait(second_major)
 
-    if total_artifact_points >= 51 and (artifact_data.traits[concordance] == 0)
-      artifact_data.traits[concordance] = 0
+    if total_artifact_points >= 51
       activateTrait(concordance)
+    else
+      artifact_data.traits[concordance] = 0
+      deactivateTrait(concordance)
+      $("#artifactframe .line[spell1='"+concordance+"']").each(->
+        $(this).addClass("inactive"))
+      $("#artifactframe .line[spell2='"+concordance+"']").each(->
+        $(this).addClass("inactive"))
 
     trait = $("#artifactframe .trait[data-tooltip-id='"+spell_id+"']")
 
