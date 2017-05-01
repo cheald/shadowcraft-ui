@@ -773,11 +773,11 @@ class ShadowcraftGear
             when "shuriken_storm" then "Shuriken Storm"
       }
     else if ShadowcraftTalents.GetActiveSpecName() == "Assassination"
-      if data.options.general.lethal_poison
+      if data.options.rotation.lethal_poison
         a_stats.push {
           name: "Poison"
           val:
-            switch data.options.general.lethal_poison
+            switch data.options.rotation.lethal_poison
               when "wp" then "Wound"
               when "dp" then "Deadly"
         }
@@ -1721,7 +1721,7 @@ class ShadowcraftGear
     # Bind to the update event from the Options tab for changes that affect the
     # Gear tab.
     Shadowcraft.Options.bind "update", (opt, val) ->
-      if opt in ['rotation.cp_builder','rotation.blade_flurry','general.num_boss_adds','general.lethal_poison']
+      if opt in ['rotation.cp_builder','rotation.blade_flurry','general.num_boss_adds','rotation.lethal_poison']
         app.updateSummaryWindow()
 
     this.updateDisplay()

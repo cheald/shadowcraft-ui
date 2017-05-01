@@ -213,13 +213,6 @@ class ShadowcraftOptions
         # Show the mutilate section (otherwise known as the assassination section)
         $("#settings section.mutilate").show()
 
-        # If the user has the agonizing poison talent selected, add that to the
-        # menu for poisons.
-        if (Shadowcraft.Data.activeTalents.split("")[5] == "0")
-          $("#opt-rotation-lethal_poison").append($("<option></option>").attr("value","ap").text("Agonizing Poison"))
-        else
-          $("#opt-rotation-lethal_poison option[value='ap']").remove()
-
       # "Z" is for outlaw
       else if Shadowcraft.Data.activeSpec == "Z"
         $("#settings section.combat").show()
@@ -232,22 +225,6 @@ class ShadowcraftOptions
 
       # Deeper strategem modifies a lot of options, so just check for it for all specs
       ds_active = (Shadowcraft.Data.activeTalents.split("")[2] == "0")
-
-      Shadowcraft.Console.remove(".options-poisons")
-      if Shadowcraft.Data.activeSpec == "a"
-        # if in assassination, check to see if agonizing poison is selected
-        agonizing = (Shadowcraft.Data.activeTalents.split("")[5] == "0")
-        poisonSelect = $("#opt-rotation-lethal_poison")
-
-        # if the user has ap selected in the options, but don't have the talent
-        # selected, default back to dp and warn the user that we did it.
-        if !agonizing
-          if poisonSelect.val() == "ap"
-            Shadowcraft.Console.warn("ap", "Agonizing Poison was selected in options. Defaulting to Deadly Poison", null, "warn", "options-poisons")
-            poisonSelect.val("dp")
-          $("#opt-rotation-lethal_poison option[value='ap']").remove()
-        else
-          poisonSelect.append($("<option></option>").attr("value","ap").text("Agonizing Poison"))
 
       finisher_threshold = $("#opt-general-finisher_threshold")
       if ds_active

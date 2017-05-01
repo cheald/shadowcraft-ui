@@ -93,7 +93,7 @@ class ShadowcraftComputation:
             238102: 'dense_concoction',
             238138: 'sinister_circulation',
             239042: 'concordance_of_the_legionfall',
-            
+
         },
 
         # Outlaw/Dreadblades traits
@@ -291,6 +291,7 @@ class ShadowcraftComputation:
           'kingsbane_with_vendetta',
           'exsang_with_vendetta',
           'cp_builder',
+          'lethal_poison'
       ], [
           'blade_flurry',
           'between_the_eyes_policy',
