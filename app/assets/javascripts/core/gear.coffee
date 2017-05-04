@@ -879,7 +879,7 @@ class ShadowcraftGear
     max = _.max(rankings)
     $("#dpsbreakdown .talent_contribution").hide()
     for skill, val of dps_breakdown
-      skill = skill.replace('(','').replace(')','').split(' ').join('_')
+      skill = skill.replace('(','').replace(')','').replace(/'/g, '').split(' ').join('_')
       val = parseFloat(val)
       name = titleize(skill)
       skill = skill.replace(/\./g,'_')
