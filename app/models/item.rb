@@ -118,8 +118,8 @@ class Item
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 801, 850)
     puts "Item levels 851 to 900"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 851, 900)
-    puts "Item levels 901 to 905"
-    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 901, 905)
+    puts "Item levels 901 to 950"
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 3, 901, 950)
 
     # epic items
     # TODO: no idea why we break this up into three parts. It's probably something
@@ -129,8 +129,8 @@ class Item
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 801, 850)
     puts "Item levels 851 to 900"
     item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 851, 900)
-    puts "Item levels 901 to 905"
-    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 901, 905)
+    puts "Item levels 901 to 950"
+    item_ids += get_ids_from_wowhead_by_ilvl(prefix, 4, 901, 950)
 
     # Brinewashed items that don't show up in the wowhead searches
     item_ids += [134241, 134238, 134239, 134240, 134237, 134243, 134242]
