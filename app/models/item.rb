@@ -361,7 +361,7 @@ class Item
         json = WowArmory::Document.fetch 'us', '/wow/item/%d' % id, params
         json_data.push(json)
       rescue WowArmory::MissingDocument => e
-        Rails.logger.debug "import_blizzard failed fetch of #{id}/#{context}: #{e.message}"
+        Rails.logger.debug "import_blizzard failed fetch of #{id}/#{bonus}: #{e.message}"
         return
       end
     end
