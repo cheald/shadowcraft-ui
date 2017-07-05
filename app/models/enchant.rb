@@ -163,7 +163,7 @@ class Enchant
 
     Enchant.create({
                      :spell_id => 5890,
-                     :stats => {'mastery' => 300},
+                     :stats => {'mastery' => 600},
                      :icon => 'inv_enchant_formulasuperior_01',
                      :item_name => 'Enchant Neck - Mark of the Trained Soldier',
                      :equip_location => 2,
