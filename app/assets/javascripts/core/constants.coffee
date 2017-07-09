@@ -317,15 +317,12 @@ class ShadowcraftConstants
   # This is a list of the set bonuses that are available and the item IDs for those
   # sets. Legendaries are considered sets due to how they're implemented.
   @SETS =
-    T18:
-      ids: [124248, 124257, 124263, 124269, 124274]
-      bonuses: {4: "rogue_t18_4pc", 2: "rogue_t18_2pc"}
-    T18_LFR:
-      ids: [128130, 128121, 128125, 128054, 128131, 128137]
-      bonuses: {4: "rogue_t18_4pc_lfr"}
     T19:
       ids: [138326, 138329, 138332, 138335, 138338, 138371]
       bonuses: {4: "rogue_t19_4pc", 2: "rogue_t19_2pc"}
+    T20:
+      ids: [147169, 147170, 147171, 147172, 147173, 147174]
+      bonuses: {4: "rogue_t20_4pc", 2: "rogue_t20_2pc"}
     ORDERHALL:
       ids: [139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746]
       bonuses: {8: "rogue_orderhall_8pc"}

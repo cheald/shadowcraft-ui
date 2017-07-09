@@ -817,11 +817,10 @@ class ShadowcraftGear
     other =
       mainhand_dps: Shadowcraft.lastCalculation.mh_ep.mh_dps
       offhand_dps: Shadowcraft.lastCalculation.oh_ep.oh_dps
-      t18_2pc: source.other_ep.rogue_t18_2pc || 0
-      t18_4pc: source.other_ep.rogue_t18_4pc || 0
-      t18_4pc_lfr: source.other_ep.rogue_t18_4pc_lfr || 0
       t19_2pc: source.other_ep.rogue_t19_2pc || 0
       t19_4pc: source.other_ep.rogue_t19_4pc || 0
+      t20_2pc: source.other_ep.rogue_t20_2pc || 0
+      t20_4pc: source.other_ep.rogue_t20_4pc || 0
       orderhall_8pc: source.other_ep.rogue_orderhall_8pc || 0
 
     all = _.extend(Weights, other)
@@ -840,7 +839,7 @@ class ShadowcraftGear
         $.data(exist.get(0), "sortkey", 0)
         if key in ["mainhand_dps","offhand_dps"]
           $.data(exist.get(0), "sortkey", 1)
-        else if key in ["t18_2pc","t18_4pc","t18_4pc_lfr","t19_2pc","t19_4pc","rogue_orderhall_8pc"]
+        else if key in ["t19_2pc","t19_4pc","t20_2pc","t20_4pc","rogue_orderhall_8pc"]
           $.data(exist.get(0), "sortkey", 2)
       $.data(exist.get(0), "weight", weight)
 
