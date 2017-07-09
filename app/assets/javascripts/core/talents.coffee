@@ -19,7 +19,6 @@ class ShadowcraftTalents
 
   TALENT_NAMES =
     "acrobatic_strikes": "Acrobatic Strikes"
-    "agonizing_poison": "Agonizing Poison"
     "alacrity": "Alacrity"
     "anticipation": "Anticipation"
     "cannonball_barrage": "Cannonball Barrage"
@@ -57,6 +56,7 @@ class ShadowcraftTalents
     "swordmaster": "Swordmaster"
     "tangled_shadow": "Tangled Shadow"
     "thuggee": "Thuggee"
+    "toxic_blade": "Toxic Blade"
     "venom_rush": "Venom Rush"
     "vigor": "Vigor"
     "weaponmaster": "Weaponmaster"
