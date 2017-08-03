@@ -55,15 +55,15 @@ class ShadowcraftGear
     slotIndex = parseInt(slotIndex, 10)
     switch slotIndex
       when 0, 4, 6
-        return 0
-      when 2, 5, 7, 9, 12, 13
         return 1
+      when 2, 5, 7, 9, 12, 13
+        return 2
       when 1, 8, 10, 11, 14
-        return 2
-      when 15, 16
         return 3
+      when 15, 16
+        return 4
       else
-        return 2
+        return 3
 
   statOffset = (gear, facet) ->
     offsets = {}
@@ -144,7 +144,7 @@ class ShadowcraftGear
           continue
         for entry in Shadowcraft.ServerData.ITEM_BONUSES[id]
           if entry.type == 2
-            rand_val = Math.round(entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][1+getRandPropEntry(gear.slot)])
+            rand_val = Math.round(entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[gear.item_level][getRandPropEntry(gear.slot)])
             if (!(entry.val1 in item_stats))
               item_stats[entry.val1] = 0
             item_stats[entry.val1] += rand_val
@@ -1357,7 +1357,7 @@ class ShadowcraftGear
             group['entries'].push entry
             subgroup = "suffixes"
           when 2 # tertiary stats
-            entry['val2'] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[item.ilvl][1 + getRandPropEntry(slot)])
+            entry['val2'] = Math.round(bonus_entry.val2 / 10000 * Shadowcraft.ServerData.RAND_PROP_POINTS[item.ilvl][getRandPropEntry(slot)])
             entry['val1'] = bonus_entry.val1
             group['entries'].push entry
             group.ep += getStatWeight(entry.val1, entry.val2)
