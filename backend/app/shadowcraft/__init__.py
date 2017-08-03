@@ -62,6 +62,12 @@ class ShadowcraftComputation:
 
         # 7.2/Tomb of Sargeras
         144477: 'splinters_of_agronax',
+        147009: 'infernal_cinders',
+        147010: 'cradle_of_anguish',
+        147011: 'vial_of_ceaseless_toxins',
+        147012: 'umbral_moonglaives',
+        147015: 'engine_of_eradication',
+        151190: 'specter_of_betrayal',
     }
 
     otherProcs = {
