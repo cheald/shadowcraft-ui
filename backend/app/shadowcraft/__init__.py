@@ -68,6 +68,9 @@ class ShadowcraftComputation:
         147012: 'umbral_moonglaives',
         147015: 'engine_of_eradication',
         151190: 'specter_of_betrayal',
+
+        # Seat of the Triumvirate
+        151307: 'void_stalkers_contract',
     }
 
     otherProcs = {
@@ -155,6 +158,22 @@ class ShadowcraftComputation:
             238140: 'feeding_frenzy',
             239042: 'concordance_of_the_legionfall',
         },
+
+        # Netherlight Crucible traits
+        'netherlight': {
+            252901: 'master_of_shadows',
+            252191: 'murderous_intent',
+            252875: 'shadowbind',
+            252888: 'chaotic_darkness',
+            252906: 'torment_the_weak',
+            252922: 'dark_sorrows',
+            252088: 'light_speed',
+            252207: 'refractive_shell',
+            252799: 'shocklight',
+            253070: 'secure_in_the_light',
+            253093: 'infusion_of_light',
+            253111: 'lights_embrace'
+        }
     }
 
     artifactTraitsReverse = {}
@@ -163,21 +182,6 @@ class ShadowcraftComputation:
 
     gearProcs = trinkets.copy()
     gearProcs.update(otherProcs)
-
-    # Creates a group of items based on the base ilvls passed in.  For each entry in the
-    # base_ilvls array, it will create additional entries stepping by step_size up to
-    # num_steps times.
-    def createGroup(base_ilvls, num_steps, step_size):
-      trinketGroup = []
-      subgroup = ()
-      for base_ilvl in base_ilvls:
-        for i in xrange(base_ilvl,base_ilvl + (num_steps+1)*step_size, step_size):
-          subgroup += (i,)
-      trinketGroup.extend(list(subgroup))
-      return trinketGroup
-
-    def createGroupMax(base_ilvl, max_ilvl, step_size):
-      group = xrange(base_ilvl, max_ilvl, step_size)
 
     # used for rankings
     trinketGroups = {
@@ -230,6 +234,9 @@ class ShadowcraftComputation:
         'umbral_moonglaives': xrange(885, 955, 5),
         'engine_of_eradication': xrange(885, 955, 5),
         'specter_of_betrayal': xrange(895, 955, 5),
+
+        # Seat of the Triumvirate
+        'void_stalkers_contract': xrange(865, 955, 5),
     }
 
     gearBoosts = {
@@ -530,23 +537,14 @@ class ShadowcraftComputation:
             **settings_options
         )
 
-        if len(input['art']) == 0:
-            # if no artifact data was passed (probably because the user had the wrong
-            # weapons equipped), pass a string of zeros as the trait data.
-            _traits = artifact.Artifact(spec, "rogue", "0"*len(artifact_data.traits[("rogue",spec)]))
-        elif len(input['art']) == len(artifact_data.traits[("rogue",spec)]):
-            traitstr = ""
-            remap = {}
-            for k,v in input['art'].iteritems():
-                remap[self.artifactTraits[_spec][int(k)]] = v
-            for t in artifact_data.traits[("rogue",spec)]:
-                if (t in remap):
-                    traitstr += str(remap[t])
-                else:
-                    traitstr += "0"
-            _traits = artifact.Artifact(spec, "rogue", traitstr)
-        else:
-            _traits = None
+        _artifact = input['art']
+        print(_artifact)
+        trait_values = {}
+        for k, v in self.artifactTraits[_spec].items():
+            if str(k) in input['art']:
+                trait_values[v] = input['art'][str(k)]
+
+        _traits = artifact.Artifact(spec, 'rogue', trait_dict=trait_values)
 
         calculator = AldrianasRogueDamageCalculator(_stats, _talents, _traits, _buffs, _race, spec, _settings, _level)
         return calculator
