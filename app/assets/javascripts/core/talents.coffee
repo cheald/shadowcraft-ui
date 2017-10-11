@@ -25,7 +25,7 @@ class ShadowcraftTalents
     "cheat_death": "Cheat Death"
     "dark_shadow": "Dark Shadows"
     "death_from_above": "Death from Above"
-    "deeper_strategem": "Deeper Strategem"
+    "deeper_stratagem": "Deeper Strategem"
     "dirty_tricks": "Dirty Tricks"
     "elaborate_planning": "Elaborate Planning"
     "elusiveness": "Elusiveness"
