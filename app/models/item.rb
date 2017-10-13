@@ -165,8 +165,7 @@ class Item
   end
 
   def self.populate_gems(prefix = 'www', source = 'wowapi')
-    gem_ids = get_ids_from_wowhead("http://www.wowhead.com/items/gems/prismatic?filter=166;6;0")
-    gem_ids += get_ids_from_wowhead("http://www.wowhead.com/items/gems/prismatic?filter=166;7;0")
+    gem_ids = get_ids_from_wowhead("http://www.wowhead.com/items/gems/prismatic?filter=166;7;0")
 
     Rails.logger.debug "importing now #{gem_ids.length} gems"
     pos = 0
@@ -203,7 +202,6 @@ class Item
           db_item.is_gem = !db_item.properties['gem_slot'].blank?
           db_item.item_level = item.ilevel
 
-          # Gems from the armory are coming with incorrect stats.
           db_item.properties['stats'].each do |key,value|
             # Legion Gems
             if value == 250
@@ -212,13 +210,6 @@ class Item
               db_item.properties['stats'][key] = 150
             elsif value == 500
               db_item.properties['stats'][key] = 200
-            # WoD Gems
-            elsif value == 200
-              db_item.properties['stats'][key] = 75
-            elsif value == 160
-              db_item.properties['stats'][key] = 50
-            elsif value == 120
-              db_item.properties['stats'][key] = 35
             end
           end
 
