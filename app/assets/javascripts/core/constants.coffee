@@ -68,7 +68,13 @@ class ShadowcraftConstants
     940: 70,
     945: 71,
     950: 72,
-    955: 74
+    955: 74,
+    960: 75,
+    965: 77,
+    970: 78,
+    975: 80,
+    980: 81,
+    985: 83
   }
 
   # Taken from https://github.com/simulationcraft/simc/blob/legion-dev/engine/dbc/generated/sc_scale_data.inc
@@ -338,7 +344,7 @@ class ShadowcraftConstants
 
   # This is the current maximum ilevel of items via WF/TF. This means that the WF/TF
   # popup will only show entries up to this maximum amount.
-  @CURRENT_MAX_ILVL = 955
+  @CURRENT_MAX_ILVL = 985
 
   @ARTIFACTS = [128476, 128479, 128872, 134552, 128869, 128870]
   @ARTIFACT_SETS =
@@ -395,6 +401,9 @@ class ShadowcraftConstants
     T20:
       ids: [147169, 147170, 147171, 147172, 147173, 147174]
       bonuses: {4: "rogue_t20_4pc", 2: "rogue_t20_2pc"}
+    T21:
+      ids: [152160, 152161, 152162, 152163, 152164, 152165]
+      bonuses: {4: "rogue_t21_4pc", 2: "rogue_t21_2pc"}
     ORDERHALL:
       ids: [139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746]
       bonuses: {8: "rogue_orderhall_8pc"}

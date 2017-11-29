@@ -71,6 +71,15 @@ class ShadowcraftComputation:
 
         # Seat of the Triumvirate
         151307: 'void_stalkers_contract',
+
+        # Antorus, The Burning Throne
+        154172: 'amanthuls_vision',
+        154174: 'golganneths_vitality',
+        151969: 'terminus_signaling_beacon',
+        151963: 'forgefiends_fabricator',
+        151964: 'seeping_scourgewing',
+        152093: 'gorshalachs_legacy',
+        151968: 'shadowsinged_fang',
     }
 
     otherProcs = {
@@ -183,60 +192,71 @@ class ShadowcraftComputation:
     gearProcs = trinkets.copy()
     gearProcs.update(otherProcs)
 
+    RANGE_MAX = 985
+
     # used for rankings
     trinketGroups = {
         # Alchemist trinket
         'infernal_alchemist_stone': xrange(815, 865, 5),
 
         # Dungeon trinkets
-        'chaos_talisman': xrange(820, 955, 5),
-        'chrono_shard': xrange(820, 955, 5),
-        'darkmoon_deck_dominion': xrange(815, 955, 5),
-        'faulty_countermeasure': xrange(820, 955, 5),
-        'giant_ornamental_pearl': xrange(820, 955, 5),
-        'horn_of_valor': xrange(820, 955, 5),
-        'mark_of_dargrul': xrange(820, 955, 5),
-        'memento_of_angerboda': xrange(820, 955, 5),
-        'nightmare_egg_shell': xrange(820, 955, 5),
-        'spiked_counterweight': xrange(820, 955, 5),
-        'tempered_egg_of_serpentrix': xrange(820, 955, 5),
-        'terrorbound_nexus': xrange(820, 955, 5),
-        'tiny_oozeling_in_a_jar': xrange(820, 955, 5),
-        'tirathons_betrayal': xrange(820, 955, 5),
-        'windscar_whetstone': xrange(820, 955, 5),
+        'chaos_talisman': xrange(820, RANGE_MAX, 5),
+        'chrono_shard': xrange(820, RANGE_MAX, 5),
+        'darkmoon_deck_dominion': xrange(815, RANGE_MAX, 5),
+        'faulty_countermeasure': xrange(820, RANGE_MAX, 5),
+        'giant_ornamental_pearl': xrange(820, RANGE_MAX, 5),
+        'horn_of_valor': xrange(820, RANGE_MAX, 5),
+        'mark_of_dargrul': xrange(820, RANGE_MAX, 5),
+        'memento_of_angerboda': xrange(820, RANGE_MAX, 5),
+        'nightmare_egg_shell': xrange(820, RANGE_MAX, 5),
+        'spiked_counterweight': xrange(820, RANGE_MAX, 5),
+        'tempered_egg_of_serpentrix': xrange(820, RANGE_MAX, 5),
+        'terrorbound_nexus': xrange(820, RANGE_MAX, 5),
+        'tiny_oozeling_in_a_jar': xrange(820, RANGE_MAX, 5),
+        'tirathons_betrayal': xrange(820, RANGE_MAX, 5),
+        'windscar_whetstone': xrange(820, RANGE_MAX, 5),
 
         # Emerald Nightmare
-        'ravaged_seed_pod': xrange(850, 955, 5),
-        'spontaneous_appendages': xrange(850, 955, 5),
-        'natures_call': xrange(850, 955, 5),
-        'bloodthirsty_instinct': xrange(850, 955, 5),
+        'ravaged_seed_pod': xrange(850, RANGE_MAX, 5),
+        'spontaneous_appendages': xrange(850, RANGE_MAX, 5),
+        'natures_call': xrange(850, RANGE_MAX, 5),
+        'bloodthirsty_instinct': xrange(850, RANGE_MAX, 5),
 
         # Return to Karazhan
-        'bloodstained_handkerchief': xrange(855, 955, 5),
-        'eye_of_command': xrange(860, 955, 5),
-        'toe_knees_promise': xrange(855, 955, 5),
+        'bloodstained_handkerchief': xrange(855, RANGE_MAX, 5),
+        'eye_of_command': xrange(860, RANGE_MAX, 5),
+        'toe_knees_promise': xrange(855, RANGE_MAX, 5),
 
         # Nighthold trinkets
-        'arcanogolem_digit': xrange(855, 955, 5),
-        'convergence_of_fates': xrange(860, 955, 5),
-        'entwined_elemental_foci': xrange(860, 955, 5),
-        'nightblooming_frond': xrange(860, 955, 5),
-        'draught_of_souls': xrange(865, 955, 5),
+        'arcanogolem_digit': xrange(855, RANGE_MAX, 5),
+        'convergence_of_fates': xrange(860, RANGE_MAX, 5),
+        'entwined_elemental_foci': xrange(860, RANGE_MAX, 5),
+        'nightblooming_frond': xrange(860, RANGE_MAX, 5),
+        'draught_of_souls': xrange(865, RANGE_MAX, 5),
 
         # Legendary trinkets
-        'kiljaedens_burning_wish': [910, 940, 970],
+        'kiljaedens_burning_wish': [910, 940, 970, 1000],
 
         # 7.2/Tomb of Sargeras
-        'splinters_of_agronax': xrange(845, 955, 5),
-        'infernal_cinders': xrange(885, 955, 5),
-        'cradle_of_anguish': xrange(885, 955, 5),
-        'vial_of_ceaseless_toxins': xrange(885, 955, 5),
-        'umbral_moonglaives': xrange(885, 955, 5),
-        'engine_of_eradication': xrange(885, 955, 5),
-        'specter_of_betrayal': xrange(895, 955, 5),
+        'splinters_of_agronax': xrange(845, RANGE_MAX, 5),
+        'infernal_cinders': xrange(885, RANGE_MAX, 5),
+        'cradle_of_anguish': xrange(885, RANGE_MAX, 5),
+        'vial_of_ceaseless_toxins': xrange(885, RANGE_MAX, 5),
+        'umbral_moonglaives': xrange(885, RANGE_MAX, 5),
+        'engine_of_eradication': xrange(885, RANGE_MAX, 5),
+        'specter_of_betrayal': xrange(895, RANGE_MAX, 5),
 
         # Seat of the Triumvirate
-        'void_stalkers_contract': xrange(865, 955, 5),
+        'void_stalkers_contract': xrange(865, RANGE_MAX, 5),
+
+        # Antorus, The Burning Throne
+        'amanthuls_vision': xrange(915, RANGE_MAX, 5),
+        'golganneths_vitality': xrange(915, RANGE_MAX, 5),
+        'terminus_signaling_beacon': xrange(915, RANGE_MAX, 5),
+        'forgefiends_fabricator': xrange(915, RANGE_MAX, 5),
+        'seeping_scourgewing': xrange(915, RANGE_MAX, 5),
+        'gorshalachs_legacy': xrange(915, RANGE_MAX, 5),
+        'shadowsinged_fang': xrange(915, RANGE_MAX, 5),
     }
 
     gearBoosts = {
@@ -266,6 +286,7 @@ class ShadowcraftComputation:
     # Tier + Order Hall sets
     tier19IDs = frozenset([138326, 138329, 138332, 138335, 138338, 138371])
     tier20IDs = frozenset([147169, 147170, 147171, 147172, 147173, 147174])
+    tier21IDs = frozenset([152160, 152161, 152162, 152163, 152164, 152165])
     orderhallIDs = frozenset([139739, 139740, 139741, 139742, 139743, 139744, 139745, 139746])
 
     # Legion Dungeon sets
@@ -403,6 +424,12 @@ class ShadowcraftComputation:
 
         if len(self.tier20IDs & gear) >= 4:
             buff_list.append('rogue_t20_4pc')
+
+        if len(self.tier21IDs & gear_ids) >= 2:
+            buff_list.append('rogue_t21_2pc')
+
+        if len(self.tier21IDs & gear_ids) >= 4:
+            buff_list.append('rogue_t21_4pc')
 
         if len(self.orderhallIDs & gear) >= 6:
             buff_list.append('rogue_orderhall_6pc')
@@ -575,6 +602,7 @@ class ShadowcraftComputation:
 
             other_buffs = ['rogue_t19_2pc','rogue_t19_4pc','rogue_orderhall_8pc',
                            'rogue_t20_2pc','rogue_t20_4pc',
+                           'rogue_t21_2pc','rogue_t21_4pc',
                            'mark_of_the_hidden_satyr','mark_of_the_distant_army',
                            'mark_of_the_claw','march_of_the_legion_2pc',
                            'journey_through_time_2pc','jacins_ruse_2pc',

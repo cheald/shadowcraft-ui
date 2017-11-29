@@ -821,6 +821,8 @@ class ShadowcraftGear
       t19_4pc: source.other_ep.rogue_t19_4pc || 0
       t20_2pc: source.other_ep.rogue_t20_2pc || 0
       t20_4pc: source.other_ep.rogue_t20_4pc || 0
+      t21_2pc: source.other_ep.rogue_t21_2pc || 0
+      t21_4pc: source.other_ep.rogue_t21_4pc || 0
       orderhall_8pc: source.other_ep.rogue_orderhall_8pc || 0
 
     all = _.extend(Weights, other)
@@ -839,7 +841,7 @@ class ShadowcraftGear
         $.data(exist.get(0), "sortkey", 0)
         if key in ["mainhand_dps","offhand_dps"]
           $.data(exist.get(0), "sortkey", 1)
-        else if key in ["t19_2pc","t19_4pc","t20_2pc","t20_4pc","rogue_orderhall_8pc"]
+        else if key in ["t19_2pc","t19_4pc","t20_2pc","t20_4pc","t21_2pc","t21_4pc","rogue_orderhall_8pc"]
           $.data(exist.get(0), "sortkey", 2)
       $.data(exist.get(0), "weight", weight)
 
