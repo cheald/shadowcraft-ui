@@ -425,10 +425,10 @@ class ShadowcraftComputation:
         if len(self.tier20IDs & gear) >= 4:
             buff_list.append('rogue_t20_4pc')
 
-        if len(self.tier21IDs & gear_ids) >= 2:
+        if len(self.tier21IDs & gear) >= 2:
             buff_list.append('rogue_t21_2pc')
 
-        if len(self.tier21IDs & gear_ids) >= 4:
+        if len(self.tier21IDs & gear) >= 4:
             buff_list.append('rogue_t21_4pc')
 
         if len(self.orderhallIDs & gear) >= 6:
