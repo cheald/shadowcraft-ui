@@ -1,3 +1,7 @@
+# Deprecation notice
+
+THIS REPO IS NOW DEPRECATED AND IS REPLACED BY https://github.com/ShadowCraft/shadowcraft-ui-react. IT IS ONLY KEPT AROUND FOR ARCHIVAL AND HISTORICAL PURPOSES.
+
 # ShadowCraft-UI
 
 ## About
